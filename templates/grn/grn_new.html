@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4> Add GRN</h4>
+              </div>
+              </div>
+            <div class="clearfix"></div>
+
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+					{% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-dismissible alert-success">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                     <strong>{{message}}</strong>
+                                </div>
+                                {% endfor %}
+					{% endif %}
+                 <div class="x_content">
+									<br />
+					 </ul>
+					 	</div>
+					 {% if messages %}
+					 	{% for message in messages %}
+					 			<ul class="messages">
+    								{% for message in messages %}
+									<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    								{% endfor %}
+								</ul>
+
+						{% endfor %}
+					 {% endif %}
+
+									<form class="form-label-left input_mask"  method="POST" action="add_grn"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                   <div class="row">
+
+										<div class="col-md-3 col-sm-6  form-group has-feedback">
+
+											<label>Vendor Name *</label>
+										    	<select class="country form-control" name="vname">
+													<option>vendor name search</option>
+												{% for data in all_data %}
+													<option  value="{{ data.vendorcode}}">{{ data.vendorname }}</option>
+												{% endfor %}
+												</select>
+										</div>
+										<div class="col-md-3 col-sm-6  form-group has-feedback">
+											<label>Warehouse Name *</label>
+											<select class="country form-control" name="whname">
+												<option>warehouse name search</option>
+											{% for data in all_data1 %}
+											<option  value="{{ data.warehouseid}}">{{ data.warehousename }}</option>
+											{% endfor %}
+											</select>
+										</div>
+										<div class="col-md-1 col-sm-2  form-group has-feedback">
+											<label>Invoice No *</label>
+										    <input type="text" class="form-control" placeholder="invoice no" name="invno">
+										</div>
+										<div class="col-md-1 col-sm-2  form-group has-feedback">
+											<label>Invoice Date *</label>
+										    <input type="date" class="form-control" placeholder="invoice date" name="invoicedate">
+										</div>
+									    <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Invoice Amount</label>
+										    <input type="text" class="form-control" placeholder="invoice amount" name="invoiceamount">
+										</div>
+											<div class="col-md-1 col-sm-1 form-group has-feedback">
+												<button type="submit" style="padding: 0px 5px !important; " class="btn btn-success">Add</button>
+											</div>
+										</div>
+									</form>
+				  <div class="x_panel">
+                     <div class="x_content">
+									<form class="form-label-left input_mask"  method="POST" action="add_grnitem"   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Item Name Search *</label>
+										    	 <select class="country form-control" name="itemcode" id="itemcode" onchange="ItemChange(this)">
+                									<option>item name search</option>
+                									{% for data in data %}
+														<option  value="{{ data.itemcode }}">{{ data.itemname }}</option>
+													{% endfor %}
+												</select>
+											<input type="hidden" id="txtItemName" name="txtItemName" />
+										</div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Batch NO *</label>
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
+										</div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Quantity *</label>
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity">
+										</div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Purchase Price *</label>
+										    <input type="text" class="form-control" id="latestpurchase" placeholder="Latest Purchase" name="latestpurchase" value="{{ data.item_code }}"required>
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Expiry Date *</label>
+										    <input type="date" class="form-control"  name="expdate" id="expdate">
+										</div>
+
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>MRP *</label>
+										    <input type="text" class="form-control" placeholder="MRP" id="mrp" name="mrp" value="{{ data.mrp }}" required>
+										</div>
+
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>GST *</label>
+										    <input type="text" class="form-control" placeholder="GST" id="gst" name="gst" value="{{ data.gst }}"required>
+										</div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>HSN *</label>
+										    <input type="text" class="form-control" placeholder="HSN" id="hsn" name="hsn" value="{{ data.hsn }}"equired >
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Free Quantity *</label>
+										    <input type="text" class="form-control" placeholder="free quantity" id="freequantity" name="freequantity">
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+										    <input type="hidden" class="form-control"  id="uom" name="uom" value="{{ data.uom}}"required>
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+										    <input type="hidden" class="form-control" id="manufacture" name="manufacture" required>
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+										    <input type="hidden" class="form-control" id="itemsno" name="itemsno" value="{{ data.sno }}"required>
+										</div>
+
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+											</div>
+										</div>
+                                 </div>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+{% endblock %}

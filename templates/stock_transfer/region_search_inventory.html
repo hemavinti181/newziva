@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+ <div class="right_col" role="main">
+        <div class="">
+          <div class="page-title">
+            <div class="title_left">
+              <h3><b>Stock Transfer</b></h3>
+            </div>
+
+            <div class="title_right">
+              <div class="col-md-6 col-sm-9 offset-md-9">
+					<a href="sales_item_add"><button type="submit" class="btn btn-success">Add Item</button></a>
+                </div>
+          </div>
+          <div class="clearfix"></div>
+            <div class="row">
+            <div class="col-md-12 col-md-12">
+              <div class="x_panel">
+                  <div class="clearfix"></div>
+                  {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-dismissible alert-success">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                     <strong>{{message}}</strong>
+                                </div>
+                                {% endfor %}
+                        {% endif %}
+                <div class="x_content">
+
+                        <form class="form-label-left input_mask"  method="POST" action="region_search"   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-5 col-sm-6  form-group pull-right top_search">
+                                                <label class="text-primary"><b>Region Search:</b></label>
+										    	 <div class="input-group">
+                                                    <select class="country form-control" name="regioncode" id="regioncode" onchange="ItemChange(this)">
+                                                        {% for data in all_data %}
+                                                            <option value="{{ data.regionid }}">{{data.regionname}}</option>
+                                                        {% endfor %}
+												</select>
+                                                     <input type="hidden" id="regName" name="regName" />
+                                                     <div class="col-md-2 col-sm-3  form-group pull-right top_search">
+                                                     <span class="input-group-btn">
+                                                         <input type="hidden" id="region_id" name="region_id" />
+                                                        <button class="btn btn-secondary" type="submit" onclick="AddStore2()">Go!</button>
+                                                    </span>
+                                                     </div>
+                                                </div>
+										</div>
+                        </form>
+                            </div>
+                          </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+ </div>
+<script>
+ function AddStore2(){
+	sessionStorage.setItem("RegionId",$("#regioncode").val());
+    }
+	function ItemChange(e){
+	   $("#regName").val($(e).find(":selected").text());
+	}
+</script>
+{% endblock %}

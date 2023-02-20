@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+ <div class="right_col" role="main">
+        <div class="">
+          <div class="page-title">
+            <div class="title_left">
+              <h3><b>Stock Transfer</b></h3>
+            </div>
+
+            <div class="title_right">
+              <div class="col-md-6 col-sm-9 offset-md-9">
+
+                </div>
+          </div>
+          <div class="clearfix"></div>
+            <div class="row">
+            <div class="col-md-12 col-md-12">
+              <div class="x_panel">
+                  <div class="clearfix"></div>
+                  {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-dismissible alert-success">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                     <strong>{{message}}</strong>
+                                </div>
+                                {% endfor %}
+                        {% endif %}
+                <div class="x_content">
+
+                        <form class="form-label-left input_mask"  method="POST" action="add_grnitem"   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+										    	 <select class="form-control" onchange="location = this.value;">
+                									<option>Transfer to</option>
+                                                     <option value="{% url 'wh_search' %}"><a href="wh_search">Warehouse</a></option>
+                                                     <option value="{% url 'region_search' %}"><a href="region_search">Region</a></option>
+												</select>
+										</div>
+                        </form>
+                            </div>
+                          </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+ </div>
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main" xmlns="http://www.w3.org/1999/html">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4> Add Item</h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                  <a href="item_list"><button type="submit" class="btn btn-success">Item List</button>
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                 <div class="x_content">
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="item_add"   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Item Name *</label>
+										    <input type="text" class="form-control" placeholder="Item name" name="name" id="name">
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>HSN Code *</label>
+										    <input type="text" class="form-control" placeholder="HSN Code" name="hsncode" id="hsn">
+										</div>
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>GST *</label>
+										    <input type="text" class="form-control" placeholder="GST" name="gst" id="gst">
+										</div>
+                                        <div  class="col-md-3 col-sm-6  form-group has-feedback">
+													<label>Category *</label>
+												<select class="form-control" name="category" id="category">
+													{% for data in cat_data %}
+													<option value="{{ data.code }}" selected>{{ data.name }}</option>
+                       								 {% endfor %}
+												</select>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Manufacture *</label>
+										    <input type="text" class="form-control" placeholder="manufacture" name="manufacture" id="manufacture">
+										</div>
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Latest Purchase *</label>
+										    <input type="text" class="form-control" placeholder="Latest Purchase" name="latestpurchase" id="latestpurchase">
+										</div>
+											<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>MRP *</label>
+										    <input type="text" class="form-control" placeholder="MRP" name="mrp" id="'mrp">
+											</div>
+                                                <div  class="col-md-3 col-sm-6  form-group has-feedback">
+													<label>UOM *</label>
+												<select class="form-control" name="uom">
+													{% for data in uom_data %}
+													<option value="{{ data.code }}" selected>{{ data.name }}</option>
+                       								 {% endfor %}
+												</select>
+												</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Image File *</label>
+											<div class="custom-file">
+    											<input type="file" class="custom-file-input" id="customFile4" name="imagefile">
+    											<label class="custom-file-label" for="customFile">Image File</label>
+											</div>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control" id="sno" name="sno">
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">SAVE</button>
+											</div>
+										</div>
+
+                                 </div>
+                       </div>
+                 </div>
+               </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+
+{% endblock %}

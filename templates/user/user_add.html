@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4> Add user</h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                  <a href="user_list"><button type="submit" class="btn btn-success">user List</button>
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                 <div class="x_content">
+									<br />
+									<form class="form-label-left input_mask" method="POST" action="user_add"   enctype="multipart/form-data">
+											{% csrf_token %}
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>User Id *</label>
+										    <input type="text" class="form-control" placeholder="user id" name="uid">
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>User Name *</label>
+										    <input type="text" class="form-control" placeholder="user name" name="username">
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>mobile number*</label>
+										    <input type="text" name="mobile" class="form-control" placeholder="mobile number">
+                                         </div>
+                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Email Id*</label>
+										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                                         </div>
+
+                                        <div  class="col-md-3 col-sm-6  form-group has-feedback">
+													<label>Select Region *</label>
+												<select class="form-control" name="region">
+													{% for all_data1 in all_data1 %}
+														<option  value="{{ all_data1.code}}">{{ all_data1.name }}</option>
+													{% endfor %}
+												</select>
+                                        </div>
+
+                                        <div  class="col-md-3 col-sm-6  form-group has-feedback">
+													<label>Select Role *</label>
+												<select class="form-control" name="role">
+													{% for all_data2 in all_data2 %}
+														<option  value="{{ all_data2.id}}">{{ all_data2.name }}</option>
+													{% endfor %}
+												</select>
+                                        </div>
+                                          <div  class="col-md-3 col-sm-6  form-group has-feedback">
+													<label>Select Level *</label>
+												<select class="form-control" name="level">
+                                                    {% for all_data3 in all_data3 %}
+														<option  value="{{ all_data3.id}}">{{ all_data3.name }}</option>
+													{% endfor %}
+												</select>
+                                        </div>
+
+                                        <div  class="col-md-3 col-sm-6  form-group has-feedback">
+													<label>Select Designation *</label>
+												<select class="form-control" name="designation">
+                                                    {% for all_data in all_data %}
+														<option  value="{{ all_data.id}}">{{ all_data.name }}</option>
+													{% endfor %}
+												</select>
+                                        </div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>User picture *</label>
+											<div class="custom-file">
+    											<input type="file" class="custom-file-input" name="image" id="customFile4">
+    											<label class="custom-file-label" for="customFile">choose user picture</label>
+											</div>
+											</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Save</button>
+											</div>
+										</div>
+
+                                 </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+
+{% endblock %}

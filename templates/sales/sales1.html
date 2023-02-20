@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4> Add Sales</h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+					<a href="sales_list"><button type="submit" class="btn btn-primary">Sales List</button></a>
+                </div>
+            </div>
+              </div>
+
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+
+                 <div class="x_content">
+									<br />
+					 </ul>
+					 	</div>
+					{% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-dismissible alert-success">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                     <strong>{{message}}</strong>
+                                </div>
+                                {% endfor %}
+                        {% endif %}
+
+									<form class="form-label-left input_mask"  method="POST" action="sales"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                   <div class="row">
+
+										<div class="form-group row">
+
+											<div class="col-md-12 col-sm-12">
+												<div class="input-group">
+
+										    	<select class="country form-control" name="storecode" id="storecode">
+												 {% for data in list %}
+													<option  value="{{ data.storecode }}">{{data.storename }}</option>
+												 {% endfor %}
+												</select>
+                                                    <div class="col-md-2 col-sm-3  form-group pull-right top_search">
+                                                     <span class="input-group-btn">
+                                                       <button type="submit" class="btn btn-secondary btn-xs" onclick="AddStore()">Search</button>
+                                                    </span>
+                                                     </div>
+												</div>
+											</div>
+										</div>
+
+								   	</div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+
+<script>
+	function AddStore(){
+	sessionStorage.setItem("StoreId",$("#storecode").val());
+    }
+</script>
+{% endblock %}

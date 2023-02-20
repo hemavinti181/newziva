@@ -1,0 +1,440 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="icon" href="images/favicon.ico" type="image/ico" />
+    <title>ZIVA</title>
+
+
+<link href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'vendors/nprogress/nprogress.css' %}" rel="stylesheet">
+
+    <link href="{% static 'vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+
+<link href="{% static 'vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'vendors/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+
+ <link href="{% static 'vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'build/css/custom.min.css' %}" rel="stylesheet">
+ <!-- PNotify -->
+    <link href="{% static 'vendors/pnotify/dist/pnotify.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/pnotify/dist/pnotify.buttons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/pnotify/dist/pnotify.nonblock.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" />
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
+<style>
+.dataTables_length{
+margin-bottom:-50px;
+}
+.dt-buttons{
+margin-left: 415px;
+    margin-bottom: -60px;
+}
+.buttons-html5,.buttons-print{
+border: 1px solid;
+}
+.dataTables_wrapper
+{
+margin-top: -18px;
+}
+</style>
+    <style>
+       .alert-success{
+        width: 25% !important;
+        float: right;
+        }
+    </style>
+    <style>
+        th{
+background-color: #1372ba !important;
+}
+.btn-primary {
+    background-color: #1372ba !important;
+}
+    </style>
+<meta name="robots" content="noindex, nofollow">
+<script nonce="ce9d2011-6d9c-428f-ac26-1d16587b53aa">(function(w,d){!function(cM,cN,cO,cP){cM.zarazData=cM.zarazData||{};cM.zarazData.executed=[];cM.zaraz={deferred:[],listeners:[]};cM.zaraz.q=[];cM.zaraz._f=function(cQ){return function(){var cR=Array.prototype.slice.call(arguments);cM.zaraz.q.push({m:cQ,a:cR})}};for(const cS of["track","set","debug"])cM.zaraz[cS]=cM.zaraz._f(cS);cM.zaraz.init=()=>{var cT=cN.getElementsByTagName(cP)[0],cU=cN.createElement(cP),cV=cN.getElementsByTagName("title")[0];cV&&(cM.zarazData.t=cN.getElementsByTagName("title")[0].text);cM.zarazData.x=Math.random();cM.zarazData.w=cM.screen.width;cM.zarazData.h=cM.screen.height;cM.zarazData.j=cM.innerHeight;cM.zarazData.e=cM.innerWidth;cM.zarazData.l=cM.location.href;cM.zarazData.r=cN.referrer;cM.zarazData.k=cM.screen.colorDepth;cM.zarazData.n=cN.characterSet;cM.zarazData.o=(new Date).getTimezoneOffset();if(cM.dataLayer)for(const cZ of Object.entries(Object.entries(dataLayer).reduce(((c_,da)=>({...c_[1],...da[1]})))))zaraz.set(cZ[0],cZ[1],{scope:"page"});cM.zarazData.q=[];for(;cM.zaraz.q.length;){const db=cM.zaraz.q.shift();cM.zarazData.q.push(db)}cU.defer=!0;for(const dc of[localStorage,sessionStorage])Object.keys(dc||{}).filter((de=>de.startsWith("_zaraz_"))).forEach((dd=>{try{cM.zarazData["z_"+dd.slice(7)]=JSON.parse(dc.getItem(dd))}catch{cM.zarazData["z_"+dd.slice(7)]=dc.getItem(dd)}}));cU.referrerPolicy="origin";cU.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(cM.zarazData)));cT.parentNode.insertBefore(cU,cT)};["complete","interactive"].includes(cN.readyState)?zaraz.init():cM.addEventListener("DOMContentLoaded",zaraz.init)}(w,d,0,"script");})(window,document);</script></head>
+<body class="nav-md" onload="getLocation()">
+<div class="container body">
+<div class="main_container">
+<div class="col-md-3 left_col">
+<div class="left_col scroll-view">
+<div class="navbar nav_title" style="border: 0;">
+    <a href="index.html" class="site_title"><span><img src="{% static 'production/images/zivalogo.png' %}"></img></span></a>
+
+</div>
+<div class="clearfix"></div>
+
+<div class="profile clearfix">
+<div class="profile_pic">
+<img src="{% static 'production/images/img.jpg' %}" alt="..." class="img-circle profile_img">
+</div>
+<div class="profile_info">
+<span>Welcome,</span>
+<h2>John Doe</h2>
+</div>
+</div>
+
+<br />
+
+<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+<div class="menu_section">
+<h3>General</h3>
+<ul class="nav side-menu">
+<li><a><i class="fa fa-user"></i>Masters<span class="fa fa-chevron-down"></span></a>
+    <ul class="nav child_menu">
+        <li><a href="/store_master">Store Master</a></li>
+        <li><a href="/item_list">Item Master</a></li>
+        <li><a href="des_list"> Category Master</a></li>
+        <li><a href="user_list"> User Master</a></li>
+        <li><a href="warehouse_list"> Warehouse Master</a></li>
+        <li><a href="region_list"> Region Master</a></li>
+        <li><a href="vendor_list"> Vendor Master</a></li>
+    </ul>
+</li>
+</ul>
+    <ul class="nav side-menu">
+        <li><a><i class="fa fa-shopping-cart"></i>Sales<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+
+            <li><a href="proformainvoice">Proforma Invoice</a></li>
+            <li><a href="indent_item_list">Tax Invoice</a></li>
+            <li><a href="sales_list"> Sales List</a></li>
+        </ul>
+        </li>
+    </ul>
+     <ul class="nav side-menu">
+        <li><a><i class="fa fa-refresh"></i>Stock Management<span class="fa fa-chevron-down"></span></a>
+         <ul class="nav child_menu">
+             <li><a href="stock_transfer">Stock Transfer</a></li>
+             <li><a href="indent_item_list">Create Indent</a></li>
+            <li><a href="warehouse_indent_ack">Warehouse Indent</a></li>
+            <li><a href="deliver_challan">Delivery Challan</a></li>
+            <li><a href="store_master">Proforma Invoice</a></li>
+         </ul>
+         </li>
+    </ul>
+    <ul class="nav side-menu">
+        <li><a href="add_grn"><i class="fa fa-th-list"></i>Reports<span class="fa fa-chevron-down"></span></a></li>
+    </ul>
+    <ul class="nav side-menu">
+        <li><a href="add_grn"><i class="fa fa-qrcode"></i>Dashboards<span class="fa fa-chevron-down"></span></a></li>
+    </ul>
+    <ul class="nav side-menu">
+        <li><a><i class="fa fa-bar-chart"></i>Purchase<span class="fa fa-chevron-down"></span></a>
+         <ul class="nav child_menu">
+         <li><a href="add_grn">GRN</a></li>
+         <li><a href="grn_list">SRN</a></li>
+         </ul>
+        </li>
+    </ul>
+</div>
+</div>
+
+<div class="sidebar-footer hidden-small">
+<a data-toggle="tooltip" data-placement="top" title="Settings">
+<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+</a>
+<a data-toggle="tooltip" data-placement="top" title="FullScreen">
+<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+</a>
+<a data-toggle="tooltip" data-placement="top" title="Lock">
+<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+</a>
+<a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+<span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+</a>
+</div>
+
+</div>
+</div>
+    <div class="top_nav">
+<div class="nav_menu">
+<div class="nav toggle">
+<a id="menu_toggle"><i class="fa fa-bars"></i></a>
+</div>
+<nav class="nav navbar-nav">
+<ul class=" navbar-right">
+<li class="nav-item dropdown open" style="padding-left: 15px;">
+<a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+<img src="{% static 'production/images/img.jpg' %}" alt="">John Doe
+</a>
+<div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+<a class="dropdown-item" href="javascript:;"> Profile</a>
+<a class="dropdown-item" href="javascript:;">
+<span class="badge bg-red pull-right">50%</span>
+<span>Settings</span>
+</a>
+<a class="dropdown-item" href="javascript:;">Help</a>
+<a class="dropdown-item" href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+</div>
+</li>
+<li role="presentation" class="nav-item dropdown open">
+<a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1" data-toggle="dropdown" aria-expanded="false">
+<i class="fa fa-envelope-o"></i>
+<span class="badge bg-green">6</span>
+</a>
+<ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1">
+<li class="nav-item">
+<a class="dropdown-item">
+<span class="image"><img src="{% static 'production/images/img.jpg' %}" alt="Profile Image" /></span>
+<span>
+<span>John Smith</span>
+<span class="time">3 mins ago</span>
+</span>
+<span class="message">
+Film festivals used to be do-or-die moments for movie makers. They were where...
+</span>
+</a>
+</li>
+<li class="nav-item">
+<a class="dropdown-item">
+<span class="image"><img src="{% static 'production/images/img.jpg' %}" alt="Profile Image" /></span>
+<span>
+<span>John Smith</span>
+<span class="time">3 mins ago</span>
+</span>
+<span class="message">
+Film festivals used to be do-or-die moments for movie makers. They were where...
+</span>
+</a>
+</li>
+<li class="nav-item">
+<a class="dropdown-item">
+<span class="image"><img src="{% static 'productioni/images/img.jpg' %}" alt="Profile Image" /></span>
+<span>
+<span>John Smith</span>
+<span class="time">3 mins ago</span>
+</span>
+ <span class="message">
+Film festivals used to be do-or-die moments for movie makers. They were where...
+</span>
+</a>
+</li>
+<li class="nav-item">
+<a class="dropdown-item">
+<span class="image"><img src="{% static 'production/images/img.jpg' %}" alt="Profile Image" /></span>
+<span>
+<span>John Smith</span>
+<span class="time">3 mins ago</span>
+</span>
+<span class="message">
+Film festivals used to be do-or-die moments for movie makers. They were where...
+</span>
+</a>
+</li>
+<li class="nav-item">
+<div class="text-center">
+<a class="dropdown-item">
+<strong>See All Alerts</strong>
+<i class="fa fa-angle-right"></i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</div></div>
+ {% block htmlbody %} {% endblock htmlbody %}
+          {% block modal %} {% endblock %}
+
+    <footer>
+<div class="pull-right">
+Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+</div>
+<div class="clearfix"></div>
+</footer>
+
+</div>
+</div>
+{% block content %} {% endblock %}
+<script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+
+<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+<script src="{% static 'vendors/fastclick/lib/fastclick.js' %}"></script>
+
+<script src="{% static 'vendors/nprogress/nprogress.js' %}"></script>
+
+<script src="{% static 'vendors/Chart.js/dist/Chart.min.js' %}"></script>
+
+<script src="{% static 'vendors/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
+
+<script src="{% static 'vendors/raphael/raphael.min.js' %}"></script>
+<script src="{% static 'vendors/morris.js/morris.min.js' %}"></script>
+
+<script src="{% static 'vendors/gauge.js/dist/gauge.min.js' %}"></script>
+
+<script src="{% static 'vendors/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script>
+
+<script src="{% static 'vendors/skycons/skycons.js' %}"></script>
+
+<script src="{% static 'vendors/Flot/jquery.flot.js' %}"></script>
+<script src="{% static 'vendors/Flot/jquery.flot.pie.js' %}"></script>
+<script src="{% static 'vendors/Flot/jquery.flot.time.js' %}"></script>
+<script src="{% static 'vendors/Flot/jquery.flot.stack.js' %}"></script>
+<script src="{% static 'vendors/Flot/jquery.flot.resize.js' %}"></script>
+
+<script src="{% static 'vendors/flot.orderbars/js/jquery.flot.orderBars.js' %}"></script>
+<script src="{% static 'vendors/flot-spline/js/jquery.flot.spline.min.js' %}"></script>
+<script src="{% static 'vendors/flot.curvedlines/curvedLines.js' %}"></script>
+
+<script src="{% static 'vendors/DateJS/build/date.js' %}"></script>
+
+<script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+<script src="{% static 'vendors/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+
+<script type="text/javascript"  src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript"  src="{% static 'vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript"  src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script type="text/javascript"  src="{% static 'vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+<script src="{% static 'vendors/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'vendors/pnotify/dist/pnotify.js' %}"></script>
+<script src="{% static 'vendors/pnotify/dist/pnotify.buttons.js' %}"></script>
+<script src="{% static 'vendors/pnotify/dist/pnotify.nonblock.js' %}"></script>
+
+<script src="{% static 'build/js/custom.min.js' %}"></script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vaafb692b2aea4879b33c060e79fe94621666317369993" integrity="sha512-0ahDYl866UMhKuYcW078ScMalXqtFJggm7TmlUtp0UlD4eQk0Ixfnm5ykXKvGJNFjLMoortdseTfsRT8oCfgGA==" data-cf-beacon='{"rayId":"776d0dad4be685c5","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2022.11.3","si":100}' crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+<script>
+            $(document).ready(function () {
+                //Select2
+                $(".country").select2({
+                    maximumSelectionLength: 3,
+                });
+                 $('#itemcode').change(function() {
+                    var itemcode = $('#itemcode').find(":selected").text();
+                    obj = {"accesskey":"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4","itemcode":itemcode};
+                    $.ajax({
+                      data: {"itemcode":itemcode},
+                      url: "{% url 'get_item_data' %}",
+                      type: 'POST',
+                      success: function(data){
+                        var obj = data.data.itemmasterlist
+                        console.log(obj[0].gst);
+                        if(obj.length>0){
+                            $("#gst").val(obj[0].gst);
+                            $("#mrp").val(obj[0].mrp);
+                            $("#hsn").val(obj[0].hsncode);
+                             $("#latestpurchase").val(obj[0].lpp);
+                             $("#manufacture").val(obj[0].manufacturername);
+                             $("#uom").val(obj[0].uom);
+                             $("#itemsno").val(obj[0].sno);
+
+                        }
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+                })
+
+                $('#itemsearch').change(function() {
+                    var searchterm = $("#itemsearch").val();
+                    $.ajax({
+                      data: {"searchterm":searchterm, "wh_id":$("#wh_id").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_wh_item' %}",
+                      type: 'POST',
+                      success: function(data){
+                        var obj = data.data.warehouseinventorylist
+                        console.log("obj");
+                         console.log(obj);
+                        if(obj.length>0){
+                            $("#freequantity").val(obj[0].freeqty);
+                            $("#expdate").val(obj[0].expirydate);
+                            $("#batchno").val(obj[0].batchcode);
+                             $("#cpsno").val(obj[0].cp_sno);
+                        }
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+                })
+                $('#itemsearch1').change(function() {
+                    var searchterm = $("#itemsearch1").val();
+                    $.ajax({
+                      data: {"searchterm":searchterm, "wh_id":$("#wh_id").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_wh_item' %}",
+                      type: 'POST',
+                      success: function(data){
+                        var obj = data.data.warehouseinventorylist
+                        console.log("obj");
+                         console.log(obj);
+                        if(obj.length>0){
+                            $("#freequantity").val(obj[0].freeqty);
+                            $("#expdate").val(obj[0].expirydate);
+                            $("#batchno").val(obj[0].batchcode);
+                             $("#cpsno").val(obj[0].cp_sno);
+                        }
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+                })
+                $('#edit').change(function() {
+                    var whid = $("#edit").val();
+
+                    $.ajax({
+                      data: {"whid":whid, 'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_item_data' %}",
+                      type: 'POST',
+                      success: function(data){
+                        var obj = data.data.warehouselist
+                       console.log(obj[0].freeqty);
+                        if(obj.length>0){
+                            $("#warehousename").val(obj[0].warehousename);
+                            $("#manager").val(obj[0].wh_manager);
+                            $("#mobilewh").val(obj[0].wh_contact_no);
+                             $("#gstwh").val(obj[0].gst_no);
+                             $("#panwh").val(obj[0].panno);
+                             $("#licnumwh").val(obj[0].licenseno);
+                             $("#addresswh").val(obj[0].address);
+                        }
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+                })
+            });
+        </script>
+
+
+</body>
+</html>
+

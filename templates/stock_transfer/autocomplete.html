@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+<link href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet">
+<script src="YourJquery source path"></script>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
+{% block htmlbody %}
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4> Proforma Invoice</h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                    <a href="sales_item_add"><button type="submit" class="btn btn-success">Add Sale Item</button></a>
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                    {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-dismissible alert-success">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                     <strong>{{message}}</strong>
+                                </div>
+                                {% endfor %}
+                        {% endif %}
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+<form id="search" method="POST" action="{% url 'search' %}">
+ {% csrf_token %}
+ <input type="text" class="form-control" id="txtSearch" name="txtSearch">
+ <button type="submit" class="btn btn-default btn-submit">Submit</button>
+ </form>
+         </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+<script>
+        $(document).ready(function(){
+            $("#txtSearch").autocomplete({
+                source: "search",
+                minLength: 2,
+                open: function(){
+                    setTimeout(function () {
+                        $('.ui-autocomplete').css('z-index', 99);
+                    }, 0);
+                }
+              });
+        });
+</script>
+{% endblock %}

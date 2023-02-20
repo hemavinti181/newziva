@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4> Add Category </h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                </div>
+             </div>
+            </div>
+              <div class="">
+              <div class="col-md-12 col-sm-12  ">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2><i class="fa fa-bars"></i>Tabs</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                        <a class="nav-link active" id="des-tab" data-toggle="tab" href="#category_add" role="tab" aria-controls="home" aria-selected="true">DESIGNATION</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="role-tab" data-toggle="tab" href="#role" role="tab" aria-controls="profile" aria-selected="false">ROLES</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="level-tab" data-toggle="tab" href="#level" role="tab" aria-controls="contact" aria-selected="false">LEVELS</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="city-tab" data-toggle="tab" href="#city" role="tab" aria-controls="city" aria-selected="false">CITY</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="state-tab" data-toggle="tab" href="#state" role="tab" aria-controls="state" aria-selected="false">STATE</a>
+                      </li>
+                       <li class="nav-item">
+                          <a class="nav-link" id="gst-tab" data-toggle="tab" href="#gst" role="tab" aria-controls="gst" aria-selected="false">GST</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="category-tab" data-toggle="tab" href="#category" role="tab" aria-controls="gst" aria-selected="false">CATEGORY</a>
+                      </li>
+                       <li class="nav-item">
+                          <a class="nav-link" id="uom-tab" data-toggle="tab" href="#uom" role="tab" aria-controls="uom" aria-selected="false">UOM</a>
+                      </li>
+                    </ul>
+                       <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="category_add" role="tabpanel" aria-labelledby="des-tab">
+                            <form class="form-label-left input_mask"  method="POST" action="des_add"   enctype="multipart/form-data">
+										{% csrf_token %}
+                            <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                <label>Add Designation</label>
+                                    <input type="text" class="form-control" placeholder="designation name" name="designation">
+                            </div>
+                                    <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                      <div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+
+											</div>
+										</div>
+                            </form>
+                        </div>
+                           <div class="tab-pane fade show" id="role" role="tabpanel" aria-labelledby="role-tab">
+                              <form class="form-label-left input_mask"  method="POST" action="role"  enctype="multipart/form-data">
+										{% csrf_token %}
+                                <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                    <label>Add Role</label>
+                                    <input type="text" class="form-control" placeholder=" role name" name="role">
+                                 </div>
+                                  <div class="col-md-9 col-sm-9 form-group has-feedback">
+                                      <a href="role_list"><button type="submit" class="btn btn-success">Role List</button></a>
+                                  </div>
+                                    <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                      <div class="ln_solid"></div>
+										<div class="form-group" >
+											<div class="col-md-6 col-sm-6 form-group has-feedback  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+											</div>
+                                        </div>
+                            </div>
+                           <div class="tab-pane fade show" id="level" role="tabpanel" aria-labelledby="level-tab">
+                                <form class="form-label-left input_mask"  method="POST" action="level"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                    <label>Add Level</label>
+                                        <input type="text" class="form-control" placeholder="Level name" name="level">
+                                </div>
+                                      <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                      <div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+											</div>
+										</div>
+                            </form>
+                            </div>
+                            <div class="tab-pane fade show" id="city" role="tabpanel" aria-labelledby="city-tab">
+                                <form class="form-label-left input_mask"  method="POST" action="city"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                    <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                        <label>Add City</label>
+                                        <input type="text" class="form-control" placeholder="city name" name="city">
+                                     </div>
+                                      <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                      <div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+											</div>
+										</div>
+                            </form>
+                            </div>
+                            <div class="tab-pane fade show" id="state" role="tabpanel" aria-labelledby="state-tab">
+                                  <form class="form-label-left input_mask"  method="POST" action="state"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                        <label>Add State</label>
+                                            <input type="text" class="form-control" placeholder="state name" name="state">
+                                 </div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                      <div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+											</div>
+										</div>
+                            </form>
+                            </div>
+                            <div class="tab-pane fade show" id="gst" role="tabpanel" aria-labelledby="gst-tab">
+                             <form class="form-label-left input_mask"  method="POST" action="gst"   enctype="multipart/form-data">
+										{% csrf_token %}
+                             <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                 <label>Add GST</label>
+                                    <input type="text" class="form-control" placeholder="GST name" name="gst">
+                             </div>
+                                   <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                      <div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+											</div>
+										</div>
+                            </form>
+                            </div>
+                            <div class="tab-pane fade show" id="category" role="tabpanel" aria-labelledby="category-tab">
+                                  <form class="form-label-left input_mask"  method="POST" action="category"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                 <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                    <label>Add Category</label>
+                                        <input type="text" class="form-control" placeholder="category name" name="category">
+                                 </div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                      <div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+											</div>
+										</div>
+                            </form>
+                                </form>
+                            </div>
+                               <div class="tab-pane fade show" id="uom" role="tabpanel" aria-labelledby="uom-tab">
+                                      <form class="form-label-left input_mask"  method="POST" action="uom"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                            <label>Add UOM</label>
+                                             <input type="text" class="form-control" placeholder="uom name" name="uom">
+                                        </div>
+                                      <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                         <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+                                      <div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Add</button>
+											</div>
+										</div>
+                                    </form>
+                               </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+          </div>
+</div>
+</div>
+
+
+
+          </div>
+</div>
+
+  {% endblock %}

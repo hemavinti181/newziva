@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4> Add Warehouse</h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                  <a href="warehouse_list"><button type="submit" class="btn btn-success">Warehouse List</button>
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                 <div class="x_content">
+									<br />
+									<form class="form-label-left input_mask" method="POST" action="warehouse_add1"   enctype="multipart/form-data">
+											{% csrf_token %}
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Warehouse Name *</label>
+										    <input type="text" class="form-control" placeholder="warehouse name" name="warehousename">
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Choose warehouse File  *</label>
+											<div class="custom-file">
+    											<input type="file" class="custom-file-input" name='warehousefile' id="customFile4">
+    											<label class="custom-file-label" for="customFile4">choose file</label>
+											</div>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Warehouse Manager *</label>
+										    <input type="text" class="form-control" placeholder="warehouse name" name="warehousemamager">
+										</div>
+                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Mobile *</label>
+										    <input type="text" class="form-control" placeholder="mobile number" name="mobileno">
+											</div>
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>GST Number *</label>
+										    <input type="text" class="form-control" name="gstnumber" placeholder="GST Number">
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>GST Choose File</label>
+											<div class="custom-file">
+    											<input type="file" class="custom-file-input" name="gstattach"id="customFile5">
+    											<label class="custom-file-label" for="customFile5">choose file</label>
+											</div>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>License Choose File *</label>
+											<div class="custom-file">
+    											<input type="file" class="custom-file-input" name="licattach" id="customFile4">
+    											<label class="custom-file-label" for="customFile">Choose file</label>
+											</div>
+										</div>
+
+                                          <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Licence Number *</label>
+										    <input type="text" class="form-control" name="licenceno" placeholder=" licence number">
+										</div>
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>PAN Card *</label>
+										    <input type="text" class="form-control" name="pancard" placeholder="Pan card">
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                        <label>PAN Attach *</label>
+											<div class="custom-file">
+    											<input type="file" class="custom-file-input" name="panattach" id="customFile4">
+    											<label class="custom-file-label" for="customFile">PAN Attach</label>
+											</div>
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Address *</label>
+										    <input type="text" class="form-control" name="storeaddress"placeholder="address">
+										</div>
+										<div  class="col-md-3 col-sm-6  form-group has-feedback">
+
+												<select class="form-control" name="region" hidden>
+													{% for data1 in data %}
+                            		<option value="{{ data1.code }}" selected>{{ data1.name }}</option>
+                      							  {% endfor %}
+												</select>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+
+										    <input type="hidden" class="form-control" name="location" placeholder="latitude"  id="location">
+										</div>
+
+                                        <div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Save</button>
+											</div>
+										</div>
+
+                                 </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+
+
+<script>
+
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+   document.getElementById('location').value='NO Location';
+  }
+}
+
+function showPosition(position) {
+
+
+document.getElementById('location').value=position.coords.latitude+','+position.coords.longitude;
+
+}
+</script>
+
+{% endblock %}

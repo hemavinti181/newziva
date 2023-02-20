@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4> Add Indent </h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                  <a href="indent_list"><button type="submit" class="btn btn-success">Indent List</button>
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                 <div class="x_content">
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="create_indent"   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Item Name Search *</label>
+										    	<select class="country form-control" name="itemname" id="itemname">
+												{% for data in all_data %}
+													<option  value="{{ data.itemcode }}">{{ data.itemname }}</option>
+												{% endfor %}
+											</select>
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Quantity *</label>
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity">
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>MRP *</label>
+										    <input type="text" class="form-control" placeholder="mrp" name="mrp">
+										</div>
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control"  name="uom" value="{{ data.uom}}"required>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control" name="manufacture" value="{{ data.manufacture }}"required>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control" name="itemsno" value="{{ data.sno }}"required>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control" name="item_name"  id="item_name" value="{{ data.sno }}"required>
+										</div>
+
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="form-group row">
+											<label class="col-form-label col-md-3 col-sm-3 "></label>
+										</div>
+										<div class="ln_solid"></div>
+										<div class="form-group">
+											<div class="col-md-6 col-sm-6  offset-md-5">
+												<button type="submit" class="btn btn-success">Create</button>
+											</div>
+										</div>
+
+                                 </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+
+{% endblock %}
