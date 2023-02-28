@@ -3,7 +3,10 @@ from django.urls import path,include
 from ziva_app import views
 
 urlpatterns = [
+
     path('',views.index,name='index_page'),
+    path('login', views.login, name='login'),
+    path('logout',views.logout,name='logout'),
     path('store_master',views.store_master,name='store_master'),
     path('add_store',views.add_store,name='add_store'),
     path('store_status_active/<int:id>/',views.store_status_active,name='store_status_active'),
@@ -85,7 +88,7 @@ urlpatterns = [
     path('wh_item_list',views.wh_item_list,name='wh_item_list'),
     path('get_wh_item',views.get_wh_item,name='get_wh_item'),
     path('search', views.autocompleteModel,name='search'),
-    path('get_warehouse/<str:id>/',views.get_warehouse,name='get_warehouse'),
+    path('get_warehouse',views.get_warehouse,name='get_warehouse'),
     path('get_store_data',views.get_store_data,name='get_store_data'),
     path('store_search',views.store_search,name='store_search'),
     path('proformainvoice',views.proformainvoice,name='proformainvoice'),

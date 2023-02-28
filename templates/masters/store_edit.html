@@ -33,13 +33,6 @@
 									<br />
 									<form class="form-label-left input_mask" method="POST" action=" "   enctype="multipart/form-data">
 											{% csrf_token %}
-										{% if messages %}
-											<ul class="messages">
-												{% for message in messages %}
-    												<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-												{% endfor %}
-											</ul>
-										{% endif %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Store Name *</label>
 										    <input type="text" class="form-control" placeholder="store name" name="storename" value="{{data.storename}}" required>

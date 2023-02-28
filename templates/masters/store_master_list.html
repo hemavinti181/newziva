@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
 <div class="right_col" role="main">
+
           <div class="">
             <div class="page-title">
               <div class="title_left">
@@ -19,17 +19,6 @@
             <div class="row" style="display: block;">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-
-                    {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-dismissible alert-success">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        ×
-                                    </button>
-                                     <strong>{{message}}</strong>
-                                </div>
-                                {% endfor %}
-                    {% endif %}
                   <div class="x_content">
                         <table id="datatable-buttons" class="display table-bordered" style="width:100%;">
                          <thead>

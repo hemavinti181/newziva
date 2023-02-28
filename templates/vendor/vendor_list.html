@@ -22,16 +22,7 @@
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                     <div class="clearfix"></div>
-                     {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-dismissible alert-success">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        ×
-                                    </button>
-                                     <strong>{{message}}</strong>
-                                </div>
-                                {% endfor %}
-                          {% endif %}
+
                   <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
@@ -65,14 +56,14 @@
                            <td>{{all_data.emailid}}</td>
                            {% if all_data.status == "Active" %}
                                 <td>
-                                   <i class="fa fa-edit" ata-toggle="modal"  onclick="VerifyClick('{{all_data.sonumber}}')" data-target=".bs-example-modal-sm"></i>
+                                   <i class="fa fa-edit" data-toggle="modal"  onclick="VerifyClick('{{all_data.sonumber}}')" data-target=".bs-example-modal-sm"></i>
                                    <a href="/vendor_status_active/{{ all_data.sno }}/" onclick="return confirm('Are you sure to inactive?')"><span class="badge badge-success" data-toggle="modal" data-target=".bs-example-modal-sm">
                                        Active </span></a>
 
                                 </td>
                           {% else %}
                                 <td>
-                                    <i class="fa fa-edit" ata-toggle="modal"  onclick="VerifyClick('{{all_data.sonumber}}')" data-target=".bs-example-modal-sm"></i>
+                                    <i class="fa fa-edit" data-toggle="modal"  onclick="VerifyClick('{{all_data.sonumber}}')" data-target=".bs-example-modal-sm"></i>
                                      <a href="vendor_status_inactive/{{ all_data.sno }}" onclick="return confirm('Are you sure to active?')"><span class="badge badge-danger" data-toggle="modal" data-target=".bs-example1-modal-sm">
                                       Inactive</span></a>
 
