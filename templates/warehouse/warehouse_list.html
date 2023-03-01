@@ -57,7 +57,6 @@
                        {% if all_data.status == "Active" %}
                                 <td>
                                     <a class="editwh" href="#"  data-id="{{ all_data.warehouseid }}"><i class="fa fa-edit"></i></a>
-                                    <!--<a class="dropdown-item" href="#"  data-id="{{ data.Sno }}"><i class="fa fa-pencil m-r-5"></i> Edit</a>-->
                                    <a href="warehouse_status_active/{{ all_data.sno }}/" onclick="return confirm('Are you sure to inactive?')"><span class="badge badge-success">
                                        Active </span></a>
                                 </td>
@@ -83,7 +82,7 @@
           </div>
 </div>
 <div id="edit_warehouse" class="modal custom-modal fade"  role="dialog" >
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Warehouse</h5>
@@ -97,16 +96,16 @@
 
                     <input type="hidden" id="whid" name="whid"  />
 
-                    <div class="col-md-6 col-sm-6  form-group has-feedback">
+                    <div class="col-md-4 col-sm-4  form-group has-feedback">
                         <label>Warehouse Name *</label>
                         <input type="text" class="form-control" name="warehousename1" id="warehousename1" required>
                     </div>
-                    <div class="col-md-6 col-sm-6  form-group has-feedback">
+                    <div class="col-md-4 col-sm-4  form-group has-feedback">
                         <label>Warehouse Manager  *</label>
                         <input type="text" class="form-control"  name="manager" id="manager"  required>
                     </div>
 
-                    <div class="col-md-6 col-sm-6  form-group has-feedback">
+                    <div class="col-md-4 col-sm-4  form-group has-feedback">
                         <label>Mobile</label>
                         <input type="text" class="form-control"  name="mobilewh" id="mobilewh" required>
                     </div>

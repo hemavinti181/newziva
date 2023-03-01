@@ -131,23 +131,6 @@
 </div>
 
 
-<script>
 
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-   document.getElementById('location').value='NO Location';
-  }
-}
-
-function showPosition(position) {
-
-
-document.getElementById('location').value=position.coords.latitude+','+position.coords.longitude;
-
-}
-</script>
 
 {% endblock %}
