@@ -12,7 +12,7 @@
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                    <a href="warehouse_add1"><button type="submit" class="btn btn-success">Add Warhouse</button></a>
+                    <a href="warehouse_add1"><button type="submit" class="btn btn-primary">Add Warehouse</button></a>
                 </div>
             </div>
               </div>
@@ -149,7 +149,6 @@ $(document).ready(function() {
         },
         success: function(data) {
          var obj = data.data
-         alert(obj.warehouseid)
           	console.log(obj.warehouseid);
              if(obj){
              $("#whid").val(obj.warehouseid);

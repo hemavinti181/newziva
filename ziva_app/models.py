@@ -159,7 +159,7 @@ class Store(models.Model):
     contact_person = models.CharField(max_length=50, blank = True, null = True)
     mobile = models.ImageField(max_length=10)
     remarks = models.CharField(max_length=50, blank = True, null = True)
-    #region = models.CharField(max_length=50)
+    #depo = models.CharField(max_length=50)
     region =  models.ForeignKey(Region, null=True, blank=True, on_delete=models.SET_NULL, related_name='regions')
 
 class Grn(models.Model):

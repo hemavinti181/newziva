@@ -11,49 +11,49 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='address',
             field=models.CharField(default=1, max_length=50),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='contact_no',
             field=models.CharField(default=1, max_length=50),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='gst',
             field=models.CharField(default=1, max_length=50),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='gst_image',
             field=models.ImageField(default=1, upload_to=''),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='image',
             field=models.ImageField(default=1, upload_to=''),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='lic_image',
             field=models.ImageField(default=1, upload_to=''),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='licence',
             field=models.CharField(default=1, max_length=50),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='region_manager',
             field=models.CharField(default=1, max_length=50),
             preserve_default=False,

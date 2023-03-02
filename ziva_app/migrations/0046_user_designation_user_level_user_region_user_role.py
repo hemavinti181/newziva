@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='user',
-            name='region',
+            name='depo',
             field=models.CharField(default=1, max_length=50),
             preserve_default=False,
         ),

@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='region',
+            model_name='depo',
             name='status',
             field=models.BooleanField(default=False),
         ),

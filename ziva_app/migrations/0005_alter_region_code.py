@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='region',
+            model_name='depo',
             name='code',
             field=models.CharField(max_length=50),
         ),

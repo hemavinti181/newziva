@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4>Bus Station Master</h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                    <a href="bus_add"><button type="submit" class="btn btn-primary">Add Bus Station</button></a>
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Bus ID </th>
+                                    <th>Bus Station Name</th>
+                                    <th>Bus Station Manager</th>
+                                     <th>Bus Station Contact </th>
+                                    <th>Action</th>
+                        </tr>
+                      </thead>
+                            {% for all_data in bus %}
+                       <tr>
+                           <td>{{ forloop.counter }}</td>
+                      <td>{{ all_data.busatationid }}</td>
+                           <td>{{ all_data.busstationname }}</td>
+                       <td>{{  all_data.busstationmanager}}</td>
+                       <td>{{ all_data.busstationcontactno }}</td>
+                        {% if all_data.status == "Active" %}
+                                <td>
+                                   <a class="bus_edit" href="#" data-id="{{ all_data.busatationid }}"><i class="fa fa-edit"></i></a>
+
+                                   <a href="region_status_active/{{ all_data.busatationid }}/" onclick="return confirm('Are you sure to inactive?')"><span class="badge badge-success" data-toggle="modal" data-target=".bs-example-modal-sm">
+                                       Active </span></a>
+
+                                </td>
+                          {% else %}
+                                <td>
+                                     <a href="region_status_inactive/{{ all_data.sno }}" onclick="return confirm('Are you sure to active?')"><span class="badge badge-danger" data-toggle="modal" data-target=".bs-example1-modal-sm">
+                                      Inactive</span></a>
+                                </td>
+                           {% endif %}
+                      </tr>
+                      {% endfor %}
+                      <tbody>
+                      </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+<div id="bus_edit" class="modal custom-modal fade"  role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Bus Station</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+            </div>
+            <div class="modal-body">
+               <form  method="POST" action="bus_edit"   enctype="multipart/form-data">
+											{% csrf_token %}
+										<div class="col-md-6 col-sm-6 form-group has-feedback">
+											<label>Bus Name *</label>
+										    <input type="text" class="form-control" name="busname1" id="busname1" required>
+										</div>
+
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Bus Station Manager *</label>
+										    <input type="text" class="form-control"  name=" busmanager1" id="busmanager1"  required>
+										</div>
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Bus Station Mobile *</label>
+										    <input type="text" class="form-control" name="mobileno1" id="mobileno1" required>
+											</div>
+                                        <div  class="col-md-6 col-sm-6  form-group has-feedback">
+
+													<label>Depo *</label>
+											<input type="hidden" name="deponame1" id="deponame1" />
+												<select class="form-control" name="depoid1" id="depoid1" required>
+													{% for data1 in data %}
+                            							<option value="{{ data1.depoid }}">{{ data1.depo_name }}</option>
+                                                    {% endfor %}
+												</select>
+										</div>
+                   <input type="hidden" name="regionid" id="regionid" />
+                   <input type="hidden" name="regionname" id="regionname" />
+                   <input type="hidden" name="warehouseid" id="warehouseid" />
+                   <input type="hidden" name="warehousename" id="warehousename" />
+                   <input type="hidden" name="busid1" id="busid1" />
+               </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.bus_edit').click(function() {
+      var id = $(this).data('id');
+      $.ajax({
+        url: "{% url 'get_bus' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data.buslist
+
+          	console.log(obj[0].busatationid);
+             if(obj){
+             $("#busid1").val(obj[0].busatationid);
+             $("#busname1").val(obj[0].busstationname);
+             $("#busmanager1").val(obj[0].busstationmanager);
+             $("#mobileno1").val(obj[0].busstationcontactno);
+             $("#depoid1").val(obj[0].depoid);
+             $("#regionid").val(obj[0].regionid);
+             $("#regionname").val(obj[0].regionname);
+             $("#warehouseid").val(obj[0].warehouseid);
+             $("#warehousename").val(obj[0].warehousename);
+             $('#bus_edit').modal('show');
+        	}
+        }
+      });
+    });
+  });
+  $("#depoid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  alert(selectedOptionText)
+  $("#deponame1").val(selectedOptionText);
+});
+  </script>
+{% endblock %}
+

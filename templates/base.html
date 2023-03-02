@@ -8,9 +8,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="icon" href="images/favicon.ico" type="image/ico" />
+<!--<link rel="icon" href="images/favicon.ico" type="image/ico" />-->
     <title>ZIVA</title>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <link href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
@@ -134,7 +134,7 @@ margin-top: -18px;
 <div class="col-md-3 left_col">
 <div class="left_col scroll-view">
 <div class="navbar nav_title" style="border: 0;">
-    <a href="index.html" class="site_title"><span><img src="{% static 'production/images/zivalogo.png' %}"></img></span></a>
+    <a href="index.html" class="site_title"><span><!--<img src="{% static 'production/images/zivalogo.png' %}"></img>--></span></a>
 
 </div>
 <div class="clearfix"></div>
@@ -162,6 +162,8 @@ margin-top: -18px;
         <li><a href="/des_list"> Category Master</a></li>
         <li><a href="/user_list"> User Master</a></li>
         <li><a href="/warehouse_list"> Warehouse Master</a></li>
+        <li><a href="/depo_list"> Depo Master</a></li>
+         <li><a href="/bus_list"> Bus Station Master</a></li>
         <li><a href="/region_list"> Region Master</a></li>
         <li><a href="/vendor_list"> Vendor Master</a></li>
     </ul>
