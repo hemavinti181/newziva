@@ -57,14 +57,14 @@
                        {% if all_data.status == "Active" %}
                                 <td>
                                     <a class="editwh" href="#"  data-id="{{ all_data.warehouseid }}"><i class="fa fa-edit"></i></a>
-                                   <a href="warehouse_status_active/{{ all_data.sno }}/" onclick="return confirm('Are you sure to inactive?')"><span class="badge badge-success">
-                                       Active </span></a>
+                                   <a href="#" onclick="VerifyClick('{{  all_data.sno}}')"><span class="badge badge-success" data-toggle="modal" data-target="#wh-status">
+                                        {{ all_data.status }} </span></a>
                                 </td>
                           {% else %}
                                 <td>
                                     <a  href="#"  data-id="{{ all_data.warehouseid }}"><i class="edit fa fa-edit"></i></a>
-                                     <a href="warehouse_status_inactive/{{ all_data.sno }}" onclick="return confirm('Are you sure to active?')"><span class="badge badge-danger" style="padding: 0px 3px !important;">
-                                      Inactive</span></a>
+                                     <a href="#" onclick="VerifyClick1('{{ all_data.sno }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#wh-status1">
+                                      {{  all_data.status }}</span></a>
                                 </td>
                            {% endif %}
                       </tr>
@@ -136,6 +136,60 @@
         </div>
     </div>
 </div>
+<div class="modal custom-modal fade" id="wh-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+								  <form method="post" action="warehouse_status_active">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Inactive?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id" name="id"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+<div class="modal custom-modal fade" id="wh-status1" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+								  <form method="post" action="warehouse_status_inactive">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Active?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id1" name="id"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -167,14 +221,10 @@ $(document).ready(function() {
     });
   });
 function VerifyClick(id){
-$("#warehousename1").val("");
-$("#mobilewh").val("");
-$("#gstwh").val("");
-$("#panwh").val("");
-$("#licnumwh").val("");
-$("#addresswh").val("");
-$("#location").val("");
-$("#txtHdnWhId").val(id);
+$("#id").val(id);
+}
+function VerifyClick1(id){
+$("#id1").val(id);
 }
 </script>
 

@@ -12,7 +12,7 @@
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                  <a href="vendor_list"><button type="submit" class="btn btn-success">Vendor List</button>
+					<a href="vendor_list"><button type="submit" class="btn btn-primary">Vendor List</button></a>
                 </div>
             </div>
               </div>
@@ -21,13 +21,6 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-                  <div class="x_title">
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
                  <div class="x_content">
 									<br />
 									<form class="form-label-left input_mask" method="POST" action="vendor_add"   enctype="multipart/form-data">
@@ -41,22 +34,17 @@
 										    <input type="text" class="form-control" name="gstnumber" placeholder="GST Number">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>GST Attach</label>
-											<div class="custom-file">
-    											<input type="file" class="custom-file-input" name="gstattach"id="customFile5">
-    											<label class="custom-file-label" for="customFile5">GST Attach</label>
-											</div>
+											<label>GST Attach *</label>
+    											<input type="file"  name="gstattach">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label >PAN Card *</label>
-										    <input type="text"  class="form-control" name="pancard" placeholder="pan card">
+										    <input type="text"  class="form-control" name="pancard" placeholder="PAN card">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>PAN Attach *</label>
-											<div class="custom-file">
-    											<input type="file" class="custom-file-input" name="panattach" id="customFile4">
-												<label class="custom-file-label" for="customFile5">PAN Attach</label>
-											</div>
+    											<input type="file" name="panattach" id="customFile4">
+
 										</div>
 
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -68,42 +56,40 @@
 										    <input type="text" class="form-control" placeholder="pincode" name="pincode" required patern="[0-9][0-9]{5}" maxlength="6" autocomplete="off">
                                       </div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Contact Person *</label>
-										    <input type="text" class="form-control" placeholder="contact person" name="contactperson">
+											<label>Contact Number *</label>
+										    <input type="text" class="form-control"  placeholder="contact number" name="mobile">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Contact number *</label>
-										    <input type="text" class="form-control" placeholder="contact person" name="mobile">
+											<label>Contact Person *</label>
+										    <input type="text" class="form-control"  placeholder="contact person" name="contactperson">
 										</div>
 										 <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Email *</label>
 										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
 											</div>
                                           <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>city *</label>
+											<label>City *</label>
 										    <input type="text" class="form-control" placeholder="city" name="city">
 											</div>
 										<div  class="col-md-3 col-sm-6  form-group has-feedback">
 													<label>State *</label>
 												<select class="form-control" name="state">
+
 													{% for state in data %}
-														<option  value="{{ state.id}}">{{ state.state }}</option>
+														<option  value="{{ state.state}}">{{ state.state }}</option>
 													{% endfor %}
 												</select>
 										</div>
+
 										<div class="form-group row">
 											<label class="col-form-label col-md-3 col-sm-3 "></label>
 										</div>
 										<div class="form-group row">
 											<label class="col-form-label col-md-3 col-sm-3 "></label>
 										</div>
-										<div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-										<div class="ln_solid"></div>
 										<div class="form-group">
 											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-success">Save</button>
+												<button type="submit" class="btn btn-primary">Save</button>
 											</div>
 										</div>
 

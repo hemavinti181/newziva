@@ -37,7 +37,7 @@ background-color: #1372ba !important;
                         <table id="datatable-buttons" class="display table-bordered" style="width:100%">
                       <thead>
                         <tr>
-
+                                    <th>S No</th>
                                     <th>Item Code</th>
                                     <th>Item Name</th>
                                     <th>HSN</th>
@@ -54,7 +54,7 @@ background-color: #1372ba !important;
 
                             {% for all_data in all_data %}
                        <tr>
-
+                           <td>{{ forloop.counter }}</td>
                            <td>{{ all_data.itemcode }}</a></td>
                        <td> {{ all_data.itemname }} </td>
                        <td>{{  all_data.hsncode}}</td>
@@ -68,13 +68,12 @@ background-color: #1372ba !important;
                           {% if all_data.status == "Active" %}
                                 <td>
                                   <a class="edit_item" href="#"  data-id="{{ all_data.itemcode }}"><i class="fa fa-edit"></i></a>
-                                   <a href="/item_status_active/{{ all_data.sno }}/" onclick="return confirm('Are you sure to inactive?')"><span class="badge badge-success" data-toggle="modal" data-target=".bs-example-modal-sm">
+                                   <a href="#" onclick="VerifyClick('{{  all_data.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#item-status">
                                        Active </span></a>
                                 </td>
                           {% else %}
                                 <td>
-                                    <a class="edit_item" href="#"  data-id="{{ all_data.itemcode }}" ><i class="fa fa-edit"></i></a>
-                                     <a href="item_status_inactive/{{ all_data.sno }}" onclick="return confirm('Are you sure to active?')"><span class="badge badge-danger" data-toggle="modal" data-target=".bs-example1-modal-sm">
+                                     <a href="#" onclick="VerifyClick1('{{  all_data.sno }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#item-status1">
                                       Inactive</span></a>
                                 </td>
                            {% endif %}
@@ -158,6 +157,60 @@ background-color: #1372ba !important;
         </div>
     </div>
 </div>
+<div class="modal custom-modal fade" id="item-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+								  <form method="post" action="item_status_active">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Inactive?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id" name="id"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+<div class="modal custom-modal fade" id="item-status1" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+								  <form method="post" action="item_status_inactive">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Active?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id1" name="id"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -188,6 +241,13 @@ $(document).ready(function() {
       });
     });
   });
+  function VerifyClick(id){
+$("#id").val(id);
+console.log(val(id))
+}
+ function VerifyClick1(id){
+$("#id1").val(id);
+}
 </script>
 {% endblock %}
 

@@ -22,13 +22,6 @@
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                     <div class="clearfix"></div>
-                     {% if messages %}
-											<ul class="messages">
-												{% for message in messages %}
-    												<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-												{% endfor %}
-											</ul>
-										{% endif %}
                   <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
@@ -38,11 +31,12 @@
                         <table id="datatable-buttons" class="display table-bordered" style="width:100%">
                       <thead>
                         <tr>
-
+                                    <th>S No</th>
                                     <th>User Id</th>
                                     <th>User Name</th>
                                     <th>Mobie</th>
                                     <th>Designation</th>
+                                    <th>Warehouse</th>
                                     <th>Region</th>
                                     <th>Level</th>
                                     <th>Role</th>
@@ -51,16 +45,18 @@
                       </thead>
                             {% for all_data in list %}
                        <tr>
+                           <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.userid }}</td>
                        <td> {{ all_data.username }} </td>
                        <td>{{  all_data.mobile}}</a></td>
                         <td>{{ all_data.designation }}</a></td>
+                           <td>{{ all_data.warehousename }}</td>
                        <td>{{ all_data.region }}</td>
                        <td>{{ all_data.level }}</td>
                        <td>{{ all_data.role }}</td>
                        {% if all_data.status == "Active" %}
                                 <td>
-                                   <a href="/user_status_active/{{ all_data.sno }}/" onclick="return confirm('Are you sure to inactive?')"><span class="badge badge-success" data-toggle="modal" data-target=".bs-example-modal-sm">
+                                   <a href="#" onclick="VerifyClick('{{ all_data.sno }} ')"><span class="badge badge-success" data-toggle="modal" data-target="#user-status">
                                        Active </span></a>
                                 </td>
                           {% else %}
@@ -85,6 +81,41 @@
             </div>
           </div>
 </div>
+<div class="modal custom-modal fade" id="user-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+								  <form method="post" action="user_status_active">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Inactive?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id" name="id"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
 
+						</div>
+					</div>
+				</div>
+<script>
+     function VerifyClick(id){
+$("#id").val(id);
+console.log(val(id))
+}
+ function VerifyClick1(id){
+$("#id1").val(id);
+}
+</script>
 {% endblock %}
 

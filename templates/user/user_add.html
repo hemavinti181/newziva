@@ -35,44 +35,80 @@
 										    <input type="text" class="form-control" placeholder="user name" name="username" required>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>mobile number*</label>
-										    <input type="text" name="mobile" class="form-control" placeholder="mobile number" required>
+											<label>Mobile Number*</label>
+										    <input type="text" name="mobile" class="form-control" placeholder="mobile number" pattern= "[6789][0-9]{9}" required>
                                          </div>
                                          <div class="col-md-3 col-sm-3  form-group has-feedback" >
 											<label>Email Id*</label>
 										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
                                          </div>
-
-
-                                        <div  class="col-md-3 col-sm-6  form-group has-feedback" >
-													<label>Select Role *</label>
-												<select class="form-control" name="role">
-													{% for all_data2 in all_data2 %}
-														<option  value="{{ all_data2.ddcode}}">{{ all_data2.displayname }}</option>
-													{% endfor %}
-												</select>
-                                        </div>
-                                          <div  class="col-md-3 col-sm-6  form-group has-feedback" >
-													<label>Select Level *</label>
+											<div  class="col-md-3 col-sm-6  form-group has-feedback" >
 												<select class="form-control" name="level">
+													<option>select level</option>
                                                     {% for all_data3 in all_data3 %}
 														<option  value="{{ all_data3.ddcode}}">{{ all_data3.displayname }}</option>
 													{% endfor %}
 												</select>
                                         </div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+												<input type="file"  name="image" id="customFile4" required>
+											</div>
+										  <div  class="col-md-3 col-sm-6  form-group has-feedback">
 
-                                        <div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Select Designation *</label>
 												<select class="form-control" name="designation">
+													<option>Select designation</option>
                                                     {% for all_data in all_data %}
 														<option  value="{{ all_data.ddcode }}">{{ all_data.displayname }}</option>
 													{% endfor %}
 												</select>
                                         </div>
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Choose Profile *</label>
-												<input type="file"  name="image" id="customFile4" required>
-											</div>
+
+                                        <div  class="col-md-3 col-sm-6  form-group has-feedback" >
+
+												<select class="form-control" name="role" id="role">
+													<option>select role</option></option>
+													{% for all_data2 in all_data2 %}
+														<option  value="{{ all_data2.ddcode}}">{{ all_data2.displayname }}</option>
+													{% endfor %}
+												</select>
+                                        </div>
+										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+													<input type="hidden" name="warehousename" id="warehousename" />
+												<select class="form-control" name="warehouse" id="warehouse" style="display: none;">
+														<option>select warehouse</option>
+													{% for data in data %}
+														<option  value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
+													{% endfor %}
+												</select>
+                                        </div>
+										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+												<select class="form-control" name="region" id="region" style="display: none;">
+													<input type="hidden" name="regionname" id="regionname" />
+
+													<option  value=""></option>
+												</select>
+                                        </div>
+
+										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+
+											<input type="hidden" name="deponame" id="deponame" />
+												<select class="form-control" name="depo" id="depo" style="display: none;">
+
+														<option  value="">select depo</option>
+
+												</select>
+                                        </div>
+										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+												<input type="hidden" name="busstationname" id="busstationname" />
+												<select class="form-control" name="busstation" id="busstation" style="display: none;">
+
+														<option  value="">select busstation</option>
+
+												</select>
+                                        </div>
+
+
+
 										<div class="form-group row">
 											<label class="col-form-label col-md-3 col-sm-3 "></label>
 										</div>
@@ -97,5 +133,122 @@
             </div>
           </div>
 </div>
+<script>
+$("#warehouse").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#warehousename").val(selectedOptionText);
+});
+$("#region").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regionname").val(selectedOptionText);
+});
+$("#depo").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame").val(selectedOptionText);
+});
+$("#busstation").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#busstationname").val(selectedOptionText);
+});
+document.getElementById("role").addEventListener("change", function() {
+var val=$(this).find(":selected").text();
+alert(val)
+  if (val === "Marketing Executive" || val === "Admin" || val === "Bus Station") {
+  	alert('hai')
+    document.getElementById("warehouse").style.display = "block";
+    document.getElementById("region").style.display = "block";
+    document.getElementById("depo").style.display = "block";
+    document.getElementById("busstation").style.display = "block";
+  }
+  else if(val === "Depo" ) {
+	document.getElementById("warehouse").style.display = "block";
+    document.getElementById("region").style.display = "block";
+    document.getElementById("depo").style.display = "block";
+    document.getElementById("busstation").style.display = "none";
+   }
+	else if (val === "Region" ){
+		document.getElementById("warehouse").style.display = "block";
+        document.getElementById("region").style.display = "block";
+        document.getElementById("depo").style.display = "none";
+    	document.getElementById("busstation").style.display = "none";
+    }
+    else{
+	document.getElementById("warehouse").style.display = "block";
+	document.getElementById("region").style.display = "none";
+    document.getElementById("depo").style.display = "none";
+    document.getElementById("busstation").style.display = "none";
+	}
+});
+$(document).ready(function(){
+		$("#warehouse").change(function() {
+        	var warehousename = $(this).find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_depregion" %}',
+            	data: {
+                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.regionlist
+					if(obj) {
+			 		$("#region").empty();
+			 		$("#region").append("<option  value=''>Choose Region</option>");
+                	$.each(obj, function (index, item) {
+                    $("#region").append("<option value='" + item.regionid+ "'>" + item.regionname+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#region").change(function() {
+        	var region = $(this).val();
+        	var warehouse = $('#warehouse').find(":selected").text();
+        	var role =  $("#role").find(":selected").text();
+        	alert(region)
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_dependent_depo" %}',
+            	data: {
+                	'region':region,'warehouse':warehouse,'role':role,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#depo").empty();
+			 		$("#depo").append("<option  value=''>Choose Depo</option>");
+                	$.each(obj, function (index, item) {
+                    $("#depo").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#depo").change(function() {
+        	var depo = $(this).val();
+        	var region = $('#region').val();
+        	var warehouse = $('#warehouse').find(":selected").text();
+        	var role =  $("#role").find(":selected").text();
+        	alert(depo)
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_dependent_bus" %}',
+            	data: {
+                	'depo':depo,'region':region,'warehouse':warehouse,'role':role,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstation").empty();
+			 		$("#busstation").append("<option  value=''>Choose Depo</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstation").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
 
+ });
+
+</script>
 {% endblock %}
