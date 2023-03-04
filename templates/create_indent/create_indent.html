@@ -12,7 +12,7 @@
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                  <a href="indent_list"><button type="submit" class="btn btn-success">Indent List</button>
+					<a href="indent_list"><button type="submit" class="btn btn-primary">Indent List</button></a>
                 </div>
             </div>
               </div>
@@ -21,13 +21,6 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-                  <div class="x_title">
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
                  <div class="x_content">
 									<br />
 									<form class="form-label-left input_mask"  method="POST" action="create_indent"   enctype="multipart/form-data">
@@ -35,11 +28,7 @@
 
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Item Name Search *</label>
-										    	<select class="country form-control" name="itemname" id="itemname">
-												{% for data in all_data %}
-													<option  value="{{ data.itemcode }}">{{ data.itemname }}</option>
-												{% endfor %}
-											</select>
+										    	<input type="text" class="form-control" placeholder="item search..." name="itemsearch" id="itemsearch">
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Quantity *</label>
@@ -49,38 +38,14 @@
 											<label>MRP *</label>
 										    <input type="text" class="form-control" placeholder="mrp" name="mrp">
 										</div>
-
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control"  name="uom" value="{{ data.uom}}"required>
-										</div>
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="manufacture" value="{{ data.manufacture }}"required>
-										</div>
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="itemsno" value="{{ data.sno }}"required>
-										</div>
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="item_name"  id="item_name" value="{{ data.sno }}"required>
-										</div>
-
-										<div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-										<div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-										<div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-										<div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-										<div class="ln_solid"></div>
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-success">Create</button>
+                                        <div class="form-group">
+										<div class="col-md-3 col-sm-3 offset-md-5">
+												<button type="submit" class="btn btn-primary">Create</button>
 											</div>
-										</div>
+                                            </div>
+
+										  <input type="hidden" class="form-control"  name="itemcode" id="itemcode">
+										<input type="hidden" class="form-control"  name="itemname" id="itemname">
 
                                  </div>
                   </div>
@@ -91,5 +56,135 @@
             </div>
           </div>
 </div>
+<script>
+	autocomplete(document.getElementById("itemsearch"));
+function autocomplete(inp) {
 
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+   closeAllLists();
+   $(".autocomplete-items").html("");
+   var a, b, i, val = this.value,current_this=this;
+    var name = val;
+                    $.ajax({
+                      data: {"name":name,'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                      url: "{% url 'get_item_data' %}",
+                      type: 'POST',
+                      success: function(data){
+                        console.log(data);
+                        var obj = data.data.itemmasterlist;
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+       var aa=document.getElementById("searchautocomplete-list");
+       if(aa){
+          aa.remove();
+       }
+      a = document.createElement("DIV");
+      a.setAttribute("id", current_this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      current_this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      b='';
+      for (i = 0; i < obj.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+      /*  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase())  */
+        {
+
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          b.style.width = "150%";
+
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + obj[i].itemname + "</strong> &nbsp;&nbsp;<label>Purchase Price : "+obj[i].lpp+"</label>&nbsp;&nbsp;<label>GST: "+obj[i].gst+"</label>&nbsp;&nbsp;"
+
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + obj[i].itemname + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].gst +"'>";
+		  b.innerHTML += "<input type='hidden' value='" + obj[i].itemcode +"'>";
+
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+
+							$("#itemname").val(this.getElementsByTagName("input")[0].value);
+                            $("#itemcode").val(this.getElementsByTagName("input")[2].value);
+          });
+          a.appendChild(b);
+        }
+      }
+
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+
+  });
+
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+
+
+
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    alert(x[currentFocus]);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+</script>
 {% endblock %}

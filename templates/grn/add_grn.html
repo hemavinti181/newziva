@@ -19,30 +19,12 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-					{% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-dismissible alert-success">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        ×
-                                    </button>
-                                     <strong>{{message}}</strong>
-                                </div>
-                                {% endfor %}
-					{% endif %}
+
                  <div class="x_content">
 									<br />
 					 </ul>
 					 	</div>
-					 {% if messages %}
-					 	{% for message in messages %}
-					 			<ul class="messages">
-    								{% for message in messages %}
-									<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    								{% endfor %}
-								</ul>
 
-						{% endfor %}
-					 {% endif %}
 
 									<form class="form-label-left input_mask"  method="POST" action="add_grn"   enctype="multipart/form-data">
 										{% csrf_token %}

@@ -10,11 +10,6 @@
                 <h4> Indent Item List</h4>
               </div>
 
-              <div class="title_right">
-                <div class="col-md-6 col-sm-7 offset-md-9">
-                    <a href="/create_indent"><button type="submit" class="btn btn-primary">Add Indent Item</button></a>
-                </div>
-            </div>
               </div>
             <div class="clearfix"></div>
   <div class="row">
@@ -38,6 +33,8 @@
                                     <th>Batch Code</th>
                                     <th>ExpDate date</th>
                                     <th>Indent no</th>
+                                    <th>Remarks</th>
+                                    <th>Action</th>
 
                         </tr>
                       </thead>
@@ -52,6 +49,10 @@
                                     <td>{{ all_data.batch_code }}</td>
                                     <td>{{  all_data.expirydate }}</td>
                                     <td>{{all_data.indent_no}}</td>
+                                     <td>{{ remarks }}</td>
+                                    <td>
+                                     <span data-target=".bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.sno }}')" class="badge badge-success" >Update </span></a>
+                                    </td>
                                 </tr>
                              {% endfor %}
                       <tbody>
@@ -66,6 +67,42 @@
             </div>
           </div>
 </div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content">
 
+
+
+                                        <div class="modal-body">
+                                            <form method="post" action="{% url 'update_ack' %}">
+                                                    {% csrf_token %}
+                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Acknowledgement</h4>
+
+                                                 <label for="qty">Quantity *</label>
+                                                <textarea class="form-control" rows="1"  name="qty" id="qty"></textarea>
+
+                                            <label for="remarks">Remarks *</label>
+                                            <input type="hidden" id="txtHdnId" name="id" />
+                                                <textarea class="form-control" rows="3"  name="remarks" id="remarks"></textarea>
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-info">UPDATE</button></a>
+
+                                            </div>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+<script>
+   function VerifyClick(id){
+$("#qty").val(" ");
+$("#remarks").val(" ");
+$("#txtHdnId").val(id);
+}
+</script>
 {% endblock %}
 
