@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h4> Indent Item List</h4>
+                <h4> Out Pass List</h4>
               </div>
 
               </div>
@@ -25,15 +25,12 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
-                                    <th>Item code</th>
-                                    <th>Item Name</th>
-                                    <th>QTY</th>
-                                    <th>MRP</th>
-                                    <th>Dispatch Qty</th>
-                                    <th>Batch Code</th>
-                                    <th>ExpDate date</th>
-                                    <th>Indent No</th>
-                                    <th>Remarks</th>
+                                    <th>DC Number</th>
+                                    <th>Warehouse</th>
+                                    <th>Region</th>
+                                    <th>Created By</th>
+                                    <th>Status</th>
+
 
 
                         </tr>
@@ -41,15 +38,13 @@
                             {% for all_data in all_data %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ all_data.item_code }}</td>
-                                    <td>{{ all_data.item_name }}</td>
-                                     <td> {{ all_data.qty }} </td>
-                                    <td>{{ all_data.mrp }}</td>
-                                    <td>{{all_data.dispatch_qty}}</td>
-                                    <td>{{ all_data.batch_code }}</td>
-                                    <td>{{  all_data.expirydate }}</td>
-                                    <td>{{all_data.indent_no}}</td>
-                                     <td>{{ all_data.remarks }}</td>
+                                    <td>{{ all_data.dc_number }}</td>
+                                    <td>{{ all_data.warehouse_name }}</td>
+                                     <td> {{ all_data.region_name }} </td>
+                                    <td>{{ all_data.createdby }}</td>
+                                    <td>
+                                         <a href="out_pass_itemlist/{{ all_data.dc_number }}/"><span class="badge badge-success">{{ all_data.status }} </span></a>
+                                    </td>
                                 </tr>
                              {% endfor %}
                       <tbody>

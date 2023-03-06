@@ -199,7 +199,7 @@ def add_store(request):
             'tradelicenceno': request.POST.get("tradelicenceno"),
             'tlattachfilename': request.FILES.get("tlattach").name,
             'storelocation': str(lat)+","+str(lng),
-            'email': request.POST.get("email"),
+            'emailid': request.POST.get("email"),
             'storeaddress': request.POST.get("storeaddress"),
             'pincode': request.POST.get("pincode"),
             'state': request.POST.get('state'),
@@ -279,7 +279,7 @@ def store_edit(request):
                     'foodlicence': request.POST.get("foodlicence"),
                     'tradelicenceno': request.POST.get("tradelicenceno"),
                     'storelocation': request.POST.get("storelocation"),
-                    'email': request.POST.get("email"),
+                    'emailid': request.POST.get("email"),
                     'storeaddress': request.POST.get("storeaddress"),
                     'pincode': request.POST.get("pincode"),
                     'state': request.POST.get('state'),
@@ -2338,14 +2338,14 @@ def indent_list(request):
     else:
         return render(request, 'create_indent/indent_list.html')
 
-def indent_item_list(request,id):
+def indent_item_list1(request,id):
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
+    url = "http://13.235.112.1/ziva/mobile-api/indent-itemqtyupdated-list.php"
 
     payload = json.dumps({
-        "accesskey": accesskey,
-        "indentno": id
-    })
+         "accesskey":"MDExNjczMjAyMi0xMi0xNyAwNjoxNzo1Nw==",
+            "dcnumber":id,
+            "type":"Ready to Ship"})
     headers = {
         'Content-Type': 'application/json'
     }
@@ -2354,9 +2354,30 @@ def indent_item_list(request,id):
     if response.status_code == 200:
         data = response.json()
         ind_item_list = data['indentitemlist']
-        return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list})
+        return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list})
     else:
-        return render(request, 'create_indent/indent_item_list.html')
+        return render(request, 'create_indent/indent_item_list1.html')
+
+def indent_item_list2(request,id):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/indent-itemqtyupdated-list.php"
+
+    payload = json.dumps({
+         "accesskey":accesskey,
+            "dcnumber":id,
+            "type":"Partially Supplied"})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        ind_item_list = data['indentitemlist']
+        return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list})
+    else:
+        return render(request, 'create_indent/indent_item_list1.html')
+
 
 def update_ack(request):
     accesskey = request.session['accesskey']
@@ -2384,21 +2405,22 @@ def update_ack(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = response.json()
+
         messages.success(request,data['message'])
-        url = reverse('indent_item_list1', args=[id])
-        return redirect(url)
+        #url = reverse('indent_item_list_ack', args=[id])
+        return redirect('/pending_indent_ack')
     else:
         try:
             data = response.json()
             messages.error(request, data['message'])
-            url = reverse('indent_item_list1', args=[id])
-            return redirect(url)
+            #url = reverse('indent_item_list_ack', args=[id])
+            return redirect('/pending_indent_ack')
         except:
             messages.error(request,response.text)
-        url = reverse('indent_item_list1', args=[id])
-        return redirect(url)
+        #url = reverse('indent_item_list_ack', args=[id])
+        return redirect('/pending_indent_ack')
 
-def indent_item_list1(request,id):
+def indent_item_list(request,id):
     accesskey = request.session['accesskey']
     request.session['id'] = id
     url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
@@ -2415,27 +2437,164 @@ def indent_item_list1(request,id):
     if response.status_code == 200:
         data = response.json()
         ind_item_list = data['indentitemlist']
-        fromname = data['fromname']
-        fromid = data['fromid']
-        toid = data['toid']
-        toname = data['toname']
-        request.session['fromname'] = fromname
-        request.session['fromid'] = fromid
-        request.session['toid'] = toid
-        request.session['toname'] = toname
 
-        return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list})
+
+        return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list})
     else:
-        return render(request, 'create_indent/indent_item_list1.html')
+        return render(request, 'create_indent/indent_item_list.html')
+def indent_item_list_ack(request, id):
+        accesskey = request.session['accesskey']
+        request.session['id'] = id
+        url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
 
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "indentno": id
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            ind_item_list = data['indentitemlist']
+
+            return render(request, 'create_indent/indent_list_ack.html', {"all_data": ind_item_list})
+        else:
+            return render(request, 'create_indent/indent_list_ack.html')
+
+
+def out_passlist(request):
+
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/outpassgenerate-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        outpass_list = data['indentlist']
+
+        return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list})
+    else:
+        return render(request, 'create_indent/outpass_list.html')
+
+def out_pass_itemlist(request,id):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/outpassitem-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "dcnumber":id
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        outpassitem_list = data['Outpassitemlist']
+
+        return render(request, 'create_indent/out_pass_itemlist.html', {"all_data": outpassitem_list})
+    else:
+        return render(request, 'create_indent/out_pass_itemlist.html')
+
+def out_pass_scanner(request):
+
+    if request.method == 'POST':
+
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/outpassapproved.php"
+        outpass_id = request.POST.get("outpassid")
+        encoded_id = base64.b64encode(outpass_id.encode('utf-8'))
+        payload = {
+        "accesskey":accesskey,
+        "outpass_number":encoded_id
+
+        }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data2 = response.json()
+            messages.success(request,data2['message'])
+            return render(request, 'create_indent/out_pass_scanner.html')
+        else:
+            try:
+                data2 = response.json()
+                return render(request, 'create_indent/out_pass_scanner.html')
+            except:
+                messages.error(request,response.text)
+            return render(request, 'create_indent/out_pass_scanner.html')
+    return render(request, 'create_indent/out_pass_scanner.html')
+
+def approved_indlist_pending(request):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "status":"Out For Delivery"
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        approved_list = data['stocklist']
+
+        return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list})
+    else:
+        return render(request, 'create_indent/approved_indlist.html')
+
+def approve_item_list(request,id):
+
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/departitemstocklist.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "dcnumber": id
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    if response.status_code == 200:
+        data = response.json()
+        approved_item_list = data['stocklist']
+
+        return render(request, 'create_indent/approved_item_list.html', {"all_data": approved_item_list})
+    else:
+        return render(request, 'create_indent/approved_item_list.html')
+
+def approved_indlist_accept(request):
+    pass
 @csrf_exempt
 def get_grn_item_data(request):
+    accesskey = request.session['accesskey']
     itemname = request.POST.get('itemcode')
 
     url = "http://13.235.112.1/ziva/mobile-api/itemmaster-search.php"
 
     payload = json.dumps({
-        "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+        "accesskey": accesskey,
         "itemcode": itemname
     })
 
@@ -2682,6 +2841,7 @@ def pending_indent_pending(request):
     data = data['indentlist']
     return render(request, 'create_indent/wh_indent_pending.html', {'data': data})
 
+
 def pending_ind_status(request):
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/acknowledgement-update.php"
@@ -2709,8 +2869,10 @@ def pending_ind_status(request):
             messages.error(request, response.text)
         return redirect('pending_indent_pending')
 
+
 def readyto_ship(request):
     accesskey = request.session['accesskey']
+
     url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
 
     payload = json.dumps({
@@ -2725,9 +2887,42 @@ def readyto_ship(request):
     if response.status_code == 200:
         data = response.json()
         data = data['indentlist']
+
         return render(request, 'create_indent/readytoship.html', {'data': data})
     else:
         return render(request, 'create_indent/readytoship.html')
+
+def generate_gate_pass(request):
+
+    accesskey = request.session['accesskey']
+
+    url="http://13.235.112.1/ziva/mobile-api/outpass-generated.php"
+    payload = json.dumps({
+
+        "accesskey":accesskey,
+        "dcnumber": request.POST.get('id'),
+        "remarks": request.POST.get('remarks'),
+        "fromname": request.POST.get('rname'),
+        "fromid": request.POST.get('rid'),
+        "toname": request.POST.get('wname'),
+        "toid": request.POST.get('wid') })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request,data['message'])
+        return redirect('readyto_ship')
+    else:
+        try:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('readyto_ship')
+        except:
+            messages.success(request, data['message'])
+        return redirect('readyto_ship')
 
 def partially_supplied(request):
 

@@ -112,5 +112,14 @@ urlpatterns = [
     path('readyto_ship',views.readyto_ship,name='readyto_ship'),
     path('partially_supplied',views.partially_supplied,name='partially_supplied'),
     path('indent_item_list1/<str:id>/',views.indent_item_list1,name='indent_item_list1'),
-    path('update_ack',views.update_ack,name='update_ack')
+    path('update_ack',views.update_ack,name='update_ack'),
+    path('generate_gate_pass',views.generate_gate_pass,name='generate_gate_pass'),
+    path('indent_item_list2/<str:id>/',views.indent_item_list2,name='indent_item_list2'),
+    path('out_passlist',views.out_passlist,name='out_passlist'),
+    path('out_pass_itemlist/<str:id>/',views.out_pass_itemlist,name='out_pass_itemlist'),
+    path('out_pass_scanner',views.out_pass_scanner,name='out_pass_scanner'),
+    path('indent_item_list_ack/<str:id>/',views.indent_item_list_ack,name='indent_item_list_ack'),
+    path('approved_indlist_pending',views.approved_indlist_pending,name='approved_indlist_pending'),
+    path('approved_indlist_accept', views.approved_indlist_accept, name='approved_indlist_accept'),
+    path('approve_item_list/<str:id>/',views.approve_item_list,name='approve_item_list')
 ]

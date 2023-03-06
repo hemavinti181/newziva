@@ -175,7 +175,8 @@
                        <td>{{  all_data.created_by}}</td>
 
                                 <td>
-                                  <a href="indent_item_list1/{{ all_data.indentno }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>
+                                  <a href="indent_item_list1/{{ all_data.dc_number }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>
+                                    <span data-target=".bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}')" class="badge badge-info" >Generate Gate Pass </span></a>
                                 </td>
                       </tr>
                       {% endfor %}
@@ -202,7 +203,39 @@
                                 <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
                         </div>
               </div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content">
+
+
+
+                                        <div class="modal-body">
+                                            <form method="post" action="{% url 'generate_gate_pass' %}">
+                                                    {% csrf_token %}
+                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Generate Gate Pass</h4>
+
+                                            <label for="remarks">Remarks *</label>
+                                                <input type="hidden" id="txtHdnId" name="id" />
+                                                <input type="hidden" id="rname" name="rname" />
+                                                <input type="hidden" id="rid" name="rid" />
+                                                <input type="hidden" id="wname" name="wname" />
+                                                <input type="hidden" id="wid" name="wid" />
+                                                <textarea class="form-control" rows="2"  name="remarks" id="remarks"></textarea>
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-info">UPDATE</button></a>
+
+                                            </div>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
 <script>
+
     let fab1 = document.getElementById('fab1');
 let innerFabs = document.getElementsByClassName('inner-fabs')[0];
 
@@ -223,9 +256,13 @@ document.addEventListener('click', function (e) {
       break;}
 
 });
-function VerifyClick(id){
-$("#comment").val(comment);
+function VerifyClick(id,tname,tid,fname,fid){
+$("#remarks").val(" ");
 $("#txtHdnId").val(id);
+$("#wname").val(tname);
+$("#wid").val(tid);
+$("#rname").val(fname);
+$("#rid").val(fid);
 }
 </script>
 
