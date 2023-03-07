@@ -2,7 +2,7 @@
 
 {% block htmlbody %}
 <style>
-	.modal-content{
+	.style{
 	position: absolute !important;
 	width: 150% !important;
 	}
@@ -33,8 +33,8 @@
                                     <th>Store Name</th>
                                     <th>GST No</th>
                                     <th>PAN Card</th>
-                                    <th>Trade Licence</th>
-                                    <th>Food Licence</th>
+                                    <th>Trade License</th>
+                                    <th>Food License</th>
                                     <th>Address</th>
                                     <th>Store Location</th>
                                     <th>Action</th>
@@ -88,7 +88,7 @@
 </div>
 <div id="edit_store" class="modal custom-modal fade"    role="dialog" >
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <div class="modal-content style">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Store</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -130,12 +130,12 @@
 										</div>
 
 										<div class="col-md-4   form-group has-feedback">
-											<label>Trade Licence *</label>
+											<label>Trade License *</label>
 										    <input type="text" class="form-control" name="tradelicenceno" id="tradelicenceno1" required>
 										</div>
 
 											<div class="col-md-4  form-group has-feedback">
-												<label>Food Licence *</label>
+												<label>Food License *</label>
 										    	<input type="text" class="form-control" name="foodlicence" id="foodlicence1"  required>
 											</div>
 										<div class="col-md-4   form-group has-feedback"><label>Address *</label>
@@ -203,6 +203,9 @@
 <div class="modal custom-modal fade" id="store-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
 							<div class="modal-body">
 								  <form method="post" action="store_status_active">
                                                     {% csrf_token %}

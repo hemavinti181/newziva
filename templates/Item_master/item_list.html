@@ -96,7 +96,7 @@ background-color: #1372ba !important;
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Warehouse</h5>
+                <h5 class="modal-title">Edit Item</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -107,7 +107,7 @@ background-color: #1372ba !important;
                                         <input type="hidden" name="itemid" id="itemid" />
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Item Name *</label>
-										    <input type="text" class="form-control"name="nameitem" id="nameitem"  required>
+										    <input type="text" class="form-control" name="nameitem" id="nameitem"  required>
 										</div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>HSN Code *</label>
@@ -160,6 +160,9 @@ background-color: #1372ba !important;
 <div class="modal custom-modal fade" id="item-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
 							<div class="modal-body">
 								  <form method="post" action="item_status_active">
                                                     {% csrf_token %}
@@ -187,6 +190,9 @@ background-color: #1372ba !important;
 <div class="modal custom-modal fade" id="item-status1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
+                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
 							<div class="modal-body">
 								  <form method="post" action="item_status_inactive">
                                                     {% csrf_token %}
@@ -224,7 +230,6 @@ $(document).ready(function() {
         },
         success: function(data) {
          var obj = data.data.itemmasterlist
-          	alert(obj[0].itemcode);
              if(obj){
              $("#itemid").val(obj[0].sno);
              $("#nameitem").val(obj[0].itemname);

@@ -82,20 +82,16 @@
 												</select>
                                         </div>
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+											<input type="hidden" name="regionname" id="regionname" />
 												<select class="form-control" name="region" id="region" style="display: none;">
-													<input type="hidden" name="regionname" id="regionname" />
-
-													<option  value=""></option>
+													<option  value="">select region</option>
 												</select>
                                         </div>
 
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
-
 											<input type="hidden" name="deponame" id="deponame" />
 												<select class="form-control" name="depo" id="depo" style="display: none;">
-
 														<option  value="">select depo</option>
-
 												</select>
                                         </div>
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
@@ -152,9 +148,7 @@ $("#busstation").change(function() {
 });
 document.getElementById("role").addEventListener("change", function() {
 var val=$(this).find(":selected").text();
-alert(val)
   if (val === "Marketing Executive" || val === "Admin" || val === "Bus Station") {
-  	alert('hai')
     document.getElementById("warehouse").style.display = "block";
     document.getElementById("region").style.display = "block";
     document.getElementById("depo").style.display = "block";
@@ -204,7 +198,6 @@ $(document).ready(function(){
         	var region = $(this).val();
         	var warehouse = $('#warehouse').find(":selected").text();
         	var role =  $("#role").find(":selected").text();
-        	alert(region)
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_dependent_depo" %}',
@@ -228,7 +221,6 @@ $(document).ready(function(){
         	var region = $('#region').val();
         	var warehouse = $('#warehouse').find(":selected").text();
         	var role =  $("#role").find(":selected").text();
-        	alert(depo)
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_dependent_bus" %}',

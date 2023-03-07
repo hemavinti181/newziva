@@ -194,7 +194,7 @@ def add_store(request):
             'gstattachfilename': request.FILES.get("gstattach").name,
             'pancard': request.POST.get("pancard"),
             'panattachfilename': request.FILES.get("panattach").name,
-            'foodlicence': request.POST.get("foodlicence"),
+            'foodlicence': request.POST.get("foodlicense"),
             'flattachfilename': request.FILES.get("flattach").name,
             'tradelicenceno': request.POST.get("tradelicenceno"),
             'tlattachfilename': request.FILES.get("tlattach").name,
@@ -523,13 +523,13 @@ def item_status_inactive(request):
 
 
 def des_add(request):
-    attempt_num = 0
+    accesskey = request.session['accesskey']
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
 
         payload = {
-            "accesskey": "LTIwMjIxMjIwMDc2ODg1",
+            "accesskey":accesskey,
             "type": "DESIGNATION",
             "value": request.POST.get('designation'),
         }
@@ -549,35 +549,38 @@ def des_add(request):
 
 
 def role(request):
-    attempt_num = 0
+    accesskey = request.session['accesskey']
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
 
-        payload = {
-            "accesskey": "LTIwMjIxMjIwMDc2ODg1",
+        payload = json.dumps({
+            "accesskey": accesskey,
             "type": "ROLE",
             "value": request.POST.get('role'),
-        }
+        })
         headers = {
             'Content-Type': 'text/plain'
         }
-        payload = json.dumps(payload, cls=BytesEncoder)
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response)
-        print(payload)
-        r = response.json()
         if response.status_code == 200:
+            r = response.json()
             messages.success(request, r['message'])
             return redirect('role_list')
         else:
-            messages.error(request, r['message'])
+            try:
 
+                r = response.json()
+                messages.error(request, r['message'])
+                return render(request, 'category_master/df.html', {"home_page": "active"})
+            except:
+                messages.error(request, r['message'])
+            return render(request, 'category_master/df.html', {"home_page": "active"})
     return render(request, 'category_master/df.html', {"home_page": "active"})
 
 
 def level(request):
-    attempt_num = 0
+
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
@@ -592,8 +595,7 @@ def level(request):
         }
         payload = json.dumps(payload, cls=BytesEncoder)
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response)
-        print(payload)
+
         r = response.json()
         if response.status_code == 200:
             messages.success(request, r['message'])
@@ -604,13 +606,13 @@ def level(request):
 
 
 def city(request):
-    attempt_num = 0
+    accesskey = request.session['accesskey']
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
 
         payload = {
-            "accesskey": "LTIwMjIxMjIwMDc2ODg1",
+            "accesskey": accesskey,
             "type": "CITY",
             "value": request.POST.get('city'),
         }
@@ -619,20 +621,21 @@ def city(request):
         }
         payload = json.dumps(payload, cls=BytesEncoder)
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response)
-        print(payload)
-        r = response.json()
         if response.status_code == 200:
+            r = response.json()
             messages.success(request, r['message'])
             return redirect('city_list')
         else:
-            messages.error(request, r['message'])
-
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+                return render(request, 'category_master/df.html', {"home_page": "active"})
+            except:
+                    messages.error(request,response.text)
+            return render(request, 'category_master/df.html', {"home_page": "active"})
     return render(request, 'category_master/df.html', {"home_page": "active"})
 
-
 def state(request):
-    attempt_num = 0
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
@@ -647,20 +650,26 @@ def state(request):
         }
         payload = json.dumps(payload, cls=BytesEncoder)
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response)
-        print(payload)
-        r = response.json()
+
         if response.status_code == 200:
+            r = response.json()
             messages.success(request, r['message'])
             return redirect('state_list')
         else:
-            messages.error(request, r['message'])
-
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+                return render(request, 'category_master/df.html', {"home_page": "active"})
+            except:
+                messages.error(request,response.text)
+        return render(request, 'category_master/df.html', {"home_page": "active"})
     return render(request, 'category_master/df.html', {"home_page": "active"})
 
 
+
+
+
 def uom(request):
-    attempt_num = 0
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
@@ -715,141 +724,193 @@ def gst(request):
 
 
 def category(request):
-    attempt_num = 0
+    accesskey = request.session['accesskey']
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
 
-        payload = {
-            "accesskey": "LTIwMjIxMjIwMDc2ODg1",
+        payload = json.dumps({
+            "accesskey":   accesskey,
             "type": "CATEGORY",
             "value": request.POST.get('category'),
-        }
+        })
         headers = {
             'Content-Type': 'text/plain'
         }
-        payload = json.dumps(payload, cls=BytesEncoder)
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response)
-        print(payload)
-        r = response.json()
         if response.status_code == 200:
+            r = response.json()
             messages.success(request, r['message'])
             return redirect('category_list')
         else:
-            messages.error(request, r['message'])
-
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+                return render(request, 'Category_master/df.html', {"home_page": "active"})
+            except:
+                messages.error(request, r['message'])
+            return render(request, 'Category_master/df.html', {"home_page": "active"})
     return render(request, 'Category_master/df.html', {"home_page": "active"})
 
 
 def role_list(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"LTIwMjIxMjIwMDc2ODg1\",\r\n    \"name\":\"ROLE\"\r\n}"
+    payload = json.dumps({"accesskey":accesskey,"name":"ROLE"})
     headers = {
         'Content-Type': 'text/plain'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    role_list = data['itemmasterlist']
-    return render(request, 'category_master/role_list.html', {"all_data": role_list})
+    if response.status_code == 200:
+        data = response.json()
+        role_list = data['itemmasterlist']
+        return render(request, 'category_master/role_list.html', {"all_data": role_list})
+    else:
+        try:
+            data = response.json()
+            return render(request, 'category_master/role_list.html')
+        except:
+            messages.error(request, response.text)
+        return render(request, 'category_master/role_list.html')
 
 
 def level_list(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"LTIwMjIxMjIwMDc2ODg1\",\r\n    \"name\":\"LEVEL\"\r\n}"
+    payload = json.dumps({"accesskey":accesskey,"name":"LEVEL"})
     headers = {
         'Content-Type': 'text/plain'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    level_list = data['itemmasterlist']
-    return render(request, 'category_master/level_list.html', {"all_data": level_list})
-
+    if response.status_code == 200:
+        data = response.json()
+        level_list = data['itemmasterlist']
+        return render(request, 'category_master/level_list.html', {"all_data": level_list})
+    else:
+        try:
+            data = response.json()
+            return render(request, 'category_master/level_list.html')
+        except:
+            messages.error(request, response.text)
+        return render(request, 'category_master/level_list.html')
 
 def city_list(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"LTIwMjIxMjIwMDc2ODg1\",\r\n    \"name\":\"CITY\"\r\n}"
+    payload = json.dumps({"accesskey":accesskey,"name":"CITY"})
     headers = {
         'Content-Type': 'text/plain'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    city_list = data['itemmasterlist']
-
-    return render(request, 'category_master/city_list.html', {"all_data": city_list})
+    if response.status_code == 200:
+        data = response.json()
+        city_list = data['itemmasterlist']
+        return render(request, 'category_master/city_list.html', {"all_data": city_list})
+    else:
+        try:
+            data = response.json()
+            return render(request, 'category_master/city_list.html')
+        except:
+            messages.error(request, response.text)
+        return render(request, 'category_master/city_list.html')
 
 
 def state_list(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"LTIwMjIxMjIwMDc2ODg1\",\r\n    \"name\":\"STATE\"\r\n}"
+    payload = json.dumps({"accesskey": accesskey,  "name":"STATE"})
     headers = {
         'Content-Type': 'text/plain'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    state_list = data['itemmasterlist']
-
-    return render(request, 'category_master/state_list.html', {"all_data": state_list})
-
+    if response.status_code == 200:
+        data = response.json()
+        state_list = data['itemmasterlist']
+        return render(request, 'category_master/state_list.html', {"all_data": state_list})
+    else:
+        try:
+            data = response.json()
+            return render(request, 'category_master/state_list.html')
+        except:
+            messages.error(request, response.text)
+        return render(request, 'category_master/state_list.html')
 
 def uom_list(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"LTIwMjIxMjIwMDc2ODg1\",\r\n    \"name\":\"UOM\"\r\n}"
+    payload = json.dumps({"accesskey":accesskey, "name":"UOM"})
     headers = {
         'Content-Type': 'text/plain'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    uom_list = data['itemmasterlist']
-
-    return render(request, 'category_master/uom_list.html', {"all_data": uom_list})
+    if response.status_code == 200:
+        data = response.json()
+        uom_list = data['itemmasterlist']
+        return render(request, 'category_master/uom_list.html', {"all_data": uom_list})
+    else:
+        try:
+            data = response.json()
+            return render(request, 'category_master/uom_list.html')
+        except:
+            messages.error(request, response.text)
+        return render(request, 'category_master/uom_list.html')
 
 
 def gst_list(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"LTIwMjIxMjIwMDc2ODg1\",\r\n    \"name\":\"GST\"\r\n}"
+    payload = json.dumps({"accesskey":accesskey,    "name":"GST"})
     headers = {
         'Content-Type': 'text/plain'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    gst_list = data['itemmasterlist']
+    if response.status_code == 200:
+        data = response.json()
+        gst_list = data['itemmasterlist']
+        return render(request, 'category_master/gst_list.html', {"all_data": gst_list})
+    else:
+        try:
+            data = response.json()
+            return render(request, 'category_master/gst_list.html')
+        except:
+            messages.error(request,response.text)
+        return render(request, 'category_master/gst_list.html')
 
-    return render(request, 'category_master/gst_list.html', {"all_data": gst_list})
 
 
 def category_list(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"LTIwMjIxMjIwMDc2ODg1\",\r\n    \"name\":\"CATEGORY\"\r\n}"
+    payload = json.dumps({"accesskey":accesskey,    "name":"CATEGORY"})
     headers = {
         'Content-Type': 'text/plain'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    category_list = data['itemmasterlist']
-
-    return render(request, 'category_master/category_list.html', {"all_data": category_list})
+    if response.status_code == 200:
+        data = response.json()
+        category_list = data['itemmasterlist']
+        return render(request, 'category_master/category_list.html', {"all_data": category_list})
+    else:
+        try:
+            data = response.json()
+            return render(request, 'category_master/category_list.html')
+        except:
+            messages.error(request, response.text)
+        return render(request, 'category_master/category_list.html')
 
 
 def des_list(request):
@@ -867,8 +928,243 @@ def des_list(request):
         des_list = data['itemmasterlist']
         return render(request, 'category_master/des_list.html', {"all_data": des_list})
     else:
+        try:
+            data = response.json()
+            return render(request, 'category_master/des_list.html')
+        except:
+            messages.error(request,response.text)
         return render(request, 'category_master/des_list.html')
+def des_status_inactive(request):
+    accesskey = request.session['accesskey']
 
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+    payload = json.dumps({
+        "accesskey":accesskey,
+        "sno": request.POST.get('id'),
+        "type": "Dropdownmaster",
+        "status": request.POST.get('status')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/des_list')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/des_list')
+        except:
+            messages.error(request,response.text)
+        return redirect('/des_list')
+
+def gst_status_inactive(request):
+        accesskey = request.session['accesskey']
+
+        url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sno": request.POST.get('id'),
+            "type": "Dropdownmaster",
+            "status": request.POST.get('status')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/gst_list')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('/gst_list')
+            except:
+                messages.error(request, response.text)
+            return redirect('/gst_list')
+
+
+def uom_status_inactive(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sno": request.POST.get('id'),
+        "type": "Dropdownmaster",
+        "status": request.POST.get('status')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/uom_list')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/uom_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/uom_list')
+
+def role_status_inactive(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sno": request.POST.get('id'),
+        "type": "Dropdownmaster",
+        "status": request.POST.get('status')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/role_list')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/role_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/role_list')
+
+def level_status_inactive(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sno": request.POST.get('id'),
+        "type": "Dropdownmaster",
+        "status": request.POST.get('status')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/level_list')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/level_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/level_list')
+
+def state_status_inactive(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sno": request.POST.get('id'),
+        "type": "Dropdownmaster",
+        "status": request.POST.get('status')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/state_list')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/state_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/state_list')
+
+def category_status_inactive(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sno": request.POST.get('id'),
+        "type": "Dropdownmaster",
+        "status": request.POST.get('status')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/category_list')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/category_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/category_list')
+def city_status_inactive(request):
+        accesskey = request.session['accesskey']
+
+        url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sno": request.POST.get('id'),
+            "type": "Dropdownmaster",
+            "status": request.POST.get('status')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/city_list')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('/city_list')
+            except:
+                messages.error(request, response.text)
+            return redirect('/city_list')
 
 def depo_add(request):
     g = geocoder.ip('me', user_agent='http')
@@ -2584,8 +2880,53 @@ def approve_item_list(request,id):
     else:
         return render(request, 'create_indent/approved_item_list.html')
 
+def approve_accept(request):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/submit-items-accepted.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "outpass_number": request.POST.get("id"),
+        "remarks": request.POST.get("remarks"),
+        "qty": request.POST.get("qty")
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.error(request,data['mesages'])
+        return render(request, 'create_indent/approved_item_list.html')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['mesages'])
+            return render(request, 'create_indent/approved_item_list.html')
+        except:
+            messages.error(request,response.text)
+        return render(request, 'create_indent/approved_item_list.html')
 def approved_indlist_accept(request):
-    pass
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "status": "Accept"
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        approved_list = data['stocklist']
+
+        return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list})
+    else:
+        return render(request, 'create_indent/approved_indlist.html')
 @csrf_exempt
 def get_grn_item_data(request):
     accesskey = request.session['accesskey']

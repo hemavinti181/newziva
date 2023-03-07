@@ -1,9 +1,7 @@
 from django.urls import path,include
-
 from ziva_app import views
 
 urlpatterns = [
-
     path('',views.index,name='index_page'),
     path('login', views.login, name='login'),
     path('logout',views.logout,name='logout'),
@@ -121,5 +119,14 @@ urlpatterns = [
     path('indent_item_list_ack/<str:id>/',views.indent_item_list_ack,name='indent_item_list_ack'),
     path('approved_indlist_pending',views.approved_indlist_pending,name='approved_indlist_pending'),
     path('approved_indlist_accept', views.approved_indlist_accept, name='approved_indlist_accept'),
-    path('approve_item_list/<str:id>/',views.approve_item_list,name='approve_item_list')
+    path('approve_item_list/<str:id>/',views.approve_item_list,name='approve_item_list'),
+    path('des_status_inactive',views.des_status_inactive,name='des_status_inactive'),
+    path('gst_status_inactive',views.gst_status_inactive,name='gst_status_inactive'),
+    path('uom_status_inactive', views.uom_status_inactive, name='uom_status_inactive'),
+    path('role_status_inactive', views.role_status_inactive, name='role_status_inactive'),
+    path('level_status_inactive', views.level_status_inactive, name='level_status_inactive'),
+    path('city_status_inactive', views.city_status_inactive, name='city_status_inactive'),
+    path('state_status_inactive', views.state_status_inactive, name='state_status_inactive'),
+    path('category_status_inactive', views.category_status_inactive, name='category_status_inactive'),
+    path('approve_accept',views.approve_accept,name='approve_accept')
 ]

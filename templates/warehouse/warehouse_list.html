@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
-
+<style>
+.style{
+	position: absolute !important;
+	width: 120% !important;
+	}
+	</style>
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -32,7 +36,7 @@
                         <table id="datatable-buttons" class="display table-bordered" style="width:100%">
                       <thead>
                         <tr>
-
+                                    <th>S No</th>
                                     <th>Warehouse Code</th>
                                     <th>Warehouse Name</th>
                                     <th>Warehouse Manager</th>
@@ -46,6 +50,7 @@
                       </thead>
                             {% for all_data in all_data %}
                        <tr>
+                           <td>{{ forloop.counter }}</td>
                       <td><a href = " {{ all_data.image }}" style="color:#075ab3;">{{ all_data.warehouseid }}</a></td>
                        <td>{{ all_data.warehousename }}</td>
                        <td>{{  all_data.wh_manager}}</td>
@@ -83,7 +88,7 @@
 </div>
 <div id="edit_warehouse" class="modal custom-modal fade"  role="dialog" >
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
-        <div class="modal-content">
+        <div class="modal-content style">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Warehouse</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -106,7 +111,7 @@
                     </div>
 
                     <div class="col-md-4 col-sm-4  form-group has-feedback">
-                        <label>Mobile</label>
+                        <label>Mobile *</label>
                         <input type="text" class="form-control"  name="mobilewh" id="mobilewh" required>
                     </div>
                     <div class="col-md-6 col-sm-6  form-group has-feedback">
@@ -119,7 +124,7 @@
                         <input type="text" class="form-control" name="panwh" id="panwh"  required>
                     </div>
                     <div class="col-md-6 col-sm-6  form-group has-feedback">
-                        <label>Licence Number *</label>
+                        <label>License Number *</label>
                         <input type="text" class="form-control" name="licnumwh" id="licnumwh" required>
                     </div>
                     <div class="col-md-6 col-sm-6  form-group has-feedback">
@@ -140,6 +145,9 @@
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-body">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
 								  <form method="post" action="warehouse_status_active">
                                                     {% csrf_token %}
 								<div class="form-header">

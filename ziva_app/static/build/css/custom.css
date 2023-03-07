@@ -1962,7 +1962,7 @@ table.display tr.heading2 td {
   border-bottom: 1px solid #aaa; }
 
 table.display td {
-  padding: 3px 10px; }
+  padding: 0px 10px; }
 
 table.display td.center {
   text-align: center; }
