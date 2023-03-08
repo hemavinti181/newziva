@@ -231,7 +231,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstation").empty();
-			 		$("#busstation").append("<option  value=''>Choose Depo</option>");
+			 		$("#busstation").append("<option  value=''>Choose bus station</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstation").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});

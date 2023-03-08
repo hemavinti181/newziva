@@ -31,7 +31,7 @@
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
-
+                                    <th>S No</th>
                                     <th>Region ID </th>
                                     <th>Region Name</th>
                                     <th>Region Manager</th>
@@ -41,6 +41,7 @@
                       </thead>
                             {% for all_data in all_data %}
                        <tr>
+                           <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.regionid }}</td>
                          <td>{{ all_data.regionname }}</td>
                        <td>{{  all_data.region_manager}}</td>
@@ -138,15 +139,16 @@ $(document).ready(function() {
              $("#regionmanager1").val(obj[0].region_manager);
              $("#mobileno1").val(obj[0].region_contact_no);
              $("#whid1").val(obj[0].warehouseid);
+             $("#warehousename1").val(obj[0].warehousename);
              $('#region_edit').modal('show');
         	}
         }
       });
     });
   });
-  $("#depoid1").change(function() {
+  $("#whid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-  $("#deponame1").val(selectedOptionText);
+  $("#warehousename1").val(selectedOptionText);
 });
 </script>
 {% endblock %}

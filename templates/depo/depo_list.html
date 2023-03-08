@@ -2,6 +2,12 @@
 
 {% block htmlbody %}
 
+<style>
+	.style{
+	position: absolute !important;
+	width: 120% !important;
+	}
+</style>
 
 <div class="right_col" role="main">
           <div class="">
@@ -39,7 +45,7 @@
                                     <th>Address</th>
                                      <th>Contact No</th>
                                     <th>GST</th>
-                                    <th>Licence</th>
+                                    <!--<th>Licence</th>-->
                                     <th>Action</th>
                         </tr>
                       </thead>
@@ -51,10 +57,11 @@
                        <td>{{  all_data.depo_manager}}</td>
                        <td>{{ all_data.address }}</td>
                        <td>{{ all_data.depo_contact_no }}</td>
-                       <td><a href="{{ all_data.gstattach }}" style="color:#075ab3;">{{ all_data.gst_no }}</a></td><td><a href="{{ all_data.licenceattach }}" style="color:#075ab3;">{{ all_data.licenseno}}</a></td>
+                       <td><a href="{{ all_data.gstattach }}" style="color:#075ab3;">{{ all_data.gst_no }}</a></td>
+                           <!--<td>{{ all_data.licenseno}}</td>-->
                         {% if all_data.status == "Active" %}
                                 <td>
-                                   <a href="#" class="depo-edit" data-id="{{ all_data.depoid }}"><i class="fa fa-edit"></i></a>
+                                   <a href="#" class="depo-edit" data-id="{{ all_data.depoid }}"><i class="fa fa-edit" data-toggle="modal" data-target="#depo-edit"></i></a>
                                     <a href="#" onclick="VerifyClick('{{  all_data.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#depo-status">
                                        {{ all_data.status }} </span></a>
 
@@ -82,7 +89,7 @@
 </div>
 <div id="depo-edit" class="modal custom-modal fade"  role="dialog" >
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
-        <div class="modal-content">
+        <div class="modal-content style">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Depo</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -117,7 +124,7 @@
 										</div>
 
 												<div  class="col-md-6  form-group has-feedback">
-													<input type="hidden" name="=regionname1" id="regionname1" />
+													<input type="hidden" name="regionname" id="regn" />
 													<label>Region *</label>
 												<select class="form-control" name="regionid1" id="regionid1" required>
 													{% for data1 in data %}
@@ -132,7 +139,7 @@
 										    <input type="text" class="form-control" name="address1" id="address1" />
 										</div>
                                           <input type="hidden" name="depoid" id="depoid" />
-                        `                 <input type="hidden" name="regionname" id="regionname" />
+                        `
                                           <input type="hidden" name="whid" id="whid" />
                                           <input type="hidden" name="whname" id="whname" />
 
@@ -151,6 +158,9 @@
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-body">
+                                	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
 								  <form method="post" action="depo_status_active">
                                                     {% csrf_token %}
 								<div class="form-header">
@@ -178,6 +188,9 @@
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-body">
+                                	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
 								  <form method="post" action="depo_status_inactive">
                                                     {% csrf_token %}
 								<div class="form-header">
@@ -213,8 +226,8 @@ $(document).ready(function() {
         },
         success: function(data) {
          var obj = data.data.depolist
-            alert(obj[0].depoid)
-          	console.log(obj[0].depoid);
+
+          	console.log(obj[0].regionname);
              if(obj){
              $("#depoid").val(obj[0].depoid);
              $("#deponame1").val(obj[0].depo_name);
@@ -225,7 +238,7 @@ $(document).ready(function() {
              $("#license1").val(obj[0].licenseno);
              $("#whid").val(obj[0].warehouseid);
              $("#regionid1").val(obj[0].regionid);
-             $("#regionname1").val(obj[0].regionname);
+             $("#regn").val(obj[0].regionname);
              $("#address1").val(obj[0].address);
              $('#depo-edit').modal('show');
         	}
@@ -233,15 +246,16 @@ $(document).ready(function() {
       });
     });
   });
-  $("#regionid1").change(function() {
-  var selectedOptionText = $(this).find(":selected").text();
-  $("#regionname1").val(selectedOptionText);
-});
+
 function VerifyClick(id){
 $("#id").val(id);
 }
 function VerifyClick1(id){
 $("#id1").val(id);
 }
+$("#regionid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regn").val(selectedOptionText);
+});
   </script>
 {% endblock %}

@@ -34,8 +34,6 @@
                                     <th>GST No</th>
                                     <th>PAN Card</th>
                                     <th>Trade License</th>
-                                    <th>Food License</th>
-                                    <th>Address</th>
                                     <th>Store Location</th>
                                     <th>Action</th>
                            </tr>
@@ -49,8 +47,6 @@
                         <td><a href="{{ list.gstattach }}" style="color:#075ab3;">{{ list.gstnumber}}</a></td>
                         <td><a href="{{ list.panattach }}" style="color:#075ab3;">{{ list.pancard}}</a></td>
                         <td><a href="{{ list.tlattach }}" style="color:#075ab3;">{{ list.tradelicenceno }}</a></td>
-                        <td><a href="{{ list.flattach }}" style="color:#075ab3;">{{ list.foodlicence}}</a></td>
-                         <td>{{ list.storeaddress}}</td>
                         <td><u>{{ list.storelocation }}</u></td>
 
 
@@ -98,6 +94,38 @@
             <div class="modal-body">
                 	<form  method="POST" action="store_edit"   enctype="multipart/form-data">
 											{% csrf_token %}
+										<div  class="col-md-4  form-group has-feedback">
+													<label>Select Warehouse</label>
+											 <input type="hidden" name="warehousename1" id="warehousename1" />
+												<select class="form-control" name="warehouseid1" id="warehouseid1">
+													<option value="">Select Warehouse</option>
+													{% for data1 in wh_masterlist %}
+                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+                                                     {% endfor %}
+												</select>
+										</div>
+											<div  class="col-md-4  form-group has-feedback">
+													<label>Select Region</label>
+											 <input type="hidden" name="regionname1" id="regionname1" />
+												<select class="form-control" name="regionid1" id="regionid1">
+													<option value="">Select Region</option>
+												</select>
+										</div>
+											<div  class="col-md-4  form-group has-feedback">
+													<label>Select Depo</label>
+											 <input type="hidden" name="deponame1" id="deponame1" />
+												<select class="form-control" name="depoid1" id="depoid1">
+													<option value="">Select depo</option>
+												</select>
+											</div>
+
+										<div  class="col-md-4  form-group has-feedback">
+													<label>Select Bus Station</label>
+											 <input type="hidden" name="busstationname1" id="busstationname1" />
+												<select class="form-control" name="busstationid1" id="busstationid1">
+													<option value="">Select bus station</option>
+												</select>
+										</div>
 										<div class="col-md-4 form-group has-feedback">
                                             <input type="hidden" name="stcode" id="stcode" />
 											<label>Store Name *</label>
@@ -108,22 +136,11 @@
 											<label>Legal Name *</label>
 										    <input type="text" class="form-control"  name=" legalname" id="legalname1" required>
 										</div>
-										<div  class="col-md-4  form-group has-feedback">
-											 <input type="hidden" name="busstationname1" id="busstationname1" />
-													<label>Select Busstation</label>
-												<select class="form-control" name="busstationid1" id="busstationid1" >
-													{% for data1 in bus %}
-                            		                  <option value="{{ data1.busatationid }}" selected>{{ data1.busstationname }}</option>
-                                                    {% endfor %}
-												</select>
-										</div>
+
 										<div class="col-md-4 form-group has-feedback">
 											<label>GST Number *</label>
 										    <input type="text" class="form-control" name="gstnumber" id="gstnumber1" required>
 										</div>
-
-
-
 										<div class="col-md-4  form-group has-feedback">
 											<label>PAN Card *</label>
 										    <input type="text" class="form-control" name="pancard" id="pancard1"  required>
@@ -133,28 +150,20 @@
 											<label>Trade License *</label>
 										    <input type="text" class="form-control" name="tradelicenceno" id="tradelicenceno1" required>
 										</div>
-
-											<div class="col-md-4  form-group has-feedback">
-												<label>Food License *</label>
-										    	<input type="text" class="form-control" name="foodlicence" id="foodlicence1"  required>
+							      <div class="col-md-4 form-group has-feedback">
+											<label>Nature Of Business *</label>
+										    <input type="text" class="form-control" placeholder="nature of business" name="natofbus1"  id="natofbus1"required>
 											</div>
-										<div class="col-md-4   form-group has-feedback"><label>Address *</label>
-										    <input type="text" class="form-control" name="storeaddress"  id="storeaddress1"required>
-										</div>
-										<div class="col-md-4   form-group has-feedback">
-											<label>Pincode *</label>
-										    <input type="text" class="form-control" name="pincode" id="pincode1" patern="[0-9][0-9]{5}" maxlength="6" autocomplete="off"  value="{{data.pincode}}" required>
-										</div>
+											<div  class="col-md-4 form-group has-feedback">
+													<label>Store Type *</label>
+												<select class="form-control" name="store_type1" id="store_type1">
+														<option  value="">Select store type</option>
+													{% for data in storetype_list %}
+														<option  value="{{ data.displayname }}">{{ data.displayname }} </option>
+													{% endfor %}
 
-												<div  class="col-md-4   form-group has-feedback">
-													<label>State list *</label>
-													<select class="form-control" name="state" id="state1">
-														{% for state in state %}
-															<option  value="{{ state.sno}}">{{ state.displayname }}</option>
-														{% endfor %}
-													</select>
-												</div>
-
+												</select>
+											</div>
 										<div class="col-md-4  form-group has-feedback">
 											<label>Contact Person *</label>
 										    <input type="text" class="form-control" id="contactperson1" name="contactperson" required>
@@ -181,6 +190,11 @@
 											<label>Trade Attach *</label>
     											<input type="file"  name="tlattach" id="customFile"  value="{{data.tlattach}}" required >
 										</div>-->
+											<div class="col-md-4  form-group has-feedback">
+											<label>Alternate Mobile *</label>
+										    <input type="text" class="form-control" placeholder="alternate mobile nmber" name="mobileno2" id="mobileno2" pattern= "[6789][0-9]{9}"  required>
+											</div>
+
                                         <div class="col-md-4  form-group has-feedback">
 											<label>Email *</label>
 										    <input type="email" name="email" id="email1" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
@@ -261,12 +275,159 @@ $(document).ready(function() {
              $("#state1").val(obj.state);
              $("#email1").val(obj.email);
              $("#storelocation").val(obj.storelocation);
+             $("#mobileno2").val(obj.alternate_mobileno);
+             $("#store_type1").val(obj.storetype);
+             $("#natofbus1").val(obj.natureofbusiness);
+             $("#warehousename1").val(obj.warehouse);
+             $("#busstationname1").val(obj.bus_station);
+             $("#deponame1").val(obj.depo);
+             $("#regionname1").val(obj.region);
+             $("#warehouseid1").val(obj.warehouseid);
+             State1Change(obj.warehouse,obj.regionid);
+			 $("#warehouseid").change();
+			  $("#depoid1").val(obj.regionid);
+             RegionChange(obj.warehouse,obj.regionid,obj.depoid);
+			 $("#regionid").change();
+			 $("#busstationid1").val(obj.depoid);
+             DepoChange(obj.warehouse,obj.regionid,obj.depoid,obj.busstation_id);
+			 $("#depoid").change();
              $('#edit_store').modal('show');
         	}
         }
       });
     });
+	$("#warehouseid1").change(function() {
+        	var warehousename = $(this).find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storeregion" %}',
+            	data: {
+                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#regionid1").empty();
+			 		$("#regionid1").append("<option  value=''>Choose region</option>");
+                	$.each(obj, function (index, item) {
+                    $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#regionid1").change(function() {
+    		var warehousename = $('#warehouseid1').find(":selected").text();
+        	var regionname = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storedepo" %}',
+            	data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#depoid1").empty();
+			 		$("#depoid1").append("<option  value=''>Choose Depo</option>");
+                	$.each(obj, function (index, item) {
+                    $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#depoid1").change(function() {
+    		var warehousename = $('#warehouseid1').find(":selected").text();
+        	var regionname = $(regionid1).val();
+        	var depo = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storebus" %}',
+            	data: {
+                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid1").empty();
+			 		$("#busstationid1").append("<option  value=''>Choose Bus station</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+
   });
+  function State1Change(warehouse,region){
+                $.ajax({
+            	type: "POST",
+            	url: '{% url "get_storeregion" %}',
+            	data: {
+                	'warehouse':warehouse,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+			 		$("#regionid1").empty();
+			 		$("#regionid1").append("<option value= ''>Choose region</option>");
+                	$.each(obj, function (index, item) {
+                     $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+                	});
+                	$("#regionid1").val(region);
+             	}
+        	});
+  }
+   function RegionChange(warehouse,region,depo){
+                $.ajax({
+            	type: "POST",
+            	url: '{% url "get_storedepo" %}',
+            	data: {
+                	'region':region,'warehouse':warehouse,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+			 		$("#depoid1").empty();
+			 		$("#depoid1").append("<option value= ''>Choose depo</option>");
+                	$.each(obj, function (index, item) {
+                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+                	});
+                	$("#depoid1").val(depo);
+             	}
+        	});
+
+  }
+  function DepoChange(warehouse,region,depo,busstation){
+                $.ajax({
+            	type: "POST",
+            	url: '{% url "get_storebus" %}',
+            	data: {
+                	'region':region,'warehouse':warehouse,'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+			 		$("#busstationid1").empty();
+			 		$("#busstationid1").append("<option value= ''>Choose bus station</option>");
+                	$.each(obj, function (index, item) {
+                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+                	});
+                	$("#busstationid1").val(busstation);
+             	}
+        	});
+  }
+$("#warehouseid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+});
+$("#regionid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regionname1").val(selectedOptionText);
+});
+$("#depoid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
+});
 $("#busstationid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busstationname1").val(selectedOptionText);

@@ -128,5 +128,11 @@ urlpatterns = [
     path('city_status_inactive', views.city_status_inactive, name='city_status_inactive'),
     path('state_status_inactive', views.state_status_inactive, name='state_status_inactive'),
     path('category_status_inactive', views.category_status_inactive, name='category_status_inactive'),
-    path('approve_accept',views.approve_accept,name='approve_accept')
+    path('approve_accept',views.approve_accept,name='approve_accept'),
+    path('storetype_list',views.storetype_list,name='storetype_list'),
+    path('storetype',views.storetype,name='storetype'),
+    path('store_status_inactive',views.store_status_inactive,name='store_status_inactive'),
+    path('get_storeregion',views.get_storeregion,name='get_storeregion'),
+    path('get_storedepo',views.get_storedepo,name='get_storedepo'),
+    path('get_storebus',views.get_storebus,name='get_storebus')
 ]

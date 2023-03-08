@@ -3,6 +3,7 @@
 {% block htmlbody %}
 
 
+
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -128,6 +129,9 @@
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-body">
+                                	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
 								  <form method="post" action="bus_status_active">
                                                     {% csrf_token %}
 								<div class="form-header">
@@ -155,6 +159,9 @@
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-body">
+                                	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
 								  <form method="post" action="bus_status_inactive">
                                                     {% csrf_token %}
 								<div class="form-header">
@@ -192,7 +199,6 @@ $(document).ready(function() {
         },
         success: function(data) {
          var obj = data.data.buslist
-
           	console.log(obj[0].busatationid);
              if(obj){
              $("#busid1").val(obj[0].busatationid);
