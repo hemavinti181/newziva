@@ -95,64 +95,64 @@
                 	<form  method="POST" action="store_edit"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div  class="col-md-4  form-group has-feedback">
-													<label>Select Warehouse</label>
+													<label> Warehouse</label>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value="">Select Warehouse</option>
+													<option value=""> Warehouse</option>
 													{% for data1 in wh_masterlist %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
                                                      {% endfor %}
 												</select>
 										</div>
 											<div  class="col-md-4  form-group has-feedback">
-													<label>Select Region</label>
+													<label> Region</label>
 											 <input type="hidden" name="regionname1" id="regionname1" />
 												<select class="form-control" name="regionid1" id="regionid1">
-													<option value="">Select Region</option>
+													<option value=""> Region</option>
 												</select>
 										</div>
 											<div  class="col-md-4  form-group has-feedback">
-													<label>Select Depo</label>
+													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value="">Select depo</option>
+													<option value=""> depot</option>
 												</select>
 											</div>
 
 										<div  class="col-md-4  form-group has-feedback">
-													<label>Select Bus Station</label>
+													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
-													<option value="">Select bus station</option>
+													<option value=""> bus station</option>
 												</select>
 										</div>
 										<div class="col-md-4 form-group has-feedback">
                                             <input type="hidden" name="stcode" id="stcode" />
 											<label>Store Name *</label>
-										    <input type="text" class="form-control"  name="storename" id="storename1" required>
+										    <input type="text" class="form-control"  name="storename" id="storename1">
 										</div>
 
 										<div class="col-md-4 form-group has-feedback">
-											<label>Legal Name *</label>
-										    <input type="text" class="form-control"  name=" legalname" id="legalname1" required>
+											<label>Legal Name </label>
+										    <input type="text" class="form-control"  name=" legalname" id="legalname1">
 										</div>
 
 										<div class="col-md-4 form-group has-feedback">
-											<label>GST Number *</label>
-										    <input type="text" class="form-control" name="gstnumber" id="gstnumber1" required>
+											<label>GST Number </label>
+										    <input type="text" class="form-control" name="gstnumber" id="gstnumber1">
 										</div>
 										<div class="col-md-4  form-group has-feedback">
-											<label>PAN Card *</label>
-										    <input type="text" class="form-control" name="pancard" id="pancard1"  required>
+											<label>PAN Card </label>
+										    <input type="text" class="form-control" name="pancard" id="pancard1"  >
 										</div>
 
 										<div class="col-md-4   form-group has-feedback">
-											<label>Trade License *</label>
-										    <input type="text" class="form-control" name="tradelicenceno" id="tradelicenceno1" required>
+											<label>Trade License</label>
+										    <input type="text" class="form-control" name="tradelicenceno" id="tradelicenceno1">
 										</div>
 							      <div class="col-md-4 form-group has-feedback">
 											<label>Nature Of Business *</label>
-										    <input type="text" class="form-control" placeholder="nature of business" name="natofbus1"  id="natofbus1"required>
+										    <input type="text" class="form-control" placeholder="nature of business" name="natofbus1"  id="natofbus1">
 											</div>
 											<div  class="col-md-4 form-group has-feedback">
 													<label>Store Type *</label>
@@ -166,11 +166,11 @@
 											</div>
 										<div class="col-md-4  form-group has-feedback">
 											<label>Contact Person *</label>
-										    <input type="text" class="form-control" id="contactperson1" name="contactperson" required>
+										    <input type="text" class="form-control" id="contactperson1" name="contactperson">
 										</div>
 										<div class="col-md-4  form-group has-feedback">
 											<label>Mobile *</label>
-										    <input type="text" class="form-control" id="mobileno1" name="mobileno" required>
+										    <input type="text" class="form-control" id="mobileno1" name="mobileno" pattern= "[6789][0-9]{9}">
 										</div>
 
 
@@ -192,16 +192,16 @@
 										</div>-->
 											<div class="col-md-4  form-group has-feedback">
 											<label>Alternate Mobile *</label>
-										    <input type="text" class="form-control" placeholder="alternate mobile nmber" name="mobileno2" id="mobileno2" pattern= "[6789][0-9]{9}"  required>
+										    <input type="text" class="form-control" placeholder="alternate mobile nmber" name="mobileno2" id="mobileno2" pattern= "[6789][0-9]{9}" >
 											</div>
 
                                         <div class="col-md-4  form-group has-feedback">
 											<label>Email *</label>
-										    <input type="email" name="email" id="email1" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+										    <input type="email" name="email" id="email1" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
 											</div>
 										<div class="col-md-6 form-group has-feedback">
 											<label class="col-form-label col-md-3 col-sm-3 ">Remarks*</label>
-											<textarea   name="remarks" id="remarks1" class="form-control"  rows="2" required></textarea>
+											<textarea   name="remarks" id="remarks1" class="form-control"  rows="2" ></textarea>
 										</div>
 
                                         <input type="hidden" name="storelocation" id="storelocation" />
@@ -258,6 +258,7 @@ $(document).ready(function() {
         },
         success: function(data) {
          var obj = data.data
+
           	console.log(obj.state);
              if(obj){
              $("#stcode").val(obj.storecode);

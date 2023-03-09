@@ -135,6 +135,13 @@ def get_store(request):
                         "alternate_mobileno":i['alternate_mobileno' ],"natureofbusiness":i['natureofbusiness'],'storetype':i['storetype']}
 
         return JsonResponse({'data': data})
+    else:
+        try:
+            data = response.json()
+            messages.error(request,data['message'])
+        except:
+            messages.error(request, data['message'])
+        return redirect('/add_store')
 
 def add_store(request):
     g = geocoder.ip('me', user_agent='http')
@@ -167,12 +174,46 @@ def add_store(request):
     storetype_list = data['itemmasterlist']
 
     if request.method == "POST":
+        gstattach = request.FILES.get("gstattach")
+        panattach = request.FILES.get("panattach")
+        tlattach = request.FILES.get("tlattach")
+        storephoto = request.FILES.get("storephoto")
+
+        if gstattach:
+            gstattach_data = base64.b64encode(gstattach.read())
+            gstattach_name = request.FILES.get("gstattach").name
+
+        else:
+            gstattach_data = None
+            gstattach_name = None
+
+        if panattach:
+            panattach_data = base64.b64encode(panattach.read())
+            panattach_name = request.FILES.get("panattach").name
+        else:
+            panattach_data = None
+            panattach_name = None
+
+        if tlattach:
+            tlattach_data = base64.b64encode(tlattach.read())
+            tlattach_name = request.FILES.get("tlattach").name
+        else:
+            tlattach_data = None
+            tlattach_name= None
+
+        if storephoto:
+            storephoto_data = base64.b64encode(storephoto.read())
+            storephoto_name = request.FILES.get("storephoto").name
+        else:
+            storephoto_data = None
+            storephoto_name = None
+
         url = "http://13.235.112.1/ziva/mobile-api/add-storemaster.php"
         payload = {
             'accesskey': 'MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4',
             "storename": request.POST.get("storename"),
-            'storeattachfilename': request.FILES.get("storephoto").name,
-            'storephoto': base64.b64encode(request.FILES.get("storephoto").file.read()),
+            'storeattachfilename':storephoto_name,
+            'storephoto': storephoto_data ,
             'legalname': request.POST.get("legalname"),
             "depo":request.POST.get("deponame"),
             "depoid": request.POST.get("depoid"),
@@ -183,25 +224,25 @@ def add_store(request):
             "busstationname": request.POST.get("busstationname"),
             "busstationid": request.POST.get("busstationid"),
             'gstnumber': request.POST.get("gstnumber"),
-            'gstattachfilename': request.FILES.get("gstattach").name,
+            'gstattachfilename':  gstattach_name,
             'pancard': request.POST.get("pancard"),
-            'panattachfilename': request.FILES.get("panattach").name,
+            'panattachfilename': panattach_name,
             'tradelicenceno': request.POST.get("tradelicenceno"),
-            'tlattachfilename': request.FILES.get("tlattach").name,
+            'tlattachfilename':tlattach_name,
             'storelocation': str(lat)+","+str(lng),
             'emailid': request.POST.get("email"),
             'storeaddress': request.POST.get("storeaddress"),
             'pincode': request.POST.get("pincode"),
             'state': request.POST.get('state'),
             'contactperson': request.POST.get("contactperson"),
-            'mobileno': request.POST.get("mobileno"),
+            'mobileno': request.POST.get("mobile"),
             'remarks': request.POST.get("remarks"),
             'natureofbusiness':request.POST.get('natofbus'),
             'storetype': request.POST.get('store_type'),
-            'alternatemobileno': request.POST.get('mobileno'),
-            'gstattach': base64.b64encode(request.FILES.get("gstattach").file.read()),
-            'panattach': base64.b64encode(request.FILES.get("panattach").file.read()),
-            'tlattach': base64.b64encode(request.FILES.get("tlattach").file.read()),
+            'alternatemobileno': request.POST.get('altmobileno'),
+            'gstattach': gstattach_data,
+            'panattach': panattach_data,
+            'tlattach': tlattach_data,
 
         }
         payload = json.dumps(payload, cls=BytesEncoder)
@@ -1802,7 +1843,6 @@ def vendor_status_inactive(request, id):
 
     response = requests.request("POST", url, headers=headers, data=payload)
     data = response.json()
-    print(response)
     if response.status_code == 200:
         messages.success(request, data['message'])
         return redirect('vendor_list')
@@ -1822,8 +1862,18 @@ def get_storeregion(request):
         'Content-Type': 'text/plain'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+        except:
+            messages.error(request,response.text)
+        return render(request,'masters/store_master_add.html')
+
+
 def get_storebus(request):
     accesskey = request.session['accesskey']
     warehouse = request.POST.get('warehouse')

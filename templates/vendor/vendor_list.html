@@ -57,7 +57,7 @@
                            <td>{{all_data.emailid}}</td>
                            <!--{% if all_data.status == "Active" %}
                                 <td>
-                                   <i class="fa fa-edit" data-toggle="modal"  onclick="VerifyClick('{{all_data.sonumber}}')" data-target=".bs-example-modal-sm"></i>
+                                   <i class="fa fa-edit" data-toggle="modal"  onclick="VerifyClick('{{all_data.sonumber}}')" data-target="#edit_vendor"></i>
                                    <a href="/vendor_status_active/{{ all_data.sno }}/" onclick="VerifyClick('{{  all_data.sno}}')"><span class="badge badge-success" data-toggle="modal" data-target=".bs-example-modal-sm">
                                        Active </span></a>
 
@@ -84,31 +84,33 @@
           </div>
 </div>
 
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-sm">
-                                            <div class="modal-content">
-
-
-                                        <div class="modal-body">
-                                             <form method="post" action="vendor_edit">
+<div id="edit_vendor" class="modal custom-modal fade"    role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Vendor</h5>
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+            </div>
+             <div class="modal-body">
+                                                                  <form method="post" action="vendor_edit">
                                                     {% csrf_token %}
-                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                                            </button>
 
-                                            <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                            <div class="col-md-6   form-group has-feedback">
 											<label>Item Name *</label>
 										    <input type="text" class="form-control" placeholder="Item name" name="nameitem" id="nameitem" value="{{ data.itemname }}" required>
 										</div>
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                        <div class="col-md-6   form-group has-feedback">
 											<label>HSN Code *</label>
 										    <input type="text" class="form-control" placeholder="HSN Code" name="hsn1" id="hsn1" value = "{{ data.hsncode}}" required>
 										</div>
 
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										<div class="col-md-6  form-group has-feedback">
 											<label>GST *</label>
 										    <input type="text" class="form-control" placeholder="GST" name="gst" id="gst1" value="{{ data.gst }}" required>
 										</div>
-                                        <div  class="col-md-3 col-sm-6  form-group has-feedback">
+                                        <div  class="col-md-6  form-group has-feedback">
 													<label>Category *</label>
 												<select class="form-control" name="category" id="category">
 													{% for categ in categ %}
@@ -117,15 +119,19 @@
 												</select>
 
 										</div>
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										<div class="col-md-6 form-group has-feedback">
 											<label>Manufacture *</label>
 										    <input type="text" class="form-control" placeholder="manufacture" name="manufacture" id="manufacture" value="{{ data.manufacturername }}" required>
 										</div>
 
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										<div class="col-md-6  form-group has-feedback">
 											<label>Latest Purchase *</label>
 										    <input type="text" class="form-control" placeholder="Latest Purchase" name="latestpurchase" id="latestpurchase" value="{{ data.lpp }}" required>
 										</div>
+                                                                      </div>
+                                                                      <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
                                              </form>
                                         </div>
 

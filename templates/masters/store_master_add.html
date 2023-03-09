@@ -31,32 +31,32 @@
 													<label>Select Warehouse</label>
 											 <input type="hidden" name="warehousename" id="warehousename" />
 												<select class="form-control" name="warehouseid" id="warehouseid">
-													<option value="">Select Warehouse</option>
+													<option value="">Warehouse </option>
 													{% for data1 in warehouse %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
                                                      {% endfor %}
 												</select>
 										</div>
 											<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Select Region</label>
+													<label> Region</label>
 											 <input type="hidden" name="regionname" id="regionname" />
 												<select class="form-control" name="regionid" id="regionid">
-													<option value="">Select Region</option>
+													<option value=""> Region</option>
 												</select>
 										</div>
 											<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Select Depo</label>
+													<label> Depot</label>
 											 <input type="hidden" name="deponame" id="deponame" />
 												<select class="form-control" name="depoid" id="depoid">
-													<option value="">Select depo</option>
+													<option value=""> depot</option>
 												</select>
 											</div>
 
 										<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Select Bus Station</label>
+													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname" id="busstationname" />
 												<select class="form-control" name="busstationid" id="busstationid">
-													<option value="">Select bus station</option>
+													<option value=""> bus station</option>
 												</select>
 										</div>
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -64,41 +64,41 @@
 										    <input type="text" class="form-control" placeholder="store name" name="storename" required>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Store Image Attach *</label>
+											<label>Store Image Attach </label>
 											<div class="custom-file">
-    											<input type="file"  name='storephoto' id="storephoto" required>
+    											<input type="file"  name='storephoto' id="storephoto">
 											</div>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Legal Name *</label>
-										    <input type="text" class="form-control" placeholder="legal name" name=" legalname" required>
+											<label>Legal Name </label>
+										    <input type="text" class="form-control" placeholder="legal name" name=" legalname">
 										</div>
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>GST Number *</label>
-										    <input type="text" class="form-control" name="gstnumber" placeholder="GST Number" required>
+											<label>GST Number </label>
+										    <input type="text" class="form-control" name="gstnumber" placeholder="GST Number">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>GST Attach</label>
 											<div class="custom-file">
-    											<input type="file"  name="gstattach"id="customFile5" required>
+    											<input type="file"  name="gstattach"id="customFile5">
 											</div>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>PAN Card *</label>
-										    <input type="text" class="form-control" name="pancard" placeholder="Pan card" required>
+											<label>PAN Card </label>
+										    <input type="text" class="form-control" name="pancard" placeholder="Pan card">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>PAN Attach *</label>
+											<label>PAN Image </label>
 											<div class="custom-file">
-    											<input type="file" name="panattach" id="customFile4" required>
+    											<input type="file" name="panattach" id="customFile4">
 											</div>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Trade License *</label>
-										    <input type="text" class="form-control" name="tradelicenceno" placeholder="trade license" required>
+											<label>Trade Image </label>
+										    <input type="text" class="form-control" name="tradelicenceno" placeholder="trade license">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Trade Attach *</label>
+											<label>Trade Image </label>
 											<div class="custom-file">
     											<input type="file"  name="tlattach" id="trade">
 											</div>
@@ -132,13 +132,13 @@
 
 
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Nature Of Business *</label>
-										    <input type="text" class="form-control" placeholder="nature of business" name="natofbus" required>
+											<label>Nature Of Business </label>
+										    <input type="text" class="form-control" placeholder="nature of business" name="natofbus">
 											</div>
 											<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Store Type *</label>
+													<label>Store Type </label>
 												<select class="form-control" name="store_type">
-														<option  value="">Select store type</option>
+														<option  value=""> store type</option>
 													{% for data in data %}
 														<option  value="{{ data.displayname }}">{{ data.displayname }} </option>
 													{% endfor %}
@@ -146,24 +146,24 @@
 												</select>
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Contact Person *</label>
-										    <input type="text" class="form-control" placeholder="contact person" name="contactperson" required>
+											<label>Contact Person </label>
+										    <input type="text" class="form-control" placeholder="contact person" name="contactperson">
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Mobile *</label>
-										    <input type="text" class="form-control" placeholder="mobile number" name="mobileno" pattern= "[6789][0-9]{9}"  required>
+											<label>Mobile </label>
+										    <input type="text" class="form-control" placeholder="mobile number" name="mobile" pattern= "[6789][0-9]{9}" required>
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Alternate Mobile *</label>
-										    <input type="text" class="form-control" placeholder="alternate mobile nmber" name="mobileno" pattern= "[6789][0-9]{9}"  required>
+											<label>Alternate Mobile </label>
+										    <input type="text" class="form-control" placeholder="alternate mobile nmber" name="altmobileno" pattern= "[6789][0-9]{9}" >
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Email *</label>
-										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+											<label>Email </label>
+										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" >
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label class="col-form-label col-md-3 col-sm-3 ">Remarks*</label>
-											<textarea id="message"  name="remarks"class="form-control "   placeholder="remarks" required></textarea>
+											<label class="col-form-label col-md-3 col-sm-3 ">Remarks</label>
+											<textarea id="message"  name="remarks"class="form-control "   placeholder="remarks" ></textarea>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 										    	<input type="hidden" class="form-control" name="location" placeholder="latitude"  id="location">
