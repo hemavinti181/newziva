@@ -12,35 +12,16 @@
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button>
+                    <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button></a>
                 </div>
             </div>
               </div>
-            <div class="clearfix"></div>
-                        {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-dismissible alert-success">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        ×
-                                    </button>
-                                     <strong>{{message}}</strong>
-                                </div>
-                                {% endfor %}
-                        {% endif %}
-            <div class="row">
+             <div class="clearfix"></div>
+            <div class="row" style="display: block;">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-                  <div class="x_title">
-                    <h2>GRN Item List</h2>
-                    <div class="clearfix"></div>
-                  </div>
                   <div class="x_content">
-                      <div class="row">
-                          <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
-                    </p>
-                        <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display table-bordered" style="width:100%;">
                       <thead>
                         <tr>
 

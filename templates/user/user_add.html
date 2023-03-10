@@ -46,7 +46,9 @@
 												<select class="form-control" name="level">
 													<option>select level</option>
                                                     {% for all_data3 in all_data3 %}
-														<option  value="{{ all_data3.ddcode}}">{{ all_data3.displayname }}</option>
+														{% if  all_data3.status == "Active" %}
+															<option  value="{{ all_data3.ddcode}}">{{ all_data3.displayname }}</option>
+														{% endif %}
 													{% endfor %}
 												</select>
                                         </div>
@@ -58,7 +60,9 @@
 												<select class="form-control" name="designation">
 													<option>Select designation</option>
                                                     {% for all_data in all_data %}
-														<option  value="{{ all_data.ddcode }}">{{ all_data.displayname }}</option>
+														{% if  all_data.status == "Active" %}
+															<option  value="{{ all_data.ddcode }}">{{ all_data.displayname }}</option>
+													   {% endif %}
 													{% endfor %}
 												</select>
                                         </div>
@@ -68,7 +72,9 @@
 												<select class="form-control" name="role" id="role">
 													<option>select role</option></option>
 													{% for all_data2 in all_data2 %}
-														<option  value="{{ all_data2.ddcode}}">{{ all_data2.displayname }}</option>
+														{% if  all_data2.status == "Active" %}
+															<option  value="{{ all_data2.ddcode}}">{{ all_data2.displayname }}</option>
+														{% endif %}
 													{% endfor %}
 												</select>
                                         </div>
@@ -77,7 +83,9 @@
 												<select class="form-control" name="warehouse" id="warehouse" style="display: none;">
 														<option>select warehouse</option>
 													{% for data in data %}
+														{% if  data.status == "Active" %}
 														<option  value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
+													{% endif %}
 													{% endfor %}
 												</select>
                                         </div>

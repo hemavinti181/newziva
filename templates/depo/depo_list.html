@@ -44,8 +44,6 @@
                                     <th>Depo Manager</th>
                                     <th>Address</th>
                                      <th>Contact No</th>
-                                    <th>GST</th>
-                                    <!--<th>Licence</th>-->
                                     <th>Action</th>
                         </tr>
                       </thead>
@@ -57,8 +55,6 @@
                        <td>{{  all_data.depo_manager}}</td>
                        <td>{{ all_data.address }}</td>
                        <td>{{ all_data.depo_contact_no }}</td>
-                       <td><a href="{{ all_data.gstattach }}" style="color:#075ab3;">{{ all_data.gst_no }}</a></td>
-                           <!--<td>{{ all_data.licenseno}}</td>-->
                            <td>
                         {% if all_data.status == "Active" %}
 
@@ -98,21 +94,21 @@
             <div class="modal-body">
                <form  method="POST" action="depo_edit"   enctype="multipart/form-data">
 											{% csrf_token %}
-										<div class="col-md-4 form-group has-feedback">
-											<label>Depo Name *</label>
+										<div class="col-md-6 form-group has-feedback">
+											<label>Depo Name </label>
 										    <input type="text" class="form-control" name="deponame1"  id="deponame1"required>
 										</div>
 
-										<div class="col-md-4  form-group has-feedback">
-											<label>Depo Manager *</label>
+										<div class="col-md-6  form-group has-feedback">
+											<label>Depo Manager </label>
 										    <input type="text" class="form-control"  name=" depomanager1" id="depomanager1" required>
 										</div>
-                                        <div class="col-md-4 form-group has-feedback">
-											<label>Mobile *</label>
+                                        <div class="col-md-6 form-group has-feedback">
+											<label>Mobile</label>
 										    <input type="text" class="form-control"  name="mobileno1" id="mobileno1" required>
 											</div>
 
-										<div class="col-md-6  form-group has-feedback">
+										<!--<div class="col-md-6  form-group has-feedback">
 											<label>GST Number *</label>
 										    <input type="text" class="form-control" name="gstnumber1" id="gstnumber1" required>
 										</div>
@@ -120,11 +116,11 @@
                                         <div class="col-md-6 form-group has-feedback">
 											<label> License *</label>
 										    <input type="text" class="form-control" name="license1" id="license1" required>
-										</div>
+										</div>-->
 
 												<div  class="col-md-6  form-group has-feedback">
 													<input type="hidden" name="regionname" id="regn" />
-													<label>Region *</label>
+													<label>Region </label>
 												<select class="form-control" name="regionid1" id="regionid1" required>
 													{% for data1 in data %}
                             							<option value="{{ data1.regionid }}" selected>{{ data1.regionname }}</option>
@@ -134,7 +130,7 @@
 
 
                                         <div class="col-md-6  form-group has-feedback">
-											<label>Address *</label>
+											<label>Address </label>
 										    <input type="text" class="form-control" name="address1" id="address1" />
 										</div>
                                           <input type="hidden" name="depoid" id="depoid" />

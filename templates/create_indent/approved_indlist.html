@@ -26,8 +26,8 @@
                         <tr>
                                     <th>S No</th>
                                     <th>DC Number</th>
-                                    <th>Warehouse</th>
-                                    <th>Depo</th>
+                                    <th>Out pass number</th>
+                                    <th>Indent Details</th>
                                     <th>Created By</th>
                                     <th>Action</th>
 
@@ -37,8 +37,8 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ all_data.dc_number }}</td>
-                                    <td>{{ all_data.warehouse_name }}</td>
-                                     <td> {{ all_data.region_name }} </td>
+                                    <td>{{ all_data.outpass_number }}</td>
+                                    <td> {{ all_data.region_name }}->{{ all_data.warehouse_name }}</td>
                                     <td>{{ all_data.modified_by }}</td>
                                     {% if all_data.status == 'Accepted' %}
                                     <td>

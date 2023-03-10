@@ -28,50 +28,52 @@
 										{% csrf_token %}
 
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Item Name *</label>
-										    <input type="text" class="form-control" placeholder="Item name" name="name" id="name" required>
+											<label>Item Name</label>
+										    <input type="text" class="form-control" placeholder="Item name" name="name" id="name">
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>HSN Code *</label>
-										    <input type="text" class="form-control" placeholder="HSN code" name="hsncode" id="hsn" required>
+											<label>HSN Code</label>
+										    <input type="text" class="form-control" placeholder="HSN code" name="hsncode" id="hsn">
 										</div>
 
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>GST *</label>
-										    <input type="text" class="form-control" placeholder="GST" name="gst" id="gst" required>
+											<label>GST</label>
+										    <input type="text" class="form-control" placeholder="GST" name="gst" id="gst" >
 										</div>
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Category *</label>
+													<label>Category</label>
+
 												<select class="form-control" name="category" id="category">
+													<option value=" ">category</option>
 													{% for data in cat_data %}
-													<option value="{{ data.displayname }}" selected>{{ data.displayname }}</option>
-                       								 {% endfor %}
+													 	{% if  data.status == "Active" %}
+																<option value="{{ data.displayname }}">{{ data.displayname }}</option>
+													 	{% endif %}
+													{% endfor %}
 												</select>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Manufacture *</label>
-										    <input type="text" class="form-control" placeholder="manufacture" name="manufacture" id="manufacture" required>
-										</div>
-
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Latest Purchase *</label>
-										    <input type="text" class="form-control" placeholder="latest purchase" name="latestpurchase" id="latestpurchase" required>
+											<label>Manufacture</label>
+										    <input type="text" class="form-control" placeholder="manufacture" name="manufacture" id="manufacture" >
 										</div>
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>MRP *</label>
-										    <input type="text" class="form-control" placeholder="MRP" name="mrp" id="'mrp" required>
+											<label>MRP</label>
+										    <input type="text" class="form-control" placeholder="MRP" name="mrp" id="'mrp" >
 											</div>
                                                 <div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>UOM *</label>
+													<label>Per Case</label>
 												<select class="form-control" name="uom">
+													<option value=" ">per case</option>
 													{% for data in uom_data %}
-													<option value="{{ data.displayname }}" selected>{{ data.displayname }}</option>
+														{% if  data.status == "Active" %}
+															<option value="{{ data.displayname }}">{{ data.displayname }}</option>
+														{% endif %}
                        								 {% endfor %}
 												</select>
 												</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Image File *</label>
-    											<input type="file"  id="customFile4" name="imagefile" required>
+											<label>Image File</label>
+    											<input type="file"  id="customFile4" name="imagefile" >
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" id="sno" name="sno">

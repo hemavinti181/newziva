@@ -159,9 +159,9 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
+                                    <th>Indent number</th>
                                     <th>DC Number</th>
-                                    <th>Warehouse</th>
-                                    <th>Region</th>
+                                    <th>Indent Details</th>
                                     <th>Created By</th>
                                     <th>Status</th>
                         </tr>
@@ -169,9 +169,9 @@
                             {% for all_data in data %}
                        <tr>
                            <td>{{ forloop.counter }}</td>
+                          <td> {{ all_data.indentno }}</td>
                          <td>{{ all_data.dc_number }}</td>
-                      <td>{{ all_data.warehouse_name }}</td>
-                       <td> {{ all_data.region_name }} </td>
+                      <td> {{ all_data.region_name }} ->{{ all_data.warehouse_name }}</td>
                        <td>{{  all_data.created_by}}</td>
 
                                 <td>

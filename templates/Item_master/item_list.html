@@ -42,7 +42,7 @@ background-color: #1372ba !important;
                                     <th>Item Name</th>
                                     <th>HSN</th>
                                     <th>GST</th>
-                                    <th>Latest Purchase Price</th>
+                                    <!--<th>Latest Purchase Price</th>-->
                                     <th>MRP </th>
                                     <th>Category</th>
                                     <th>Manufacture</th>
@@ -59,7 +59,7 @@ background-color: #1372ba !important;
                        <td> {{ all_data.itemname }} </td>
                        <td>{{  all_data.hsncode}}</td>
                        <td>{{ all_data.gst }}</td>
-                           <td>{{ all_data.lpp }}</td>
+                           <!--<td>{{ all_data.lpp }}</td>-->
                            <td>{{ all_data.mrp }}</td>
                        <td>{{ all_data.category }}</td>
                        <td>{{ all_data.manufacturername }}</td>
@@ -121,9 +121,12 @@ background-color: #1372ba !important;
                                         <div  class="col-md-6 col-sm-6  form-group has-feedback">
 													<label>Category *</label>
 												<select class="form-control" name="category" id="category1">
+                                                    	<option value=" ">category</option>
 													{% for categ in category %}
-													<option value="{{ categ.displayname }}" selected>{{ categ.displayname }}</option>
-                       								 {% endfor %}
+                                                    {% if  categ.status == "Active" %}
+													    <option value="{{ categ.displayname }}" selected>{{ categ.displayname }}</option>
+                       								 {% endif %}
+                                                    {% endfor %}
 												</select>
 
 										</div>
@@ -132,19 +135,22 @@ background-color: #1372ba !important;
 										    <input type="text" class="form-control"  name="manufacture" id="manufacture"  required>
 										</div>
 
-										<div class="col-md-6 col-sm-6  form-group has-feedback">
+										<!--<div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Latest Purchase *</label>
 										    <input type="text" class="form-control"  name="latestpurchase" id="latestpurchase"  required>
-										</div>
+										</div>-->
 											<div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>MRP *</label>
 										    <input type="text" class="form-control"  name="mrp" id="mrp"  required>
 											</div>
                                                 <div  class="col-md-6 col-sm-6  form-group has-feedback">
-													<label>UOM *</label>
+													<label>Per Case *</label>
 													<select class="form-control" name="uom" id="uom">
+                                                        	<option value=" ">per case</option>
 														{% for uom in uom %}
-														<option value="{{ uom.displayname }}" selected>{{ uom.displayname }}</option>
+                                                            {% if  uom.status == "Active" %}
+														        <option value="{{ uom.displayname }}" selected>{{ uom.displayname }}</option>
+                                                            {% endif %}
                        								 	{% endfor %}
 													</select>
 												</div>

@@ -51,6 +51,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+
 ROOT_URLCONF = 'ziva_Project.urls'
 
 TEMPLATES = [
@@ -138,3 +140,4 @@ MESSAGE_TAGS = {
  }
 
 LOGIN_URL = '/login'
+
