@@ -2729,14 +2729,27 @@ def sale_item_list(request):
         return render(request, 'sales/sale_item_add2.html')
 
 def proformainvoice(request):
-     if request.method == "GET":
-        return render(request, 'sales/sales_new.html')
-     elif request.method == "POST":
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    whlist = data['warehouselist']
+
+    if request.method == "GET":
+        return render(request, 'sales/sales_new.html',{"whlist":whlist})
+    elif request.method == "POST":
+
         if 'search' in request.POST:
             url = "http://13.235.112.1/ziva/mobile-api/generate-salebill-number.php"
 
             payload = {
-                "accesskey": "MDExNjczMjAyMi0xMi0xNyAwNjoxNzo1Nw==",
+                "accesskey": accesskey,
                 "storeid": request.POST.get('txtStoreId'),
             }
             headers = {
@@ -2744,7 +2757,6 @@ def proformainvoice(request):
             }
             payload = json.dumps(payload, cls=BytesEncoder)
             response = requests.request("POST", url, headers=headers, data=payload)
-            print(payload)
             data=response.json()
             stid=request.POST.get('txtStoreId')
             tax_inv = data['taxinvoice']
@@ -2755,41 +2767,48 @@ def proformainvoice(request):
             request.session['customer_mobile'] = cus_mobile
             request.session['storeid'] = stid
             if response.status_code == 200:
-                messages.success(request, data['message'])
-                return redirect('proformainvoice')
+                data = response.json()
+                stid = request.POST.get('txtStoreId')
+                tax_inv = data['taxinvoice']
+                cus_name = data['customer_name']
+                cus_mobile = data['customer_mobile']
+                request.session['taxinvoice'] = tax_inv
+                request.session['customer_name'] = cus_name
+                request.session['customer_mobile'] = cus_mobile
+                request.session['storeid'] = stid
             else:
                 messages.error(request, data['message'])
                 return redirect('proformainvoice')
 
 
-        if 'add' in request.POST:
+    if 'add' in request.POST:
             tax_inv =  request.session['taxinvoice']
             cus_name = request.session['customer_name']
             cus_mobile = request.session['customer_mobile']
             stid = request.session['storeid']
 
             url = "http://13.235.112.1/ziva/mobile-api/add-saleitem.php"
-            payload = {
-                "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+            payload =  json.dumps({
+                "accesskey": accesskey,
                 "cp_sno": request.POST.get('cpsno'),
                 "customername": cus_name,
                 "customermobile": cus_mobile,
                 "quantity": request.POST.get('quantity'),
+                "discount":"0",
                 "storeid":stid ,
                 "taxinvoice": tax_inv,
-            }
+            })
 
-            payload = json.dumps(payload, cls=BytesEncoder)
             headers = {
                 'Content-Type': 'application/json'
             }
 
-            r = requests.post(url, payload, headers=headers)
+            r = requests.post(url, data=payload, headers=headers)
             data = r.json()
             url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
 
             payload = json.dumps({
-                "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+                "accesskey": accesskey,
                 "sonumber": tax_inv
             })
             headers = {
@@ -2800,19 +2819,18 @@ def proformainvoice(request):
 
             if response.status_code == 200:
                 data = response.json()
-                messages.success(request, data['message'])
                 sale_item_list = data['saleitemlist']
                 return render(request, 'sales/sales_new.html',
-                              {"all_data": sale_item_list, 'data': sale_item_list[0]})
+                              {"all_data": sale_item_list, 'data': sale_item_list[0],'whlist':whlist})
             else:
                 data = response.json()
                 messages.error(request, data['message'])
                 return redirect('proformainvoice')
-        if 'complete' in request.POST:
+    if 'complete' in request.POST:
             url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
 
             payload = json.dumps({
-                "accesskey": "LTIwMjIxMjIwMDc2ODg1",
+                "accesskey": accesskey,
                 "sonumber": request.POST.get('txtHdnId'),
                 "paymentmode": request.POST.get('paymenttype'),
                 "remarks": ""
@@ -2820,18 +2838,15 @@ def proformainvoice(request):
             headers = {
                 'Content-Type': 'application/json'
             }
-
             response = requests.request("GET", url, headers=headers, data=payload)
-
             data = response.json()
-            print(payload)
             if response.status_code == 200:
                 messages.success(request, data['message'])
                 return redirect('proformainvoice')
             else:
                 messages.error(request, data['message'])
                 return redirect('proformainvoice')
-        return render(request, 'sales/sales_new.html')
+    return render(request, 'sales/sales_new.html',{'whlist':whlist})
 
 def grn(request):
     accesskey = request.session['accesskey']
@@ -2906,11 +2921,13 @@ def deliver_challan(request):
     return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan})
 
 def deliver_challan_status(request):
+
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/delivery-challan.php"
 
     payload = json.dumps({
 
-        "accesskey":"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+        "accesskey":accesskey,
         "sonumber":request.POST.get('txtHdnId'),
         "agentname":request.POST.get('agentname'),
         "vehicledetails":request.POST.get('vehicaldetails'),
@@ -3644,10 +3661,12 @@ def partially_supplied(request):
     else:
         return render(request, 'create_indent/partiallysupplied.html')
 def sales_list(request):
+
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/sales-list.php"
 
     payload = json.dumps({
-        "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+        "accesskey": accesskey,
         "type": "Pending"
     })
     headers = {
@@ -3661,10 +3680,12 @@ def sales_list(request):
 
 
 def sales_list_outpass(request):
+
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/sales-list.php"
 
     payload = json.dumps({
-        "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+        "accesskey": accesskey,
         "type": "Outpass"
     })
     headers = {
@@ -3728,6 +3749,7 @@ def autocompleteModel(request):
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 def get_store_data(request):
+
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
     stid = request.POST.get('store_id')
@@ -3744,7 +3766,6 @@ def get_store_data(request):
         'Content-Type': 'application/json'
 
     }
-
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
 
@@ -3752,17 +3773,18 @@ def get_store_data(request):
 
 def store_search(request):
 
+    accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
     url = "http://13.235.112.1/ziva/mobile-api/store-master-search.php"
 
     payload = json.dumps({
-            "accesskey":"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
-            "storename":serchterm
+            "accesskey":accesskey,
+            "storename":serchterm,
+             "depoid":request.POST.get('depoid')
     })
     headers = {
         'Content-Type': 'text/plain'
     }
-
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
 

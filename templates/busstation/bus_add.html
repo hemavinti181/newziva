@@ -36,7 +36,9 @@
 											<input type="hidden" name="deponame" id="deponame" />
 												<select class="form-control" name="depoid" id="depoid">
 													{% for data1 in data %}
+                                                       {% if data1.status == 'Active' %}
                             							<option value="{{ data1.depoid }}" selected>{{ data1.depo_name }}</option>
+                                                    {% endif %}
                                                     {% endfor %}
 												</select>
 										</div>
