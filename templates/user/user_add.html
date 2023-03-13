@@ -12,7 +12,7 @@
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-					<a href="user_list"><button type="submit" class="btn btn-primary">user List</button></a>
+					<a href="user_list"><button type="submit" class="btn btn-primary">User List</button></a>
                 </div>
             </div>
               </div>
@@ -27,24 +27,24 @@
 									<form class="form-label-left input_mask" method="POST" action="user_add"   enctype="multipart/form-data">
 											{% csrf_token %}
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>User Id *</label>
-										    <input type="text" class="form-control" placeholder="user id" name="uid" required>
+											<label>User Id </label>
+										    <input type="text" class="form-control" placeholder="user id" name="uid">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>User Name *</label>
-										    <input type="text" class="form-control" placeholder="user name" name="username" required>
+											<label>User Name </label>
+										    <input type="text" class="form-control" placeholder="user name" name="username" >
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Mobile Number*</label>
-										    <input type="text" name="mobile" class="form-control" placeholder="mobile number" pattern= "[6789][0-9]{9}" required>
+											<label>Mobile Number</label>
+										    <input type="text" name="mobile" class="form-control" placeholder="mobile number" pattern= "[6789][0-9]{9}">
                                          </div>
                                          <div class="col-md-3 col-sm-3  form-group has-feedback" >
-											<label>Email Id*</label>
-										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
-                                         </div>
-											<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+											<label>Email Id</label>
+										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" >
+										 </div>
+											<div  class="col-md-3 col-sm-3  form-group has-feedback" >
 												<select class="form-control" name="level">
-													<option>select level</option>
+													<option>Level</option>
                                                     {% for all_data3 in all_data3 %}
 														{% if  all_data3.status == "Active" %}
 															<option  value="{{ all_data3.ddcode}}">{{ all_data3.displayname }}</option>
@@ -53,12 +53,12 @@
 												</select>
                                         </div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-												<input type="file"  name="image" id="customFile4" required>
+												<input type="file"  name="image" id="customFile4" >
 											</div>
 										  <div  class="col-md-3 col-sm-6  form-group has-feedback">
 
 												<select class="form-control" name="designation">
-													<option>Select designation</option>
+													<option> Designation</option>
                                                     {% for all_data in all_data %}
 														{% if  all_data.status == "Active" %}
 															<option  value="{{ all_data.ddcode }}">{{ all_data.displayname }}</option>
@@ -70,7 +70,7 @@
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback" >
 
 												<select class="form-control" name="role" id="role">
-													<option>select role</option></option>
+													<option> Role</option></option>
 													{% for all_data2 in all_data2 %}
 														{% if  all_data2.status == "Active" %}
 															<option  value="{{ all_data2.ddcode}}">{{ all_data2.displayname }}</option>
@@ -81,7 +81,7 @@
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
 													<input type="hidden" name="warehousename" id="warehousename" />
 												<select class="form-control" name="warehouse" id="warehouse" style="display: none;">
-														<option>select warehouse</option>
+														<option> Warehouse</option>
 													{% for data in data %}
 														{% if  data.status == "Active" %}
 														<option  value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
@@ -111,17 +111,6 @@
 												</select>
                                         </div>
 
-
-
-										<div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-										<div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-										<div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
 										<div class="form-group">
 											<div class="col-md-6 col-sm-6  offset-md-5">
 												<button type="submit" class="btn btn-primary">Save</button>

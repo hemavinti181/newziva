@@ -135,5 +135,6 @@ urlpatterns = [
     path('get_storeregion',views.get_storeregion,name='get_storeregion'),
     path('get_storedepo',views.get_storedepo,name='get_storedepo'),
     path('get_storebus',views.get_storebus,name='get_storebus'),
-    path('store_sub_list/<str:id>/',views.store_sub_list,name='store_sub_list')
+    path('store_sub_list/<str:id>/',views.store_sub_list,name='store_sub_list'),
+    path('region_status_active',views.region_status_active,name='region_status_active')
 ]

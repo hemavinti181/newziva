@@ -40,7 +40,7 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Depo Code</th>
-                                    <th>Depo Name</th>
+                                    <th>Depo Details</th>
                                     <th>Depo Manager</th>
                                     <th>Address</th>
                                      <th>Contact No</th>
@@ -51,7 +51,7 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td><a href = " {{ all_data.depophoto }}" style="color:#075ab3;">{{ all_data.depoid }}</a></td>
-                       <td> {{ all_data.depo_name }} </td>
+                       <td> {{ all_data.regionname }} ---> {{ all_data.depo_name }} </td>
                        <td>{{  all_data.depo_manager}}</td>
                        <td>{{ all_data.address }}</td>
                        <td>{{ all_data.depo_contact_no }}</td>
@@ -96,16 +96,16 @@
 											{% csrf_token %}
 										<div class="col-md-6 form-group has-feedback">
 											<label>Depo Name </label>
-										    <input type="text" class="form-control" name="deponame1"  id="deponame1"required>
+										    <input type="text" class="form-control" name="deponame1"  id="deponame1">
 										</div>
 
 										<div class="col-md-6  form-group has-feedback">
 											<label>Depo Manager </label>
-										    <input type="text" class="form-control"  name=" depomanager1" id="depomanager1" required>
+										    <input type="text" class="form-control"  name=" depomanager1" id="depomanager1">
 										</div>
                                         <div class="col-md-6 form-group has-feedback">
 											<label>Mobile</label>
-										    <input type="text" class="form-control"  name="mobileno1" id="mobileno1" required>
+										    <input type="text" class="form-control"  name="mobileno1" id="mobileno1">
 											</div>
 
 										<!--<div class="col-md-6  form-group has-feedback">
@@ -121,7 +121,7 @@
 												<div  class="col-md-6  form-group has-feedback">
 													<input type="hidden" name="regionname" id="regn" />
 													<label>Region </label>
-												<select class="form-control" name="regionid1" id="regionid1" required>
+												<select class="form-control" name="regionid1" id="regionid1" >
 													{% for data1 in data %}
                             							<option value="{{ data1.regionid }}" selected>{{ data1.regionname }}</option>
                                                     {% endfor %}

@@ -27,22 +27,21 @@
 											{% csrf_token %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Region Name *</label>
-										    <input type="text" class="form-control" placeholder="Region name" name="regionname" required>
+										    <input type="text" class="form-control" placeholder="Region name" name="regionname">
 										</div>
 
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Region Manager *</label>
-										    <input type="text" class="form-control" placeholder="Region manager" name=" regionmanager" required>
+										    <input type="text" class="form-control" placeholder="Region manager" name=" regionmanager">
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Mobile *</label>
-										    <input type="text" class="form-control" placeholder="Mobile number" name="mobileno" required>
+										    <input type="text" class="form-control" placeholder="Mobile number" name="mobileno" >
 											</div>
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback">
 													<label>Warehouse *</label>
 											<input type="hidden" name="warehousename" id="warehousename" />
-												<select class="form-control" name="whid" id="whid" required>
-                                                    <option>--Select wearehouse--</option>
+												<select class="form-control" name="whid" id="whid" >
 													{% for data1 in data %}
                             							<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
                                                     {% endfor %}

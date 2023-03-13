@@ -27,25 +27,16 @@
 											{% csrf_token %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Bus Name *</label>
-										    <input type="text" class="form-control" placeholder="Bus name" name="busname" required>
+										    <input type="text" class="form-control" placeholder="Bus name" name="busname">
 										</div>
 
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Bus Station Manager *</label>
-										    <input type="text" class="form-control" placeholder="Bus station manager" name=" busmanager" required>
-										</div>
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Bus Station Mobile *</label>
-										    <input type="text" class="form-control" placeholder="Mobile number" name="mobileno" required>
-											</div>
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback">
 
 													<label>Depo *</label>
-											<input type="hidden" name="diponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid" required>
-                                                    <option>--Select Depo--</option>
+											<input type="hidden" name="deponame" id="deponame" />
+												<select class="form-control" name="depoid" id="depoid">
 													{% for data1 in data %}
-                            							<option value="{{ data1.depoid }}">{{ data1.depo_name }}</option>
+                            							<option value="{{ data1.depoid }}" selected>{{ data1.depo_name }}</option>
                                                     {% endfor %}
 												</select>
 										</div>

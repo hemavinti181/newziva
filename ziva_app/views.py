@@ -92,24 +92,31 @@ def store_master(request):
         data = response.json()
         storetype_list = data['itemmasterlist']
 
+        if request.method == 'POST':
 
+            url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
 
-        url = "http://13.235.112.1/ziva/mobile-api/adminstore-master-list.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "warehouseid": request.POST.get('warehouseid'),
+                "regionid": request.POST.get('regionid'),
+                "depoid": request.POST.get('depoid'),
+                "busstationid": request.POST.get('busstationid')
 
-        payload = json.dumps({
-            "accesskey": accesskey
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            store_masterlist = data['adminstoremasterlist']
-            return render(request, 'masters/store_master_Sub_list.html', {"list": store_masterlist,'wh_masterlist':wh_masterlist,'storetype_list':storetype_list})
-        else:
-            return render(request, 'masters/store_master_Sub_list.html', {'wh_masterlist': wh_masterlist,'storetype_list':storetype_list})
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                store_masterlist = data['adminstoremasterlistdata']
+                return render(request, 'masters/store_master_Sub_list.html', {"list": store_masterlist,'wh_masterlist':wh_masterlist,'storetype_list':storetype_list})
+            else:
+                return render(request, 'masters/store_master_Sub_list.html', {'wh_masterlist': wh_masterlist,'storetype_list':storetype_list})
+        return render(request, 'masters/store_master_Sub_list.html',
+                      {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
     else:
             accesskey = request.session['accesskey']
             url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
@@ -492,6 +499,11 @@ def item_add(request):
 
 
     if request.method == "POST":
+        image = request.FILES.get("imagefile")
+        if image:
+            image_data = base64.b64encode(image.read())
+        else:
+            image_data = None
 
         url = "http://13.235.112.1/ziva/mobile-api/add-item-master.php"
         payload = {
@@ -505,20 +517,24 @@ def item_add(request):
             "mrp": request.POST.get('mrp'),
             "manufacturername": request.POST.get('manufacture'),
             "uom": request.POST.get('uom'),
-            "image": base64.b64encode(request.FILES.get("imagefile").file.read()),
+            "image": image_data,
         }
         payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
             'Content-Type': 'application/json'
         }
         r = requests.post(url, payload, headers=headers)
-        print(r)
-        data = r.json()
         if r.status_code == 200:
+            data = r.json()
             messages.success(request, data['message'])
             return redirect('item_master')
         else:
-            messages.error(request, data['message'])
+            try:
+                data = r.json()
+                messages.error(request, data['message'])
+            except:
+                messages.error(request,response.text)
+            return redirect('item_master')
 
     else:
 
@@ -1383,6 +1399,31 @@ def depo_add(request):
 
 
     if request.method == "POST":
+        gstattach = request.FILES.get("gstattach")
+        depofile = request.FILES.get("depofile")
+        licattach = request.FILES.get("licattach")
+        if licattach:
+            gstattach = base64.b64encode(gstattach.read())
+            gst_name = request.FILES.get("gstattach").name
+
+        else:
+            gstattach = None
+            gst_name = None
+        if licattach:
+            licenceattach_data = base64.b64encode(licattach.read())
+            licenceattach_name = request.FILES.get("licattach").name
+
+        else:
+            licenceattach_data = None
+            licenceattach_name = None
+        if depofile:
+            depofile_data = base64.b64encode(depofile.read())
+            depofile_name = request.FILES.get("depofile").name
+
+        else:
+            depofile_data = None
+            depofile_name = None
+
         id=request.POST.get('regionid')
         for i in regionlist:
             if i['regionid'] == id:
@@ -1400,13 +1441,13 @@ def depo_add(request):
                     "depo_manager": request.POST.get("depomanager"),
                     "location":  str(lat)+","+str(lng),
                     "depo_contact_no": request.POST.get('mobileno'),
-                    "gstattach": base64.b64encode(request.FILES.get("gstattach").file.read()),
-                    "gstattachfilename": request.FILES.get("gstattach").name,
+                    "gstattach": gstattach,
+                    "gstattachfilename": gst_name,
                     "licence":request.POST.get("license"),
-                    "licenceattach":base64.b64encode(request.FILES.get("licattach").file.read()),
-                    "licencefilename": request.FILES.get("licattach").name,
-                    "depoattach": base64.b64encode(request.FILES.get("depofile").file.read()),
-                    "depoattachfilename": request.FILES.get("depofile").name,
+                    "licenceattach":licenceattach_data,
+                    "licencefilename": licenceattach_name,
+                    "depoattach":  depofile_name,
+                    "depoattachfilename":depofile_data,
                     "warehouseid": whid,
                     "warehouse": whname,
                     "regionid": request.POST.get('regionid'),
@@ -1681,9 +1722,10 @@ def region_edit(request):
 
 
 def warehouse_list(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4\"\r\n   \r\n}"
+    payload = json.dumps({"accesskey":accesskey})
     headers = {
         'Content-Type': 'text/plain'
     }
@@ -1697,10 +1739,10 @@ def warehouse_list(request):
 
 
 def warehouse_add(request):
-
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
     payload = json.dumps({
-        "accesskey": "MDgxNzcyMDIyLTExLTA5IDE1OjI0OjQ2",
+        "accesskey": accesskey,
         "regionid": ""
     })
     headers = {
@@ -1714,27 +1756,59 @@ def warehouse_add(request):
 
 
     if request.method == "POST":
+        gstattach = request.FILES.get("gstattach")
+        panattach = request.FILES.get("panattach")
+        licattach = request.FILES.get("licattach")
+        warehouse = request.FILES.get("warehousefile")
+        if gstattach:
+            gstattach = base64.b64encode(gstattach.read())
+            gst_name = request.FILES.get("gstattach").name
+
+        else:
+            gstattach = None
+            gst_name = None
+        if panattach:
+            panattach_data = base64.b64encode(panattach.read())
+            panattach_name = request.FILES.get("panattach").name
+
+        else:
+            panattach_data = None
+            panattach_name = None
+        if licattach:
+            licattach_data = base64.b64encode(licattach.read())
+            licattach_name = request.FILES.get("licattach").name
+
+        else:
+            licattach_data = None
+            licattach_name = None
+        if warehouse:
+            warehouse_data = base64.b64encode(warehouse.read())
+            warehouse_name = request.FILES.get("warehouse").name
+
+        else:
+            warehouse_data = None
+            warehouse_name = None
 
         url = "http://13.235.112.1/ziva/mobile-api/add-warehousemaster.php"
         payload = {
-            "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+            "accesskey": accesskey,
             "regionid": request.POST.get('depo'),
             "warehousename": request.POST.get('warehousename'),
-            "gstnumber": request.POST.get('gstnumber'),
-            "licenseno": request.POST.get('licenceno'),
-            "panno": request.POST.get('pancard'),
+            "gstnumber": " ",
+            "licenseno": " ",
+            "panno": " ",
             "address": request.POST.get('storeaddress'),
             "wh_manager": request.POST.get('warehousemamager'),
             "location": request.POST.get('location'),
             "wh_contact_no": request.POST.get('mobileno'),
-            "gstattachfilename": request.FILES.get("gstattach").name,
-            "panattachfilekename": request.FILES.get('panattach').name,
-            "licencefilename": request.FILES.get('licattach').name,
-            "warehouseattachfilename": request.FILES.get('warehousefile').name,
-            "panattach": base64.b64encode(request.FILES.get('panattach').file.read()),
-            "warehouseattach": base64.b64encode(request.FILES.get('warehousefile').file.read()),
-            "gstattach": base64.b64encode(request.FILES.get('gstattach').file.read()),
-            "licence": base64.b64encode(request.FILES.get('licattach').file.read()),
+            "gstattachfilename": gst_name,
+            "panattachfilekename": panattach_name,
+            "licencefilename": licattach_name,
+            "warehouseattachfilename": warehouse_name,
+            "panattach": panattach_data,
+            "warehouseattach": warehouse_data,
+            "gstattach": gstattach,
+            "licence": licattach_data,
         }
         payload = json.dumps(payload, cls=BytesEncoder)
 
@@ -1742,13 +1816,18 @@ def warehouse_add(request):
             'Content-Type': 'application/json'
         }
         r = requests.post(url, payload, headers=headers)
-        print(r)
-        r1 = r.json()
         if r.status_code == 200:
+            r1 = r.json()
             messages.success(request, r1['message'])
             return redirect('warehouse_list')
         else:
-            messages.error(request, r['message'])
+            try:
+                r1 = r.json()
+                messages.error(request,r1['message'])
+            except:
+                r1 = r.json()
+                messages.error(request, response.text)
+            return render(request, 'warehouse/warehouse_add.html', {'data': region})
 
     return render(request, 'warehouse/warehouse_add.html', {'data': region})
 
@@ -1812,7 +1891,19 @@ def warehouse_status_inactive(request):
 
 
 def vendor_add(request):
+
     accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
     url = "http://13.235.112.1/ziva/mobile-api/statelist.php"
 
     payload = json.dumps({
@@ -1837,6 +1928,21 @@ def vendor_add(request):
         return render(request, 'vendor/vendor_add.html')
 
     if request.method == "POST":
+        gstattach = request.FILES.get("gstattach")
+        panattach = request.FILES.get("panattach")
+
+        if gstattach:
+            gstattach_data = base64.b64encode(gstattach.read())
+
+        else:
+            gstattach_data = None
+
+        if panattach:
+            panattach_data = base64.b64encode(panattach.read())
+
+        else:
+            panattach_data = None
+
         url = "http://13.235.112.1/ziva/mobile-api/add-vendormaster.php"
 
         payload = {
@@ -1851,8 +1957,8 @@ def vendor_add(request):
             "pincode": request.POST.get('pincode'),
             "state": request.POST.get('state'),
             "city": request.POST.get('city'),
-            "panattach": base64.b64encode(request.FILES.get('panattach').file.read()),
-            "gstattach": base64.b64encode(request.FILES.get('gstattach').file.read()),
+            "panattach": panattach_data,
+            "gstattach": gstattach_data,
 
         }
         payload = json.dumps(payload, cls=BytesEncoder)
@@ -1874,7 +1980,7 @@ def vendor_add(request):
                 messages.error(request, data['message'])
             return redirect('vendor_list')
 
-    return render(request, 'vendor/vendor_add.html', {'data': state_list})
+    return render(request, 'vendor/vendor_add.html', {'data': state_list,'data1':wh_masterlist})
 
 
 def vendor_list(request):
@@ -2104,7 +2210,14 @@ def user_add(request):
     level_list = data3['itemmasterlist']
 
     if request.method == "POST":
+        image = request.FILES.get("imagefile")
+        if image:
+            image_data = base64.b64encode(image.read())
+            image_name = request.FILES.get("gstattach").name
 
+        else:
+            image_data = None
+            image_name = None
 
         url = "http://13.235.112.1/ziva/mobile-api/create-user.php"
 
@@ -2120,13 +2233,13 @@ def user_add(request):
             "depo": request.POST.get('depo'),
             "level": request.POST.get('level'),
             "role": request.POST.get('role'),
-            "userattachfilename": request.FILES.get("image").name,
+            "userattachfilename":image_name,
             "designation": request.POST.get('designation'),
             "deponame":request.POST.get('deponame'),
              "depoid": request.POST.get('depo'),
              "busstationname":request.POST.get('busstationname'),
              "busstationid": request.POST.get('busstation'),
-            "userimage": base64.b64encode(request.FILES.get("image").file.read())
+            "userimage": image_data
         }
         headers = {
             'Content-Type': 'application/json'
@@ -2286,7 +2399,6 @@ def add_grnitem(request):
 
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
-    print(data)
     item_masterlist = data['itemmasterlist']
     if request.method == "POST":
 
@@ -2671,10 +2783,8 @@ def proformainvoice(request):
             headers = {
                 'Content-Type': 'application/json'
             }
-            print(payload)
-            r = requests.post(url, payload, headers=headers)
-            print(r)
 
+            r = requests.post(url, payload, headers=headers)
             data = r.json()
             url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
 
@@ -2687,16 +2797,15 @@ def proformainvoice(request):
             }
 
             response = requests.request("GET", url, headers=headers, data=payload)
-            data = response.json()
-            print(response)
-
 
             if response.status_code == 200:
+                data = response.json()
                 messages.success(request, data['message'])
                 sale_item_list = data['saleitemlist']
                 return render(request, 'sales/sales_new.html',
                               {"all_data": sale_item_list, 'data': sale_item_list[0]})
             else:
+                data = response.json()
                 messages.error(request, data['message'])
                 return redirect('proformainvoice')
         if 'complete' in request.POST:
@@ -2725,9 +2834,10 @@ def proformainvoice(request):
         return render(request, 'sales/sales_new.html')
 
 def grn(request):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
 
-    payload = "{\r\n    \"accesskey\":\"LTIwMjIxMjIwMDc2ODg1\"\r\n \r\n}"
+    payload = json.dumps({"accesskey":accesskey})
     headers = {
         'Content-Type': 'text/plain'
     }
@@ -2735,7 +2845,6 @@ def grn(request):
     response = requests.request("GET", url, headers=headers, data=payload)
 
     data = response.json()
-    print(data)
     vendor_masterlist = data['vendormasterlist']
 
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
@@ -2747,7 +2856,6 @@ def grn(request):
 
     response = requests.request("GET", url, headers=headers, data=payload)
     data1 = response.json()
-    print(data1)
     wh_masterlist = data1['warehouselist']
 
     if request.method == "POST":
@@ -2765,18 +2873,16 @@ def grn(request):
         headers = {
             'Content-Type': 'application/json'
         }
-        print(payload)
         r = requests.post(url, payload, headers=headers)
-        print(r)
-        data2 = r.json()
-        print(data2['message'])
-        print(data2['grnnumber'])
-        grn = data2['grnnumber']
-        request.session['grnnumber'] = grn
+
         if r.status_code == 200:
+            data2 = r.json()
+            grn = data2['grnnumber']
+            request.session['grnnumber'] = grn
             messages.success(request, data2['message'])
             return redirect('add_grnitem')
         else:
+            data2 = r.json()
             messages.error(request, data2['message'])
             return redirect('add_grn')
     else:
@@ -2816,7 +2922,6 @@ def deliver_challan_status(request):
 
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
-    print(data)
     if response.status_code == 200:
         messages.success(request, data['message'])
         return redirect('deliver_challan')
@@ -3623,13 +3728,14 @@ def autocompleteModel(request):
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 def get_store_data(request):
+    accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
     stid = request.POST.get('store_id')
 
     url = "http://13.235.112.1/ziva/mobile-api/inventory-search.php"
 
     payload = json.dumps({
-        "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+        "accesskey": accesskey,
         "searchterm": serchterm,
         "storeid":stid
 
@@ -3866,7 +3972,35 @@ def reg_item_add(request):
 
     else:
         return render(request, 'stock_transfer/region_item_add.html')
+def region_status_active(request):
 
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sno": request.POST.get('id'),
+        "type": "Regionmaster",
+        "status": request.POST.get('status')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/region_list')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/region_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/region_list')
 def bus_list(request):
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
@@ -3921,14 +4055,15 @@ def bus_add(request):
                 regionname = i['regionname']
                 warehouseid = i['warehouseid']
                 warehousename = i['warehousename']
+                deponame = i['depo_name']
                 payload = json.dumps(
                 {
                     "accesskey": accesskey,
                     "busstationname":request.POST.get('busname'),
                     "depoid": request.POST.get('depoid'),
-                    "deponame": request.POST.get('diponame'),
-                    "busstation_contact_no": request.POST.get('mobileno'),
-                    "busstation_manager": request.POST.get('busmanager'),
+                    "deponame": deponame,
+                    "busstation_contact_no":" ",
+                    "busstation_manager": " ",
                     "regionid":  regionid,
                     "regionname": regionname,
                     "warehouseid":  warehouseid,

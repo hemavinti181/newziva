@@ -27,20 +27,20 @@
 											{% csrf_token %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Depo Name </label>
-										    <input type="text" class="form-control" placeholder="Depo name" name="deponame" required>
+										    <input type="text" class="form-control" placeholder="Depo name" name="deponame"  >
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Choose Depo Image  </label>
-											<input type="file"  name='depofile' id="customFile" required>
+											<input type="file"  name='depofile' id="customFile">
 
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Depo Manager </label>
-										    <input type="text" class="form-control" placeholder="Depo manager" name=" depomanager" required>
+										    <input type="text" class="form-control" placeholder="Depo manager" name=" depomanager" >
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Mobile </label>
-										    <input type="text" class="form-control" placeholder="Mobile number" name="mobileno" required>
+										    <input type="text" class="form-control" placeholder="Mobile number" name="mobileno" >
 											</div>
 										<!--<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>GST Number *</label>
@@ -64,7 +64,7 @@
 													<input type="hidden" name="=regionname" id="regionname" />
 													<label>Region </label>
 
-												<select class="form-control" name="regionid" id="regionid" required>
+												<select class="form-control" name="regionid" id="regionid" >
 													<option value="">Region</option>
 													{% for data1 in data %}
                             							<option value="{{ data1.regionid }}" selected>{{ data1.regionname }}</option>

@@ -34,9 +34,7 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Bus ID </th>
-                                    <th>Bus Station Name</th>
-                                    <th>Bus Station Manager</th>
-                                     <th>Bus Station Contact </th>
+                                     <th>Bus Station Details </th>
                                     <th>Action</th>
                         </tr>
                       </thead>
@@ -44,9 +42,7 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.busatationid }}</td>
-                           <td>{{ all_data.busstationname }}</td>
-                       <td>{{  all_data.busstationmanager}}</td>
-                       <td>{{ all_data.busstationcontactno }}</td>
+                           <td>{{ all_data.deponame }} ---> {{ all_data.busstationname }}</td>
                         {% if all_data.status == "Active" %}
                                 <td>
                                    <a class="bus_edit" href="#" data-id="{{ all_data.busatationid }}"><i class="fa fa-edit"></i></a>
@@ -89,22 +85,14 @@
 											{% csrf_token %}
 										<div class="col-md-6 col-sm-6 form-group has-feedback">
 											<label>Bus Name *</label>
-										    <input type="text" class="form-control" name="busname1" id="busname1" required>
+										    <input type="text" class="form-control" name="busname1" id="busname1">
 										</div>
 
-										<div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Bus Station Manager *</label>
-										    <input type="text" class="form-control"  name=" busmanager1" id="busmanager1"  required>
-										</div>
-                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Bus Station Mobile *</label>
-										    <input type="text" class="form-control" name="mobileno1" id="mobileno1" required>
-											</div>
                                         <div  class="col-md-6 col-sm-6  form-group has-feedback">
 
 													<label>Depo *</label>
 											<input type="hidden" name="deponame1" id="deponame1" />
-												<select class="form-control" name="depoid1" id="depoid1" required>
+												<select class="form-control" name="depoid1" id="depoid1">
 													{% for data1 in data %}
                             							<option value="{{ data1.depoid }}">{{ data1.depo_name }}</option>
                                                     {% endfor %}
