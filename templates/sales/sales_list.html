@@ -31,7 +31,7 @@
                       <thead>
                         <tr>
 
-
+                                     <th>S No</th>
                                     <th>Store Name</th>
                                     <th>Store Invoice Number </th>
                                     <th>DC Number</th>
@@ -43,6 +43,7 @@
                       </thead>
                             {% for all_data in data %}
                        <tr>
+                           <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.storename }}</td>
                        <td> {{ all_data.sonumber }} </td>
                        <td>{{  all_data.dcnumber}}</td>
@@ -50,7 +51,7 @@
                        <td>{{ all_data.total }}</td>
                        <td>{{ all_data.itemcount }}</td>
                                 <td>
-                                   <span class="badge badge-warning">pending </span>
+                                   <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning">pending </span></a>
 
                                 </td>
 

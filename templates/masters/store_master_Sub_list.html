@@ -4,43 +4,14 @@
 
 
 <div class="right_col" role="main">
-          <div class="">
-            <form class="form-label-left input_mask" method="POST" action="store_master"   enctype="multipart/form-data">
-											{% csrf_token %}
-                	<div  class="col-md-2 col-sm-2  form-group has-feedback">
-											 <input type="hidden" name="warehousename" id="warehousename" />
-												<select class="form-control" name="warehouseid" id="warehouseid">
-													<option value="">Warehouse </option>
-													{% for data1 in wh_masterlist %}
-														{% if data1.status == 'Active' %}
-                            		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
-														{% endif %}
-													{% endfor %}
-												</select>
-										</div>
-											<div  class="col-md-2 col-sm-2 form-group has-feedback">
-											 <input type="hidden" name="regionname" id="regionname" />
-												<select class="form-control" name="regionid" id="regionid">
-													<option value=""> Region</option>
-												</select>
-										</div>
-											<div  class="col-md-2 col-sm-3  form-group has-feedback">
-											 <input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
-													<option value=""> depot</option>
-												</select>
-											</div>
 
-										<div  class="col-md-2 col-sm-3  form-group has-feedback">
-											 <input type="hidden" name="busstationname" id="busstationname" />
-												<select class="form-control" name="busstationid" id="busstationid">
-													<option value=""> bus station</option>
-												</select>
-										</div>
+      <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h2  class="text-primary"><b>Store List</b></h2>
+              </div>
+        </div>
 
-              <div  class="col-md-2 col-sm-3  form-group has-feedback">
-                    <a href="add_store"><button type="submit" class="btn btn-primary">search</button></a>
-                </div>
 
               </div>
             <div class="clearfix"></div>
@@ -105,8 +76,88 @@
             </div>
           </div>
 </div>
+      <div class="inner-fabs">
 
+                          </div>
+                                <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon" data-toggle="modal" data-target="#store-filter" ></i></div>
+                        </div>
+              </div>
+<div id="store-filter" class="modal custom-modal fade"    role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h5 class="modal-title">Filter Store List</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                	<form  method="POST" action="store_master"   enctype="multipart/form-data">
+											{% csrf_token %}
+									<div  class="col-md-6 col-sm-6  form-group has-feedback">
+													<label>Select Warehouse</label>
+											 <input type="hidden" name="warehousename" id="warehousename" />
+
+												<select class="form-control" name="warehouseid" id="warehouseid">
+													<option value="All">All</option>
+													{% for data1 in wh_masterlist %}
+														{% if data1.status == 'Active' %}
+                            		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+										</div>
+											<div  class="col-md-6 col-sm-6  form-group has-feedback">
+													<label> Region</label>
+											 <input type="hidden" name="regionname" id="regionname" />
+												<select class="form-control" name="regionid" id="regionid">
+													<option value="All"> All</option>
+												</select>
+										</div>
+											<div  class="col-md-6 col-sm-6  form-group has-feedback">
+													<label> Depot</label>
+											 <input type="hidden" name="deponame" id="deponame" />
+												<select class="form-control" name="depoid" id="depoid">
+													<option value="All"> All</option>
+												</select>
+											</div>
+
+										<div  class="col-md-6 col-sm-6  form-group has-feedback">
+													<label> Bus Station</label>
+											 <input type="hidden" name="busstationname" id="busstationname" />
+												<select class="form-control" name="busstationid" id="busstationid">
+													<option value="All">All</option>
+												</select>
+										</div>
+			</div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+	</div>
+</div>
 <script>
+ let fab1 = document.getElementById('fab1');
+let innerFabs = document.getElementsByClassName('inner-fabs')[0];
+
+fab1.addEventListener('click', function () {
+  innerFabs.classList.toggle('show');
+});
+
+document.addEventListener('click', function (e) {
+  switch (e.target.id) {
+    case "fab1":
+    case "fab2":
+    case "fab3":
+    case "fab4":
+    case "fabIcon":
+      break;
+    default:
+      innerFabs.classList.remove('show');
+      break;}
+
+});
 $("#warehouseid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename").val(selectedOptionText);
@@ -137,7 +188,7 @@ $("#busstationid").change(function() {
 
 					if(obj) {
 			 		$("#regionid").empty();
-			 		$("#regionid").append("<option  value=''>Choose Region</option>");
+			 		$("#regionid").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#regionid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -159,7 +210,7 @@ $("#busstationid").change(function() {
 
 					if(obj) {
 			 		$("#depoid").empty();
-			 		$("#depoid").append("<option  value=''>Choose Depo</option>");
+			 		$("#depoid").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -181,7 +232,7 @@ $("#busstationid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
+			 		$("#busstationid").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h4>Proforma List</h4>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+                        <table id="datatable-buttons" class="display table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+
+                                     <th>S No</th>
+                                    <th>Tax Invoice</th>
+                                    <th>Sales from</th>
+                                    <th>Item Count</th>
+                                    <th>Created By </th>
+                                    <th>Date</th>
+
+                        </tr>
+                      </thead>
+                            {% for all_data in list %}
+                       <tr>
+                           <td>{{ forloop.counter }}</td>
+                      <td>{{ all_data.invnumber }}</td>
+                       <td> {{ all_data.fromname }} --> {{ all_data.storename }} </td>
+                       <td>{{  all_data.itemcount}}</td>
+                        <td>{{ all_data.created_by }}</td>
+                       <td>{{ all_data.createdon }}</td>
+
+                      </tr>
+                      {% endfor %}
+                      <tbody>
+                      </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+
+
+
+{% endblock %}
+

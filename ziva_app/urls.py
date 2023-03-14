@@ -71,8 +71,9 @@ urlpatterns = [
     path('grn_list',views.grn_list,name='grn_list'),
     path('sales',views.sales,name='sales'),
     path('store_view',views.store_view,name='store_view'),
-    #path('sales_item_add',views.sales_item_add,name='sales_item_add'),
+    path('sales_item_add',views.sales_item_add,name='sales_item_add'),
     path('sale_item_list',views.sale_item_list,name='sale_item_list'),
+    path('complete_sale',views.complete_sale,name='complete_sale'),
     path('deliver_challan',views.deliver_challan,name='deliver_challan'),
     path('create_indent',views.create_indent,name='create_indent'),
     path('indent_item_list/<str:id>/',views.indent_item_list,name='indent_item_list'),
@@ -136,5 +137,9 @@ urlpatterns = [
     path('get_storedepo',views.get_storedepo,name='get_storedepo'),
     path('get_storebus',views.get_storebus,name='get_storebus'),
     path('store_sub_list/<str:id>/',views.store_sub_list,name='store_sub_list'),
-    path('region_status_active',views.region_status_active,name='region_status_active')
+    path('region_status_active',views.region_status_active,name='region_status_active'),
+    path('store_admin',views.store_admin,name='store_admin'),
+    path('taxinvoice_list',views.taxinvoice_list,name='taxinvoice_list'),
+    path('sales_item_list_pending/<str:id>/',views.sales_item_list_pending,name='sales_item_list_pending')
+
 ]

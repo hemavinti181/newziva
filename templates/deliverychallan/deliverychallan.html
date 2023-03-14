@@ -54,8 +54,7 @@
                                         <td>{{ all_data.itemcount }}</td>
                                         <td>
                                             <span class="badge badge-warning"> PENDING </span>
-                                             <button type="button" class="btn btn-info" style="padding: 0px 18px !important;" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target=".bs-example-modal-sm">
-                                    Delivery challan</button>
+                                            <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target=".bs-example-modal-sm">  Delivery challan </span>
                                          </td>
                                     </tr>
                                 {% endif %}
@@ -73,7 +72,7 @@
           </div>
 </div>
 <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-sm">
+                                        <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
 
 
@@ -94,10 +93,10 @@
 										    </div>
                                                <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks *</label>
-										        <input type="text" class="form-control" name="remarks"  placeholder="remarks" id="remarks">
+                                                   <textarea class="form-control" name="remarks" rows="2" placeholder="remarks" id="remarks"></textarea>
 										    </div>
                                             <p></p>
-                                            <div class="col-md-6 col-sm-6  offset-md-3">
+                                            <div class="col-md-6 col-sm-8  offset-md-5">
                                                   <button type="submit" class="btn btn-info">UPDATE</button>
                                             </div>
                                              </form>

@@ -26,7 +26,7 @@
                 <div class="x_content">
                                         <form class="form-label-left input_mask"  method="POST" action="proformainvoice"   enctype="multipart/form-data">
 										{% csrf_token %}
-                                            	<div  class="col-md-3 col-sm-4  form-group has-feedback">
+                                            	<!--<div  class="col-md-3 col-sm-4  form-group has-feedback">
 													<label>Select Warehouse</label>
 											 <input type="hidden" name="warehousename" id="warehousename" />
 												<select class="form-control" name="warehouseid" id="warehouseid">
@@ -44,26 +44,25 @@
 												<select class="form-control" name="regionid" id="regionid">
 													<option value=""> Region</option>
 												</select>
-										</div>
+										</div>-->
                                             	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
-                                                    	<label> Depot</label>
 											 <input type="hidden" name="deponame" id="deponame" />
 												<select class="form-control" name="depoid" id="depoid">
-                                                        <option value="">select depo</option>
+                                                        <option value="{{ depoid }}">{{ deponame }}</option>
 												</select>
 
                                                 </div>
-                                        <div class="col-md-3 col-sm-4  form-group has-feedback">
+                                        <!--<div class="col-md-3 col-sm-4  form-group has-feedback">
                                             		<label> Bus Station</label>
 											 <input type="hidden" name="busstationname" id="busstationname" />
 												<select class="form-control" name="busstationid" id="busstationid">
 													<option value=""> bus station</option>
                                                     </select>
-										</div>
-                                            <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+										</div>-->
+                                         <div class="col-md-3 col-sm-4   form-group pull-right top_search">
                                          <div class="input-group">
-                                            <input type="search" class="form-control" id="storesearch" name="storesearch" placeholder="Search for..." />
-                                              <input type="hidden" id="txtStoresearch" name="txtStoreSearch" />
+                                            <input type="search" class="form-control" id="storesearch" name="storesearch" placeholder="Search for..." value="{{ sname }}"/>
+                                              <input type="hidden" id="txtStoresearch" name="txtStoreSearch"  />
                                               <span class="input-group-btn">
                                                 <button class="btn btn-secondary btn-xs" name="search" type="submit">Go!</button>
                                               </span>
@@ -71,9 +70,10 @@
                                             </div>
 
 
-                                            <input type="hidden" id="txtStoreId" name="txtStoreId"/>
+                                            <input type="hidden" id="txtStoreId" name="txtStoreId" value="{{ stid }}"/>
+                                             <input type="hidden" id="lblStoreName1" name="lblStoreName"/>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
-											<label><b>Store Name  : <span id="lblStoreName"></span></b></label>
+											<label><b>Store Name  : <span id="lblStoreName" ></span></b></label>
 										</div>
                                         <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label><b>GST NO : </b><span id="lblGstNo"></span></label>
@@ -86,7 +86,7 @@
                 </div>
                  <div class="x_panel">
                      <div class="x_content">
-                                   <form class="form-label-left input_mask"  method="POST" action="proformainvoice"   enctype="multipart/form-data">
+                                   <form class="form-label-left input_mask"  method="POST" action="sales_item_add"   enctype="multipart/form-data">
 										{% csrf_token %}
 
 										<div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
@@ -139,7 +139,7 @@
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
-                                    <th>Image</th>
+                                    <th>S No</th>
                                     <th>Item Name</th>
                                     <th>QTY</th>
                                     <th>ExpDate</th>
@@ -154,7 +154,7 @@
                             <tbody>
                             {% for all_data in all_data %}
                        <tr>
-                           <td><a href="{{all_data.image}}">{{ all_data.so_number }}</a></td>
+                           <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
                        <td>{{  all_data.expiry_date }}</td>
@@ -207,29 +207,42 @@
     <div class="modal custom-modal fade" id="complete" role="dialog">
                                        <div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content style">
+                                <div class="modal-header">
+                             <h5 class="modal-title">Complete Sale</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;"> Payment Mode</h4>
+                                </div>
 							<div class="modal-body">
-                                             <form method="POST" action="proformainvoice">
+                                             <form method="POST" action="complete_sale">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+
+
                                                <label class="btn btn-round btn-success">
-                                                 <input type="radio" name="paymenttype" value="CARD" class="join-btn" /> CARD
+                                                 <input type="radio" name="paymenttype" id="card" value="CARD" class="join-btn" /> CARD
                                                 </label>
 
 
                                                 <label class="btn btn-round btn-warning">
-                                                 <input type="radio" name="paymenttype" value="CASH" class="join-btn" /> CASH
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" /> CASH
                                                 </label>
 
 
                                                    <label class="btn btn-round btn-primary">
-                                                 <input type="radio" name="paymenttype" value="UPI" class="join-btn" /> UPI
+                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" /> UPI
                                                 </label>
-                                                </div>
-                                            <div class="col-md-6 col-sm-6  offset-md-3">
+
+
+                                                 	  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <label for="remarks">Delivery date</label>
+										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" >
+										    </div>
+                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <label for="remarks">Remarks</label>
+										        <input type="text" class="form-control" name="remarks" id="remarks"  placeholder="remarks" >
+										    </div>
+                                                  <div class="col-md-6 col-sm-6  offset-md-3">
                                                   <button type="submit" name="complete" class="btn btn-info">Complete</button>
                                             </div>
   </form>
@@ -250,11 +263,11 @@ function ItemChange1(e){
 	}
 	autocomplete(document.getElementById("itemname"));
 	autocomplete2(document.getElementById("storesearch"));
-function VerifyClick(id){
-alert(id)
+ function VerifyClick(id){
+$("#date").val("");
+$("#remarks").val("");
 $("#txtHdnId").val(id);
 }
-
 function selectItem(indx)
 {
 }
@@ -433,6 +446,7 @@ function autocomplete2(inp) {
               inp.value = this.getElementsByTagName("input")[0].value;
 
                             $("#lblStoreName").html(this.getElementsByTagName("input")[0].value);
+                            $("#lblStoreName1").val(this.getElementsByTagName("input")[0].value);
                             $("#lblGstNo").html(this.getElementsByTagName("input")[1].value);
                             $("#lblSManager").html(this.getElementsByTagName("input")[2].value);
                              $("#txtStoreId").val(this.getElementsByTagName("input")[3].value);
@@ -526,74 +540,7 @@ $("#busstationid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busstationname").val(selectedOptionText);
 });
-	$(document).ready(function(){
-		$("#warehouseid").change(function() {
-        	var warehousename = $(this).find(":selected").text();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_storeregion" %}',
-            	data: {
-                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data.dropdownlist
 
-					if(obj) {
-			 		$("#regionid").empty();
-			 		$("#regionid").append("<option  value=''>Choose Region</option>");
-                	$.each(obj, function (index, item) {
-                    $("#regionid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-                	}
-             	}
-        	});
-    	});
-    	$("#regionid").change(function() {
-    		var warehousename = $('#warehouseid').find(":selected").text();
-        	var regionname = $(this).val();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_storedepo" %}',
-            	data: {
-                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-
-					if(obj) {
-			 		$("#depoid").empty();
-			 		$("#depoid").append("<option  value=''>Choose Depo</option>");
-                	$.each(obj, function (index, item) {
-                    $("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-                	}
-             	}
-        	});
-    	});
-    	$("#depoid").change(function() {
-    		var warehousename = $('#warehouseid').find(":selected").text();
-        	var regionname = $(regionid).val();
-        	var depo = $(this).val();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_storebus" %}',
-            	data: {
-                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
-                	$.each(obj, function (index, item) {
-                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-                	}
-             	}
-        	});
-    	});
-
-    });
 </script>
 
 {% endblock %}
