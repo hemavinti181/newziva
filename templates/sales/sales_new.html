@@ -6,6 +6,10 @@
 	position: absolute !important;
 	width: 60% !important;
 	}
+	.store{
+	margin-top: 5px;
+	padding: 4px 16px !important;
+	}
 	</style>
  <div class="right_col" role="main">
         <div class="">
@@ -44,43 +48,44 @@
 												<select class="form-control" name="regionid" id="regionid">
 													<option value=""> Region</option>
 												</select>
-										</div>-->
+										</div>--->
                                             	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
+
 											 <input type="hidden" name="deponame" id="deponame" />
 												<select class="form-control" name="depoid" id="depoid">
                                                         <option value="{{ depoid }}">{{ deponame }}</option>
 												</select>
 
                                                 </div>
-                                        <!--<div class="col-md-3 col-sm-4  form-group has-feedback">
+                                       <!--<div class="col-md-3 col-sm-4  form-group has-feedback">
                                             		<label> Bus Station</label>
 											 <input type="hidden" name="busstationname" id="busstationname" />
 												<select class="form-control" name="busstationid" id="busstationid">
 													<option value=""> bus station</option>
                                                     </select>
 										</div>-->
-                                         <div class="col-md-3 col-sm-4   form-group pull-right top_search">
-                                         <div class="input-group">
-                                            <input type="search" class="form-control" id="storesearch" name="storesearch" placeholder="Search for..." value="{{ sname }}"/>
+                                         <div class="col-md-3 col-sm-4 form-group has-feedback">
+
+
+                                            <input type="text" class="form-control" id="storesearch" name="storesearch" placeholder="Store Search" value="{{ sname }}"/>
+                                             <span class="fa fa-search form-control-feedback right" aria-hidden="true"></span>
                                               <input type="hidden" id="txtStoresearch" name="txtStoreSearch"  />
-                                              <span class="input-group-btn">
-                                                <button class="btn btn-secondary btn-xs" name="search" type="submit">Go!</button>
-                                              </span>
-                                            </div>
+                                         </div>
+                                             <div class="col-md-3 col-sm-4 form-group has-feedback">
+                                               <button type="submit" name="search" class="btn btn-primary store">Search</button>
                                             </div>
 
-
-                                            <input type="hidden" id="txtStoreId" name="txtStoreId" value="{{ stid }}"/>
-                                             <input type="hidden" id="lblStoreName1" name="lblStoreName"/>
-                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                        <!--<div class="col-md-3 col-sm-4  form-group has-feedback">
 											<label><b>Store Name  : <span id="lblStoreName" ></span></b></label>
 										</div>
-                                        <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label><b>GST NO : </b><span id="lblGstNo"></span></label>
-										</div>-->
+										</div>
 										<div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label><b>Manager : <span id="lblManager"></span></b></label>
-										</div>
+										</div>-->
+                                            <input type="hidden" id="txtStoreId" name="txtStoreId" value="{{ stid }}"/>
+                                             <input type="hidden" id="lblStoreName1" name="lblStoreName"/>
                                         </form>
                 </div>
                 </div>
@@ -251,6 +256,7 @@
                                         </div>
                                     </div>
                                 </div>
+
 
 <script>
 window.onload=function(){

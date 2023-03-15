@@ -2741,7 +2741,7 @@ def sales_item_add(request):
             except:
                 data = r.json()
                 messages.error(request, data['message'])
-        return redirect('proformainvoice')
+        return redirect('sale_item_list')
     return render(request, 'sales/sales_new.html', { 'deponame': deponame, 'depoid': depoid,'sname':sname,'stid':stid})
 def complete_sale(request):
     accesskey = request.session['accesskey']
