@@ -2592,67 +2592,6 @@ def grn_pending_status(request):
 
     return render(request, 'grn/grn_list_pending.html', {'all_data': grn_list})
 
-
-def store_view(request):
-    store_code = request.GET.get('store_code')
-    store_one = []
-    if store_code:
-        store_one = StoreList.objects.get(id=store_code)
-    store = StoreList.objects.filter(deleted=False).order_by('store_name')
-
-    return render(request, "sales/sales_store_view.html",
-                  {'store': store, 'store_one': store_one})
-
-
-def sales(request):
-    url = "http://13.235.112.1/ziva/mobile-api/store-master-list.php"
-
-    payload = "{\r\n    \"accesskey\":\"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4\"\r\n  \r\n}"
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    store_masterlist = data['storemasterlist']
-    if request.method == "POST":
-        attempt_num = 0
-        url = "http://13.235.112.1/ziva/mobile-api/generate-salebill-number.php"
-
-        payload = {
-            "accesskey": "MDExNjczMjAyMi0xMi0xNyAwNjoxNzo1Nw==",
-            "storeid": request.POST.get('storecode'),
-        }
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        payload = json.dumps(payload, cls=BytesEncoder)
-        response = requests.request("POST", url, headers=headers, data=payload)
-        print(payload)
-        store_id = request.POST.get('storecode')
-        print(store_id)
-        print(response)
-        data1 = response.json()
-        print(data1['message'])
-        print(data1['taxinvoice'])
-        tax_inv = data1['taxinvoice']
-        cus_name = data1['customer_name']
-        cus_mobile = data1['customer_mobile']
-        request.session['storeid'] = store_id
-        request.session['taxinvoice'] = tax_inv
-        request.session['customer_name'] = cus_name
-        request.session['customer_mobile'] = cus_mobile
-        if response.status_code == 200:
-            messages.success(request, data1['message'])
-            return redirect('sale_item_list')
-        else:
-            messages.error(request, data1['message'])
-            return redirect('sale_item_list')
-
-    else:
-        return render(request, 'sales/sales1.html', {"list": store_masterlist})
-
 def sale_item_list(request):
     sname = request.session['storename']
     accesskey = request.session['accesskey']
