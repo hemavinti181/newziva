@@ -67,8 +67,7 @@
                                          <div class="col-md-3 col-sm-4 form-group has-feedback">
 
 
-                                            <input type="text" class="form-control" id="storesearch" name="storesearch" placeholder="Store Search" value="{{ sname }}"/>
-                                             <span class="fa fa-search form-control-feedback right" aria-hidden="true"></span>
+                                            <input type="search" class="form-control" id="storesearch" name="storesearch" placeholder="Store Search" value="{{ sname }}" autocomplete="off"/>
                                               <input type="hidden" id="txtStoresearch" name="txtStoreSearch"  />
                                          </div>
                                              <div class="col-md-3 col-sm-4 form-group has-feedback">
@@ -121,7 +120,7 @@
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
 										</div>
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}"required>
+										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}" required>
 										</div>
                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" name="add" style="margin-top: 5px;" class="btn btn-primary">Add</button>
@@ -284,6 +283,7 @@ function autocomplete(inp) {
   /*execute a function when someone writes in the text field:*/
   inp.addEventListener("input", function(e) {
    closeAllLists();
+     $(".itemnameautocomplete-list").html("");
    var a, b, i, val = this.value,current_this=this;
     var searchterm = val;
                     $.ajax({
@@ -295,10 +295,15 @@ function autocomplete(inp) {
                         var obj = data.data.list;
       if (!val) { return false;}
       currentFocus = -1;
+       /*create a DIV element that will contain the items (values):*/
+       var aa=document.getElementById("itemnameautocomplete-list");
+       if(aa){
+          aa.remove();
+       }
       /*create a DIV element that will contain the items (values):*/
       a = document.createElement("DIV");
       a.setAttribute("id", current_this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
+      a.setAttribute("class", "itemnameautocomplete-list");
       /*append the DIV element as a child of the autocomplete container:*/
       current_this.parentNode.appendChild(a);
       /*for each item in the array...*/
@@ -392,7 +397,7 @@ function autocomplete(inp) {
   function closeAllLists(elmnt) {
     /*close all autocomplete lists in the document,
     except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
+    var x = document.getElementsByClassName("itemnameautocomplete-list");
     for (var i = 0; i < x.length; i++) {
       if (elmnt != x[i] && elmnt != inp) {
         x[i].parentNode.removeChild(x[i]);
@@ -411,6 +416,7 @@ function autocomplete2(inp) {
   /*execute a function when someone writes in the text field:*/
   inp.addEventListener("input", function(e) {
    closeAllLists();
+    $(".storesearchautocomplete-list").html("");
    var a, b, i, val = this.value,current_this=this;
      var searchterm = val;
                     $.ajax({
@@ -423,9 +429,13 @@ function autocomplete2(inp) {
       if (!val) { return false;}
       currentFocus = -1;
       /*create a DIV element that will contain the items (values):*/
+         var aa=document.getElementById("storesearchautocomplete-list");
+       if(aa){
+          aa.remove();
+       }
       a = document.createElement("DIV");
       a.setAttribute("id", current_this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
+      a.setAttribute("class", "storesearchautocomplete-list");
       /*append the DIV element as a child of the autocomplete container:*/
       current_this.parentNode.appendChild(a);
       /*for each item in the array...*/
@@ -439,7 +449,7 @@ function autocomplete2(inp) {
           b.style.width = "150%";
 
           /*make the matching letters bold:*/
-          b.innerHTML = "<strong>" + obj[i].storename + "</strong> &nbsp;&nbsp;<label>Address : "+obj[i].storeaddress+"</label>&nbsp;&nbsp;";
+          b.innerHTML = "<strong>" + obj[i].storename + "</strong> &nbsp;&nbsp;";
 
           /*insert a input field that will hold the current array item's value:*/
           b.innerHTML += "<input type='hidden' value='" + obj[i].storename + "'>";
@@ -518,7 +528,7 @@ function autocomplete2(inp) {
   function closeAllLists(elmnt) {
     /*close all autocomplete lists in the document,
     except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
+    var x = document.getElementsByClassName("storesearchautocomplete-list");
     for (var i = 0; i < x.length; i++) {
       if (elmnt != x[i] && elmnt != inp) {
         x[i].parentNode.removeChild(x[i]);

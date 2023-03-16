@@ -77,7 +77,7 @@
                                  <div class="fab bg-purple round" id="fab6"><a href="state_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">State List</span></div>
                                  <div class="fab bg-green round" id="fab7"><a href="gst_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">GST List</span></div>
                                  <div class="fab bg-orange round" id="fab8"><a href="category_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" style="margin-left: -155px !important;">Category List</span></div>
-                                 <div class="fab bg-blue round" id="fab9"><a href="uom_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">UOM List</span></div>
+                                 <div class="fab bg-blue round" id="fab9"><a href="uom_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Case List</span></div>
                                  <div class="fab bg-red round" id="fab10"><a href="storetype_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" style="margin-left: -155px !important;">Store type list</span></div>
                           </div>
                                 <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
@@ -151,7 +151,13 @@
 let innerFabs = document.getElementsByClassName('inner-fabs')[0];
 
 fab1.addEventListener('click', function () {
+    var cls=$(".inner-fabs").attr("class");
   innerFabs.classList.toggle('show');
+  if(cls=="inner-fabs show"){
+    $(".tooltiptext").css("visibility","hidden");
+    }else{
+    $(".tooltiptext").css("visibility","visible");
+    }
 });
 
 document.addEventListener('click', function (e) {
@@ -164,6 +170,7 @@ document.addEventListener('click', function (e) {
       break;
     default:
       innerFabs.classList.remove('show');
+       $(".tooltiptext").css("visibility","hidden");
       break;}
 
 });

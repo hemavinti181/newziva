@@ -512,7 +512,7 @@ ZIVA <a href="#"></a>
                 });
                  $('#itemcode').change(function() {
                     var itemcode = $('#itemcode').find(":selected").text();
-                    obj = {"accesskey":"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4","itemcode":itemcode};
+
                     $.ajax({
                       data: {"itemcode":itemcode},
                       url: "{% url 'get_item_data' %}",
@@ -592,7 +592,6 @@ ZIVA <a href="#"></a>
 			alertify.success('{{ data }}');
 
 }else{
-
 
 				alertify.set('notifier','position', 'top-center');
 
