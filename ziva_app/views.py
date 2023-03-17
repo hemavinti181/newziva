@@ -49,11 +49,13 @@ def login(request):
             depoid = data['depoid']
             accesskey = data['accesskey']
             username = data['username']
+            code = data['code']
             request.session['accesskey'] = accesskey
             request.session['username'] = username
             request.session['role'] = role
             request.session['deponame']=deponame
             request.session['depoid'] = depoid
+            request.session['codee'] = code
             messages.success(request,data['message'])
             return redirect('store_master')
         else:
@@ -3724,7 +3726,7 @@ def store_search(request):
     return JsonResponse({'data': data})
 def get_wh_item(request):
 
-    depoid = request.session['depoid']
+    code = request.session['codee']
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
 
@@ -3734,7 +3736,7 @@ def get_wh_item(request):
     payload = json.dumps({
         "accesskey": accesskey,
         "searchterm":serchterm,
-        "id": depoid ,
+        "id": code ,
     })
     headers = {
         'Content-Type': 'application/json'
@@ -3889,57 +3891,253 @@ def complete_whinv(request):
         return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'wname':wname})
 
 def depo_search(request):
-    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster.php"
 
-    payload = "{\r\n    \"accesskey\":\"MDgxNzcyMDIyLTExLTA5IDE1OjI0OjQ2\"\r\n}\r\n"
+        payload = json.dumps({"accesskey": accesskey,
+                              "searchterm": request.POST.get('searchterm'),
+                              "type": "Depo"
+                              })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        return JsonResponse({'data': data})
+def get_depo_item(request):
+
+    code = request.session['codee']
+    accesskey = request.session['accesskey']
+    serchterm = request.POST.get('searchterm')
+
+
+    url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "searchterm":serchterm,
+        "id": code,
+    })
     headers = {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'application/json'
+
     }
-
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    print(data)
-    region_list = data['regionlist']
+    data=response.json()
+    return JsonResponse({'data': data})
+def depo_add_stf(request):
 
+    accesskey = request.session['accesskey']
+    if request.method  == 'POST':
+        deponame = request.POST.get('txtdeposearch')
+        request.session['name'] = deponame
+        url = "http://13.235.112.1/ziva/mobile-api/generate-transitid.php"
 
-    if request.method == "POST":
-            url = "http://13.235.112.1/ziva/mobile-api/generate-transitid.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "id": request.POST.get('txtDepoId'),
+            "name":deponame,
+            "type": "Depo"
 
-            payload = json.dumps({
-                "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
-                "id": request.POST.get('regioncode'),
-                "name": request.POST.get('whName'),
-            })
-            headers = {
-                'Content-Type': 'application/json'
-            }
-
-            response = requests.request("GET", url, headers=headers, data=payload)
-            print(payload)
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
             data = response.json()
             request.session['taxinvoice'] = data['taxinvoice']
-            request.session['id'] = request.POST.get('regioncode')
-
-            if response.status_code == 200:
-                messages.success(request, data['message'])
-                return redirect('reg_item_add')
-            else:
+            request.session['id'] = request.POST.get('txtDepoId')
+            return redirect('depo_item_add')
+        else:
+            try:
+                data = response.json()
                 messages.error(request, data['message'])
-                return redirect('reg_item_add')
-    return render(request, 'stock_transfer/region_search_inventory.html', {'all_data': region_list})
+            except:
+                messages.error(request,response.text)
+            return redirect('depo_item_list')
+    else:
+        return render(request,'stock_transfer/stock_transfer_home.html',{'home':'active'})
 
-
-
-
-def reg_item_add(request):
-    code = request.session['id']
-    taxinvoice = request.session['taxinvoice']
+def depo_item_add(request):
+    depo_name = request.session['name']
+    code = request.session['codee']
+    taxinvoice  = request.session['taxinvoice']
+    accesskey = request.session['accesskey']
 
     if request.method == 'POST':
         url = "http://13.235.112.1/ziva/mobile-api/add-stockitem-warehouse.php"
 
         payload = json.dumps({
-            "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+            "accesskey":accesskey,
+            "cp_sno": request.POST.get('cpsno'),
+            "quantity": request.POST.get('quantity'),
+            "freeqty": request.POST.get('freequantity'),
+            "id":code,
+            "transitid": taxinvoice
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('busstation_item_list')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('busstation_item_list')
+            except:
+                messages.error(request,response.text)
+            return render(request,'stock_transfer/stock_transfer_home.html',{'depo_name':depo_name})
+
+    else:
+        return render(request,'stock_transfer/stock_transfer_home.html',{'depo_name':depo_name})
+
+def depo_item_list(request):
+    deponame = request.session['name']
+    accesskey = request.session['accesskey']
+    taxinvoice  = request.session['taxinvoice']
+    url = "http://13.235.112.1/ziva/mobile-api/stocktransfer-item-list.php"
+
+    payload = json.dumps({"accesskey":accesskey,
+        "transitid":taxinvoice
+        })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data=response.json()
+    wh_item_list=data['stocktransferitemlist']
+    return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame})
+
+def complete_depoinv(request):
+    deponame = request.session['name']
+    accesskey = request.session['accesskey']
+    taxinvoice = request.session['taxinvoice']
+    if  request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/complete-stock.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "transid": taxinvoice,
+            "remarks": request.POST.get('remarks'),
+            "date": request.POST.get('date'),
+
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            del request.session['taxinvoice']
+            del request.session['name']
+            del request.session['id']
+            messages.success(request, data['message'])
+            return redirect('depo_add_stf')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('depo_add_stf')
+            except:
+                messages.error(request,response.text)
+            return redirect('depo_add_stf')
+    else:
+        return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame})
+
+
+def busstation_search(request):
+
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster.php"
+
+    payload = json.dumps({"accesskey": accesskey,
+                              "searchterm": request.POST.get('searchterm'),
+                              "type": "Bus station"
+                              })
+    headers = {
+            'Content-Type': 'text/plain'
+        }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    return JsonResponse({'data': data})
+
+
+def get_busstation_item(request):
+
+    code = request.session['codee']
+    accesskey = request.session['accesskey']
+    serchterm = request.POST.get('searchterm')
+
+
+    url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "searchterm":serchterm,
+        "id": code,
+    })
+    headers = {
+        'Content-Type': 'application/json'
+
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data=response.json()
+    return JsonResponse({'data': data})
+
+
+def busstation_add_stf(request):
+
+    accesskey = request.session['accesskey']
+    if request.method  == 'POST':
+        busname = request.POST.get('txBussearch')
+        request.session['name'] = busname
+        url = "http://13.235.112.1/ziva/mobile-api/generate-transitid.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "id": request.POST.get('txtBusId'),
+            "name":busname,
+            "type": "Bus station"
+
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            request.session['taxinvoice'] = data['taxinvoice']
+            request.session['id'] = request.POST.get('txtBusId')
+            return redirect('busstation_item_add')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+            except:
+                messages.error(request,response.text)
+            return redirect('depo_item_list')
+    else:
+        return render(request,'stock_transfer/stock_transfer_home.html',{'home':'active'})
+
+def busstation_item_add(request):
+    busstation_name = request.session['name']
+    code = request.session['codee']
+    taxinvoice = request.session['taxinvoice']
+    accesskey = request.session['accesskey']
+
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/add-stockitem-warehouse.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
             "cp_sno": request.POST.get('cpsno'),
             "quantity": request.POST.get('quantity'),
             "freeqty": request.POST.get('freequantity'),
@@ -3949,19 +4147,78 @@ def reg_item_add(request):
         headers = {
             'Content-Type': 'application/json'
         }
-
         response = requests.request("GET", url, headers=headers, data=payload)
-        print(payload)
-        data=response.json()
         if response.status_code == 200:
+            data = response.json()
             messages.success(request, data['message'])
-            return redirect('reg_item_add')
+            return redirect('busstation_item_list')
         else:
-            messages.error(request, data['message'])
-            return redirect('reg_item_add')
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('busstation_item_list')
+            except:
+                messages.error(request, response.text)
+            return render(request, 'stock_transfer/stock_transfer_home.html', {'busstation_name': busstation_name})
 
     else:
-        return render(request, 'stock_transfer/region_item_add.html')
+        return render(request, 'stock_transfer/stock_transfer_home.html', {'busstation_name': busstation_name})
+
+def busstation_item_list(request):
+
+    busstation_name = request.session['name']
+    accesskey = request.session['accesskey']
+    taxinvoice  = request.session['taxinvoice']
+    url = "http://13.235.112.1/ziva/mobile-api/stocktransfer-item-list.php"
+
+    payload = json.dumps({"accesskey":accesskey,
+        "transitid":taxinvoice
+        })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data=response.json()
+    wh_item_list=data['stocktransferitemlist']
+    return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'busstation_name':busstation_name})
+
+def complete_businv(request):
+    deponame = request.session['name']
+    accesskey = request.session['accesskey']
+    taxinvoice = request.session['taxinvoice']
+    if  request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/complete-stock.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "transid": taxinvoice,
+            "remarks": request.POST.get('remarks'),
+            "date": request.POST.get('date'),
+
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            del request.session['taxinvoice']
+            del request.session['name']
+            del request.session['id']
+            messages.success(request, data['message'])
+            return redirect('depo_add_stf')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('depo_add_stf')
+            except:
+                messages.error(request,response.text)
+            return redirect('depo_add_stf')
+    else:
+        return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame})
+
+
 def region_status_active(request):
 
     accesskey = request.session['accesskey']

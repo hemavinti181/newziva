@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block htmlbody %}
@@ -59,7 +60,7 @@
 
                                             <input type="hidden" id="wh_id" name="wh_id" />
                                             <label>Item Name Search *</label>
-										    	 <input type="search" id="whitemname" autocomplete="off" name="whitemname"  class="form-control" />
+										    	 <input type="search" id="whitemname" autocomplete="off" name="whitemname" placeholder="item search"  class="form-control" />
                                             <input type="hidden" id="txtItemName2" name="txtItemName2" />
 										</div>
                                         <div class="col-md-1 col-sm-2  form-group has-feedback">
@@ -148,6 +149,236 @@
                       </table>
                             </div>
                           </div>
+                </div>
+                </div>
+                      </div>
+                           <div class="tab-pane fade show" id="depo" role="tabpanel" aria-labelledby="depo-tab">
+                               <form class="form-label-left input_mask"  method="POST" action="depo_add_stf"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                               <div class="col-md-3 col-sm-4 form-group has-feedback">
+
+                                            <input type="search" class="form-control" id="deposearch" name="deposearch" placeholder="Depo Search" value="{{ deponame }}" autocomplete="off"/>
+
+                                              <input type="hidden" id="txtdeposearch" name="txtdeposearch"  />
+                                                 <input type="hidden" id="txtDepoId" name="txtDepoId"  />
+                                         </div>
+                                             <div class="col-md-3 col-sm-4 form-group has-feedback">
+                                               <button type="submit" name="search" class="btn btn-primary store">Search</button>
+                                            </div>
+                            </form>
+                     <div class="x_content">
+                                   <form class="form-label-left input_mask"  method="POST" action="depo_item_add"   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
+
+                                            <input type="hidden" id="depo_id" name="depo_id" />
+                                            <label>Item Name Search *</label>
+										    	 <input type="search" id="depoitemname" autocomplete="off"  placeholder="item search" name="depoitemname"  class="form-control" />
+                                            <input type="hidden" id="depoItemName2" name="depoItemName2" />
+										</div>
+                                        <div class="col-md-1 col-sm-2  form-group has-feedback">
+											<label>Quantity *</label>
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="depoquantity">
+										</div>
+                                        <div class="col-md-1 col-sm-1  form-group has-feedback">
+											<label>Batch *</label>
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="depobatchno">
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Expiry Date *</label>
+										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="depoexpdate" >
+										</div>
+                                       <div class="col-md-2 col-sm-2 form-group has-feedback">
+											<label>Free Quantity *</label>
+                                           <input type="text" class="form-control" placeholder="free quantity" name="freequantity" id="depofreequantity">
+                                       </div>
+                                       <div class="col-md-2 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control" name="manufacture"  id="depomanufacture" required>
+										</div>
+										<div class="col-md-2 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control" name="cpsno" id="depocpsno"  required>
+										</div>
+                                       <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                           <button type="submit" name="add" style="margin-top: 5px;" class="btn btn-primary">Add</button>
+                                       </div>
+
+                                   </form>
+                                     </div>
+                <div class="x_content">
+                  <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table class="display  table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Item Name</th>
+                                    <th>QTY</th>
+                                    <th>ExpDate</th>
+                                    <th>HSN</th>
+                                    <th>Batch</th>
+                                    <th>MRP</th>
+                                    <th>Manufacture</th>
+                                    <th>Action</th>
+
+                        </tr>
+                      </thead>
+                            <tbody>
+                            {% for all_data in wh_item_list %}
+                       <tr>
+                           <td>{{ forloop.counter }}</td>
+                      <td>{{ all_data.item_name }}</td>
+                       <td> {{ all_data.quantity }} </td>
+                       <td>{{  all_data.expiry_date }}</td>
+                        <td>{{ all_data.hsn }}</td>
+                       <td>{{ all_data.batch_no }}</td>
+                       <td>{{ all_data.mrp }}</td>
+                           <td>{{all_data.manufacturer}}</td>
+
+                       <td>
+                           <a href="item_add" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                            <span  class="badge-warning" style="padding:  4px !important;" data-toggle="modal"  onclick="VerifyClick1('{{data.so_number}}')" data-target="#depocomplete">COMPLETE SALE</span>
+                       </td>
+                            </tbody>
+                           <tfoot>
+                           <tr>
+                               <th colspan="9">
+                                   Invoice No: {{all_data.transit_id}}
+            <span style="float:right;">Net : {{all_data.total}}</span>
+
+                               </th>
+                          </tr>
+                           </tfoot>
+                      </tr>
+                      {% endfor %}
+
+
+                      <tbody>
+                      </tbody>
+                      </table>
+                            </div>
+                          </div>
+
+
+                </div>
+                </div>
+                      </div>
+
+                              <div class="tab-pane fade show" id="busstation" role="tabpanel" aria-labelledby="bus-tab">
+                                     <form class="form-label-left input_mask"  method="POST" action="busstation_add_stf"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                               <div class="col-md-3 col-sm-4 form-group has-feedback">
+
+                                            <input type="search" class="form-control" id="bussearch" name="bussearch" placeholder="Bus Station Search" value="{{ wname }}" autocomplete="off"/>
+
+                                              <input type="hidden" id="txBussearch" name="txtBussearch"  />
+                                                 <input type="hidden" id="txtBusId" name="txtBusId"  />
+                                         </div>
+                                             <div class="col-md-3 col-sm-4 form-group has-feedback">
+                                               <button type="submit" name="search" class="btn btn-primary store">Search</button>
+                                            </div>
+                            </form>
+                     <div class="x_content">
+                                   <form class="form-label-left input_mask"  method="POST" action="busstation_item_add"   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
+
+                                            <input type="hidden" id="bus_id" name="bus_id" />
+                                            <label>Item Name Search *</label>
+										    	 <input type="search" id="busitemname" autocomplete="off" name="busitemname"  placeholder="item search" class="form-control" />
+                                            <input type="hidden" id="txtItemName3" name="txtItemName3" />
+										</div>
+                                        <div class="col-md-1 col-sm-2  form-group has-feedback">
+											<label>Quantity *</label>
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="busquantity">
+										</div>
+                                        <div class="col-md-1 col-sm-1  form-group has-feedback">
+											<label>Batch *</label>
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="busbatchno">
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Expiry Date *</label>
+										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="busexpdate" >
+										</div>
+                                       <div class="col-md-2 col-sm-2 form-group has-feedback">
+											<label>Free Quantity *</label>
+                                           <input type="text" class="form-control" placeholder="free quantity" name="freequantity" id="busfreequantity">
+                                       </div>
+                                       <div class="col-md-2 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control" name="manufacture"  id="busmanufacture" required>
+										</div>
+										<div class="col-md-2 col-sm-3  form-group has-feedback">
+										    <input type="hidden" class="form-control" name="cpsno" id="buscpsno"   required>
+										</div>
+                                       <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                           <button type="submit" name="add" style="margin-top: 5px;" class="btn btn-primary">Add</button>
+                                       </div>
+
+                                      <!-- <input type="hidden" id="store_id" name="store_id" />-->
+                                   </form>
+                                     </div>
+                <div class="x_content">
+                  <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="datatable" class="display  table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Item Name</th>
+                                    <th>QTY</th>
+                                    <th>ExpDate</th>
+                                    <th>HSN</th>
+                                    <th>Batch</th>
+                                    <th>MRP</th>
+                                    <th>Manufacture</th>
+                                    <th>Action</th>
+
+                        </tr>
+                      </thead>
+                            <tbody>
+                            {% for all_data in wh_item_list %}
+                       <tr>
+                           <td>{{ forloop.counter }}</td>
+                      <td>{{ all_data.item_name }}</td>
+                       <td> {{ all_data.quantity }} </td>
+                       <td>{{  all_data.expiry_date }}</td>
+                        <td>{{ all_data.hsn }}</td>
+                       <td>{{ all_data.batch_no }}</td>
+                       <td>{{ all_data.mrp }}</td>
+                           <td>{{all_data.manufacturer}}</td>
+
+                       <td>
+                           <a href="item_add" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                            <span  class="badge-warning" style="padding:  4px !important;" data-toggle="modal"  onclick="VerifyClick2('{{data.so_number}}')" data-target="#buscomplete">COMPLETE SALE</span>
+                       </td>
+                            </tbody>
+                           <tfoot>
+                           <tr>
+                               <th colspan="9">
+                                   Invoice No: {{all_data.transit_id}}
+            <span style="float:right;">Net : {{all_data.total}}</span>
+
+                               </th>
+                          </tr>
+                           </tfoot>
+                      </tr>
+                      {% endfor %}
+
+
+                      <tbody>
+                      </tbody>
+                      </table>
+                            </div>
+                          </div>
 
 
                 </div>
@@ -156,55 +387,6 @@
 
 
 
-
-                           <div class="tab-pane fade show" id="depo" role="tabpanel" aria-labelledby="depo-tab">
-                              <form class="form-label-left input_mask"  method="POST" action="role"  enctype="multipart/form-data">
-										{% csrf_token %}
-                                <div class="col-md-4 col-sm-4  form-group has-feedback">
-                                    <label>Add Role</label>
-                                    <input type="text" class="form-control" placeholder=" role name" name="role">
-                                 </div>
-                                    <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-
-										<div class="form-group" >
-											<div class="col-md-6 col-sm-6 form-group has-feedback  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
-											</div>
-                                        </div>
-                              </form>
-                            </div>
-                              <div class="tab-pane fade show" id="busstation" role="tabpanel" aria-labelledby="bus-tab">
-                                      <form class="form-label-left input_mask"  method="POST" action="storetype"   enctype="multipart/form-data">
-										{% csrf_token %}
-                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
-                                            <label>Add Store Type</label>
-                                             <input type="text" class="form-control" placeholder="store type" name="stotetype">
-                                        </div>
-                                      <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
-											</div>
-										</div>
-                                    </form>
-                               </div>
 
 
                     </div>
@@ -252,18 +434,223 @@
                                         </div>
                                     </div>
                                 </div>
+<div class="modal custom-modal fade" id="depocomplete" role="dialog">
+     <div class="modal-dialog modal-dialog-centered" role="document">
+         <div class="modal-content style">
+             <div class="modal-header">
+                             <h5 class="modal-title">Complete Transfer</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+							<div class="modal-body">
+                                             <form method="POST" action="complete_depoinv">
+                                                    {% csrf_token %}
+                                                          <input type="hidden" id="id1" name="id1"  />
+
+
+                                                 	  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <label for="remarks">Delivery date</label>
+										        <input type="date" class="form-control" name="date" id="date2"  placeholder="remarks" >
+										    </div>
+                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <label for="remarks">Remarks</label>
+										      <textarea class="form-control" name="remarks" id="remarks2"  placeholder="remarks" ></textarea>
+										    </div>
+                                                  <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <button type="submit" name="complete" class="btn btn-info">Complete</button>
+                                            </div>
+  </form>
+                                        </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+<div class="modal custom-modal fade" id="buscomplete" role="dialog">
+     <div class="modal-dialog modal-dialog-centered" role="document">
+         <div class="modal-content style">
+             <div class="modal-header">
+                             <h5 class="modal-title">Complete Transfer</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+							<div class="modal-body">
+                                             <form method="POST" action="complete_businv">
+                                                    {% csrf_token %}
+                                                          <input type="hidden" id="id" name="id"  />
+
+
+                                                 	  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <label for="remarks">Delivery date</label>
+										        <input type="date" class="form-control" name="date" id="date3"  placeholder="remarks" >
+										    </div>
+                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <label for="remarks">Remarks</label>
+										      <textarea class="form-control" name="remarks" id="remarks3"  placeholder="remarks" ></textarea>
+										    </div>
+                                                  <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <button type="submit" name="complete" class="btn btn-info">Complete</button>
+                                            </div>
+  </form>
+                                        </div>
+
+                                        </div>
+                                    </div>
+                                </div>
 
 
 <script>
     autocomplete(document.getElementById("whitemname"));
    	autocomplete2(document.getElementById("whsearch"));
+   	autocomplete3(document.getElementById("deposearch"));
+   	autocomplete4(document.getElementById("depoitemname"));
+   	autocomplete5(document.getElementById("bussearch"));
+   	autocomplete6(document.getElementById("busitemname"));
    	function VerifyClick(id){
 $("#date").val("");
 $("#remarks").val("");
 $("#txtHdnId").val(id);
 }
+	function VerifyClick1(id){
+$("#date2").val("");
+$("#remarks2").val("");
+$("#id1").val(id);
+}
+function VerifyClick2(id){
+$("#date3").val("");
+$("#remarks3").val("");
+$("#id").val(id);
+}
 function selectItem(indx)
 {
+}
+function autocomplete6(inp) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+   closeAllLists();
+   var a, b, i, val = this.value,current_this=this;
+    var searchterm = val;
+                    $.ajax({
+                      data: {"searchterm":searchterm, "txtWhId":$("#txtWhId").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_busstation_item' %}",
+                      type: 'POST',
+                      success: function(data){
+                        console.log(data);
+                        var obj = data.data.warehouseinventorylist;
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", current_this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      current_this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < obj.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+      /*  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase())  */
+        {
+
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          b.style.width = "150%";
+
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + obj[i].itemname + "</strong> &nbsp;&nbsp;<label>Qty : "+obj[i].qty+"</label>&nbsp;&nbsp; <label> mrp : "+obj[i].mrp+" </label>&nbsp;&nbsp; <label>"+obj[i].manufacturername+"</label>&nbsp;&nbsp; <label>Expiry : "+obj[i].expirydate+"</label>&nbsp;&nbsp; <label>"+obj[i].batchcode+"</label>";
+
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + obj[i].itemname + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].itemcode + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].freeqty + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].expirydate + "'>";
+           b.innerHTML += "<input type='hidden' value='" + obj[i].batchcode + "'>";
+            b.innerHTML += "<input type='hidden' value='" + obj[i].cp_sno + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+
+                            $("#busfreequantity").val(this.getElementsByTagName("input")[2].value);
+                            $("#busexpdate").val(this.getElementsByTagName("input")[3].value);
+                            $("#busbatchno").val(this.getElementsByTagName("input")[4].value);
+                             $("#buscpsno").val(this.getElementsByTagName("input")[5].value);
+
+          });
+          a.appendChild(b);
+        }
+      }
+
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+
+  });
+
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+
+
+
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    alert(x[currentFocus]);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
 }
 function autocomplete(inp) {
   /*the autocomplete function takes two arguments,
@@ -318,6 +705,133 @@ function autocomplete(inp) {
                             $("#expdate").val(this.getElementsByTagName("input")[3].value);
                             $("#batchno").val(this.getElementsByTagName("input")[4].value);
                              $("#cpsno").val(this.getElementsByTagName("input")[5].value);
+
+          });
+          a.appendChild(b);
+        }
+      }
+
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+
+  });
+
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+
+
+
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    alert(x[currentFocus]);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+function autocomplete4(inp) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+   closeAllLists();
+   var a, b, i, val = this.value,current_this=this;
+    var searchterm = val;
+                    $.ajax({
+                      data: {"searchterm":searchterm,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_depo_item' %}",
+                      type: 'POST',
+                      success: function(data){
+                        console.log(data);
+                        var obj = data.data.warehouseinventorylist;
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", current_this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      current_this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < obj.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+      /*  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase())  */
+        {
+
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          b.style.width = "150%";
+
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + obj[i].itemname + "</strong> &nbsp;&nbsp;<label>Qty : "+obj[i].qty+"</label>&nbsp;&nbsp; <label> mrp : "+obj[i].mrp+" </label>&nbsp;&nbsp;<label>Expiry : "+obj[i].expirydate+"</label>&nbsp;&nbsp; <label>"+obj[i].batchcode+"</label>";
+
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + obj[i].itemname + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].itemcode + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].freeqty + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].expirydate + "'>";
+           b.innerHTML += "<input type='hidden' value='" + obj[i].batchcode + "'>";
+            b.innerHTML += "<input type='hidden' value='" + obj[i].cp_sno + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+
+                            $("#depofreequantity").val(this.getElementsByTagName("input")[2].value);
+                            $("#depoexpdate").val(this.getElementsByTagName("input")[3].value);
+                            $("#depobatchno").val(this.getElementsByTagName("input")[4].value);
+                             $("#depocpsno").val(this.getElementsByTagName("input")[5].value);
 
           });
           a.appendChild(b);
@@ -514,5 +1028,250 @@ function autocomplete2(inp) {
       closeAllLists(e.target);
   });
 }
+function autocomplete5(inp) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+   closeAllLists();
+   var a, b, i, val = this.value,current_this=this;
+    var searchterm = val;
+                    $.ajax({
+                      data: {"searchterm":searchterm, 'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'busstation_search' %}",
+                      type: 'POST',
+                      success: function(data){
+                        console.log(data);
+                        var obj = data.data.warehouselist;
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", current_this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      current_this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < obj.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+      /*  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase())  */
+        {
+
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          b.style.width = "150%";
+
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + obj[i].name + "</strong> &nbsp;&nbsp;";
+
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + obj[i].name + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].id + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+
+                            $("#txBussearch").val(this.getElementsByTagName("input")[0].value);
+                            $("#txtBusId").val(this.getElementsByTagName("input")[1].value);
+
+
+          });
+          a.appendChild(b);
+        }
+      }
+
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+
+  });
+
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+
+
+
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    alert(x[currentFocus]);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+function autocomplete3(inp) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+   closeAllLists();
+   var a, b, i, val = this.value,current_this=this;
+    var searchterm = val;
+                    $.ajax({
+                      data: {"searchterm":searchterm, 'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'depo_search' %}",
+                      type: 'POST',
+                      success: function(data){
+                        console.log(data);
+                        var obj = data.data.warehouselist;
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", current_this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      current_this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < obj.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+      /*  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase())  */
+        {
+
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          b.style.width = "150%";
+
+          /*make the matching letters bold:*/
+          b.innerHTML = "<b>" + obj[i].name + "</b> &nbsp;&nbsp;";
+
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + obj[i].name + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].id + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+
+                            $("#txtdeposearch").val(this.getElementsByTagName("input")[0].value);
+                            $("#txtDepoId").val(this.getElementsByTagName("input")[1].value);
+
+
+          });
+          a.appendChild(b);
+        }
+      }
+
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+
+  });
+
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+
+
+
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    alert(x[currentFocus]);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+
 </script>
 {% endblock %}

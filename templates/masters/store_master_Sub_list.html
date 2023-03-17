@@ -34,6 +34,8 @@
                                     <th>Contact Person</th>
                                     <th>Mobile Number</th>
                                     <th>Store Location</th>
+                                    <th>Date</th>
+                                    <th>Created By</th>
                                     <th>Action</th>
                            </tr>
                       </thead>
@@ -48,6 +50,8 @@
                         <td>{{ list.mobile_no }}</a></td>
 
                         <td><u>{{ list.storelocation }}</u></td>
+                            <td></td>
+                            <td>{{ list.userid }}</td>
                                 <td>
                                       {% if list.status == "Active" %}
 
