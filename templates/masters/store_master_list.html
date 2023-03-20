@@ -54,7 +54,7 @@
                                 <td>
                                       {% if list.status == "Active" %}
 
-                                         <a class="editstore" href="#"  data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
+                                         <a class="editstore"  onclick="editStore('{{ list.storecode}}')" href="#"  data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
 
                                           <a href="#" onclick="VerifyClick('{{ list.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#store-status">
                                           Active</span></a>
@@ -248,9 +248,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 
-$(document).ready(function() {
-    $('.editstore').click(function() {
-      var id = $(this).data('id');
+function storeDepo(id){
       $.ajax({
         url: "{% url 'get_store' %}",
         type: 'POST',
@@ -297,7 +295,7 @@ $(document).ready(function() {
         	}
         }
       });
-    });
+    }
 	$("#warehouseid1").change(function() {
         	var warehousename = $(this).find(":selected").text();
         	$.ajax({

@@ -228,7 +228,7 @@
                         </tr>
                       </thead>
                             <tbody>
-                            {% for all_data in wh_item_list %}
+                            {% for all_data in depo_item_list %}
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>
@@ -273,7 +273,7 @@
 										{% csrf_token %}
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
 
-                                            <input type="search" class="form-control" id="bussearch" name="bussearch" placeholder="Bus Station Search" value="{{ wname }}" autocomplete="off"/>
+                                            <input type="search" class="form-control" id="bussearch" name="bussearch" placeholder="Bus Station Search" value="{{ busstation_name }}" autocomplete="off"/>
 
                                               <input type="hidden" id="txBussearch" name="txtBussearch"  />
                                                  <input type="hidden" id="txtBusId" name="txtBusId"  />
@@ -329,7 +329,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable" class="display  table-bordered" style="width:100%">
+                        <table class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
@@ -345,7 +345,7 @@
                         </tr>
                       </thead>
                             <tbody>
-                            {% for all_data in wh_item_list %}
+                            {% for all_data in bus_item_list %}
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>

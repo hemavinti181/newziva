@@ -2589,7 +2589,6 @@ def grn_pending_status(request):
 
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
-    print(data)
     grn_list = data['grnlist']
 
     return render(request, 'grn/grn_list_pending.html', {'all_data': grn_list})
@@ -4012,8 +4011,8 @@ def depo_item_list(request):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     data=response.json()
-    wh_item_list=data['stocktransferitemlist']
-    return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame})
+    depo_item_list=data['stocktransferitemlist']
+    return render(request,'stock_transfer/stock_transfer_home.html',{'depo_item_list':depo_item_list,'deponame':deponame})
 
 def complete_depoinv(request):
     deponame = request.session['name']
@@ -4123,7 +4122,7 @@ def busstation_add_stf(request):
                 messages.error(request, data['message'])
             except:
                 messages.error(request,response.text)
-            return redirect('depo_item_list')
+            return redirect('busstation_item_list')
     else:
         return render(request,'stock_transfer/stock_transfer_home.html',{'home':'active'})
 
@@ -4179,8 +4178,8 @@ def busstation_item_list(request):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     data=response.json()
-    wh_item_list=data['stocktransferitemlist']
-    return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'busstation_name':busstation_name})
+    bus_item_list=data['stocktransferitemlist']
+    return render(request,'stock_transfer/stock_transfer_home.html',{'bus_item_list':bus_item_list,'busstation_name':busstation_name})
 
 def complete_businv(request):
     deponame = request.session['name']
@@ -4206,15 +4205,15 @@ def complete_businv(request):
             del request.session['name']
             del request.session['id']
             messages.success(request, data['message'])
-            return redirect('depo_add_stf')
+            return redirect('busstation_add_stf')
         else:
             try:
                 data = response.json()
                 messages.error(request, data['message'])
-                return redirect('depo_add_stf')
+                return redirect('busstation_add_stf')
             except:
                 messages.error(request,response.text)
-            return redirect('depo_add_stf')
+            return redirect('busstation_add_stf')
     else:
         return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame})
 
@@ -4330,7 +4329,8 @@ def bus_add(request):
                     messages.error(request, data['message'])
                     return redirect('/bus_list')
     return render(request,'busstation/bus_add.html',{'data':depolist})
-def get_bus(request):
+def \
+        get_bus(request):
 
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/bus-search.php"

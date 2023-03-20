@@ -29,12 +29,15 @@
                           <thead>
                            <tr style="text-color:white">
 							   		<th>S No</th>
+                                    <th>Warehouse</th>
+                                    <th>Region</th>
+                                    <th>Depo</th>
+                                    <th>Bus Station</th>
                                     <th>Store Name</th>
                                     <th>Store type</th>
                                     <th>Contact Person</th>
                                     <th>Mobile Number</th>
                                     <th>Store Location</th>
-                                    <th>Date</th>
                                     <th>Created By</th>
                                     <th>Action</th>
                            </tr>
@@ -44,18 +47,21 @@
                           {% for list in list %}
                         <tr>
 							<td>{{ forloop.counter }}</td>
+                            <td>{{ list.warehouse }}</td>
+                            <td>{{ list.region }}</td>
+                            <td>{{ list.depo }}</td>
+                            <td>{{ list.bus_station }}</td>
                         <td><a href="{{ list.storephoto }}" style="color:#075ab3;" target="_blank">{{ list.storename }}</a></td>
                         <td>{{ list.storetype}}</a></td>
                         <td>{{ list.contact_person}}</a></td>
                         <td>{{ list.mobile_no }}</a></td>
 
                         <td><u>{{ list.storelocation }}</u></td>
-                            <td></td>
                             <td>{{ list.userid }}</td>
                                 <td>
                                       {% if list.status == "Active" %}
 
-                                         <a class="editstore" href="#"  data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
+                                         <a class="editstore" href="#" onclick="storeEdit('{{  list.storecode }}')" data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
 
                                           <a href="#" onclick="VerifyClick('{{ list.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#store-status">
                                           Active</span></a>
@@ -162,6 +168,54 @@ document.addEventListener('click', function (e) {
       break;}
 
 });
+function storeEdit(id){
+      $.ajax({
+        url: "{% url 'get_store' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data
+
+          	console.log(obj.state);
+             if(obj){
+             $("#stcode").val(obj.storecode);
+             $("#storename1").val(obj.storename);
+             $("#legalname1").val(obj.legal_name);
+             $("#gstnumber1").val(obj.gstnumber);
+             $("#pancard1").val(obj.pancard);
+             $("#tradelicenceno1").val(obj.tradelicenceno);
+             $("#foodlicence1").val(obj.foodlicence);
+             $("#storeaddress1").val(obj.storeaddress);
+             $("#pincode1").val(obj.pincode);
+             $("#contactperson1").val(obj.contact_person);
+             $("#mobileno1").val(obj.mobile_no);
+             $("#remarks1").val(obj.remarks);
+             $("#state1").val(obj.state);
+             $("#email1").val(obj.email);
+             $("#storelocation").val(obj.storelocation);
+             $("#mobileno2").val(obj.alternate_mobileno);
+             $("#store_type1").val(obj.storetype);
+             $("#natofbus1").val(obj.natureofbusiness);
+             $("#warehousename1").val(obj.warehouse);
+             $("#busstationname1").val(obj.bus_station);
+             $("#deponame1").val(obj.depo);
+             $("#regionname1").val(obj.region);
+             $("#warehouseid1").val(obj.warehouseid);
+             State1Change(obj.warehouse,obj.regionid);
+			 $("#warehouseid").change();
+			  $("#depoid1").val(obj.regionid);
+             RegionChange(obj.warehouse,obj.regionid,obj.depoid);
+			 $("#regionid").change();
+			 $("#busstationid1").val(obj.depoid);
+             DepoChange(obj.warehouse,obj.regionid,obj.depoid,obj.busstation_id);
+			 $("#depoid").change();
+             $('#edit_store').modal('show');
+        	}
+        }
+      });
+    }
 $("#warehouseid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename").val(selectedOptionText);
