@@ -47,40 +47,58 @@
 										</div>-->
                                             	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
 											 <input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
-                                                        <option value="{{ depoid }}">{{ deponame }}</option>
-												</select>
-
-                                                </div>
-                                        <!--<div class="col-md-3 col-sm-4  form-group has-feedback">
-                                            		<label> Bus Station</label>
-											 <input type="hidden" name="busstationname" id="busstationname" />
-												<select class="form-control" name="busstationid" id="busstationid">
-													<option value=""> bus station</option>
+                                                    {% if deponame %}
+                                                    	<select class="form-control" name="depoid" id="depoid1">
+													<option value="{{  deponame }}"> {{ deponame }}</option>
                                                     </select>
-										</div>-->
-                                         <div class="col-md-3 col-sm-4   form-group pull-right top_search">
-                                         <div class="input-group">
-                                            <input type="search" class="form-control" id="storesearch" name="storesearch" placeholder="Search for..." value="{{ sname }}"/>
-                                              <input type="hidden" id="txtStoresearch" name="txtStoreSearch"  />
-                                              <span class="input-group-btn">
-                                                <button class="btn btn-secondary btn-xs" name="search" type="submit">Go!</button>
-                                              </span>
-                                            </div>
-                                            </div>
-
+                                                    {% else %}
+                                                    <select class="form-control" name="depoid" id="depoid">
+                                                      <option value="" >depot </option>
+                                                        {% for data in data %}
+                                                           <option value="{{ data.id }}">{{ data.name }} </option>
+                                                        {% endfor %}
+												    </select>
+                                                    {% endif %}
+                                                </div>
+                                        <div class="col-md-3 col-sm-4  form-group has-feedback">
+											 <input type="hidden" name="busstationname" id="busstationname" />
+                                                {% if bustation %}
+												<select class="form-control" name="busstationid" id="busstationid1">
+													<option value="{{  bustation }}"> {{ bustation }}</option>
+                                                    </select>
+                                                {% else %}
+                                                    <select class="form-control" name="busstationid" id="busstationid">
+													<option value="">bus station</option>
+                                                    </select>
+                                                {% endif %}
+										</div>
+                                       <div class="col-md-3 col-sm-4  form-group has-feedback">
+											 <input type="hidden" name="stname" id="stname" />
+                                              {% if bustation %}
+												<select class="form-control" name="stid" id="stid1">
+													<option value="{{ stname }}">{{ stname }}</option>
+                                                    </select>
+                                              {% else %}
+                                             <select class="form-control" name="stid" id="stid">
+													<option value="">store</option>
+                                                    </select>
+                                                {% endif %}
+										</div>
+                                                <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                           <button type="submit" name="add" style="margin-top: 0px;" class="btn btn-primary">Submit</button>
+                                       </div>
 
                                             <input type="hidden" id="txtStoreId" name="txtStoreId" value="{{ stid }}"/>
                                              <input type="hidden" id="lblStoreName1" name="lblStoreName"/>
-                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                          <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label><b>Store Name  : <span id="lblStoreName" ></span></b></label>
 										</div>
-                                        <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
+                                      <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label><b>GST NO : </b><span id="lblGstNo"></span></label>
-										</div>-->
+										</div>
 										<div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label><b>Manager : <span id="lblManager"></span></b></label>
-										</div>
+										</div>-->
                                         </form>
                 </div>
                 </div>
@@ -89,7 +107,7 @@
                                    <form class="form-label-left input_mask"  method="POST" action="sales_item_add"   enctype="multipart/form-data">
 										{% csrf_token %}
 
-										<div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
+										<div class="col-md-3 col-sm-3 input-icons  form-group has-feedback">
 
                                             <input type="hidden" id="wh_id" name="wh_id" />
                                             <label>Item Name Search *</label>
@@ -97,10 +115,18 @@
                                             <input type="hidden" id="txtItemName2" name="txtItemName2" />
 										</div>
                                         <div class="col-md-1 col-sm-2  form-group has-feedback">
-											<label>Quantity *</label>
+											<label>Qty In Cases *</label>
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity">
 										</div>
-                                        <div class="col-md-1 col-sm-1  form-group has-feedback">
+                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
+											<label>No.of bottles *</label>
+                                           <input type="text" class="form-control" placeholder="no of bottles" name="freequantity" id="nbottles">
+                                       </div>
+                                         <div class="col-md-1 col-sm-2 form-group has-feedback">
+											<label>Prices *</label>
+                                           <input type="text" class="form-control" placeholder="price" name="freequantity" id="price">
+                                       </div>
+                                        <div class="col-md-1 col-sm-2  form-group has-feedback">
 											<label>Batch *</label>
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
 										</div>
@@ -108,17 +134,14 @@
 											<label>Expiry Date *</label>
 										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate" >
 										</div>
-                                       <div class="col-md-2 col-sm-2 form-group has-feedback">
-											<label>Free Quantity *</label>
-                                           <input type="text" class="form-control" placeholder="free quantity" name="freequantity" id="freequantity">
-                                       </div>
+
                                        <div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
 										</div>
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}"required>
 										</div>
-                                       <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                      	<div class="col-md-2 col-sm-2  offset-md-12">
                                            <button type="submit" name="add" style="margin-top: 5px;" class="btn btn-primary">Add</button>
                                        </div>
 
@@ -165,6 +188,7 @@
 
                        <td>
                            <a href="item_add" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                            <button type="button" class="btn btn-success" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
                        </td>
                             </tbody>
                            <tfoot>
@@ -185,15 +209,6 @@
                       </table>
                             </div>
                           </div>
-                  <ul class="nav navbar-right panel_toolbox">
-                    <li>
-                        <a href="proformainvoice"><button type="button" class="btn btn-danger"  style="padding: 0px 10px !important;">CLEAR LIST</button></a>
-                    </li>
-                    <li>
-                      <button type="button" class="btn btn-success" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
-                    </li>
-                  </ul>
-
                 </div>
                 </div>
               </div>
@@ -219,9 +234,9 @@
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
 
 
-                                               <label class="btn btn-round btn-success">
+                                               <!--<label class="btn btn-round btn-success">
                                                  <input type="radio" name="paymenttype" id="card" value="CARD" class="join-btn" /> CARD
-                                                </label>
+                                                </label>-->
 
 
                                                 <label class="btn btn-round btn-warning">
@@ -262,7 +277,6 @@ function ItemChange1(e){
 	   $("#txtItemName2").val($(e).find(":selected").text());
 	}
 	autocomplete(document.getElementById("itemname"));
-	autocomplete2(document.getElementById("storesearch"));
  function VerifyClick(id){
 $("#date").val("");
 $("#remarks").val("");
@@ -281,7 +295,7 @@ function autocomplete(inp) {
    var a, b, i, val = this.value,current_this=this;
     var searchterm = val;
                     $.ajax({
-                      data: {"searchterm":searchterm, "store_id":$("#txtStoreId").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      data: {"searchterm":searchterm, "store_id":$("#stid").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
                       url: "{% url 'get_store_data' %}",
                       type: 'POST',
                       success: function(data){
@@ -398,139 +412,13 @@ function autocomplete(inp) {
       closeAllLists(e.target);
   });
 }
-function autocomplete2(inp) {
-  /*the autocomplete function takes two arguments,
-  the text field element and an array of possible autocompleted values:*/
-  var currentFocus;
-  /*execute a function when someone writes in the text field:*/
-  inp.addEventListener("input", function(e) {
-   closeAllLists();
-   var a, b, i, val = this.value,current_this=this;
-     var searchterm = val;
-                    $.ajax({
-                      data: {"searchterm":searchterm, "depoid":$("#depoid").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
-                      url: "{% url 'store_search' %}",
-                      type: 'POST',
-                      success: function(data){
-                        console.log(data);
-                        var obj = data.data.storemasterlist;
-      if (!val) { return false;}
-      currentFocus = -1;
-      /*create a DIV element that will contain the items (values):*/
-      a = document.createElement("DIV");
-      a.setAttribute("id", current_this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
-      /*append the DIV element as a child of the autocomplete container:*/
-      current_this.parentNode.appendChild(a);
-      /*for each item in the array...*/
-      for (i = 0; i < obj.length; i++) {
-        /*check if the item starts with the same letters as the text field value:*/
-      /*  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase())  */
-        {
-
-          /*create a DIV element for each matching element:*/
-          b = document.createElement("DIV");
-          b.style.width = "150%";
-
-          /*make the matching letters bold:*/
-          b.innerHTML = "<strong>" + obj[i].storename + "</strong> &nbsp;&nbsp;<label>Address : "+obj[i].storeaddress+"</label>&nbsp;&nbsp;";
-
-          /*insert a input field that will hold the current array item's value:*/
-          b.innerHTML += "<input type='hidden' value='" + obj[i].storename + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].gstnumber + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].createdby + "'>";
-           b.innerHTML += "<input type='hidden' value='" + obj[i].storecode + "'>";
-          /*execute a function when someone clicks on the item value (DIV element):*/
-          b.addEventListener("click", function(e) {
-              /*insert the value for the autocomplete text field:*/
-              inp.value = this.getElementsByTagName("input")[0].value;
-
-                            $("#lblStoreName").html(this.getElementsByTagName("input")[0].value);
-                            $("#lblStoreName1").val(this.getElementsByTagName("input")[0].value);
-                            $("#lblGstNo").html(this.getElementsByTagName("input")[1].value);
-                            $("#lblSManager").html(this.getElementsByTagName("input")[2].value);
-                             $("#txtStoreId").val(this.getElementsByTagName("input")[3].value);
-
-          });
-          a.appendChild(b);
-        }
-      }
-
-                      },
-                      errors: function(e) {
-                      alert(e);
-                      }
-                    })
-
-  });
-
-  /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "autocomplete-list");
-      if (x) x = x.getElementsByTagName("div");
-      if (e.keyCode == 40) {
-        /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
-        currentFocus++;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 38) { //up
-        /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
-        currentFocus--;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        e.preventDefault();
-        if (currentFocus > -1) {
-          /*and simulate a click on the "active" item:*/
-          if (x) x[currentFocus].click();
-        }
-      }
-  });
-
-
-
-  function addActive(x) {
-    /*a function to classify an item as "active":*/
-    if (!x) return false;
-    /*start by removing the "active" class on all items:*/
-    removeActive(x);
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-    alert(x[currentFocus]);
-    /*add class "autocomplete-active":*/
-    x[currentFocus].classList.add("autocomplete-active");
-  }
-  function removeActive(x) {
-    /*a function to remove the "active" class from all autocomplete items:*/
-    for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("autocomplete-active");
-    }
-  }
-  function closeAllLists(elmnt) {
-    /*close all autocomplete lists in the document,
-    except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
-        x[i].parentNode.removeChild(x[i]);
-      }
-    }
-  }
-  /*execute a function when someone clicks in the document:*/
-  document.addEventListener("click", function (e) {
-      closeAllLists(e.target);
-  });
-}
 $("#warehouseid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename").val(selectedOptionText);
 });
-$("#regionid").change(function() {
+$("#stid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-  $("#regionname").val(selectedOptionText);
+  $("#stname").val(selectedOptionText);
 });
 $("#depoid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -540,7 +428,48 @@ $("#busstationid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busstationname").val(selectedOptionText);
 });
+ 	$("#depoid").change(function() {
 
+        	var depo = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_proformabus" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid").empty();
+			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#busstationid").change(function() {
+        	var depoid = $('#depoid').val();
+        	var busid = $('#busstationid').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_proformastore" %}',
+            	data: {
+                	'depo':depoid,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.adminstoremasterlistdata
+					if(obj) {
+			 		$("#stid").empty();
+			 		$("#stid").append("<option  value=''>Choose Store</option>");
+                	$.each(obj, function (index, item) {
+                    $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
 </script>
 
 {% endblock %}

@@ -133,9 +133,7 @@ urlpatterns = [
     path('get_storeregion',views.get_storeregion,name='get_storeregion'),
     path('get_storedepo',views.get_storedepo,name='get_storedepo'),
     path('get_storebus',views.get_storebus,name='get_storebus'),
-    path('store_sub_list/<str:id>/',views.store_sub_list,name='store_sub_list'),
     path('region_status_active',views.region_status_active,name='region_status_active'),
-    path('store_admin',views.store_admin,name='store_admin'),
     path('taxinvoice_list',views.taxinvoice_list,name='taxinvoice_list'),
     path('sales_item_list_pending/<str:id>/',views.sales_item_list_pending,name='sales_item_list_pending'),
     path('depo_add_stf',views.depo_add_stf,name='depo_add_stf'),
@@ -151,6 +149,8 @@ urlpatterns = [
     path('busstation_depoinv', views.complete_depoinv, name='complete_depoinv'),
     path('busstation_add_stf',views.busstation_add_stf,name='busstation_add_stf'),
     path('get_busstation_item',views.get_busstation_item,name='get_busstation_item'),
-    path('complete_businv',views.complete_businv,name='complete_businv')
+    path('complete_businv',views.complete_businv,name='complete_businv'),
+    path('get_proformabus',views.get_proformabus,name='get_proformabus'),
+    path('get_proformastore',views.get_proformastore,name='get_proformastore')
 
 ]

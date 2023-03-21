@@ -116,7 +116,7 @@
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value=""> depot</option>
+													<option value=""> Depot</option>
 												</select>
 											</div>
 
@@ -124,7 +124,7 @@
 													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
-													<option value=""> bus station</option>
+													<option value=""> Bus station</option>
 												</select>
 										</div>
 										<div class="col-md-4 form-group has-feedback">
@@ -248,7 +248,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 
-function storeDepo(id){
+function editStore(id){
       $.ajax({
         url: "{% url 'get_store' %}",
         type: 'POST',
@@ -360,7 +360,6 @@ function storeDepo(id){
         	});
     	});
 
-  });
   function State1Change(warehouse,region){
                 $.ajax({
             	type: "POST",

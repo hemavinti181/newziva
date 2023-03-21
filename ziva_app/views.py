@@ -49,13 +49,19 @@ def login(request):
             depoid = data['depoid']
             accesskey = data['accesskey']
             username = data['username']
+            warehousename = data['warehousename']
             code = data['code']
+            regionid = data['regionid']
+            warehouseid = data['warehouseid']
             request.session['accesskey'] = accesskey
             request.session['username'] = username
             request.session['role'] = role
             request.session['deponame']=deponame
             request.session['depoid'] = depoid
             request.session['codee'] = code
+            request.session['regionid'] = regionid
+            request.session['warehousename'] = warehousename
+            request.session['warehouseid'] = warehouseid
             messages.success(request,data['message'])
             return redirect('store_master')
         else:
@@ -67,6 +73,7 @@ def login(request):
                 messages.error(request,response.text)
                 return render(request, 'login.html')
     return render(request, 'login.html')
+
 def logout(request):
     del request.session['accesskey']
     del request.session['username']
@@ -190,53 +197,8 @@ def store_master(request):
             else:
                 return render(request, 'masters/store_master_list.html',
                               {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
-def store_admin(request):
-   pass
-def store_sub_list(request,id):
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
 
-    data = response.json()
-    wh_masterlist = data['warehouselist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
-
-    payload = json.dumps({"accesskey": accesskey, "name": "Storetype"})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    storetype_list = data['itemmasterlist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/adminsubstore-master-list.php"
-
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "userid": id
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        store_masterlist = data['adminsubstoremasterlist']
-        return render(request, 'masters/store_master_list.html',
-                      {"list": store_masterlist, 'wh_masterlist': wh_masterlist,
-                       'storetype_list': storetype_list})
-    else:
-        return render(request, 'masters/store_master_list.html',
-                      {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
 
 def get_store(request):
     accesskey = request.session['accesskey']
@@ -2123,6 +2085,44 @@ def get_storebus(request):
     data = response.json()
     return JsonResponse({'data': data})
 
+def get_proformabus(request):
+    accesskey = request.session['accesskey']
+    regionid = request.session['regionid']
+    warehousename = request.session['warehousename']
+    url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
+
+    payload = json.dumps({"accesskey": accesskey, "type": "Bus Station",
+                          "warehousename": warehousename,
+                          "regionid": regionid,
+                          "depoid":request.POST.get('depo')})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    return JsonResponse({'data': data})
+
+def get_proformastore(request):
+    accesskey = request.session['accesskey']
+    regionid = request.session['regionid']
+    warehouseid =  request.session['warehouseid']
+    url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "warehouseid": warehouseid,
+        "regionid": regionid,
+        "depoid": request.POST.get('depo'),
+        "busstationid": request.POST.get('busid')
+
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    return JsonResponse({'data': data})
 def get_storedepo(request):
      accesskey = request.session['accesskey']
      warehouse = request.POST.get('warehouse')
@@ -2594,10 +2594,11 @@ def grn_pending_status(request):
     return render(request, 'grn/grn_list_pending.html', {'all_data': grn_list})
 
 def sale_item_list(request):
-    sname = request.session['storename']
-    accesskey = request.session['accesskey']
+    stid = request.session['stid']
+    stname = request.session['storename']
     deponame = request.session['deponame']
-    depoid = request.session['depoid']
+    bustation = request.session['bustname']
+    accesskey = request.session['accesskey']
     tax_inv = request.session['taxinvoice']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
@@ -2624,11 +2625,11 @@ def sale_item_list(request):
         data = response.json()
         sale_item_list = data['saleitemlist']
         return render(request, 'sales/sales_new.html',
-                      {"all_data": sale_item_list, 'deponame': deponame, 'data': sale_item_list[0], 'whlist': whlist,
-                       'depoid': depoid,'sname':sname})
+                      {"all_data": sale_item_list, 'deponame': deponame,'bustation':bustation, 'data': sale_item_list[0], 'whlist': whlist,
+                      'stname':stname})
     else:
         return render(request, 'sales/sales_new.html',
-                      {'deponame': deponame,'whlist': whlist,'depoid': depoid,'sname':sname})
+                      {'deponame': deponame,'whlist': whlist,'bustation':bustation,'stname':stname})
 
 def sales_item_list_pending(request,id):
     accesskey = request.session['accesskey']
@@ -2653,22 +2654,41 @@ def sales_item_list_pending(request,id):
 
 def proformainvoice(request):
     accesskey = request.session['accesskey']
-    deponame= request.session['deponame']
-    depoid = request.session['depoid']
+    regionid = request.session['regionid']
+    warehousename = request.session['warehousename']
+    url  = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
+    payload = json.dumps({
+            "accesskey":accesskey,
+            "type":"Depo",
+            "warehousename":warehousename,
+            "regionid":regionid,
+            "depoid":""
 
-
-
-    if 'search' in request.POST:
-            sname = request.POST.get('lblStoreName')
-            request.session['storename']=sname
+    })
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        data1 = data['dropdownlist']
+    if request.method == 'POST':
+            stname = request.POST.get('stname')
+            stid = request.POST.get('stid')
+            request.session['stid'] = stid
+            request.session['storename']=stname
+            deponame =  request.POST.get('deponame')
+            request.session['deponame']=deponame
+            bustname = request.POST.get('busstationname')
+            request.session['bustname'] = bustname
             url = "http://13.235.112.1/ziva/mobile-api/generate-salebill-number.php"
 
             payload = {
                 "accesskey": accesskey,
-                "storeid": request.POST.get('txtStoreId'),
-                "storename":request.POST.get('lblStoreName'),
-                "depoid": depoid,
-                "deponame": deponame
+                "storeid": request.POST.get('stid'),
+                "storename":request.POST.get('stname'),
+                "depoid": request.POST.get('depoid'),
+                "deponame": request.POST.get('deponame')
 
             }
             headers = {
@@ -2678,14 +2698,13 @@ def proformainvoice(request):
             response = requests.request("POST", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                stid = request.POST.get('txtStoreId')
+
                 tax_inv = data['taxinvoice']
                 cus_name = data['customer_name']
                 cus_mobile = data['customer_mobile']
                 request.session['taxinvoice'] = tax_inv
                 request.session['customer_name'] = cus_name
                 request.session['customer_mobile'] = cus_mobile
-                request.session['storeid'] = stid
                 return redirect('sales_item_add')
             else:
                 try:
@@ -2693,15 +2712,33 @@ def proformainvoice(request):
                     messages.error(request,data['message'])
                 except:
                     messages.error(request,response.text)
-                return render(request, 'sales/sales_new.html', { 'deponame': deponame, 'depoid': depoid,})
-    return render(request, 'sales/sales_new.html', {'deponame': deponame, 'depoid': depoid})
+                return render(request, 'sales/sales_new.html', {'data':data1,'stname':stname,'deponame': deponame,'bustation':bustname})
+    return render(request, 'sales/sales_new.html',{'data':data1})
 def sales_item_add(request):
-    stid = request.session['storeid']
     accesskey = request.session['accesskey']
-    sname =  request.session['storename']
+    regionid = request.session['regionid']
+    warehousename = request.session['warehousename']
+    stid = request.session['stid']
+    stname = request.session['storename']
     deponame = request.session['deponame']
-    depoid = request.session['depoid']
-    if  'add' in request.POST:
+    bustation = request.session['bustname']
+    url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "type": "Depo",
+        "warehousename": warehousename,
+        "regionid": regionid,
+        "depoid": ""
+
+    })
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        data1 = data['dropdownlist']
+    if  request.method == 'POST':
         tax_inv = request.session['taxinvoice']
         cus_name = request.session['customer_name']
         cus_mobile = request.session['customer_mobile']
@@ -2735,7 +2772,7 @@ def sales_item_add(request):
                 data = r.json()
                 messages.error(request, data['message'])
         return redirect('sale_item_list')
-    return render(request, 'sales/sales_new.html', { 'deponame': deponame, 'depoid': depoid,'sname':sname,'stid':stid})
+    return render(request, 'sales/sales_new.html', {'data':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid})
 def complete_sale(request):
     accesskey = request.session['accesskey']
     if 'complete' in request.POST:
@@ -2757,7 +2794,9 @@ def complete_sale(request):
         if response.status_code == 200:
             del request.session['taxinvoice']
             del request.session['storename']
-            del request.session['storeid']
+            del request.session['stid']
+            del request.session['bustname']
+            del request.session['deponame']
             messages.success(request, data['message'])
             return redirect('proformainvoice')
         else:
@@ -3707,13 +3746,13 @@ def get_store_data(request):
 def store_search(request):
 
     accesskey = request.session['accesskey']
-    serchterm = request.POST.get('searchterm')
+    serchterm = request.POST.get('store')
     url = "http://13.235.112.1/ziva/mobile-api/store-master-search.php"
 
     payload = json.dumps({
             "accesskey":accesskey,
             "storename":serchterm,
-             "depoid":request.POST.get('depoid')
+             "depoid":request.POST.get('depo')
     })
     headers = {
         'Content-Type': 'text/plain'
