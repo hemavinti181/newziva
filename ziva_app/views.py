@@ -110,6 +110,8 @@ def store_master(request):
             url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
 
             payload = json.dumps({
+
+
                 "accesskey": accesskey,
                 "warehouseid": request.POST.get('warehouseid'),
                 "regionid": request.POST.get('regionid'),
@@ -136,6 +138,7 @@ def store_master(request):
                 payload = json.dumps({
                     "accesskey": accesskey,
                     "warehouseid": 'All',
+
                     "regionid": 'All',
                     "depoid": 'All',
                     "busstationid": 'All'
@@ -2676,6 +2679,7 @@ def proformainvoice(request):
             stname = request.POST.get('stname')
             stid = request.POST.get('stid')
             request.session['stid'] = stid
+
             request.session['storename']=stname
             deponame =  request.POST.get('deponame')
             request.session['deponame']=deponame

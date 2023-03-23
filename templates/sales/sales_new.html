@@ -71,18 +71,19 @@
 													<option value="">bus station</option>
                                                     </select>
                                                 {% endif %}
-										</div>
+										</div>{{ stname }}
                                        <div class="col-md-3 col-sm-4  form-group has-feedback">
-											 <input type="hidden" name="stname" id="stname" />
-                                              {% if bustation %}
-												<select class="form-control" name="stid" id="stid1">
+											  <input type="hidden" name="stid2" id="stid2" value="{{ stid }}"  />
+                                            {% if stname %}
+                                            <input type="hidden" name="stname" id="stname"  />
+                                                <select class="form-control" name="stid" id="stid1">
 													<option value="{{ stname }}">{{ stname }}</option>
-                                                    </select>
-                                              {% else %}
-                                             <select class="form-control" name="stid" id="stid">
-													<option value="">store</option>
-                                                    </select>
-                                                {% endif %}
+                                                </select>
+                                            {% else %}
+                                                <select class="form-control" name="stid" id="stid">
+													<option value="">Store</option>
+                                                </select>
+                                            {% endif %}
 										</div>
                                                 <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" name="add" style="margin-top: 0px;" class="btn btn-primary">Submit</button>
@@ -140,6 +141,8 @@
 										</div>
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}"required>
+                                            <input type="hidden" class="form-control" name="cpsno" id="cases">
+
 										</div>
                                       	<div class="col-md-2 col-sm-2  offset-md-12">
                                            <button type="submit" name="add" style="margin-top: 5px;" class="btn btn-primary">Add</button>
@@ -294,8 +297,9 @@ function autocomplete(inp) {
    closeAllLists();
    var a, b, i, val = this.value,current_this=this;
     var searchterm = val;
+
                     $.ajax({
-                      data: {"searchterm":searchterm, "store_id":$("#stid").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      data: {"searchterm":searchterm, "store_id":$("#stid2").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
                       url: "{% url 'get_store_data' %}",
                       type: 'POST',
                       success: function(data){
@@ -329,6 +333,8 @@ function autocomplete(inp) {
           b.innerHTML += "<input type='hidden' value='" + obj[i].expirydate + "'>";
            b.innerHTML += "<input type='hidden' value='" + obj[i].batchcode + "'>";
             b.innerHTML += "<input type='hidden' value='" + obj[i].cp_sno + "'>";
+             b.innerHTML += "<input type='hidden' value='" + obj[i].uom + "'>";
+              b.innerHTML += "<input type='hidden' value='" + obj[i].mrp + "'>";
           /*execute a function when someone clicks on the item value (DIV element):*/
           b.addEventListener("click", function(e) {
               /*insert the value for the autocomplete text field:*/
@@ -338,6 +344,8 @@ function autocomplete(inp) {
                             $("#expdate").val(this.getElementsByTagName("input")[3].value);
                             $("#batchno").val(this.getElementsByTagName("input")[4].value);
                              $("#cpsno").val(this.getElementsByTagName("input")[5].value);
+                             $("#cases").val(this.getElementsByTagName("input")[6].value);
+                             $("#price").val(this.getElementsByTagName("input")[7].value);
 
           });
           a.appendChild(b);
