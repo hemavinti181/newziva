@@ -7,9 +7,8 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h4>Delivery  Challan</h4>
+                <h4>Sales List</h4>
               </div>
-
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
                 <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
@@ -31,8 +30,7 @@
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
-
-
+                                    <th>S NO</th>
                                     <th>Store Name</th>
                                     <th>Store Invoice Number </th>
                                     <th>DC Number</th>
@@ -46,6 +44,7 @@
                                 {%  if all_data.status == "Delivery Pending" %}
 
                                     <tr>
+                                        <td>{{ forloop.counter }}</td>
                                     <td>{{ all_data.storename }}</td>
                                     <td> {{ all_data.sonumber }} </td>
                                     <td>{{  all_data.dcnumber}}</td>
