@@ -29,13 +29,13 @@
                                     <th>S No</th>
                                     <th>Invoice Number</th>
                                     <th>Item Name</th>
-                                    <th>QTY</th>
+                                    <th>Qty(In Cases)</th>
                                     <th>ExpDate</th>
                                     <th>HSN</th>
                                     <th>Batch</th>
-                                    <th>MRP</th>
+                                    <th>Total</th>
                                     <th>Manufacture</th>
-                                    <th>Action</th>
+                                    <!--<th>Action</th>-->
                         </tr>
                       </thead>
                             {% for all_data in all_data %}
@@ -47,12 +47,12 @@
                        <td>{{  all_data.expiry_date }}</td>
                         <td>{{ all_data.hsn }}</td>
                        <td>{{ all_data.batch_no }}</td>
-                       <td>{{ all_data.mrp }}</td>
+                       <td>{{ all_data.total }}</td>
                            <td>{{all_data.manufacturer}}</td>
 
-                       <td>
+                      <!-- <td>
                            <a href="item_add" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                       </td>
+                       </td>-->
                       </tr>
                       {% endfor %}
 

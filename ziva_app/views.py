@@ -2653,7 +2653,9 @@ def sales_item_list_pending(request,id):
         sale_item_list = data['saleitemlist']
         return render(request, 'sales/sale_item_list.html',{"all_data": sale_item_list})
     else:
-        return render(request, 'sales/sales_new.html')
+        data = response.json()
+        messages.error(request,data['message'])
+        return render(request, 'sales/sale_item_list.html')
 
 def proformainvoice(request):
     accesskey = request.session['accesskey']

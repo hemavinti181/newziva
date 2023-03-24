@@ -31,13 +31,15 @@
                       <thead>
                         <tr>
                                     <th>S NO</th>
+                                    <th>Bus Station</th>
                                     <th>Store Name</th>
                                     <th>Store Invoice Number </th>
-                                    <th>DC Number</th>
-                                    <th>ExpDate</th>
+                                    <th>Created Date</th>
+                                    <!--<th>DC Number</th>-->
+                                    <th>Delivery Date</th>
                                     <th>Total</th>
                                     <th>Itemcount</th>
-                                    <th>Action</th>
+                                    <th>Actions</th>
                         </tr>
                       </thead>
                             {% for all_data in all_data %}
@@ -45,14 +47,16 @@
 
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
+                                        <td>{{ all_data.bus_station }}</td>
                                     <td>{{ all_data.storename }}</td>
                                     <td> {{ all_data.sonumber }} </td>
-                                    <td>{{  all_data.dcnumber}}</td>
-                                    <td>{{ all_data.date }}</td>
+                                        <td>{{ all_data.date }}</td>
+                                    <!--<td>{{  all_data.dcnumber}}</td>-->
+                                    <td>{{ all_data.delivery_date }}</td>
                                     <td>{{ all_data.total }}</td>
                                         <td>{{ all_data.itemcount }}</td>
                                         <td>
-                                            <span class="badge badge-warning"> PENDING </span>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> PENDING </span></a>
                                             <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">  Delivery challan </span>
                                          </td>
                                     </tr>
@@ -84,18 +88,21 @@
                                                     {% csrf_token %}
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
-										            <input type="text" class="form-control" placeholder="Agent name" name="agentname" id="name">
+										            <input type="text" class="form-control" placeholder="Agent Name" name="agentname" id="name">
                                             </div>
-                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+										            <input type="text" class="form-control" placeholder="Agent Number" name="agentno" id="agentno">
+                                            </div>
+                                            <div class="col-md-12 col-sm-12  form-group has-feedback">
 										        <input type="text" class="form-control" placeholder="Vehicals Details" name="vehicaldetails" id="veh">
 										    </div>
                                                <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                   <label for="remarks">Remarks *</label>
-                                                   <textarea class="form-control" name="remarks" rows="2" placeholder="remarks" id="remarks"></textarea>
+
+                                                   <textarea class="form-control" name="remarks" rows="2" placeholder="Remarks" id="remarks"></textarea>
 										    </div>
                                             <p></p>
                                             <div class="col-md-6 col-sm-8  offset-md-5">
-                                                  <button type="submit" class="btn btn-info">UPDATE</button>
+                                                  <button type="submit" class="btn btn-info">Approve</button>
                                             </div>
                                              </form>
                                         </div>
@@ -107,6 +114,7 @@
 <script>
     function VerifyClick(id){
 $("#name").val("");
+$("#agentno").val("");
 $("#vehicaldetails").val("");
 $("#remarks").val("");
 $("#txtHdnId").val(id);

@@ -32,10 +32,13 @@
                         <tr>
 
                                      <th>S No</th>
+                                     <th>Bus station</th>
                                     <th>Store Name</th>
-                                    <th>Store Invoice Number </th>
-                                    <th>DC Number</th>
-                                    <th>ExpDate</th>
+                                    <th>Agent Name</th>
+                                    <th>Agent Mobile</th>
+                                    <!--<th>Store Invoice Number </th>
+                                    <th>DC Number</th>-->
+                                    <th>Delivery Data</th>
                                     <th>Total</th>
                                     <th>Itemcount</th>
                                     <th>Action</th>
@@ -44,18 +47,22 @@
                             {% for all_data in data %}
                        <tr>
                            <td>{{ forloop.counter }}</td>
-                      <td>{{ all_data.storename }}</td>
-                       <td> {{ all_data.sonumber }} </td>
-                       <td>{{  all_data.dcnumber}}</td>
-                        <td>{{ all_data.date }}</td>
+                           <td>{{ all_data.bus_station }}</td>
+                             <td>{{ all_data.storename }}</td>
+                            <td>{{ all_data.del_agent_name  }}</td>
+                           <td>{{ all_data.contactno }}</td>
+                       <!--  <td> {{ all_data.sonumber }} </td>
+                       <td>{{  all_data.dcnumber}}</td>-->
+                        <td>{{ all_data.delivery_date }}</td>
                        <td>{{ all_data.total }}</td>
                        <td>{{ all_data.itemcount }}</td>
                                 <td>
-                                   <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning">pending </span></a>
+                                   <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-success">{{ all_data.status }} </span></a>
+                                      <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}','{{ all_data.itemcount }}','{{ all_data.total }}')"  data-target="#bs-example-modal-sm">Update</span>
 
                                 </td>
 
-                      </tr>
+                      </tr>_
                       {% endfor %}
                       <tbody>
                       </tbody>
@@ -65,39 +72,69 @@
               </div>
             </div>
                 </div>
-                     <div class="inner-fabs">
+                     <!--<div class="inner-fabs">
                                   <div class="fab round" id="fab3" data-tooltip="out pass"><a href="sales_list_outpass"><i class="fa fa-outdent"></i></a></div>
                                   <div class="fab round" id="fab2" data-tooltip="pending"><a href="sales_list"><i class="fa fa-outdent" ></i></a></div></a>
                                     </div>
                                 <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-                        </div>
+                        </div>-->
                 </div>
               </div>
             </div>
           </div>
 </div>
+<div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                  <div class="modal-header">
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+                                        <div class="modal-body">
+                                             <form method="post" action="deliver_challan_status">
+                                                    {% csrf_token %}
+                                            <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                        <label>Quantity (In CaseS)</label>
+										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
+                                            </div>
+                                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                         <label>Number Of Botteles</label>
+										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob">
+                                            </div>
+                                            <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                <label>Total Price</label>
+										        <input type="text" class="form-control" placeholder="Price" name="price" id="price">
+										    </div>
 
+                                            <div class="col-md-6 col-sm-6  offset-md-4">
+                                                  <button type="submit" class="btn btn-info">Update Payment</button>
+                                            </div>
+                                             </form>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
 <script>
-    let fab1 = document.getElementById('fab1');
-let innerFabs = document.getElementsByClassName('inner-fabs')[0];
-
-fab1.addEventListener('click', function () {
-  innerFabs.classList.toggle('show');
-});
-
-document.addEventListener('click', function (e) {
-  switch (e.target.id) {
-    case "fab1":
-    case "fab2":
-    case "fab3":
-    case "fab4":
-    case "fabIcon":
-      break;
-    default:
-      innerFabs.classList.remove('show');
-      break;}
-
-});
+     function VerifyClick(id,id1,id2){
+$("#qty").val(id1);
+$("#nob").val();
+$("#price").val(id2);
+$("#txtHdnId").val(id);
+}
+$('#qty').on('input', function()  {
+    	    val  = $("#qty").val();
+            val1 = $("#cases").val();
+            mrp = $("#price").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp)
+            $("#nbottles").val(val2);
+            $("#price").val(val3);
+         });
 </script>
 {% endblock %}
 
