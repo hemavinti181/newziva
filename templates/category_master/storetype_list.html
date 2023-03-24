@@ -142,34 +142,6 @@
 				</div>
 <script>
 
-
-    let fab1 = document.getElementById('fab1');
-let innerFabs = document.getElementsByClassName('inner-fabs')[0];
-
-fab1.addEventListener('click', function () {
-var cls=$(".inner-fabs").attr("class");
-  innerFabs.classList.toggle('show');
-  if(cls=="inner-fabs show"){
-    $(".tooltiptext").css("visibility","hidden");
-    }else{
-    $(".tooltiptext").css("visibility","visible");
-    }
-});
-
-document.addEventListener('click', function (e) {
-  switch (e.target.id) {
-    case "fab1":
-    case "fab2":
-    case "fab3":
-    case "fab4":
-    case "fabIcon":
-      break;
-    default:
-      innerFabs.classList.remove('show');
-      $(".tooltiptext").css("visibility","hidden");
-      break;}
-
-});
  function VerifyClick(id,status){
 $("#id").val(id);
 $("#status").val(status);

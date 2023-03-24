@@ -11,7 +11,7 @@
         <div class="">
           <div class="page-title">
             <div class="title_left">
-              <h3>Proforma List</h3>
+              <h3>Proforma Invoice</h3>
             </div>
 
            <!-- <div class="title_right">
@@ -46,12 +46,13 @@
 												</select>
 										</div>-->
                                             	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
-											 <input type="hidden" name="deponame" id="deponame" />
+
                                                     {% if deponame %}
-                                                    	<select class="form-control" name="depoid" id="depoid1">
+                                                    	<select class="form-control" name="depoid1" id="depoid1">
 													<option value="{{  deponame }}"> {{ deponame }}</option>
                                                     </select>
                                                     {% else %}
+                                                     <input type="hidden" name="deponame" id="deponame" />
                                                     <select class="form-control" name="depoid" id="depoid">
                                                       <option value="" >depot </option>
                                                         {% for data in data %}
@@ -61,25 +62,27 @@
                                                     {% endif %}
                                                 </div>
                                         <div class="col-md-3 col-sm-4  form-group has-feedback">
-											 <input type="hidden" name="busstationname" id="busstationname" />
+
                                                 {% if bustation %}
-												<select class="form-control" name="busstationid" id="busstationid1">
+												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value="{{  bustation }}"> {{ bustation }}</option>
                                                     </select>
                                                 {% else %}
+                                                    <input type="hidden" name="busstationname" id="busstationname" />
                                                     <select class="form-control" name="busstationid" id="busstationid">
 													<option value="">bus station</option>
                                                     </select>
                                                 {% endif %}
-										</div>{{ stname }}
+										</div>
                                        <div class="col-md-3 col-sm-4  form-group has-feedback">
-											  <input type="hidden" name="stid2" id="stid2" value="{{ stid }}"  />
+
                                             {% if stname %}
-                                            <input type="hidden" name="stname" id="stname"  />
+                                             <input type="hidden" name="stid2" id="stid2" value="{{ stid }}"  />
                                                 <select class="form-control" name="stid" id="stid1">
 													<option value="{{ stname }}">{{ stname }}</option>
                                                 </select>
                                             {% else %}
+                                            <input type="hidden" name="stname" id="stname"  />
                                                 <select class="form-control" name="stid" id="stid">
 													<option value="">Store</option>
                                                 </select>
@@ -109,43 +112,42 @@
 										{% csrf_token %}
 
 										<div class="col-md-3 col-sm-3 input-icons  form-group has-feedback">
-
-                                            <input type="hidden" id="wh_id" name="wh_id" />
+                                               <input type="hidden" id="wh_id" name="wh_id" />
                                             <label>Item Name Search *</label>
-										    	 <input type="search" id="itemname" autocomplete="off" name="itemname"  class="form-control" />
+										    	 <input type="search" id="itemname" placeholder="item search" autocomplete="off" name="itemname"  class="form-control" />
                                             <input type="hidden" id="txtItemName2" name="txtItemName2" />
 										</div>
                                         <div class="col-md-1 col-sm-2  form-group has-feedback">
 											<label>Qty In Cases *</label>
-										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity">
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity" onchange="myFunction(this.value)">
 										</div>
-                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
+                                         <div class="col-md-1 col-sm-2 form-group has-feedback">
 											<label>No.of bottles *</label>
-                                           <input type="text" class="form-control" placeholder="no of bottles" name="freequantity" id="nbottles">
+                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles">
                                        </div>
                                          <div class="col-md-1 col-sm-2 form-group has-feedback">
 											<label>Prices *</label>
-                                           <input type="text" class="form-control" placeholder="price" name="freequantity" id="price">
+                                           <input type="text" class="form-control" placeholder="0" name="mrp" id="price">
                                        </div>
-                                        <div class="col-md-1 col-sm-2  form-group has-feedback">
+                                        <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
 											<label>Batch *</label>
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
 										</div>
 										<div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Expiry Date *</label>
 										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate" >
-										</div>
-
-                                       <div class="col-md-2 col-sm-3  form-group has-feedback">
+										</div>-->
+                                           <div class="col-md-3 col-sm-2 form-group has-feedback">
+											<label>remarks *</label>
+                                               <input type="text"  class="form-control" placeholder="remarks" name="remarks" id="remarks1"/>
+                                       </div>
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
-										</div>
-										<div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}"required>
-                                            <input type="hidden" class="form-control" name="cpsno" id="cases">
+										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}" required>
+                                            <input type="hidden" class="form-control" name="cases" id="cases">
+                                             <input type="hidden" class="form-control" name="cases" id="mrp">
 
-										</div>
                                       	<div class="col-md-2 col-sm-2  offset-md-12">
-                                           <button type="submit" name="add" style="margin-top: 5px;" class="btn btn-primary">Add</button>
+                                           <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Add</button>
                                        </div>
 
                                        <input type="hidden" id="store_id" name="store_id" />
@@ -167,11 +169,11 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Item Name</th>
-                                    <th>QTY</th>
+                                    <th>QTY In Cases</th>
                                     <th>ExpDate</th>
                                     <th>HSN</th>
                                     <th>Batch</th>
-                                    <th>MRP</th>
+                                    <th>Total </th>
                                     <th>Manufacture</th>
                                     <th>Action</th>
 
@@ -186,11 +188,11 @@
                        <td>{{  all_data.expiry_date }}</td>
                         <td>{{ all_data.hsn }}</td>
                        <td>{{ all_data.batch_no }}</td>
-                       <td>{{ all_data.mrp }}</td>
+                       <td>{{ all_data.total }}</td>
                            <td>{{all_data.manufacturer}}</td>
 
                        <td>
-                           <a href="item_add" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                           <a href="delete_sale_item/{{ all_data.id }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
                             <button type="button" class="btn btn-success" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
                        </td>
                             </tbody>
@@ -251,6 +253,10 @@
                                                  <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" /> UPI
                                                 </label>
 
+                                                   <label class="btn btn-round btn-primary">
+                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" /> Scanner
+                                                </label>
+
 
                                                  	  <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
@@ -271,22 +277,17 @@
                                 </div>
 
 <script>
-window.onload=function(){
- $("#wh_id").val(sessionStorage.getItem("WarehouseId"));
-$("#store_id").val(sessionStorage.getItem("StoreId"));
 
-}
+
+
+autocomplete(document.getElementById("itemname"));
 function ItemChange1(e){
 	   $("#txtItemName2").val($(e).find(":selected").text());
 	}
-	autocomplete(document.getElementById("itemname"));
  function VerifyClick(id){
 $("#date").val("");
 $("#remarks").val("");
 $("#txtHdnId").val(id);
-}
-function selectItem(indx)
-{
 }
 function autocomplete(inp) {
   /*the autocomplete function takes two arguments,
@@ -299,7 +300,7 @@ function autocomplete(inp) {
     var searchterm = val;
 
                     $.ajax({
-                      data: {"searchterm":searchterm, "store_id":$("#stid2").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      data: {"searchterm":searchterm, "stid":$("#stid2").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
                       url: "{% url 'get_store_data' %}",
                       type: 'POST',
                       success: function(data){
@@ -345,7 +346,7 @@ function autocomplete(inp) {
                             $("#batchno").val(this.getElementsByTagName("input")[4].value);
                              $("#cpsno").val(this.getElementsByTagName("input")[5].value);
                              $("#cases").val(this.getElementsByTagName("input")[6].value);
-                             $("#price").val(this.getElementsByTagName("input")[7].value);
+                             $("#mrp").val(this.getElementsByTagName("input")[7].value);
 
           });
           a.appendChild(b);
@@ -436,8 +437,8 @@ $("#busstationid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busstationname").val(selectedOptionText);
 });
- 	$("#depoid").change(function() {
 
+ 	$("#depoid").change(function() {
         	var depo = $(this).val();
         	$.ajax({
             	type: "POST",
@@ -448,6 +449,7 @@ $("#busstationid").change(function() {
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
+
 			 		$("#busstationid").empty();
 			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
                 	$.each(obj, function (index, item) {
@@ -478,6 +480,15 @@ $("#busstationid").change(function() {
              	}
         	});
     	});
+    	$('#quantity').on('input', function()  {
+    	    val  = $("#quantity").val();
+            val1 = $("#cases").val();
+            mrp = $("#mrp").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp)
+            $("#nbottles").val(val2);
+            $("#price").val(val3);
+         });
 </script>
 
 {% endblock %}

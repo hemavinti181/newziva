@@ -151,6 +151,7 @@ urlpatterns = [
     path('get_busstation_item',views.get_busstation_item,name='get_busstation_item'),
     path('complete_businv',views.complete_businv,name='complete_businv'),
     path('get_proformabus',views.get_proformabus,name='get_proformabus'),
-    path('get_proformastore',views.get_proformastore,name='get_proformastore')
+    path('get_proformastore',views.get_proformastore,name='get_proformastore'),
+    path('delete_sale_item/<int:id>/',views.delete_sale_item,name='delete_sale_item')
 
 ]

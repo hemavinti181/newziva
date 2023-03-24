@@ -62,20 +62,7 @@
           </div>
 </div>
 
-                     <div class="inner-fabs">
-                                 <div class="fab bg-green white round" id="fab3"><a href="des_list"><i class="fa fa-outdent" style="color:#fff;"></i></a> <span class="tooltiptext" style="margin-left: -182px !important;">Designation List</span></div>
-                                 <div class="fab bg-blue round" id="fab2"><a href="role_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Role List</span></div>
-                                 <div class="fab bg-orange round" id="fab4"><a href="level_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" >Level List</span></div>
-                                 <div class="fab bg-blue-sky round" id="fab5"><a href="city_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">City List</span></div>
-                                 <div class="fab bg-purple round" id="fab6"><a href="state_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">State List</span></div>
-                                 <div class="fab bg-green round" id="fab7"><a href="gst_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">GST List</span></div>
-                                 <div class="fab bg-orange round" id="fab8"><a href="category_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" style="margin-left: -155px !important;">Category List</span></div>
-                                 <div class="fab bg-blue round" id="fab9"><a href="uom_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">UOM List</span></div>
-                                 <div class="fab bg-red round" id="fab10"><a href="storetype_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" style="margin-left: -155px !important;">Store type list</span></div>
-                          </div>
-                                <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-                        </div>
-              </div>
+
 <div class="modal custom-modal fade" id="des-status1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
@@ -139,26 +126,7 @@
 					</div>
 				</div>
 <script>
-    let fab1 = document.getElementById('fab1');
-let innerFabs = document.getElementsByClassName('inner-fabs')[0];
 
-fab1.addEventListener('click', function () {
-  innerFabs.classList.toggle('show');
-});
-
-document.addEventListener('click', function (e) {
-  switch (e.target.id) {
-    case "fab1":
-    case "fab2":
-    case "fab3":
-    case "fab4":
-    case "fabIcon":
-      break;
-    default:
-      innerFabs.classList.remove('show');
-      break;}
-
-});
  function VerifyClick(id,status){
 $("#id").val(id);
 $("#status").val(status);

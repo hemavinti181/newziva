@@ -2629,7 +2629,7 @@ def sale_item_list(request):
         sale_item_list = data['saleitemlist']
         return render(request, 'sales/sales_new.html',
                       {"all_data": sale_item_list, 'deponame': deponame,'bustation':bustation, 'data': sale_item_list[0], 'whlist': whlist,
-                      'stname':stname})
+                      'stname':stname,'stid':stid})
     else:
         return render(request, 'sales/sales_new.html',
                       {'deponame': deponame,'whlist': whlist,'bustation':bustation,'stname':stname})
@@ -2702,14 +2702,15 @@ def proformainvoice(request):
             response = requests.request("POST", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-
                 tax_inv = data['taxinvoice']
                 cus_name = data['customer_name']
                 cus_mobile = data['customer_mobile']
                 request.session['taxinvoice'] = tax_inv
                 request.session['customer_name'] = cus_name
                 request.session['customer_mobile'] = cus_mobile
-                return redirect('sales_item_add')
+                messages.success(request, data['message'])
+                return render(request, 'sales/sales_new.html',
+                              {'data': data1, 'stname': stname,'stid':stid,'deponame': deponame, 'bustation': bustname})
             else:
                 try:
                     data = response.json()
@@ -2755,9 +2756,11 @@ def sales_item_add(request):
             "customername": cus_name,
             "customermobile": cus_mobile,
             "quantity": request.POST.get('quantity'),
+            "noofbottles":request.POST.get('nbottles'),
             "discount": "0",
             "storeid": stid,
             "taxinvoice": tax_inv,
+            "remarks":request.POST.get('remarks')
         })
 
         headers = {
@@ -2806,6 +2809,36 @@ def complete_sale(request):
         else:
             messages.error(request, data['message'])
             return redirect('proformainvoice')
+def delete_sale_item(request,id):
+    tax_inv = request.session['taxinvoice']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/delete-saleitem.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sno":id,
+        "sonumber":tax_inv
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        del request.session['taxinvoice']
+        del request.session['storename']
+        del request.session['stid']
+        del request.session['bustname']
+        del request.session['deponame']
+        messages.success(request, data['message'])
+        return redirect('proformainvoice')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+        except:
+            messages.error(request,response.text)
+        return redirect('proformainvoice')
 def grn(request):
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
@@ -3728,7 +3761,7 @@ def get_store_data(request):
 
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
-    stid = request.POST.get('store_id')
+    stid = request.POST.get('stid')
 
     url = "http://13.235.112.1/ziva/mobile-api/inventory-search.php"
 
