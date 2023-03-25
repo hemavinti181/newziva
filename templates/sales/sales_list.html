@@ -93,7 +93,7 @@
 								</button>
                                 </div>
                                         <div class="modal-body">
-                                             <form method="post" action="deliver_challan_status">
+                                             <form method="post" action="deliver_challan_update">
                                                     {% csrf_token %}
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
@@ -102,11 +102,11 @@
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                          <label>Number Of Botteles</label>
-										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob">
+										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob" readonly>
                                             </div>
                                             <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                 <label>Total Price</label>
-										        <input type="text" class="form-control" placeholder="Price" name="price" id="price">
+										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" readonly>
 										    </div>
 
                                             <div class="col-md-6 col-sm-6  offset-md-4">

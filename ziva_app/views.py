@@ -2919,26 +2919,50 @@ def deliver_challan_status(request):
     url = "http://13.235.112.1/ziva/mobile-api/delivery-challan.php"
 
     payload = json.dumps({
-
         "accesskey":accesskey,
         "sonumber":request.POST.get('txtHdnId'),
         "agentname":request.POST.get('agentname'),
         "vehicledetails":request.POST.get('vehicaldetails'),
-        "remarks":request.POST.get('remarks')
+        "remarks":request.POST.get('remarks'),
+        "contactno":request.POST.get('agentno')
     })
     headers = {
         'Content-Type': 'application/json'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
+
     if response.status_code == 200:
+        data = response.json()
         messages.success(request, data['message'])
         return redirect('deliver_challan')
     else:
+        data = response.json()
         messages.error(request, data['message'])
         return redirect('deliver_challan')
 
+def deliver_challan_update(request):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-qtyupdate.php"
+    payload = json.dumps({
+        "accesskey":accesskey,
+        "sonumber":request.POST.get('txtHdnId'),
+        "qty":request.POST.get('qty'),
+        "noofbottles":request.POST.get('nob'),
+        "price":request.POST.get('price')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('sales_list')
+    else:
+        data = response.json()
+        messages.error(request, data['message'])
+        return redirect('sales_list')
 
 
 def create_indent(request):
@@ -3667,7 +3691,6 @@ def sales_list(request):
     headers = {
         'Content-Type': 'application/json'
     }
-
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
     data = data['saleslist']

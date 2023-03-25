@@ -3,6 +3,12 @@
 
 {% block htmlbody %}
 
+<style>
+	.style{
+	position: absolute !important;
+	width: 150% !important;
+	}
+</style>
 
 <div class="right_col" role="main">
 
@@ -111,7 +117,9 @@
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value=""> Warehouse</option>
 													{% for data1 in wh_masterlist %}
+															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif  %}
                                                      {% endfor %}
 												</select>
 										</div>
@@ -360,10 +368,7 @@ function editstore(id1,id2){
              $("#mobileno2").val(obj[0].alternate_mobileno);
              $("#store_type1").val(obj[0].storetype);
              $("#natofbus1").val(obj[0].natureofbusiness);
-             $("#warehousename1").val(obj[0].warehouse);
              $("#busstationid1").val(obj[0].bus_station);
-             $("#deponame1").val(obj[0].depo);
-             $("#regionname1").val(obj[0].region);
              $("#warehouseid1").val(obj[0].warehouseid);
              State1Change(obj[0].warehouse,obj[0].regionid);
 			 $("#warehouseid").change();
@@ -390,7 +395,7 @@ function editstore(id1,id2){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#regionid1").empty();
-			 		$("#regionid1").append("<option  value=''>Choose region</option>");
+			 		$("#regionid1").append("<option  value=''>Choose Region</option>");
                 	$.each(obj, function (index, item) {
                     $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -516,6 +521,69 @@ $("#busstationid1").change(function() {
 function VerifyClick(id){
 $("#id").val(id);
 }
+		$("#warehouseid").change(function() {
+        	var warehousename = $(this).find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storeregion" %}',
+            	data: {
+                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#regionid").empty();
+			 		$("#regionid").append("<option  value=''>Choose region</option>");
+                	$.each(obj, function (index, item) {
+                    $("#regionid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#regionid").change(function() {
+    		var warehousename = $('#warehouseid').find(":selected").text();
+        	var regionname = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storedepo" %}',
+            	data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#depoid").empty();
+			 		$("#depoid").append("<option  value=''>Choose Depo</option>");
+                	$.each(obj, function (index, item) {
+                    $("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#depoid").change(function() {
+    		var warehousename = $('#warehouseid').find(":selected").text();
+        	var regionname = $(regionid).val();
+        	var depo = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storebus" %}',
+            	data: {
+                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid").empty();
+			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
 
 </script>
 

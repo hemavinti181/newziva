@@ -30,6 +30,10 @@
                          <thead>
                            <tr style="text-color:white">
 							   		<th>S No</th>
+							   		<th>warehouse</th>
+							   <th>Region</th>
+							   <th>Depo</th>
+							   <th>Bus Station</th>
                                     <th>Store Name</th>
                                     <th>GST No</th>
                                     <th>PAN Card</th>
@@ -44,6 +48,10 @@
                           {% for list in list %}
                         <tr>
 							<td>{{ forloop.counter }}</td>
+							<td>{{ list.warehouse }}</td>
+							<td>{{ list.region }}</td>
+							<td>{{ list.depo }}</td>
+							<td>{{ list.bus_station }}</td>
                         <td><a href="{{ list.storephoto }}" style="color:#075ab3;" target="_blank">{{ list.storename }}</a></td>
                         <td><a href="{{ list.gstattach }}" style="color:#075ab3;">{{ list.gstnumber}}</a></td>
                         <td><a href="{{ list.panattach }}" style="color:#075ab3;">{{ list.pancard}}</a></td>
@@ -101,7 +109,9 @@
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value=""> Warehouse</option>
 													{% for data1 in wh_masterlist %}
+													   {% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+													{% endif %}
                                                      {% endfor %}
 												</select>
 										</div>
@@ -278,10 +288,6 @@ function editStore(id){
              $("#mobileno2").val(obj.alternate_mobileno);
              $("#store_type1").val(obj.storetype);
              $("#natofbus1").val(obj.natureofbusiness);
-             $("#warehousename1").val(obj.warehouse);
-             $("#busstationname1").val(obj.bus_station);
-             $("#deponame1").val(obj.depo);
-             $("#regionname1").val(obj.region);
              $("#warehouseid1").val(obj.warehouseid);
              State1Change(obj.warehouse,obj.regionid);
 			 $("#warehouseid").change();
