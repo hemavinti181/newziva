@@ -11,7 +11,7 @@
         <div class="">
           <div class="page-title">
             <div class="title_left">
-              <h3>Proforma Invoice</h3>
+              <h3 style="color:#1372ba"><b>Proforma Invoice</b></h3>
             </div>
 
            <!-- <div class="title_right">
@@ -144,7 +144,7 @@
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
 										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}" required>
                                             <input type="hidden" class="form-control" name="cases" id="cases">
-                                             <input type="hidden" class="form-control" name="cases" id="mrp">
+                                             <input type="hidden" class="form-control" name="mrp" id="mrp">
 
                                       	<div class="col-md-2 col-sm-2  offset-md-12">
                                            <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Add</button>
@@ -169,7 +169,7 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Item Name</th>
-                                    <th>QTY In Cases</th>
+                                    <th>Qty In Cases</th>
                                     <th>ExpDate</th>
                                     <th>HSN</th>
                                     <th>Batch</th>
@@ -332,10 +332,10 @@ function autocomplete(inp) {
           b.innerHTML += "<input type='hidden' value='" + obj[i].itemcode + "'>";
           b.innerHTML += "<input type='hidden' value='" + obj[i].qty + "'>";
           b.innerHTML += "<input type='hidden' value='" + obj[i].expirydate + "'>";
-           b.innerHTML += "<input type='hidden' value='" + obj[i].batchcode + "'>";
-            b.innerHTML += "<input type='hidden' value='" + obj[i].cp_sno + "'>";
-             b.innerHTML += "<input type='hidden' value='" + obj[i].uom + "'>";
-              b.innerHTML += "<input type='hidden' value='" + obj[i].mrp + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].batchcode + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].cp_sno + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].uom + "'>";
+          b.innerHTML += "<input type='hidden' value='" + obj[i].mrp + "'>";
           /*execute a function when someone clicks on the item value (DIV element):*/
           b.addEventListener("click", function(e) {
               /*insert the value for the autocomplete text field:*/

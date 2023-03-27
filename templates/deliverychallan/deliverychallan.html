@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h4>Sales List</h4>
+                <h3 style="color:#1372ba"><b>Sales List</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -37,8 +37,8 @@
                                     <th>Created Date</th>
                                     <!--<th>DC Number</th>-->
                                     <th>Delivery Date</th>
-                                    <th>Total</th>
                                     <th>Itemcount</th>
+                                     <th>Total</th>
                                     <th>Actions</th>
                         </tr>
                       </thead>
@@ -53,8 +53,8 @@
                                         <td>{{ all_data.date }}</td>
                                     <!--<td>{{  all_data.dcnumber}}</td>-->
                                     <td>{{ all_data.delivery_date }}</td>
-                                    <td>{{ all_data.total }}</td>
                                         <td>{{ all_data.itemcount }}</td>
+                                          <td style="color:green"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                         <td>
                                             <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> PENDING </span></a>
                                             <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">  Delivery challan </span>

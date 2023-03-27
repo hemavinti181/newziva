@@ -6,12 +6,12 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h4>Delivery Challan</h4>
+                <h3 style="color:#1372ba"><b>Delivery Challan</b></h3>
               </div>
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
+                <!----  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> ------>
                 </div>
             </div>
               </div>
@@ -25,7 +25,7 @@
                       <div class="row">
                           <div class="col-sm-12">
                             <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
+                                         <p class="text-muted font-13 m-b-30">
                     </p>
                         <table id="datatable-buttons" class="display table-bordered" style="width:100%">
                       <thead>
@@ -39,8 +39,8 @@
                                     <!--<th>Store Invoice Number </th>
                                     <th>DC Number</th>-->
                                     <th>Delivery Data</th>
-                                    <th>Total</th>
                                     <th>Itemcount</th>
+                                    <th>Total</th>
                                     <th>Action</th>
                         </tr>
                       </thead>
@@ -54,15 +54,15 @@
                        <!--  <td> {{ all_data.sonumber }} </td>
                        <td>{{  all_data.dcnumber}}</td>-->
                         <td>{{ all_data.delivery_date }}</td>
-                       <td>{{ all_data.total }}</td>
                        <td>{{ all_data.itemcount }}</td>
+                             <td style="color:green"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                 <td>
                                    <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-success">{{ all_data.status }} </span></a>
-                                      <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}','{{ all_data.itemcount }}','{{ all_data.total }}')"  data-target="#bs-example-modal-sm">Update</span>
+                                      <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}','{{ all_data.itemcount }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}')"  data-target="#bs-example-modal-sm">Update</span>
 
                                 </td>
 
-                      </tr>_
+                      </tr>
                       {% endfor %}
                       <tbody>
                       </tbody>
@@ -96,19 +96,20 @@
                                              <form method="post" action="deliver_challan_update">
                                                     {% csrf_token %}
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+                                                 <input type="hidden" id="mrp" name="mrp"  />
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                         <label>Quantity (In CaseS)</label>
 										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                          <label>Number Of Botteles</label>
-										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob" readonly>
+										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob">
                                             </div>
                                             <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                 <label>Total Price</label>
-										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" readonly>
+										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" >
 										    </div>
-
+                                                <input type="hidden" name="cases" id="cases" />
                                             <div class="col-md-6 col-sm-6  offset-md-4">
                                                   <button type="submit" class="btn btn-info">Update Payment</button>
                                             </div>
@@ -120,19 +121,24 @@
                                     </div>
                                 </div>
 <script>
-     function VerifyClick(id,id1,id2){
+function VerifyClick(id,id1,id2,id3,id4){
 $("#qty").val(id1);
-$("#nob").val();
+$("#nob").val(" ");
 $("#price").val(id2);
 $("#txtHdnId").val(id);
+$("#cases").val(id3)
+$("#mrp").val(id4)
 }
-$('#qty').on('input', function()  {
+        $('#qty').on('input', function()  {
+            $("#nob").val(" ");
+            $("#price").val(" ");
     	    val  = $("#qty").val();
             val1 = $("#cases").val();
-            mrp = $("#price").val( );
+            mrp = $("#mrp").val( );
             val2 =    (val * val1)
             val3 = (val2 * mrp)
-            $("#nbottles").val(val2);
+            $("#nob").val(val2);
+            $("#price").val(" ");
             $("#price").val(val3);
          });
 </script>

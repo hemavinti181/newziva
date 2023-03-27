@@ -2762,7 +2762,8 @@ def sales_item_add(request):
             "discount": "0",
             "storeid": stid,
             "taxinvoice": tax_inv,
-            "remarks":request.POST.get('remarks')
+            "remarks":request.POST.get('remarks'),
+            "uom":request.POST.get('cases')
         })
 
         headers = {
@@ -2778,9 +2779,8 @@ def sales_item_add(request):
                 data = r.json()
                 messages.error(request, data['message'])
             except:
-                data = r.json()
-                messages.error(request, data['message'])
-        return redirect('sale_item_list')
+                messages.error(request,r.text)
+            return redirect('sale_item_list')
     return render(request, 'sales/sales_new.html', {'data':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid})
 def complete_sale(request):
     accesskey = request.session['accesskey']
@@ -2909,9 +2909,12 @@ def deliver_challan(request):
 
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
-    deliv_challan = data['deliverypendinglist']
-
-    return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan})
+    if response.status_code == 200:
+        data = response.json()
+        deliv_challan = data['deliverypendinglist']
+        return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan})
+    else:
+        return render(request, 'deliverychallan/deliverychallan.html')
 
 def deliver_challan_status(request):
 
@@ -3761,27 +3764,29 @@ def taxinvoice_list(request):
         return render(request,'sales/taxinvoicelist.html',{'list':invlist})
     else:
         return render(request, 'sales/taxinvoicelist.html')
+def tax_invoice(request,id):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice.php"
 
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "invoiceno": id
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    if response.status_code == 200:
+        return render(request, 'sales/invoice.html')
+    else:
+        return render(request, 'sales/taxinvoicelist.html.html')
 def stock_transfer(request):
 
     return render(request, 'stock_transfer/stock_transfer_home.html')
 
-def is_ajax(request):
-    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-def autocompleteModel(request):
 
-    if (1==1):
-        q = request.GET.get('term', '').capitalize()
-        search_qs = CarBrand.objects.filter(name__startswith=q)
-        results = []
-        print(q)
-        for r in search_qs:
-            results.append(r.name)
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
 def get_store_data(request):
 
     accesskey = request.session['accesskey']

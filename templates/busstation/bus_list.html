@@ -6,7 +6,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h4>Bus Station List</h4>
+                <h3 style="color:#1372ba"><b>Bus Station List</b></h3>
               </div>
 
               <div class="title_right">
@@ -40,7 +40,7 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.busatationid }}</td>
-                           <td>{{ all_data.deponame }} ---> {{ all_data.busstationname }}</td>
+                           <td style="color:black"><b>{{ all_data.deponame }} → {{ all_data.busstationname }}</b></td>
                         {% if all_data.status == "Active" %}
                                 <td>
                                    <a class="bus_edit" href="#" onclick="editBus('{{  all_data.busatationid }}')"  data-id="{{ all_data.busatationid }}"><i class="fa fa-edit"></i></a>

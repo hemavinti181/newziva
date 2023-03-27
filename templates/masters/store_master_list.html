@@ -12,12 +12,13 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h2  class="text-primary"><b>Store Master</b></h2>
+                <h3  style="color:#1372ba"><b>Store Master</b></h3>
               </div>
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                    <a href="add_store"><button style="padding: 0px 16px !important;"  width="10%" type="submit" class="btn btn-primary">Add Store</button></a>
+                   <a href="add_store"><button   width="10%" type="submit" class="btn btn-primary">Add Store</button></a>
+                    <!--<a href="add_store"><button style="padding: 0px 16px !important;"  width="10%" type="submit" class="btn btn-primary">Add Store</button></a>-->
                 </div>
             </div>
               </div>
@@ -31,9 +32,9 @@
                            <tr style="text-color:white">
 							   		<th>S No</th>
 							   		<th>warehouse</th>
-							   <th>Region</th>
-							   <th>Depo</th>
-							   <th>Bus Station</th>
+							         <th>Region</th>
+							        <th>Depo</th>
+							        <th>Bus Station</th>
                                     <th>Store Name</th>
                                     <th>GST No</th>
                                     <th>PAN Card</th>
@@ -289,6 +290,10 @@ function editStore(id){
              $("#store_type1").val(obj.storetype);
              $("#natofbus1").val(obj.natureofbusiness);
              $("#warehouseid1").val(obj.warehouseid);
+             $("#regionname1").val(obj.region);
+             $("#warehousename1").val(obj.warehouse);
+             $("#busstationname1").val(obj.bus_station);
+             $("#deponame1").val(obj.depo);
              State1Change(obj.warehouse,obj.regionid);
 			 $("#warehouseid").change();
 			  $("#depoid1").val(obj.regionid);

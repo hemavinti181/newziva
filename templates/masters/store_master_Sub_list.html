@@ -15,7 +15,7 @@
       <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h2  class="text-primary"><b>Store List</b></h2>
+                <h3  style="color:#1372ba"><b>Store List</b></h3>
               </div>
         </div>
 
@@ -370,6 +370,10 @@ function editstore(id1,id2){
              $("#natofbus1").val(obj[0].natureofbusiness);
              $("#busstationid1").val(obj[0].bus_station);
              $("#warehouseid1").val(obj[0].warehouseid);
+             $("#regionname1").val(obj.region);
+             $("#warehousename1").val(obj.warehouse);
+             $("#busstationname1").val(obj.bus_station);
+             $("#deponame1").val(obj.depo);
              State1Change(obj[0].warehouse,obj[0].regionid);
 			 $("#warehouseid").change();
 			  $("#depoid1").val(obj[0].regionid);

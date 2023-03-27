@@ -94,7 +94,6 @@ urlpatterns = [
     path('wh_item_add',views.wh_item_add,name='wh_item_add'),
     path('wh_item_list',views.wh_item_list,name='wh_item_list'),
     path('get_wh_item',views.get_wh_item,name='get_wh_item'),
-    path('search', views.autocompleteModel,name='search'),
     path('get_warehouse',views.get_warehouse,name='get_warehouse'),
     path('get_store_data',views.get_store_data,name='get_store_data'),
     path('get_store',views.get_store,name='get_store'),
@@ -153,6 +152,7 @@ urlpatterns = [
     path('get_proformabus',views.get_proformabus,name='get_proformabus'),
     path('get_proformastore',views.get_proformastore,name='get_proformastore'),
     path('delete_sale_item/<int:id>/',views.delete_sale_item,name='delete_sale_item'),
-    path('deliver_challan_update',views.deliver_challan_update,name='deliver_challan_update')
+    path('deliver_challan_update',views.deliver_challan_update,name='deliver_challan_update'),
+    path('tax-invoice/<str:id>/',views.tax_invoice,name='tax_invoice')
 
 ]
