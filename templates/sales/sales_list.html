@@ -55,7 +55,7 @@
                        <td>{{  all_data.dcnumber}}</td>-->
                         <td>{{ all_data.delivery_date }}</td>
                        <td>{{ all_data.itemcount }}</td>
-                             <td style="color:green"><b>₹ &nbsp{{ all_data.total }}</b></td>
+                             <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                 <td>
                                    <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-success">{{ all_data.status }} </span></a>
                                       <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}','{{ all_data.itemcount }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}')"  data-target="#bs-example-modal-sm">Update</span>

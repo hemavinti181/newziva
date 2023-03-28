@@ -1,5 +1,6 @@
-{% extends 'base.html' %}
 
+{% extends 'base.html' %}
+{% load static %}
 {% block htmlbody %}
 
 
@@ -12,7 +13,16 @@
               </div>
 
             </div>
+             <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-12">
 
+
+                          <!--<button class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment</button>-->
+                          <button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button>
+                           <button class="btn btn-default pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+
+                </div>
+            </div>
             <div class="clearfix"></div>
 
             <div class="row">
@@ -25,44 +35,32 @@
                       <!-- title row -->
                       <div class="row">
                         <div class="  invoice-header">
-                          <h1>  Invoice
-                                      </h1>
+
                         </div>
                         <!-- /.col -->
                       </div>
                       <!-- info row -->
                       <div class="row invoice-info">
                         <div class="col-sm-4 invoice-col">
-                          From
+                          <h6 style="color:black"><b>From</b></h6>
                           <address>
-                                          <strong>Iron Admin, Inc.</strong>
-                                          <br>795 Freedom Ave, Suite 600
-                                          <br>New York, CA 94107
-                                          <br>Phone: 1 (804) 123-9876
-                                          <br>Email: ironadmin.com
+                                          <strong>{{ data.regionname }}</strong>
+                                          <h6>GST:{{ data.regiongstno }}</h6>
                                       </address>
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-4 invoice-col">
-                          To
+                          <h6 style="color:black"><b>BILL To</b></h6>
                           <address>
-                                          <strong>John Doe</strong>
-                                          <br>795 Freedom Ave, Suite 600
-                                          <br>New York, CA 94107
-                                          <br>Phone: 1 (804) 123-9876
-                                          <br>Email: jon@ironadmin.com
+                                          <strong>{{ data.storename }}</strong>
+                                          <br>GST:{{ data.storegst }}
                                       </address>
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-4 invoice-col">
-                          <b>Invoice #007612</b>
-                          <br>
-                          <br>
-                          <b>Order ID:</b> 4F3S8J
-                          <br>
-                          <b>Payment Due:</b> 2/22/2014
-                          <br>
-                          <b>Account:</b> 968-34567
+                            <h6 style="color:black"><b>Invoice No : </b><b class="text-info">{{ data.invoicenumber }}</b></h6>
+                          <b>Date :</b> {{ data.date }}
+                          <h6 class="text-success"><b>APPROVED</b></h6>
                         </div>
                         <!-- /.col -->
                       </div>
@@ -74,44 +72,37 @@
                           <table class="table table-striped">
                             <thead>
                               <tr>
-                                <th>Qty</th>
-                                <th>Product</th>
-                                <th>Serial #</th>
-                                <th style="width: 59%">Description</th>
-                                <th>Subtotal</th>
+                                <th>S NO</th>
+                              <th>Item</th>
+                              <th>Qty</th>
+                              <th>Rate</th>
+                              <th>Disc</th>
+                              <th>GST</th>
+                              <th>Total</th>
                               </tr>
                             </thead>
                             <tbody>
                               <tr>
-                                <td>1</td>
-                                <td>Call of Duty</td>
-                                <td>455-981-221</td>
-                                <td>El snort testosterone trophy driving gloves handsome gerry Richardson helvetica tousled street art master testosterone trophy driving gloves handsome gerry Richardson
-                                </td>
-                                <td>$64.50</td>
+                                {% for data in data1 %}
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ data.itemname }}</td>
+                                <td>{{ data.quantity }}</td>
+                                <td>{{ data.mrp }}</td>
+                                <td>{{ data.discount }}</td>
+                                 <td>{{ data.gst }}</td>
+                                 <td>{{ data.total }}</td>
                               </tr>
-                              <tr>
-                                <td>1</td>
-                                <td>Need for Speed IV</td>
-                                <td>247-925-726</td>
-                                <td>Wes Anderson umami biodiesel</td>
-                                <td>$50.00</td>
-                              </tr>
-                              <tr>
-                                <td>1</td>
-                                <td>Monsters DVD</td>
-                                <td>735-845-642</td>
-                                <td>Terry Richardson helvetica tousled street art master, El snort testosterone trophy driving gloves handsome letterpress erry Richardson helvetica tousled</td>
-                                <td>$10.70</td>
-                              </tr>
-                              <tr>
-                                <td>1</td>
-                                <td>Grown Ups Blue Ray</td>
-                                <td>422-568-642</td>
-                                <td>Tousled lomo letterpress erry Richardson helvetica tousled street art master helvetica tousled street art master, El snort testosterone</td>
-                                <td>$25.99</td>
-                              </tr>
+                            {% endfor %}
                             </tbody>
+                             <!--<tfoot>
+                              <th>S NO</th>
+                              <th>Item</th>
+                              <th>Qty</th>
+                              <th>Rate</th>
+                              <th>Disc</th>
+                              <th>GST</th>
+                              <th>Total</th>
+                             </tfoot>-->
                           </table>
                         </div>
                         <!-- /.col -->
@@ -119,53 +110,67 @@
                       <!-- /.row -->
 
                       <div class="row">
-                        <!-- accepted payments column -->
-                        <div class="col-md-6">
-                          <p class="lead">Payment Methods:</p>
-                          <img src="images/visa.png" alt="Visa">
-                          <img src="images/mastercard.png" alt="Mastercard">
-                          <img src="images/american-express.png" alt="American Express">
-                          <img src="images/paypal.png" alt="Paypal">
-                          <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
-                            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
-                          </p>
+
+                        <div class="col-md-9">
+
                         </div>
                         <!-- /.col -->
-                        <div class="col-md-6">
-                          <p class="lead">Amount Due 2/22/2014</p>
-                          <div class="table-responsive">
-                            <table class="table">
+                        <div class="col-md-3">
+                          <div class="card-box table-responsive">
+                            <table class="display table-bordered" >
                               <tbody>
                                 <tr>
                                   <th style="width:50%">Subtotal:</th>
-                                  <td>$250.30</td>
+                                  <td>{{ data.subtotal }}</td>
                                 </tr>
                                 <tr>
-                                  <th>Tax (9.3%)</th>
-                                  <td>$10.34</td>
+                                  <th>Discount </th>
+                                  <td>{{ data.discount }}</td>
                                 </tr>
                                 <tr>
-                                  <th>Shipping:</th>
-                                  <td>$5.80</td>
+                                  <th>SGST:</th>
+                                  <td>{{ data.sgst }}</td>
+                                </tr>
+                                <tr>
+                                  <th>CGST:</th>
+                                  <td> {{ data.cgst }}</td>
                                 </tr>
                                 <tr>
                                   <th>Total:</th>
-                                  <td>$265.24</td>
+                                  <td> {{ data.total }}</td>
                                 </tr>
                               </tbody>
+
+
+                           <tr>
+
                             </table>
                           </div>
                         </div>
                         <!-- /.col -->
-                      </div>
-                      <!-- /.row -->
 
-                      <!-- this row will not appear when printing -->
-                      <div class="row no-print">
-                        <div class=" ">
-                          <button class="btn btn-default" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
-                          <button class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment</button>
-                          <button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button>
+
+                      </div>&nbsp &nbsp
+                      <div class="row">
+
+                        <div class="col-md-10">
+                           <h6 style="color:black"><b>PAY To</b></h6>
+                              <address>
+                                          <strong><b class="text-info">ZIVA TSRTC</b></strong>
+                                          <br><b class="text-info">A/C NO : {{ data.accountno }}</b>
+                                <br><b class="text-info">IFSC Code : {{ data.IFSC_code }}</b>
+                                <br><b class="text-info">Bank Name : {{ data.bankname }}</b>
+                                      </address><!-- accepted payments column -->
+                              </div>
+                       <div class="col-md-2">
+                           <h6 style="color:black"><b>For,ZIVA TSRTC</b></h6>
+                              <address>
+                                <br><img src="{% static 'build/images/sign.jpg' %}" alt="">
+                                <br>
+                                  <strong><b class="text-info">AUTHORIZED SIGNATORY</b></strong>
+                                          <br>
+                                      </address><!-- accepted payments column -->
+                              </div>
                         </div>
                       </div>
                     </section>

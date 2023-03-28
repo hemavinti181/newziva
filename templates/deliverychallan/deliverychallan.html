@@ -54,7 +54,7 @@
                                     <!--<td>{{  all_data.dcnumber}}</td>-->
                                     <td>{{ all_data.delivery_date }}</td>
                                         <td>{{ all_data.itemcount }}</td>
-                                          <td style="color:green"><b>₹ &nbsp{{ all_data.total }}</b></td>
+                                          <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                         <td>
                                             <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> PENDING </span></a>
                                             <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">  Delivery challan </span>
