@@ -123,7 +123,8 @@
 										</div>
                                          <div class="col-md-1 col-sm-2 form-group has-feedback">
 											<label>No.of bottles *</label>
-                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles">
+                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles" +
+                                           >
                                        </div>
                                          <div class="col-md-1 col-sm-2 form-group has-feedback">
 											<label>Prices *</label>
@@ -188,7 +189,7 @@
                        <td>{{  all_data.expiry_date }}</td>
                         <td>{{ all_data.hsn }}</td>
                        <td>{{ all_data.batch_no }}</td>
-                       <td class="text-success">{{ all_data.total }}</td>
+                       <td class="text-success">₹ {{ all_data.total }}</td>
                            <td>{{all_data.manufacturer}}</td>
 
                        <td>
@@ -244,7 +245,7 @@
                                                 </label>-->
 
 
-                                                <label class="btn btn-round btn-warning">
+                                                <label class="btn btn-round btn-danger">
                                                  <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" /> CASH
                                                 </label>
 
@@ -253,7 +254,7 @@
                                                  <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" /> UPI
                                                 </label>
 
-                                                   <label class="btn btn-round btn-primary">
+                                                   <label class="btn btn-round btn-success">
                                                  <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" /> Scanner
                                                 </label>
 

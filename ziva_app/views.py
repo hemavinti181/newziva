@@ -677,14 +677,18 @@ def des_add(request):
         }
         payload = json.dumps(payload, cls=BytesEncoder)
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response)
-        r = response.json()
         if response.status_code == 200:
+            r = response.json()
             messages.success(request, r['message'])
             return redirect('des_list')
         else:
-            messages.error(request, r['message'])
-    return render(request, 'category_master/df.html')
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
+        return render(request, 'category_master/df.html',{'des':'active'})
+    return render(request, 'category_master/df.html',{'des':'active'})
 
 
 def role(request):
@@ -711,11 +715,11 @@ def role(request):
 
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'category_master/df.html', {"home_page": "active"})
+                return render(request, 'category_master/df.html', {"role": "active"})
             except:
-                messages.error(request, r['message'])
-            return render(request, 'category_master/df.html', {"home_page": "active"})
-    return render(request, 'category_master/df.html', {"home_page": "active"})
+                messages.error(request,response.text)
+            return render(request, 'category_master/df.html', {"role": "active"})
+    return render(request, 'category_master/df.html', {"role": "active"})
 
 
 def level(request):
@@ -735,13 +739,16 @@ def level(request):
         payload = json.dumps(payload, cls=BytesEncoder)
         response = requests.request("POST", url, data=payload, headers=headers)
 
-        r = response.json()
+
         if response.status_code == 200:
+            r = response.json()
             messages.success(request, r['message'])
             return redirect('level_list')
         else:
+            r = response.json()
             messages.error(request, r['message'])
-    return render(request, 'category_master/df.html')
+            return render(request, 'category_master/df.html',{"level": "active"})
+    return render(request, 'category_master/df.html',{"level": "active"})
 
 
 def city(request):
@@ -768,11 +775,11 @@ def city(request):
             try:
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'category_master/df.html', {"home_page": "active"})
+                return render(request, 'category_master/df.html', {"city": "active"})
             except:
                     messages.error(request,response.text)
-            return render(request, 'category_master/df.html', {"home_page": "active"})
-    return render(request, 'category_master/df.html', {"home_page": "active"})
+            return render(request, 'category_master/df.html', {"city": "active"})
+    return render(request, 'category_master/df.html', {"city": "active"})
 
 def state(request):
     if request.method == 'POST':
@@ -798,14 +805,11 @@ def state(request):
             try:
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'category_master/df.html', {"home_page": "active"})
+                return render(request, 'category_master/df.html', {"state": "active"})
             except:
                 messages.error(request,response.text)
-        return render(request, 'category_master/df.html', {"home_page": "active"})
-    return render(request, 'category_master/df.html', {"home_page": "active"})
-
-
-
+        return render(request, 'category_master/df.html', {"state": "active"})
+    return render(request, 'category_master/df.html', {"state": "active"})
 
 
 def uom(request):
@@ -834,8 +838,9 @@ def uom(request):
                 messages.error(request, r['message'])
             except:
                 messages.error(request,response.text)
-        return redirect('uom_list')
-    return render(request, 'Category_master/df.html', {"home_page": "active"})
+        return render(request, 'Category_master/df.html', {"uom": "active"})
+
+    return render(request, 'Category_master/df.html', {"uom": "active"})
 
 
 def storetype(request):
@@ -862,22 +867,22 @@ def storetype(request):
             try:
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'Category_master/df.html', {"home_page": "active"})
+                return render(request, 'Category_master/df.html', {"storetype": "active"})
             except:
                 messages.error(request,response.text)
-            return render(request, 'Category_master/df.html', {"home_page": "active"})
-    return render(request, 'Category_master/df.html', {"home_page": "active"})
+            return render(request, 'Category_master/df.html', {"storetype": "active"})
+    return render(request, 'Category_master/df.html', {"storetype": "active"})
 
 
 
 def gst(request):
-    attempt_num = 0
+    accesskey = request.session['accesskey']
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
 
         payload = {
-            "accesskey": "LTIwMjIxMjIwMDc2ODg1",
+            "accesskey": accesskey,
             "type": "GST",
             "value": request.POST.get('gst'),
         }
@@ -886,15 +891,19 @@ def gst(request):
         }
         payload = json.dumps(payload, cls=BytesEncoder)
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response)
-        print(payload)
-        r = response.json()
         if response.status_code == 200:
+            r = response.json()
             messages.success(request, r['message'])
             return redirect('gst_list')
         else:
-            messages.error(request, r['message'])
-    return render(request, 'Category_master/df.html', {"home_page": "active"})
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                r = response.json()
+                messages.error(request, response.text)
+            return render(request, 'Category_master/df.html', {"gst": "active"})
+    return render(request, 'Category_master/df.html', {"gst": "active"})
 
 
 def category(request):
@@ -920,11 +929,10 @@ def category(request):
             try:
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'Category_master/df.html', {"home_page": "active"})
             except:
-                messages.error(request, r['message'])
-            return render(request, 'Category_master/df.html', {"home_page": "active"})
-    return render(request, 'Category_master/df.html', {"home_page": "active"})
+                messages.error(request, response.text)
+            return render(request, 'Category_master/df.html', {"category": "active"})
+    return render(request, 'Category_master/df.html', {"category": "active"})
 
 
 def role_list(request):
@@ -2908,7 +2916,6 @@ def deliver_challan(request):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
     if response.status_code == 200:
         data = response.json()
         deliv_challan = data['deliverypendinglist']
