@@ -12,8 +12,14 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+import os
+
+
 
 class BytesEncoder(json.JSONEncoder):
+
     def default(self, obj):
         if isinstance(obj, bytes):
             return obj.decode('utf-8')
@@ -3703,9 +3709,12 @@ def sales_list(request):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
-    data = data['saleslist']
-    return render(request, 'sales/sales_list.html', {'data': data})
-
+    if response.status_code == 200:
+        data = response.json()
+        data = data['saleslist']
+        return render(request, 'sales/sales_list.html', {'data': data})
+    else:
+        return render(request, 'sales/sales_list.html')
 
 def sales_list_outpass(request):
 
@@ -3772,6 +3781,12 @@ def taxinvoice_list(request):
     else:
         return render(request, 'sales/taxinvoicelist.html')
 def tax_invoice(request,id):
+
+    template = get_template('sales/invoice.html')
+    #html = template.render({'context_variable': 'context_value'})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="your_filename.pdf"'
+    #pisa_status = pisa.CreatePDF(html, dest=response)
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/tax-invoice.php"
 
@@ -3783,14 +3798,25 @@ def tax_invoice(request,id):
         'Content-Type': 'application/json'
     }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    if response.status_code == 200:
-        data = response.json()
+    response1 = requests.request("GET", url, headers=headers, data=payload)
+    if response1.status_code == 200:
+        data = response1.json()
         data1 = data['itemslist']
-        return render(request, 'sales/invoice.html',{'data':data,'data1':data1})
+        html = template.render({'data':data,'data1':data1})
+
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('Failed to convert HTML to PDF', status=400)
+        return response
+        #return render(request, 'sales/invoice.html',)
     else:
-        return render(request, 'sales/taxinvoicelist.html.html')
+        try:
+            data = response.json()
+            messages.error(request,data['message'])
+        except:
+            messages.error(request,response.text)
+        return redirect('/taxinvoice_list')
+
 def stock_transfer(request):
 
     return render(request, 'stock_transfer/stock_transfer_home.html')
