@@ -1,7 +1,8 @@
 import base64
 import json
-
+import io
 import time
+
 
 import geocoder as geocoder
 from django.shortcuts import render, HttpResponse, redirect
@@ -2617,6 +2618,18 @@ def sale_item_list(request):
     bustation = request.session['bustname']
     accesskey = request.session['accesskey']
     tax_inv = request.session['taxinvoice']
+    url = "http://13.235.112.1/ziva/mobile-api/inventory-searchlist.php"
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "storeid": stid
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    # if response.status_code == 200:
+    data = response.json()
+    data2 = data['list']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
     payload = json.dumps({"accesskey": accesskey})
@@ -2643,13 +2656,15 @@ def sale_item_list(request):
         sale_item_list = data['saleitemlist']
         return render(request, 'sales/sales_new.html',
                       {"all_data": sale_item_list, 'deponame': deponame,'bustation':bustation, 'data': sale_item_list[0], 'whlist': whlist,
-                      'stname':stname,'stid':stid})
+                      'stname':stname,'stid':stid,'data2':data2,'data3':data2[0]})
     else:
         return render(request, 'sales/sales_new.html',
-                      {'deponame': deponame,'whlist': whlist,'bustation':bustation,'stname':stname})
+                      {'deponame': deponame,'whlist': whlist,'bustation':bustation,'stname':stname,'data2':data2,'data3':data2[0]})
 
 def sales_item_list_pending(request,id):
     accesskey = request.session['accesskey']
+
+
     url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
 
     payload = json.dumps({
@@ -2691,7 +2706,9 @@ def proformainvoice(request):
     if response.status_code == 200:
         data = response.json()
         data1 = data['dropdownlist']
+
     if request.method == 'POST':
+
             stname = request.POST.get('stname')
             stid = request.POST.get('stid')
             request.session['stid'] = stid
@@ -2701,6 +2718,18 @@ def proformainvoice(request):
             request.session['deponame']=deponame
             bustname = request.POST.get('busstationname')
             request.session['bustname'] = bustname
+            url = "http://13.235.112.1/ziva/mobile-api/inventory-searchlist.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "storeid": stid
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            # if response.status_code == 200:
+            data = response.json()
+            data2 = data['list']
             url = "http://13.235.112.1/ziva/mobile-api/generate-salebill-number.php"
 
             payload = {
@@ -2726,7 +2755,7 @@ def proformainvoice(request):
                 request.session['customer_mobile'] = cus_mobile
                 messages.success(request, data['message'])
                 return render(request, 'sales/sales_new.html',
-                              {'data': data1, 'stname': stname,'stid':stid,'deponame': deponame, 'bustation': bustname})
+                              {'data': data1, 'data2':data2,'data3':data2[0],'stname': stname,'stid':stid,'deponame': deponame, 'bustation': bustname})
             else:
                 try:
                     data = response.json()
@@ -2736,6 +2765,7 @@ def proformainvoice(request):
                 return render(request, 'sales/sales_new.html', {'data':data1,'stname':stname,'deponame': deponame,'bustation':bustname})
     return render(request, 'sales/sales_new.html',{'data':data1})
 def sales_item_add(request):
+
     accesskey = request.session['accesskey']
     regionid = request.session['regionid']
     warehousename = request.session['warehousename']
@@ -2743,6 +2773,8 @@ def sales_item_add(request):
     stname = request.session['storename']
     deponame = request.session['deponame']
     bustation = request.session['bustname']
+
+
     url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
     payload = json.dumps({
         "accesskey": accesskey,
@@ -2759,7 +2791,11 @@ def sales_item_add(request):
     if response.status_code == 200:
         data = response.json()
         data1 = data['dropdownlist']
+
+
+
     if  request.method == 'POST':
+
         tax_inv = request.session['taxinvoice']
         cus_name = request.session['customer_name']
         cus_mobile = request.session['customer_mobile']
@@ -2983,14 +3019,23 @@ def deliver_challan_update(request):
 
 def create_indent(request):
     accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
 
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        item_masterlist = data['itemmasterlist']
     if request.method == 'POST':
         url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
 
         payload =json.dumps( {
             "accesskey": accesskey,
             "indentno":"",
-            "itemname": request.POST.get('indentitemsearch'),
+            "itemname": request.POST.get('itemname'),
             "itemcode":request.POST.get('itemcode') ,
             "qty": request.POST.get('quantity'),
             "mrp": request.POST.get('mrp'),
@@ -3012,7 +3057,7 @@ def create_indent(request):
             except:
                 messages.error(request,response.text)
             return redirect('indent_list')
-    return render(request, 'create_indent/create_indent.html')
+    return render(request, 'create_indent/create_indent.html',{'item_masterlist':item_masterlist,'item_masterlist1':item_masterlist[0]})
 
 
 
@@ -3708,7 +3753,6 @@ def sales_list(request):
         'Content-Type': 'application/json'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
     if response.status_code == 200:
         data = response.json()
         data = data['saleslist']
@@ -3782,11 +3826,6 @@ def taxinvoice_list(request):
         return render(request, 'sales/taxinvoicelist.html')
 def tax_invoice(request,id):
 
-    template = get_template('sales/invoice.html')
-    #html = template.render({'context_variable': 'context_value'})
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="your_filename.pdf"'
-    #pisa_status = pisa.CreatePDF(html, dest=response)
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/tax-invoice.php"
 
@@ -3802,19 +3841,13 @@ def tax_invoice(request,id):
     if response1.status_code == 200:
         data = response1.json()
         data1 = data['itemslist']
-        html = template.render({'data':data,'data1':data1})
-
-        pisa_status = pisa.CreatePDF(html, dest=response)
-        if pisa_status.err:
-            return HttpResponse('Failed to convert HTML to PDF', status=400)
-        return response
-        #return render(request, 'sales/invoice.html',)
+        return render(request, 'sales/invoice.html',{'data1':data1,'data':data})
     else:
         try:
-            data = response.json()
+            data = response1.json()
             messages.error(request,data['message'])
         except:
-            messages.error(request,response.text)
+            messages.error(request,response1.text)
         return redirect('/taxinvoice_list')
 
 def stock_transfer(request):
@@ -3825,14 +3858,13 @@ def stock_transfer(request):
 def get_store_data(request):
 
     accesskey = request.session['accesskey']
-    serchterm = request.POST.get('searchterm')
-    stid = request.POST.get('stid')
+    #serchterm = request.POST.get('searchterm')
+    stid = request.POST.get('storeid')
 
     url = "http://13.235.112.1/ziva/mobile-api/inventory-search.php"
 
     payload = json.dumps({
         "accesskey": accesskey,
-        "searchterm": serchterm,
         "storeid":stid
 
     })
@@ -4521,3 +4553,5 @@ def bus_edit(request):
             messages.error(request, data['message'])
             return redirect('/bus_list')
     return redirect('/bus_list')
+
+

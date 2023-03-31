@@ -160,6 +160,7 @@
                                     <th>Indent NO</th>
                                     <th>Indent Details</th>
                                     <th>Created By</th>
+                                    <th>Date</th>
                                     <th>Status</th>
                         </tr>
                       </thead>
@@ -171,6 +172,7 @@
                                     <td>{{ all_data.indent_no }}</td>
                                      <td>{{ all_data.region_name }} ->{{ all_data.warehouse_name }}</td></td>
                                     <td>{{ all_data.createdby }}</a></td>
+                                        <td>{{ all_data.createdon }}</td>
                                     <td>
                                         <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-warning">{{ all_data.status }}</span></a>
                                          <span class="badge badge-info" data-toggle="modal"  onclick="VerifyClick('{{all_data.sno}}')" data-target=".bs-example-modal-sm">

@@ -113,8 +113,13 @@
 
 										<div class="col-md-3 col-sm-3 input-icons  form-group has-feedback">
                                                <input type="hidden" id="wh_id" name="wh_id" />
-                                            <label>Item Name Search *</label>
-										    	 <input type="search" id="itemname" placeholder="item search" autocomplete="off" name="itemname"  class="form-control" />
+                                            <label>Select Items *</label>
+                                                <select class="form-control" name="itemname" id="itemname">
+													<option value=" ">Items</option>
+                                                    {% for data in data2 %}
+                                                        <option value="{{ data.itemname }}">{{ data.itemname }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             <input type="hidden" id="txtItemName2" name="txtItemName2" />
 										</div>
                                         <div class="col-md-1 col-sm-2  form-group has-feedback">
@@ -123,12 +128,12 @@
 										</div>
                                          <div class="col-md-1 col-sm-2 form-group has-feedback">
 											<label>No.of bottles *</label>
-                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles" +
-                                           >
+                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles" readonly/>
+
                                        </div>
                                          <div class="col-md-1 col-sm-2 form-group has-feedback">
 											<label>Prices *</label>
-                                           <input type="text" class="form-control" placeholder="0" name="mrp" id="price">
+                                           <input type="text" class="form-control" placeholder="0" name="mrp" id="price" readonly/>
                                        </div>
                                         <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
 											<label>Batch *</label>
@@ -143,9 +148,9 @@
                                                <input type="text"  class="form-control" placeholder="remarks" name="remarks" id="remarks1"/>
                                        </div>
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
-										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}" required>
-                                            <input type="hidden" class="form-control" name="cases" id="cases">
-                                             <input type="hidden" class="form-control" name="mrp" id="mrp">
+										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data3.cp_sno }}" required>
+                                            <input type="hidden" class="form-control" name="cases" id="cases" value="{{data3.uom }}">
+                                             <input type="hidden" class="form-control" name="mrp" id="mrp" value="{{ data3.mrp }}">
 
                                       	<div class="col-md-2 col-sm-2  offset-md-12">
                                            <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Add</button>
@@ -171,6 +176,7 @@
                                     <th>S No</th>
                                     <th>Item Name</th>
                                     <th>Qty In Cases</th>
+                                    <th>Qty In Bottles</th>
                                     <th>ExpDate</th>
                                     <th>HSN</th>
                                     <th>Batch</th>
@@ -186,6 +192,7 @@
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
+                           <td> {{ all_data.noofbottles }}</td>
                        <td>{{  all_data.expiry_date }}</td>
                         <td>{{ all_data.hsn }}</td>
                        <td>{{ all_data.batch_no }}</td>
@@ -199,7 +206,7 @@
                             </tbody>
                            <tfoot>
                            <tr>
-                               <th colspan="9">
+                               <th colspan="10">
                                    Invoice No: {{all_data.so_number}}
             <span style="float:right;">Net : {{all_data.total}}</span>
 
@@ -279,9 +286,6 @@
 
 <script>
 
-
-
-autocomplete(document.getElementById("itemname"));
 function ItemChange1(e){
 	   $("#txtItemName2").val($(e).find(":selected").text());
 	}
@@ -290,138 +294,7 @@ $("#date").val("");
 $("#remarks").val("");
 $("#txtHdnId").val(id);
 }
-function autocomplete(inp) {
-  /*the autocomplete function takes two arguments,
-  the text field element and an array of possible autocompleted values:*/
-  var currentFocus;
-  /*execute a function when someone writes in the text field:*/
-  inp.addEventListener("input", function(e) {
-   closeAllLists();
-   var a, b, i, val = this.value,current_this=this;
-    var searchterm = val;
 
-                    $.ajax({
-                      data: {"searchterm":searchterm, "stid":$("#stid2").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
-                      url: "{% url 'get_store_data' %}",
-                      type: 'POST',
-                      success: function(data){
-                        console.log(data);
-                        var obj = data.data.list;
-      if (!val) { return false;}
-      currentFocus = -1;
-      /*create a DIV element that will contain the items (values):*/
-      a = document.createElement("DIV");
-      a.setAttribute("id", current_this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
-      /*append the DIV element as a child of the autocomplete container:*/
-      current_this.parentNode.appendChild(a);
-      /*for each item in the array...*/
-      for (i = 0; i < obj.length; i++) {
-        /*check if the item starts with the same letters as the text field value:*/
-      /*  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase())  */
-        {
-
-          /*create a DIV element for each matching element:*/
-          b = document.createElement("DIV");
-          b.style.width = "150%";
-
-          /*make the matching letters bold:*/
-          b.innerHTML = "<strong>" + obj[i].itemname + "</strong> &nbsp;&nbsp;<label>Qty : "+obj[i].qty+"</label>&nbsp;&nbsp; <label> mrp : "+obj[i].mrp+" </label>&nbsp;&nbsp; <label>"+obj[i].manufacturername+"</label>&nbsp;&nbsp; <label>Expiry : "+obj[i].expirydate+"</label>&nbsp;&nbsp; <label>"+obj[i].batchcode+"</label>";
-
-          /*insert a input field that will hold the current array item's value:*/
-          b.innerHTML += "<input type='hidden' value='" + obj[i].itemname + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].itemcode + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].qty + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].expirydate + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].batchcode + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].cp_sno + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].uom + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].mrp + "'>";
-          /*execute a function when someone clicks on the item value (DIV element):*/
-          b.addEventListener("click", function(e) {
-              /*insert the value for the autocomplete text field:*/
-              inp.value = this.getElementsByTagName("input")[0].value;
-
-                            $("#freequantity").val(this.getElementsByTagName("input")[2].value);
-                            $("#expdate").val(this.getElementsByTagName("input")[3].value);
-                            $("#batchno").val(this.getElementsByTagName("input")[4].value);
-                             $("#cpsno").val(this.getElementsByTagName("input")[5].value);
-                             $("#cases").val(this.getElementsByTagName("input")[6].value);
-                             $("#mrp").val(this.getElementsByTagName("input")[7].value);
-
-          });
-          a.appendChild(b);
-        }
-      }
-
-                      },
-                      errors: function(e) {
-                      alert(e);
-                      }
-                    })
-
-  });
-
-  /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "autocomplete-list");
-      if (x) x = x.getElementsByTagName("div");
-      if (e.keyCode == 40) {
-        /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
-        currentFocus++;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 38) { //up
-        /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
-        currentFocus--;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        e.preventDefault();
-        if (currentFocus > -1) {
-          /*and simulate a click on the "active" item:*/
-          if (x) x[currentFocus].click();
-        }
-      }
-  });
-
-
-
-  function addActive(x) {
-    /*a function to classify an item as "active":*/
-    if (!x) return false;
-    /*start by removing the "active" class on all items:*/
-    removeActive(x);
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-    alert(x[currentFocus]);
-    /*add class "autocomplete-active":*/
-    x[currentFocus].classList.add("autocomplete-active");
-  }
-  function removeActive(x) {
-    /*a function to remove the "active" class from all autocomplete items:*/
-    for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("autocomplete-active");
-    }
-  }
-  function closeAllLists(elmnt) {
-    /*close all autocomplete lists in the document,
-    except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
-        x[i].parentNode.removeChild(x[i]);
-      }
-    }
-  }
-  /*execute a function when someone clicks in the document:*/
-  document.addEventListener("click", function (e) {
-      closeAllLists(e.target);
-  });
-}
 $("#warehouseid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename").val(selectedOptionText);
