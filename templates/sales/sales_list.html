@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
+<style>
+	.style{
+	position: absolute !important;
+	width: 80% !important;
+	 right: 20px;
+	}
+	</style>
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -85,7 +91,7 @@
 </div>
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
+                                            <div class="modal-content style">
                                                   <div class="modal-header">
                               <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -95,6 +101,16 @@
                                         <div class="modal-body">
                                              <form method="post" action="deliver_challan_update">
                                                     {% csrf_token %}
+
+                                                  <label class="btn btn-round btn-danger">
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" /> CASH
+                                                </label>
+                                                   <label class="btn btn-round btn-primary">
+                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" /> UPI
+                                                </label>
+                                                   <label class="btn btn-round btn-success">
+                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" /> Scanner
+                                                </label>
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
                                                  <input type="hidden" id="mrp" name="mrp"  />
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">

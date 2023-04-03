@@ -32,7 +32,8 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Bus ID </th>
-                                     <th>Bus Station Details </th>
+                                    <th>Depo</th>
+                                     <th>Bus Station  </th>
                                     <th>Action</th>
                         </tr>
                       </thead>
@@ -40,7 +41,8 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.busatationid }}</td>
-                           <td style="color:black"><b>{{ all_data.deponame }} → {{ all_data.busstationname }}</b></td>
+                           <td style="color:black"><b>{{ all_data.deponame }}</b></td>
+                           <td style="color:black"><b>  {{ all_data.busstationname }}</b></td>
                         {% if all_data.status == "Active" %}
                                 <td>
                                    <a class="bus_edit" href="#" onclick="editBus('{{  all_data.busatationid }}')"  data-id="{{ all_data.busatationid }}"><i class="fa fa-edit"></i></a>
@@ -82,7 +84,7 @@
                <form  method="POST" action="bus_edit"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div class="col-md-6 col-sm-6 form-group has-feedback">
-											<label>Bus Name *</label>
+											<label>Bus Station  Name *</label>
 										    <input type="text" class="form-control" name="busname1" id="busname1">
 										</div>
 

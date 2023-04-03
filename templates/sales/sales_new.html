@@ -6,6 +6,11 @@
 	position: absolute !important;
 	width: 60% !important;
 	}
+	.style1{
+	position: absolute !important;
+	width: 100% !important;
+	 right: 20px;
+	}
 	</style>
  <div class="right_col" role="main">
         <div class="">
@@ -111,28 +116,32 @@
                                    <form class="form-label-left input_mask"  method="POST" action="sales_item_add"   enctype="multipart/form-data">
 										{% csrf_token %}
 
-										<div class="col-md-3 col-sm-3 input-icons  form-group has-feedback">
+										<div class="col-md-2 col-sm-3 input-icons  form-group has-feedback">
                                                <input type="hidden" id="wh_id" name="wh_id" />
                                             <label>Select Items *</label>
-                                                <select class="form-control" name="itemname" id="itemname">
+                                                <select class="form-control" name="itemname" id="saleitem">
 													<option value=" ">Items</option>
                                                     {% for data in data2 %}
-                                                        <option value="{{ data.itemname }}">{{ data.itemname }}</option>
+                                                        <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
                                                     {% endfor %}
                                                 </select>
                                             <input type="hidden" id="txtItemName2" name="txtItemName2" />
 										</div>
-                                        <div class="col-md-1 col-sm-2  form-group has-feedback">
+                                        <div class="col-md-1 col-sm-1  form-group has-feedback">
 											<label>Qty In Cases *</label>
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity" onchange="myFunction(this.value)">
 										</div>
-                                         <div class="col-md-1 col-sm-2 form-group has-feedback">
-											<label>No.of bottles *</label>
-                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles" readonly/>
+                                         <div class="col-md-1 col-sm-1 form-group has-feedback">
+											<label>No Of bottles *</label>
+                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles"  readonly/>
 
                                        </div>
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
+											<label>Date *</label>
+                                           <input class="form-control"    type="text" name="date" id="todate"  value="{{ tdate }}" required>
+                                       </div>
                                          <div class="col-md-1 col-sm-2 form-group has-feedback">
-											<label>Prices *</label>
+											<label>Price *</label>
                                            <input type="text" class="form-control" placeholder="0" name="mrp" id="price" readonly/>
                                        </div>
                                         <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
@@ -141,19 +150,19 @@
 										</div>
 										<div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Expiry Date *</label>
-										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate" >
+										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate1" >
 										</div>-->
-                                           <div class="col-md-3 col-sm-2 form-group has-feedback">
-											<label>remarks *</label>
+                                           <div class="col-md-3 col-sm-3 form-group has-feedback">
+											<label>Remarks *</label>
                                                <input type="text"  class="form-control" placeholder="remarks" name="remarks" id="remarks1"/>
                                        </div>
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
 										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data3.cp_sno }}" required>
-                                            <input type="hidden" class="form-control" name="cases" id="cases" value="{{data3.uom }}">
-                                             <input type="hidden" class="form-control" name="mrp" id="mrp" value="{{ data3.mrp }}">
+                                            <input type="hidden" class="form-control" name="cases" id="cases">
+                                             <input type="hidden" class="form-control" name="mrp" id="mrp">
 
                                       	<div class="col-md-2 col-sm-2  offset-md-12">
-                                           <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Add</button>
+                                           <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Collect Order</button>
                                        </div>
 
                                        <input type="hidden" id="store_id" name="store_id" />
@@ -177,7 +186,7 @@
                                     <th>Item Name</th>
                                     <th>Qty In Cases</th>
                                     <th>Qty In Bottles</th>
-                                    <th>ExpDate</th>
+                                    <th>Expiry Date</th>
                                     <th>HSN</th>
                                     <th>Batch</th>
                                     <th>Total </th>
@@ -200,7 +209,8 @@
                            <td>{{all_data.manufacturer}}</td>
 
                        <td>
-                           <a href="delete_sale_item/{{ all_data.id }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                            <a href="delete_sale_item/{{ all_data.id }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                            <a class="edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><i class="fa fa-pencil"></i></a>
                             <button type="button" class="btn btn-success" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
                        </td>
                             </tbody>
@@ -283,6 +293,70 @@
                                         </div>
                                     </div>
                                 </div>
+<div class="modal custom-modal fade" id="edit_sale_item" role="dialog">
+                                       <div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+                                <div class="modal-header">
+                             <h5 class="modal-title">Edit Sale Item</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+							<div class="modal-body">
+                                             <form method="POST" action="edit_sale_item">
+                                                    {% csrf_token %}
+                                                          <input type="hidden" id="txtHdnId1" name="txtHdnId1"  />
+                                                 <div class="col-md-6 col-sm-6 input-icons  form-group has-feedback">
+
+                                            <label>Select Items *</label>
+                                                      <input type="hidden" id="saleitemname" name="saleitemname"  />
+                                                <select class="form-control" name="itemname" id="saleitem1">
+													<option value=" ">Items</option>
+                                                    {% for data in data2 %}
+                                                        <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                    {% endfor %}
+                                                </select>
+										</div>
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Qty In Cases *</label>
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity1" onchange="myFunction(this.value)">
+										</div>
+                                         <div class="col-md-6 col-sm-6 form-group has-feedback">
+											<label>No Of bottles *</label>
+                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles1"  readonly/>
+
+                                       </div>
+                                        <div class="col-md-6 col-sm-6 form-group has-feedback">
+											<label>Date *</label>
+                                           <input class="form-control"    type="date" name="date" id="todate1"   required>
+                                       </div>
+                                         <div class="col-md-6 col-sm-6 form-group has-feedback">
+											<label>Price *</label>
+                                           <input type="text" class="form-control" placeholder="0" name="mrp" id="price1" readonly/>
+                                       </div>
+                                        <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
+											<label>Batch *</label>
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Expiry Date *</label>
+										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate1" >
+										</div>-->
+                                           <div class="col-md-6 col-sm-6 form-group has-feedback">
+											<label>Remarks </label>
+                                               <input type="text"  class="form-control" placeholder="remarks" name="remarks" id="remarks2"/>
+                                       </div>
+                                            <input type="hidden" class="form-control" name="cases" id="cases1">
+                                             <input type="hidden" class="form-control" name="mrp" id="mrp1">
+                                                  <div class="col-md-6 col-sm-6  offset-md-5">
+                                                  <button type="submit" name="complete" class="btn btn-info">Edit</button>
+                                            </div>
+  </form>
+                                        </div>
+
+                                        </div>
+                                    </div>
+                                </div>
 
 <script>
 
@@ -312,6 +386,31 @@ $("#busstationid").change(function() {
   $("#busstationname").val(selectedOptionText);
 });
 
+function editSale(id){
+      $.ajax({
+        url: "{% url 'get_sale_item' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data.saleitemlist
+          	console.log(obj[0].so_number);
+             if(obj){
+             $("#saleitemname").val(obj[0].item_name);
+             $("#saleitem1").val(obj[0].item_code);
+             $("#cases1").val(obj[0].uom);
+             $("#nbottles1").val(obj[0].noofbottles);
+             $("#price1").val(obj[0].total);
+             $("#mrp1").val(obj[0].mrp);
+             $("#quantity1").val(obj[0].quantity);
+             $("#todate1").val(obj[0].createdon);
+             $("#txtHdnId1").val(obj[0].id);
+             $('#edit_sale_item').modal('show');
+        	}
+        }
+      });
+  }
  	$("#depoid").change(function() {
         	var depo = $(this).val();
         	$.ajax({
@@ -354,6 +453,27 @@ $("#busstationid").change(function() {
              	}
         	});
     	});
+    	$("#saleitem").change(function() {
+        	var itemname = $('#saleitem').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_grn_item_data" %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].gst);
+                        if(obj.length>0){
+                            $("#mrp").val(obj[0].mrp);
+                            $("#cases").val(obj[0].uom);
+                            $("#quantity").val(" ");
+                            $("#nbottles").val(" ");
+                            $("#price").val(" ");
+					}
+             	}
+        	});
+    	});
     	$('#quantity').on('input', function()  {
     	    val  = $("#quantity").val();
             val1 = $("#cases").val();
@@ -362,6 +482,36 @@ $("#busstationid").change(function() {
             val3 = (val2 * mrp)
             $("#nbottles").val(val2);
             $("#price").val(val3);
+         });
+	$("#saleitem1").change(function() {
+        	var itemname = $('#saleitem1').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_grn_item_data" %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].gst);
+                        if(obj.length>0){
+                            $("#mrp1").val(obj[0].mrp);
+                            $("#cases1").val(obj[0].uom);
+                            $("#quantity1").val(" ");
+                            $("#nbottles1").val(" ");
+                            $("#price1").val(" ");
+					}
+             	}
+        	});
+    	});
+    	$('#quantity1').on('input', function()  {
+    	    val  = $("#quantity1").val();
+            val1 = $("#cases1").val();
+            mrp2 = $("#mrp1").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp2)
+            $("#nbottles1").val(val2);
+            $("#price1").val(val3);
          });
 </script>
 

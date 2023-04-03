@@ -40,8 +40,9 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Depo Code</th>
-                                    <th>Depo Details</th>
-                                    <th>Depo Manager</th>
+                                    <th>Region</th>
+                                    <th>Depo</th>
+                                    <th>Depo Store Executive</th>
                                     <th>Address</th>
                                      <th>Contact No</th>
                                     <th>Action</th>
@@ -51,7 +52,8 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td><a href = " {{ all_data.depophoto }}" style="color:#075ab3;">{{ all_data.depoid }}</a></td>
-                       <td style="color:black"><b>{{ all_data.regionname }}→{{ all_data.depo_name }}</b></td>
+                       <td style="color:black"><b>{{ all_data.regionname }}</b></td>
+                           <td style="color:black"><b>{{ all_data.depo_name }}</b></td>
                        <td>{{  all_data.depo_manager}}</td>
                        <td>{{ all_data.address }}</td>
                        <td>{{ all_data.depo_contact_no }}</td>

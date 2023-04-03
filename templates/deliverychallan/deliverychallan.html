@@ -19,6 +19,22 @@
 
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
+                               			<!-- Search Filter -->
+						<form  method="POST" action="deliver_challan"  enctype="multipart/form-data">
+									{% csrf_token %}
+					<div class="row filter-row">
+						<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">Select Date</label>
+									<input class="form-control  datetimepicker" type="date" name="date" value="{{ tdate }}" required>
+							</div>
+                        	<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">Bus Station</label>
+									<input class="form-control floating datetimepicker" type="text" name="busstation" required>
+							</div>
+                               <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                           <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>
+						</div>
                 <div class="x_panel">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -27,6 +43,7 @@
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
+
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
