@@ -2120,6 +2120,7 @@ def get_proformabus(request):
     data = response.json()
     return JsonResponse({'data': data})
 
+
 def get_proformastore(request):
     accesskey = request.session['accesskey']
     regionid = request.session['regionid']
@@ -2986,8 +2987,23 @@ def grn(request):
         return render(request, 'grn/grn_new.html', {'all_data': vendor_masterlist, 'all_data1': wh_masterlist})
 
 def deliver_challan(request):
-    tdate = datetime.date.today()
-    tdate = tdate.strftime("%d-%m-%Y")
+    accesskey = request.session['accesskey']
+    regionid = request.session['regionid']
+    deponame = request.session['depoid']
+    warehousename = request.session['warehousename']
+    url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
+
+    payload = json.dumps({"accesskey": accesskey, "type": "Bus Station",
+                          "warehousename": warehousename,
+                          "regionid": regionid,
+                          "depoid": deponame})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    data1  = data['dropdownlist']
     if request.method == 'POST':
         accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
@@ -2995,7 +3011,7 @@ def deliver_challan(request):
         payload = json.dumps({
             "accesskey": accesskey,
             "date":request.POST.get('date'),
-            "busstation":request.POST.get('busstation')
+            "busstation":request.POST.get('busstationname1')
         })
         headers = {
             'Content-Type': 'application/json'
@@ -3005,10 +3021,10 @@ def deliver_challan(request):
         if response.status_code == 200:
             data = response.json()
             deliv_challan = data['deliverypendinglist']
-            return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan})
+            return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1})
         else:
-            return render(request, 'deliverychallan/deliverychallan.html',{'tdate':tdate})
-    return render(request, 'deliverychallan/deliverychallan.html',{"tdate":tdate})
+            return render(request, 'deliverychallan/deliverychallan.html',{'data1':data1})
+    return render(request, 'deliverychallan/deliverychallan.html',{"data1":data1})
 
 def deliver_challan_status(request):
 

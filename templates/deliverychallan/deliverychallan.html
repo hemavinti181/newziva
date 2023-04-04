@@ -25,15 +25,25 @@
 					<div class="row filter-row">
 						<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Select Date</label>
-									<input class="form-control  datetimepicker" type="date" name="date" value="{{ tdate }}" required>
+									<input class="form-control" type="date" name="date" id="getdate" required>
 							</div>
                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Bus Station</label>
-									<input class="form-control floating datetimepicker" type="text" name="busstation" required>
+								     <input type="hidden" name="busstationname1" id="busstationname1" />
+
+												<select class="form-control" name="busstationid1" id="busstationid1">
+                                                    <option value=" ">select bus stations</option>
+                                                    {% for data1 in data1 %}
+													    <option value="{{data1.id }}">{{ data1.name }}</option>
+                                                    {% endfor %}
+												</select>
 							</div>
-                               <div class="col-md-2 col-sm-2  form-group has-feedback">
+                               <div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
+                         <div class="col-md-2 col-sm-2 form-group has-feedback">
+                 <span style="margin-top: 25px;" class="btn btn-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">  Delivery challan </span>
+                </div>
 						</div>
                 <div class="x_panel">
                     <div class="clearfix"></div>
@@ -47,6 +57,7 @@
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
+
                                     <th>S NO</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
@@ -63,6 +74,7 @@
                                 {%  if all_data.status == "Delivery Pending" %}
 
                                     <tr>
+
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ all_data.bus_station }}</td>
                                     <td>{{ all_data.storename }}</td>
@@ -74,7 +86,6 @@
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                         <td>
                                             <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> PENDING </span></a>
-                                            <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">  Delivery challan </span>
                                          </td>
                                     </tr>
                                 {% endif %}
@@ -128,7 +139,21 @@
                                         </div>
                                     </div>
                                 </div>
+<!-- Include jQuery and jQuery UI libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+
 <script>
+$(document).ready(function() {
+    $('#datatable-buttons thead tr').prepend('<th></th>');
+  $('#datatable-buttons tbody tr').prepend('<td><input type="checkbox" /></td>');
+});
+
+$("#busstationid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#busstationname1").val(selectedOptionText);
+});
+
     function VerifyClick(id){
 $("#name").val("");
 $("#agentno").val("");
@@ -136,6 +161,7 @@ $("#vehicaldetails").val("");
 $("#remarks").val("");
 $("#txtHdnId").val(id);
 }
-</script>
+ $('#getdate').val(new Date().toJSON().slice(0,10));
+ </script>
 {% endblock %}
 

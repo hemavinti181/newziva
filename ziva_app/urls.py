@@ -155,6 +155,7 @@ urlpatterns = [
     path('deliver_challan_update',views.deliver_challan_update,name='deliver_challan_update'),
     path('tax-invoice/<str:id>/',views.tax_invoice,name='tax_invoice'),
     path('get_sale_item',views.get_sale_item,name='get_sale_item'),
-    path('edit_sale_item',views.edit_sale_item,name='edit_sale_item')
+    path('edit_sale_item',views.edit_sale_item,name='edit_sale_item'),
+
 
 ]

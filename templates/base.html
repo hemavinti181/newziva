@@ -40,6 +40,8 @@
     <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" />
  <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/smoothness/jquery-ui.css">
+
 <style>
 .dataTables_length{
 margin-bottom:-50px;
@@ -503,19 +505,8 @@ ZIVA <a href="#"></a>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <!-- alertify JavaScript -->
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-<script>
-if($('.datetimepicker').length > 0) {
-		$('.datetimepicker').datetimepicker({
-			format: 'DD/MM/YYYY',
-			icons: {
-				up: "fa fa-angle-up",
-				down: "fa fa-angle-down",
-				next: 'fa fa-angle-right',
-				previous: 'fa fa-angle-left'
-			}
-		});
-	}
 
+<script>
 
             $(document).ready(function () {
                 //Select2
@@ -640,7 +631,20 @@ document.addEventListener('click', function (e) {
       break;}
 
 });
-
+$(document).ready(function() {
+    $('#example').DataTable( {
+        columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+            targets:   0
+        } ],
+        select: {
+            style:    'os',
+            selector: 'td:first-child'
+        },
+        order: [[ 1, 'asc' ]]
+    } );
+} );
 </script>
 </body>
 </html>
