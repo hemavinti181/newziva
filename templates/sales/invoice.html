@@ -61,6 +61,11 @@
                           <b>Date :</b> {{ data.date }}
                           <h6 class="text-success"><b>APPROVED</b></h6>
                         </div>
+                            <div class="col-sm-2 invoice-col">
+                            <h6 style="color:black"><b>Invoice No : </b><b class="text-info">{{ data.invoicenumber }}</b></h6>
+                          <b>Date :</b> {{ data.date }}
+                          <h6 class="text-success"><b>APPROVED</b></h6>
+                        </div>
                              <div class="col-sm-2 invoice-col">
                               <img src="https://chart.googleapis.com/chart?cht=qr&chl={{ data.invoicenumber }}&chs=160x160&chld=L|0" width="75" class="qr-code img-thumbnail img-responsive" />
                         </div>

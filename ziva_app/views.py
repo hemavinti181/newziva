@@ -2621,6 +2621,19 @@ def sale_item_list(request):
     bustation = request.session['bustname']
     accesskey = request.session['accesskey']
     tax_inv = request.session['taxinvoice']
+    depoid = request.session['depoid']
+    url = "http://13.235.112.1/ziva/mobile-api/timingstypelist.php"
+    payload = json.dumps({
+
+        "accesskey": accesskey
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        spell = data['timingslist']
     url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
     payload = json.dumps({
         "accesskey": accesskey,
@@ -2629,18 +2642,30 @@ def sale_item_list(request):
         'Content-Type': 'application/json'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    # if response.status_code == 200:
-    data = response.json()
-    data2 = data['itemmasterlist']
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+    if response.status_code == 200:
+        data = response.json()
+        data2 = data['itemmasterlist']
 
-    payload = json.dumps({"accesskey": accesskey})
+    url = "http://13.235.112.1/ziva/mobile-api/generate-salebill-number.php"
+
+    payload = {
+        "accesskey": accesskey,
+        "storeid": stid,
+        "storename": stname,
+        "depoid": depoid,
+        "deponame": deponame
+
+    }
     headers = {
         'Content-Type': 'text/plain'
     }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    whlist = data['warehouselist']
+    payload = json.dumps(payload, cls=BytesEncoder)
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        netvalue = data['netvalue']
+        taxinvoice = data['taxinvoice']
+
     url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
 
     payload = json.dumps({
@@ -2657,11 +2682,11 @@ def sale_item_list(request):
         data = response.json()
         sale_item_list = data['saleitemlist']
         return render(request, 'sales/sales_new.html',
-                      {"all_data": sale_item_list, 'deponame': deponame,'bustation':bustation, 'data': sale_item_list[0], 'whlist': whlist,
-                      'stname':stname,'stid':stid,'data2':data2,'data3':data2[0]})
+                      {"all_data": sale_item_list, 'deponame': deponame,'bustation':bustation, 'data': sale_item_list[0],
+                      'stname':stname,'stid':stid,'data2':data2,'data3':data2[0],'spell':spell,'netvalue':netvalue,'taxinvoice':taxinvoice})
     else:
         return render(request, 'sales/sales_new.html',
-                      {'deponame': deponame,'whlist': whlist,'bustation':bustation,'stname':stname,'data2':data2,'data3':data2[0]})
+                      {'deponame': deponame,'bustation':bustation,'stname':stname,'data2':data2,'data3':data2[0],'spell':spell})
 
 def sales_item_list_pending(request,id):
     accesskey = request.session['accesskey']
@@ -2719,6 +2744,8 @@ def proformainvoice(request):
 
             request.session['storename']=stname
             deponame =  request.POST.get('deponame')
+            depoid = request.POST.get('depoid')
+            request.session['depoid'] = depoid
             request.session['deponame']=deponame
             bustname = request.POST.get('busstationname')
             request.session['bustname'] = bustname
@@ -2810,7 +2837,7 @@ def sales_item_add(request):
                 "quantity": request.POST.get('quantity'),
                 "taxinvoice": tax_inv,
                 "item_code": request.POST.get('itemname'),
-                "date": tdate,
+                "date": request.POST.get('date'),
         })
 
         headers = {
@@ -2831,6 +2858,7 @@ def sales_item_add(request):
     return render(request, 'sales/sales_new.html', {'data':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
 def complete_sale(request):
     accesskey = request.session['accesskey']
+
     if 'complete' in request.POST:
         url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
 
@@ -2840,6 +2868,7 @@ def complete_sale(request):
             "paymentmode": request.POST.get('paymenttype'),
             "remarks": request.POST.get('remarks'),
             "date": request.POST.get('date'),
+            "spelloftheday":request.POST.get('spell1')
 
         })
         headers = {
@@ -2853,6 +2882,7 @@ def complete_sale(request):
             del request.session['stid']
             del request.session['bustname']
             del request.session['deponame']
+
             messages.success(request, data['message'])
             return redirect('proformainvoice')
         else:
@@ -2880,14 +2910,14 @@ def delete_sale_item(request,id):
         del request.session['bustname']
         del request.session['deponame']
         messages.success(request, data['message'])
-        return redirect('proformainvoice')
+        return redirect('sales_item_list')
     else:
         try:
             data = response.json()
             messages.error(request, data['message'])
         except:
             messages.error(request,response.text)
-        return redirect('proformainvoice')
+        return redirect('sales_item_list')
 
 def get_sale_item(request):
     accesskey = request.session['accesskey']

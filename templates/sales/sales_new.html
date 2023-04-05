@@ -4,13 +4,14 @@
 <style>
 	.style{
 	position: absolute !important;
-	width: 60% !important;
+	width: 80% !important;
 	}
 	.style1{
 	position: absolute !important;
 	width: 100% !important;
 	 right: 20px;
 	}
+
 	</style>
  <div class="right_col" role="main">
         <div class="">
@@ -179,14 +180,13 @@
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-                        <table id="datatable-buttons example" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
                                     <th>Item Name</th>
                                     <th>Qty In Cases</th>
                                     <th>Qty In Bottles</th>
-                                    <th>Expiry Date</th>
                                     <th>HSN</th>
                                     <th>Batch</th>
                                     <th>Total </th>
@@ -202,7 +202,7 @@
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
                            <td> {{ all_data.noofbottles }}</td>
-                       <td>{{  all_data.expiry_date }}</td>
+
                         <td>{{ all_data.hsn }}</td>
                        <td>{{ all_data.batch_no }}</td>
                        <td class="text-success">₹ {{ all_data.total }}</td>
@@ -211,18 +211,17 @@
                        <td>
                             <a href="delete_sale_item/{{ all_data.id }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
                             <a class="edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><i class="fa fa-pencil"></i></a>
-                            <button type="button" class="btn btn-success" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
                        </td>
                             </tbody>
-                           <tfoot>
+                           <!--<tfoot>
                            <tr>
                                <th colspan="10">
                                    Invoice No: {{all_data.so_number}}
-            <span style="float:right;">Net : {{all_data.total}}</span>
+            <span style="float:right;">Net : {{ all_data.total }}</span>
 
                                </th>
                           </tr>
-                           </tfoot>
+                           </tfoot>-->
                       </tr>
                       {% endfor %}
 
@@ -231,13 +230,27 @@
                       </tbody>
                       </table>
                             </div>
+                          <p class="text-muted font-13 m-b-30">
+                    </p>
+                    <div class="row">
+                                <div class="col-sm-10 invoice-col">
+                            <h6 style="color:black"><b>Invoice No : </b><b class="text-info">{{ taxinvoice }}</b></h6>
+                             <h6 style="color:black"><b> Net Value : </b><b class="text-info">{{ netvalue }}</b></h6>
+                        </div>
+                        <div class="col-sm-2 invoice-col">
+                           <button type="button" class="btn btn-success" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
+                        </div>
+                      <!-- /.row -->
+                            </div>
                           </div>
+                                </div>
+                              </div>
+                  </div>
                 </div>
                 </div>
               </div>
             </div>
-                </div>
-              </div>
+
             </div>
           </div>
 </div>
@@ -280,6 +293,17 @@
                                                    <label for="remarks">Delivery date</label>
 										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" >
 										    </div>
+                                                 	<div  class="col-md-12 col-sm-12  form-group has-feedback">
+													<label>Spell Of The Day</label>
+											 <input type="hidden" name="spell" id="spell" />
+
+												<select class="form-control" name="spell1" id="spell1">
+                                                     <option value=" ">Spell of the day</option>
+                                                    {% for spell in spell %}
+													    <option value="{{ spell.type }} ">{{ spell.type }}</option>
+                                                    {% endfor %}
+												</select>
+										</div>
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
 										        <input type="text" class="form-control" name="remarks" id="remarks"  placeholder="remarks" >
@@ -306,7 +330,7 @@
                                              <form method="POST" action="edit_sale_item">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId1" name="txtHdnId1"  />
-                                                 <div class="col-md-6 col-sm-6 input-icons  form-group has-feedback">
+                                                 <!--<div class="col-md-6 col-sm-6 input-icons  form-group has-feedback">
 
                                             <label>Select Items *</label>
                                                       <input type="hidden" id="saleitemname" name="saleitemname"  />
@@ -316,7 +340,7 @@
                                                         <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
                                                     {% endfor %}
                                                 </select>
-										</div>
+										</div>-->
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Qty In Cases *</label>
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity1" onchange="myFunction(this.value)">
@@ -344,7 +368,7 @@
 										</div>-->
                                            <div class="col-md-6 col-sm-6 form-group has-feedback">
 											<label>Remarks </label>
-                                               <input type="text"  class="form-control" placeholder="remarks" name="remarks" id="remarks2"/>
+                                               <textarea  class="form-control" placeholder="remarks" name="remarks" id="remarks2"></textarea>
                                        </div>
                                             <input type="hidden" class="form-control" name="cases" id="cases1">
                                              <input type="hidden" class="form-control" name="mrp" id="mrp1">
