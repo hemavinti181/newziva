@@ -19,6 +19,23 @@
 
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
+                  	<form  method="POST" action="taxinvoice_list"  enctype="multipart/form-data">
+									{% csrf_token %}
+					<div class="row filter-row">
+                        	<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">From Date</label>
+									<input class="form-control" type="date" name="fdate" id="fdate" required>
+							</div>
+						<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">To Date</label>
+									<input class="form-control" type="date" name="tdate" id="tdate" required>
+							</div>
+
+                               <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>
+                        </form>
+              </div>
                 <div class="x_panel">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -33,7 +50,8 @@
 
                                      <th>S No</th>
                                     <th>Tax Invoice</th>
-                                    <th>Sales from</th>
+                                    <th>Sales From</th>
+                                     <th>Sales To</th>
                                     <th>Item Count</th>
                                     <th>Total</th>
                                     <th>Created By </th>
@@ -45,7 +63,8 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                            <td><a href = "tax-invoice/{{ all_data.invnumber }}/"  style="color:blue">{{ all_data.invnumber }}</a></td>
-                       <td style="color:black"><b>{{ all_data.fromname }}→{{ all_data.storename }}</b></td>
+                       <td style="color:black"><b>{{ all_data.fromname }}</b></td>
+                           <td style="color:black"><b>{{ all_data.storename }}</b></td>
                        <td>{{  all_data.itemcount}}</td>
                            <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
                         <td>{{ all_data.created_by }}</td>
@@ -63,5 +82,9 @@
 
 
 
-{% endblock %}
 
+<script>
+    $('#tdate').val(new Date().toJSON().slice(0,10));
+          $('#fdate').val(new Date().toJSON().slice(0,10));
+</script>
+{% endblock %}

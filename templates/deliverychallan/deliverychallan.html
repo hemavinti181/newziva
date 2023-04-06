@@ -23,10 +23,6 @@
 						<form  method="POST" action="deliver_challan"  enctype="multipart/form-data">
 									{% csrf_token %}
 					<div class="row filter-row">
-						<div class="col-sm-3 col-md-3 form-group has-feedback">
-									<label class="focus-label">Select Date</label>
-									<input class="form-control" type="date" name="date" id="getdate" required>
-							</div>
                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Bus Station</label>
 								     <input type="hidden" name="busstationname1" id="busstationname1" />
@@ -38,11 +34,18 @@
                                                     {% endfor %}
 												</select>
 							</div>
+						<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">Select Date</label>
+									<input class="form-control" type="date" name="date" id="getdate" required>
+							</div>
+
                                <div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
+                        </form>
                          <div class="col-md-2 col-sm-2 form-group has-feedback">
-                 <span style="margin-top: 25px;" class="btn btn-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">  Delivery challan </span>
+                 <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick()" data-toggle="modal" data-target="#bs-example-modal-sm">  Delivery challan </span>
+
                 </div>
 						</div>
                 <div class="x_panel">
@@ -55,9 +58,14 @@
                     </p>
 
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                            <colgroup>
+
+    <col span="1" style="visibility: collapse">
+  </colgroup>
                       <thead>
                         <tr>
-
+                                    <th></th>
+                                    <th class="btnSelectAll"><input type="checkbox" /></th>
                                     <th>S NO</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
@@ -73,8 +81,9 @@
                             {% for all_data in all_data %}
                                 {%  if all_data.status == "Delivery Pending" %}
 
-                                    <tr>
-
+                                    <tr class="row-select">
+                                        <td class="id">{{ all_data.id }}</td>
+                                        <td class="check"><input type="checkbox" name="language"/></td>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ all_data.bus_station }}</td>
                                     <td>{{ all_data.storename }}</td>
@@ -94,6 +103,7 @@
                       </tbody>
                       </table>
                   </div>
+                              <input type="hidden" id="id1" name="id1" />
                   </div>
               </div>
             </div>
@@ -112,9 +122,9 @@
 								</button>
                                 </div>
                                         <div class="modal-body">
-                                             <form method="post" action="deliver_challan_status">
+                                             <form method="POST" action="deliver_challan_status">
                                                     {% csrf_token %}
-                                            <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+                                                 <input type="hidden" id="txtHdnId1" name="txtHdnId[]"  />
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
 										            <input type="text" class="form-control" placeholder="Driver Name" name="agentname" id="name">
                                             </div>
@@ -122,7 +132,14 @@
 										            <input type="text" class="form-control" placeholder="Driver Number" name="agentno" id="agentno">
                                             </div>
                                             <div class="col-md-12 col-sm-12  form-group has-feedback">
-										        <input type="text" class="form-control" placeholder="Vehicals Details" name="vehicaldetails" id="veh">
+										        <input type="hidden" class="form-control" placeholder="Vehicals Details" name="vehicaldetails1" id="veh1">
+                                                	<select class="form-control" name="vehicaldetails" id="veh">
+                                                    <option value=" ">Vehical Details</option>
+                                                    {% for data1 in vehicals %}
+													    <option value="{{data1.vehicleno }}">{{ data1.vehicleno }}</option>
+                                                    {% endfor %}
+												</select>
+
 										    </div>
                                                <div class="col-md-12 col-sm-12  form-group has-feedback">
 
@@ -144,24 +161,38 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('#datatable-buttons thead tr').prepend('<th></th>');
-  $('#datatable-buttons tbody tr').prepend('<td><input type="checkbox" /></td>');
-});
 
 $("#busstationid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busstationname1").val(selectedOptionText);
 });
 
-    function VerifyClick(id){
+    function VerifyClick(){
 $("#name").val("");
 $("#agentno").val("");
 $("#vehicaldetails").val("");
 $("#remarks").val("");
-$("#txtHdnId").val(id);
 }
  $('#getdate').val(new Date().toJSON().slice(0,10));
+ $(document).ready(function() {
+
+  $('.btnSubmit').click(function() {
+    var arr = [];
+  $('.row-select input:checked').each(function(){
+   id=$(this).closest('tr').find('.id').html();
+     arr.push(id);
+     alert(arr)
+     $('#txtHdnId1').val(arr);
+    })
+  })
+  $('.btnSelectAll').click(function() {
+    $('.row-select input').each(function() {
+      $(this).prop('checked', true);
+    })
+
+  })
+
+})
  </script>
 {% endblock %}
 

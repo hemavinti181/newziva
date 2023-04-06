@@ -40,7 +40,7 @@
 												{% endfor %}
 												</select>
 										</div>
-										<div class="col-md-3 col-sm-6  form-group has-feedback">
+										<!--<div class="col-md-3 col-sm-6  form-group has-feedback">
 											<label>Warehouse Name *</label>
 											<select class="country form-control" name="whname">
 												<option>warehouse name search</option>
@@ -48,8 +48,12 @@
 											<option  value="{{ data.warehouseid}}">{{ data.warehousename }}</option>
 											{% endfor %}
 											</select>
-										</div>
+										</div>-->
+											<div class="col-md-3 col-sm-6  form-group has-feedback">
 
+											<label>Warehouse Name  *</label>
+										    <input type="text" class="form-control" value="{{ whname }}" name="whname">
+										</div>
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
 
 											<label>Invoice No *</label>
@@ -63,6 +67,10 @@
 											<label>Invoice Amount</label>
 										    <input type="text" class="form-control" placeholder="invoice amount" name="invoiceamount">
 										</div>
+
+											<div class="col-md-3 col-sm-6 form-group has-feedback">
+												<button type="submit"   style="margin-top: 25px;" class="btn btn-primary">Save</button>
+											</div>
 
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
 										    <input type="hidden" class="form-control"  name="code">
@@ -88,11 +96,7 @@
 									   <div class="col-md-3 col-sm-6  form-group has-feedback">
 											<input type="hidden" class="form-control"  name="wcontnumber">
 										</div>
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
-											</div>
-										</div>
+
 								   </div>
 				  </form>
 									</div>

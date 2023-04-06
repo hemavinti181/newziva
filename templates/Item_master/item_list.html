@@ -55,7 +55,7 @@ background-color: #1372ba !important;
                             {% for all_data in all_data %}
                        <tr>
                            <td>{{ forloop.counter }}</td>
-                           <td>{{ all_data.itemcode }}</a></td>
+                           <td>{{ all_data.item_code_org }}</a></td>
                        <td> {{ all_data.itemname }} </td>
                        <td>{{  all_data.hsncode}}</td>
                        <td>{{ all_data.gst }}</td>
@@ -108,6 +108,10 @@ background-color: #1372ba !important;
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Item Name *</label>
 										    <input type="text" class="form-control" name="nameitem" id="nameitem">
+										</div>
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Item Code *</label>
+										    <input type="text" class="form-control" name="codeitem" id="codeitem">
 										</div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>HSN Code *</label>
@@ -246,6 +250,7 @@ $(document).ready(function() {
              $("#latestpurchase").val(obj[0].lpp);
              $("#mrp").val(obj[0].mrp);
              $("#uom").val(obj[0].uom);
+              $("#codeitem").val(obj[0].item_code_org);
              $('#edit_item').modal('show');
         	}
         }

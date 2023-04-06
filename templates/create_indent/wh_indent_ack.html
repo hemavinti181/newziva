@@ -194,10 +194,12 @@
 </div>
                </div>
                           <div class="inner-fabs">
-                                  <div class="fab round" id="fab3" data-tooltip="verified"><a href="pending_indent_ack"><i class="fa fa-outdent"></i></a></div>
-                                  <div class="fab round" id="fab2" data-tooltip="pending"><a href="pending_indent_pending"><i class="fa fa-outdent" ></i></a></div></a>
+                              <div class="fab bg-blue round" id="fab3" ><a href="pending_indent_ack"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" >Pending</span></div>
+                              <div class="fab bg-orange round" id="fab2"><a href="pending_indent_pending"><i class="fa fa-outdent" style="color:#fff;" ></i></a><span class="tooltiptext" >Verified</span></div>
+
+                          </div>
                                     </div>
-                                <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+                                <div class="fab bg-red round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
                         </div>
               </div>
 <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
@@ -222,26 +224,7 @@
                                     </div>
                                 </div>
 <script>
-    let fab1 = document.getElementById('fab1');
-let innerFabs = document.getElementsByClassName('inner-fabs')[0];
 
-fab1.addEventListener('click', function () {
-  innerFabs.classList.toggle('show');
-});
-
-document.addEventListener('click', function (e) {
-  switch (e.target.id) {
-    case "fab1":
-    case "fab2":
-    case "fab3":
-    case "fab4":
-    case "fabIcon":
-      break;
-    default:
-      innerFabs.classList.remove('show');
-      break;}
-
-});
 function VerifyClick(id){
 $("#comment").val(comment);
 $("#txtHdnId").val(id);

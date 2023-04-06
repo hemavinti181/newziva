@@ -25,14 +25,22 @@
 										{% csrf_token %}
 
 
-											<div class="col-md-5 col-sm-5  form-group has-feedback">
-                                            <input type="search" class="form-control" id="itemcode" name="itemcode" placeholder="Search for..." />
+											<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                                 <input type="hidden" id="wh_id" name="wh_id" />
+
+                                                <select class="form-control" name="itemname" id="itemname">
+													<option value=" ">Items</option>
+                                                    {% for data in data %}
+                                                        <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            <input type="hidden" id="txtItemName" name="txtItemName" />
                                             </div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
 										</div>
                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity">
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
 										</div>
                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" id="latestpurchase" placeholder="Latest Purchase" name="latestpurchase" value="{{ data.item_code }}"required>
@@ -40,7 +48,7 @@
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="date" class="form-control"  name="expdate" id="expdate">
 										</div>
-										<div class="col-md-2 col-sm-3  form-group has-feedback">
+										<!--<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="MRP" id="mrp" name="mrp" value="{{ data.mrp }}" required>
 										</div>
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
@@ -48,7 +56,7 @@
 										</div>
                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="HSN" id="hsn" name="hsn" value="{{ data.hsn }}"equired >
-										</div>
+										</div>-->
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="free quantity" id="freequantity" name="freequantity">
 										</div>
@@ -117,136 +125,29 @@
           </div>
 </div>
 <script>
-	function ItemChange(e){
-	   $("#txtItemName").val($(e).find(":selected").text());
-	}
-autocomplete(document.getElementById("itemcode"));
-function autocomplete(inp) {
-  /*the autocomplete function takes two arguments,
-  the text field element and an array of possible autocompleted values:*/
-  var currentFocus;
-  /*execute a function when someone writes in the text field:*/
-  inp.addEventListener("input", function(e) {
-   closeAllLists();
-   var a, b, i, val = this.value,current_this=this;
-    var searchterm = val;
-                    $.ajax({
-                      data: {"searchterm":searchterm, "store_id":$("#txtStoreId").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
-                      url: "{% url 'get_store_data' %}",
-                      type: 'POST',
-                      success: function(data){
-                        console.log(data);
-                        var obj = data.data.list;
-      if (!val) { return false;}
-      currentFocus = -1;
-      /*create a DIV element that will contain the items (values):*/
-      a = document.createElement("DIV");
-      a.setAttribute("id", current_this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
-      /*append the DIV element as a child of the autocomplete container:*/
-      current_this.parentNode.appendChild(a);
-      /*for each item in the array...*/
-      for (i = 0; i < obj.length; i++) {
-        /*check if the item starts with the same letters as the text field value:*/
-      /*  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase())  */
-        {
 
-          /*create a DIV element for each matching element:*/
-          b = document.createElement("DIV");
-          b.style.width = "150%";
+	$("#itemname").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#txtItemName").val(selectedOptionText);
+});
+	$("#itemname").change(function() {
+        	var itemname = $('#itemname').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_grn_item_data" %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].gst);
+                        if(obj.length>0){
+                            $("#latestpurchase").val(obj[0].lpp);
 
-          /*make the matching letters bold:*/
-          b.innerHTML = "<strong>" + obj[i].itemname + "</strong> &nbsp;&nbsp;<label>Qty : "+obj[i].qty+"</label>&nbsp;&nbsp; <label> mrp : "+obj[i].mrp+" </label>&nbsp;&nbsp; <label>"+obj[i].manufacturername+"</label>&nbsp;&nbsp; <label>Expiry : "+obj[i].expirydate+"</label>&nbsp;&nbsp; <label>"+obj[i].batchcode+"</label>";
+					}
+             	}
+        	});
+    	});
 
-          /*insert a input field that will hold the current array item's value:*/
-          b.innerHTML += "<input type='hidden' value='" + obj[i].itemname + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].itemcode + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].qty + "'>";
-          b.innerHTML += "<input type='hidden' value='" + obj[i].expirydate + "'>";
-           b.innerHTML += "<input type='hidden' value='" + obj[i].batchcode + "'>";
-            b.innerHTML += "<input type='hidden' value='" + obj[i].cp_sno + "'>";
-          /*execute a function when someone clicks on the item value (DIV element):*/
-          b.addEventListener("click", function(e) {
-              /*insert the value for the autocomplete text field:*/
-              inp.value = this.getElementsByTagName("input")[0].value;
-
-                            $("#freequantity").val(this.getElementsByTagName("input")[2].value);
-                            $("#expdate").val(this.getElementsByTagName("input")[3].value);
-                            $("#batchno").val(this.getElementsByTagName("input")[4].value);
-                             $("#cpsno").val(this.getElementsByTagName("input")[5].value);
-
-          });
-          a.appendChild(b);
-        }
-      }
-
-                      },
-                      errors: function(e) {
-                      alert(e);
-                      }
-                    })
-
-  });
-
-  /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "autocomplete-list");
-      if (x) x = x.getElementsByTagName("div");
-      if (e.keyCode == 40) {
-        /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
-        currentFocus++;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 38) { //up
-        /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
-        currentFocus--;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        e.preventDefault();
-        if (currentFocus > -1) {
-          /*and simulate a click on the "active" item:*/
-          if (x) x[currentFocus].click();
-        }
-      }
-  });
-
-
-
-  function addActive(x) {
-    /*a function to classify an item as "active":*/
-    if (!x) return false;
-    /*start by removing the "active" class on all items:*/
-    removeActive(x);
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-    alert(x[currentFocus]);
-    /*add class "autocomplete-active":*/
-    x[currentFocus].classList.add("autocomplete-active");
-  }
-  function removeActive(x) {
-    /*a function to remove the "active" class from all autocomplete items:*/
-    for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("autocomplete-active");
-    }
-  }
-  function closeAllLists(elmnt) {
-    /*close all autocomplete lists in the document,
-    except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
-        x[i].parentNode.removeChild(x[i]);
-      }
-    }
-  }
-  /*execute a function when someone clicks in the document:*/
-  document.addEventListener("click", function (e) {
-      closeAllLists(e.target);
-  });
-}
 </script>
 {% endblock %}
