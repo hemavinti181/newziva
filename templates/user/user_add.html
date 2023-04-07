@@ -81,7 +81,7 @@
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
 													<input type="hidden" name="warehousename" id="warehousename" />
 												<select class="form-control" name="warehouse" id="warehouse" style="display: none;">
-														<option> Warehouse</option>
+														<option> selct warehouse</option>
 													{% for data in data %}
 														{% if  data.status == "Active" %}
 														<option  value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
@@ -145,12 +145,19 @@ $("#busstation").change(function() {
 });
 document.getElementById("role").addEventListener("change", function() {
 var val=$(this).find(":selected").text();
-  if (val === "Marketing Executive" || val === "Admin" || val === "Bus Station") {
+  if (val === "Admin" || val === "Bus Station") {
     document.getElementById("warehouse").style.display = "block";
     document.getElementById("region").style.display = "block";
     document.getElementById("depo").style.display = "block";
     document.getElementById("busstation").style.display = "block";
   }
+  else if (val === "Marketing Executive" ){
+		document.getElementById("warehouse").style.display = "block";
+        document.getElementById("region").style.display = "block";
+        document.getElementById("depo").style.display = "none";
+    	document.getElementById("busstation").style.display = "none";
+    }
+
   else if(val === "Depo" ) {
 	document.getElementById("warehouse").style.display = "block";
     document.getElementById("region").style.display = "block";

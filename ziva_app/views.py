@@ -2599,9 +2599,7 @@ def grn_verified_status(request):
 
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
-    print(data)
     grn_list = data['grnlist']
-
     return render(request, 'grn/grn_list_verified.html', {'all_data': grn_list})
 
 
@@ -3057,13 +3055,15 @@ def deliver_challan(request):
         data = response.json()
         vehicals = data['vehicleslist']
         if request.method == 'POST':
+            date = request.POST.get('date')
             accesskey = request.session['accesskey']
             url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
 
             payload = json.dumps({
                 "accesskey": accesskey,
                 "date":request.POST.get('date'),
-                "busstation":request.POST.get('busstationname1')
+                "busstation":request.POST.get('busstationname1'),
+                "type":"Pending"
             })
             headers = {
                 'Content-Type': 'application/json'
@@ -3073,14 +3073,113 @@ def deliver_challan(request):
             if response.status_code == 200:
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
-                return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1,'vehicals':vehicals})
+                return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1,'vehicals':vehicals,'date':date,'status':'Delivery Pending','status':'Delivery Pending'})
             else:
-                return render(request, 'deliverychallan/deliverychallan.html',{'data1':data1,'vehicals':vehicals})
-        return render(request, 'deliverychallan/deliverychallan.html',{"data1":data1,'vehicals':vehicals})
+                return render(request, 'deliverychallan/deliverychallan.html', {'data1': data1, 'vehicals': vehicals,'date':date,'status':'Delivery Pending','status':'Delivery Pending'})
+        else:
+
+                url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "busstation": "All",
+                    "date": "All",
+                    "type": "Pending"
+                })
+                headers = {
+                    'Content-Type': 'application/json'
+                }
+
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    deliv_challan = data['deliverypendinglist']
+                    return render(request, 'deliverychallan/deliverychallan.html',
+                                  {"all_data": deliv_challan, 'data1': data1, 'vehicals': vehicals})
+                else:
+                    return render(request, 'deliverychallan/deliverychallan.html',{'data1':data1,'vehicals':vehicals})
+
     except:
         messages.error(request,response.text)
     return render(request, 'deliverychallan/deliverychallan.html')
+def deliver_challan_approve(request):
+    try:
+        accesskey = request.session['accesskey']
+        regionid = request.session['regionid']
+        deponame = request.session['depoid']
+        warehousename = request.session['warehousename']
+        url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
 
+        payload = json.dumps({"accesskey": accesskey, "type": "Bus Station",
+                              "warehousename": warehousename,
+                              "regionid": regionid,
+                              "depoid": deponame})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        data1 = data['dropdownlist']
+        url = "http://13.235.112.1/ziva/mobile-api/vehicle-dropdownlist.php"
+        payload = json.dumps({
+
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        vehicals = data['vehicleslist']
+        if request.method == 'POST':
+            date = request.POST.get('date')
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
+
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "date": request.POST.get('date'),
+                "busstation": request.POST.get('busstationname1'),
+                "type": "Approve"
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                deliv_challan = data['deliverypendinglist']
+                return render(request, 'deliverychallan/deliverychallan.html',
+                              {"all_data": deliv_challan, 'data1': data1, 'vehicals': vehicals, 'date': date})
+            else:
+                return render(request, 'deliverychallan/deliverychallan.html',
+                              {'data1': data1, 'vehicals': vehicals, 'date': date})
+        else:
+
+            url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "busstation": "All",
+                "date": "All",
+                "type": "Approve"
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                deliv_challan = data['deliverypendinglist']
+                return render(request, 'deliverychallan/deliverychallan.html',
+                              {"all_data": deliv_challan, 'data1': data1, 'vehicals': vehicals})
+            else:
+                return render(request, 'deliverychallan/deliverychallan.html', {'data1': data1, 'vehicals': vehicals})
+
+    except:
+        messages.error(request, response.text)
+    return render(request, 'deliverychallan/deliverychallan.html')
 def deliver_challan_status(request):
 
     accesskey = request.session['accesskey']

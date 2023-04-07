@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Sales List</b></h3>
+                <h3 style="color:#1372ba"><b>Sales Approve  List</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -36,7 +36,7 @@
 							</div>
 						<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Select Date</label>
-									<input class="form-control" type="date" name="date" id="getdate" required>
+									<input class="form-control" type="date" name="date" id="getdate" value="{{ date }}" required>
 							</div>
 
                                <div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -79,7 +79,7 @@
                         </tr>
                       </thead>
                             {% for all_data in all_data %}
-                                {%  if all_data.status == "Delivery Pending" %}
+
 
                                     <tr class="row-select">
                                         <td class="id">{{ all_data.id }}</td>
@@ -93,11 +93,17 @@
                                     <td>{{ all_data.delivery_date }}</td>
                                         <td>{{ all_data.itemcount }}</td>
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
+                                        {% if all_data.status == "Delivery Pending" %}
                                         <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> PENDING </span></a>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> {{ all_data.status }} </span></a>
                                          </td>
+                                        {% else %}
+                                         <td>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge bg-green"> {{ all_data.status }} </span></a>
+                                         </td>
+                                        {% endif %}
                                     </tr>
-                                {% endif %}
+
                       {% endfor %}
                       <tbody>
                       </tbody>
@@ -112,6 +118,12 @@
             </div>
           </div>
 </div>
+  <div class="inner-fabs">
+
+                                  <div class="fab bg-green round" id="fab3"><a href="deliver_challan_approve"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="deliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
@@ -174,6 +186,7 @@ $("#vehicaldetails").val("");
 $("#remarks").val("");
 }
  $('#getdate').val(new Date().toJSON().slice(0,10));
+
  $(document).ready(function() {
 
   $('.btnSubmit').click(function() {
