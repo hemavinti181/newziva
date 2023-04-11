@@ -24,11 +24,11 @@
 					<div class="row filter-row">
                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">From Date</label>
-									<input class="form-control" type="date" name="fdate" id="fdate" required>
+									<input class="form-control" type="date" name="fdate" id="fdate" value="{{ fdate }}" required>
 							</div>
 						<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">To Date</label>
-									<input class="form-control" type="date" name="tdate" id="tdate" required>
+									<input class="form-control" type="date" name="tdate" id="tdate" value="{{ tdate }}" required>
 							</div>
 
                                <div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -84,7 +84,6 @@
 
 
 <script>
-    $('#tdate').val(new Date().toJSON().slice(0,10));
-          $('#fdate').val(new Date().toJSON().slice(0,10));
+
 </script>
 {% endblock %}

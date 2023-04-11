@@ -28,11 +28,12 @@
 								     <input type="hidden" name="busstationname1" id="busstationname1" />
 
 												<select class="form-control" name="busstationid1" id="busstationid1">
-                                                    <option value=" ">select bus stations</option>
+                                                    <option value=" ">All</option>
                                                     {% for data1 in data1 %}
 													    <option value="{{data1.id }}">{{ data1.name }}</option>
                                                     {% endfor %}
 												</select>
+                                <div id="selected-value"></div>
 							</div>
 						<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Select Date</label>
@@ -40,7 +41,7 @@
 							</div>
 
                                <div class="col-md-3 col-sm-3  form-group has-feedback">
-                                           <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
                          <div class="col-md-2 col-sm-2 form-group has-feedback">
@@ -64,7 +65,7 @@
   </colgroup>
                       <thead>
                         <tr>
-                                    <th></th>
+                                   <th></th>
                                     <th class="btnSelectAll"><input type="checkbox" /></th>
                                     <th>S NO</th>
                                     <th>Bus Station</th>
@@ -82,7 +83,7 @@
 
 
                                     <tr class="row-select">
-                                        <td class="id">{{ all_data.id }}</td>
+                                     <td class="id">{{ all_data.id }}</td>
                                         <td class="check"><input type="checkbox" name="language"/></td>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ all_data.bus_station }}</td>
@@ -175,8 +176,11 @@
 <script>
 
 $("#busstationid1").change(function() {
-  var selectedOptionText = $(this).find(":selected").text();
-  $("#busstationname1").val(selectedOptionText);
+    var selectedOptionText = $(this).find(":selected").text();
+    $("#busstationname1").val(selectedOptionText);
+    console.log($('#busstationid1 :selected').text());
+
+
 });
 
     function VerifyClick(){
@@ -185,7 +189,6 @@ $("#agentno").val("");
 $("#vehicaldetails").val("");
 $("#remarks").val("");
 }
- $('#getdate').val(new Date().toJSON().slice(0,10));
 
  $(document).ready(function() {
 
@@ -202,10 +205,14 @@ $("#remarks").val("");
     $('.row-select input').each(function() {
       $(this).prop('checked', true);
     })
-
   })
-
 })
+$(document).ready(function(){
+  $('#button1').click(function(){
+  console.log($('#busstationid1 :selected').text());
+   });
+});
+
  </script>
 {% endblock %}
 

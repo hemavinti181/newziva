@@ -112,7 +112,7 @@
                                         </form>
                 </div>
                 </div>
-                 <div class="x_panel">
+                 <div class="x_panel saleitem">
                      <div class="x_content">
                                    <form class="form-label-left input_mask"  method="POST" action="sales_item_add"   enctype="multipart/form-data">
 										{% csrf_token %}
@@ -171,11 +171,11 @@
                                      </div>
               </div>
               </div>
-              <div class="x_panel">
-
-                  <div class="clearfix"></div>
-                <div class="x_content">
-                  <div class="row">
+            </div>
+                 <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
                           <div class="col-sm-12">
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
@@ -209,8 +209,8 @@
                            <td>{{all_data.manufacturer}}</td>
 
                        <td>
-                            <a href="delete_sale_item/{{ all_data.id }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                            <a class="edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><i class="fa fa-pencil"></i></a>
+                            <a href="delete_sale_item/{{ all_data.id }}/"><i class="fa fa-trash"></i></a>
+                            <a class="edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><i class="fa fa-edit"></i></a>
                        </td>
                             </tbody>
                            <!--<tfoot>
@@ -232,8 +232,9 @@
                             </div>
                           <p class="text-muted font-13 m-b-30">
                     </p>
-                   <div class="x_panel">
-                     <div class="x_content">
+
+
+                     <div class="x_content saleslist">
                                 <div class="col-sm-6 invoice-col">
                             <h6 style="color:black"><b>Invoice No : </b><b class="text-info">{{ taxinvoice }}</b></h6>
                                 </div>
@@ -248,7 +249,7 @@
                             </div>
                           </div>
                                 </div>
-                              </div>
+
                   </div>
                 </div>
                 </div>
@@ -542,8 +543,7 @@ function editSale(id){
             $("#nbottles1").val(val2);
             $("#price1").val(val3);
          });
-          $('#todate').val(new Date().toJSON().slice(0,10));
-          $('#todate1').val(new Date().toJSON().slice(0,10));
+$('#todate').val(new Date().toJSON().slice(0,10));
 </script>
 
 {% endblock %}
