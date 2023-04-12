@@ -49,7 +49,7 @@
                       </li>
                     </ul>
                        <div class="tab-content" id="myTabContent">
-                      <div class="tab-pane fade show {{ des }}" id="category_add" role="tabpanel" aria-labelledby="des-tab">
+                      <div class="tab-pane fade show " id="category_add" role="tabpanel" aria-labelledby="des-tab">
                             <form class="form-label-left input_mask"  method="POST" action="des_add"   enctype="multipart/form-data">
 										{% csrf_token %}
                             <div class="col-md-4 col-sm-4  form-group has-feedback">
@@ -73,7 +73,7 @@
 										</div>
                             </form>
                         </div>
-                           <div class="tab-pane fade show {{ role }}" id="role" role="tabpanel" aria-labelledby="role-tab">
+                           <div class="tab-pane fade show {{ des }}" id="role" role="tabpanel" aria-labelledby="role-tab">
                               <form class="form-label-left input_mask"  method="POST" action="role"  enctype="multipart/form-data">
 										{% csrf_token %}
                                 <div class="col-md-4 col-sm-4  form-group has-feedback">

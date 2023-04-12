@@ -206,6 +206,13 @@ $("#remarks").val("");
       $(this).prop('checked', true);
     })
   })
+   $('.btnSelectAll').click(function() {
+        if ($('.btnSelectAll').is(':checked')) {
+        $('.row-select input').each(function() {
+            $(this).prop('checked', false);
+        })
+    }
+   })
 })
 $(document).ready(function(){
   $('#button1').click(function(){
