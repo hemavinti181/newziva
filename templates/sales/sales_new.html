@@ -11,15 +11,13 @@
 	width: 100% !important;
 	 right: 20px;
 	}
-
-	</style>
+</style>
  <div class="right_col" role="main">
         <div class="">
           <div class="page-title">
             <div class="title_left">
               <h3 style="color:#1372ba"><b>Proforma Invoice</b></h3>
             </div>
-
            <!-- <div class="title_right">
               <div class="col-md-6 col-sm-9 offset-md-9">
 					<a href="sales_item_add"><button type="submit" class="btn btn-success">Add Item</button></a>
@@ -60,10 +58,11 @@
                                                     {% else %}
                                                      <input type="hidden" name="deponame" id="deponame" />
                                                     <select class="form-control" name="depoid" id="depoid">
-                                                      <option value="" >depot </option>
+                                                      <option value="">depot </option>
                                                         {% for data in data %}
                                                            <option value="{{ data.id }}">{{ data.name }} </option>
                                                         {% endfor %}
+
 												    </select>
                                                     {% endif %}
                                                 </div>
@@ -224,8 +223,6 @@
                            </tfoot>-->
                       </tr>
                       {% endfor %}
-
-
                       <tbody>
                       </tbody>
                       </table>
@@ -533,8 +530,8 @@ function editSale(id){
 					}
              	}
         	});
-    	});
-    	$('#quantity1').on('input', function()  {
+    });
+    $('#quantity1').on('input', function()  {
     	    val  = $("#quantity1").val();
             val1 = $("#cases1").val();
             mrp2 = $("#mrp1").val( );
@@ -542,8 +539,7 @@ function editSale(id){
             val3 = (val2 * mrp2)
             $("#nbottles1").val(val2);
             $("#price1").val(val3);
-         });
+    });
 $('#todate').val(new Date().toJSON().slice(0,10));
 </script>
-
 {% endblock %}

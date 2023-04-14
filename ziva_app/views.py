@@ -2746,7 +2746,6 @@ def proformainvoice(request):
                 stname = request.POST.get('stname')
                 stid = request.POST.get('stid')
                 request.session['stid'] = stid
-
                 request.session['storename']=stname
                 deponame =  request.POST.get('deponame')
                 depoid = request.POST.get('depoid')
@@ -3060,6 +3059,8 @@ def deliver_challan(request):
             date = request.POST.get('date')
             accesskey = request.session['accesskey']
             busstation = request.POST.get('busstationname1')
+            busstationid1 =request.POST.get('busstationid')
+
             url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
 
             payload = json.dumps({
@@ -3076,9 +3077,9 @@ def deliver_challan(request):
             if response.status_code == 200:
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
-                return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1,'vehicals':vehicals,'date':date,'status':'Delivery Pending','status':'Delivery Pending','busstation':busstation})
+                return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1,'vehicals':vehicals,'date':date,'status':'Delivery Pending','status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1})
             else:
-                return render(request, 'deliverychallan/deliverychallan.html', {'data1': data1, 'vehicals': vehicals,'date':date,'status':'Delivery Pending','status':'Delivery Pending','busstation':busstation})
+                return render(request, 'deliverychallan/deliverychallan.html', {'data1': data1, 'vehicals': vehicals,'date':date,'status':'Delivery Pending','status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1})
         else:
 
                 url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
