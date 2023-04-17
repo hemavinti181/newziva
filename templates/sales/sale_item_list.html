@@ -35,7 +35,7 @@
                                     <th>Batch</th>
                                     <th>Total</th>
                                     <th>Manufacture</th>
-                                    <!--<th>Action</th>-->
+                                    <th>Action</th>
                         </tr>
                       </thead>
                             {% for all_data in all_data %}
@@ -50,9 +50,9 @@
                        <td class="text-success">₹ {{ all_data.total }}</td>
                            <td>{{all_data.manufacturer}}</td>
 
-                      <!-- <td>
-                           <a href="item_add" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                       </td>-->
+                      <td>
+                          <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}',{{ all_data.noofbottles }},{{ all_data.id }})"  data-target="#bs-example-modal-sm">Quantity Update</span>
+                       </td>
                       </tr>
                       {% endfor %}
 
@@ -69,6 +69,69 @@
             </div>
           </div>
 </div>
+<div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content style">
+                                                  <div class="modal-header">
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Payment</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+                                        <div class="modal-body">
+                                             <form method="post" action="/deliver_challan_item_update">
+                                                    {% csrf_token %}
+                                            <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+                                                 <input type="hidden" id="mrp" name="mrp"  />
+                                                   <input type="hidden" id="sno" name="sno"  />
+                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                        <label>Quantity (In CaseS)</label>
+										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
+                                            </div>
+                                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                         <label>Number Of Botteles</label>
+										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob">
+                                            </div>
+                                            <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                <label>Total Price</label>
+										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" >
+										    </div>
+                                                <input type="hidden" name="cases" id="cases" />
 
+                                            <div class="col-md-6 col-sm-6  offset-md-4">
+                                                  <button type="submit" class="btn btn-info">Update Payment</button>
+                                            </div>
+                                             </form>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+<script>
+function VerifyClick(id,id1,id2,id3,id4,id5,id6){
+$("#qty").val(id1);
+$("#nob").val(id5);
+$("#price").val(id2);
+$("#txtHdnId").val(id);
+$("#cases").val(id3)
+$("#mrp").val(id4)
+$("#sno").val(id6)
+}
+        $('#qty').on('input', function()  {
+            $("#nob").val(" ");
+            $("#price").val(" ");
+    	    val  = $("#qty").val();
+            val1 = $("#cases").val();
+            mrp = $("#mrp").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp)
+            $("#nob").val(val2);
+            $("#price").val(" ");
+            $("#price").val(val3);
+
+         });
+</script>
 {% endblock %}
+
 

@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Designation List</b></h3>
+                <h3 style="color:#1372ba"><b>Price List</b></h3>
               </div>
 
               <div class="title_right">
@@ -26,7 +26,9 @@
                         <tr>
 
                                      <th>S No</th>
-                                    <th>Designation</th>
+                                    <th>Region</th>
+                                    <th>Item Name</th>
+                                    <th>MRP</th>
                                     <th>Status</th>
                         </tr>
                       </thead>
@@ -34,11 +36,13 @@
                             {% for data in all_data %}
                                 <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td> {{ data.displayname }} </td>
+                                <td> {{ data.region_name }} </td>
+                                    <td>{{ data.item_name }}</td>
+                                    <td>{{ data.mrp }}</td>
                                <td>
                                       {% if data.status == "Active" %}
 
-                                         <a class="editstore" href="#"  data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
+                                         <a class="editstore" href="#" onclick="editDepo('{{ data.sno }}')"  data-id="{{  data.sno }}"><i class="fa fa-edit"></i></a>
 
                                           <a href="#" onclick="VerifyClick('{{ data.sno }}','Inactive')"><span class="badge badge-success" data-toggle="modal" data-target="#des-status1">
                                           Active</span></a>
@@ -63,7 +67,7 @@
 </div>
 
  <div class="inner-fabs">
-                                 <div class="fab bg-green white round" id="fab3"><a href="des_list"><i class="fa fa-outdent" style="color:#fff;"></i></a> <span class="tooltiptext" style="margin-left: -182px !important;">Designation List</span></div>
+                                 <div class="fab bg-green white round" id="fab3"><a href="des_list"><i class="fa fa-outdent" style="color:#fff;"></i></a> <span class="tooltiptext" style="margin-left: -182px !important;">Price List</span></div>
                                  <div class="fab bg-blue round" id="fab2"><a href="role_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Role List</span></div>
                                  <div class="fab bg-orange round" id="fab4"><a href="level_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" >Level List</span></div>
                                  <div class="fab bg-blue-sky round" id="fab5"><a href="city_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">City List</span></div>
@@ -76,7 +80,7 @@
                                 <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
                         </div>
               </div>
-<div class="modal custom-modal fade" id="des-status1" role="dialog">
+<div class="modal custom-modal fade" id="des-edit" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-body">
@@ -138,6 +142,60 @@
 						</div>
 					</div>
 				</div>
+
+<div class="modal custom-modal fade" id="des-status1" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								  <form method="post" action="des_status_inactive">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Edit Price</h3>
+								</div>
+								   <div  class="col-md-12 col-sm-12 form-group has-feedback">
+
+													<label>Select Region *</label>
+											<input type="hidden" name="regionnmae" id="regionnmae" />
+												<select class="form-control" name="regionid" id="regionid">
+                                                    <option>select region</option>
+													{% for data1 in regionlist %}
+                                                       {% if data1.status == 'Active' %}
+                            							<option value="{{ data1.regionid }}">{{ data1.regionname }}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+                                 <div  class="col-md-12 col-sm-12 form-group has-feedback">
+
+													<label>Select Item *</label>
+											<input type="hidden" name="itemname" id="itemname" />
+												<select class="form-control" name="itemid" id="itemid">
+                                                    <option>select item</option>
+													{% for data1 in item_masterlist %}
+                                                       {% if data1.status == 'Active' %}
+                            							<option value="{{ data1.itemcode }}">{{ data1.itemname }}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                <label>Add Amount</label>
+                                    <input type="text" class="form-control" placeholder="enter amount" name="amount">
+                            </div>
+                                      </div>
+                                          <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 <script>
 
  function VerifyClick(id,status){
@@ -148,6 +206,34 @@ function VerifyClick1(id,status1){
 $("#id1").val(id);
 $("#status1").val(status1);
 }
+function editDepo(id){
+      $.ajax({
+        url: "{% url 'get_price' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data.pricelist
+
+          	console.log(obj[0].region_name);
+             if(obj){
+             $("#depoid").val(obj[0].region_code);
+             $("#deponame1").val(obj[0].region_name);
+             $("#depomanager1").val(obj[0].item_name);
+             $("#mobileno1").val(obj[0].item_code);
+             $("#gstnumber1").val(obj[0].mrp);
+             $("#whname").val(obj[0].warehouse);
+             $("#license1").val(obj[0].licenseno);
+             $("#whid").val(obj[0].warehouseid);
+             $("#regionid1").val(obj[0].regionid);
+             $("#regn").val(obj[0].regionname);
+             $("#address1").val(obj[0].address);
+             $('#depo-edit').modal('show');
+        	}
+        }
+      });
+  }
 </script>
 {% endblock %}
 

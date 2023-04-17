@@ -10,6 +10,10 @@
 
     <title>Ziva</title>
 
+    	<!-- CSS -->
+		<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+			<!-- Default theme -->
+		<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
     <!-- Bootstrap -->
     <link href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel='stylesheet'>
     <!-- Font Awesome -->
@@ -102,3 +106,24 @@
     </div>
   </body>
 </html>
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script>
+  {% for data in messages %}
+		var a = 'alert-success';
+		var b ='{{ data.tags }}';
+
+		if(b==a){
+			alertify.set('notifier','position', 'top-center');
+
+			alertify.success('{{ data }}');
+
+}else{
+
+				alertify.set('notifier','position', 'top-center');
+
+				alertify.error(' {{ data }}');
+
+		}
+	{% endfor %}
+
+</script>

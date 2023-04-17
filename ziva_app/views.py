@@ -31,6 +31,19 @@ class BytesEncoder(json.JSONEncoder):
 
 @login_required
 def index(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+
+    data1 = data['dashboardlist']
     return render(request, 'base.html')
 
 
@@ -75,10 +88,10 @@ def login(request):
             try:
                 data = response.json()
                 messages.error(request, data['message'])
-                return render(request,'login.html')
+
             except:
                 messages.error(request,response.text)
-                return render(request, 'login.html')
+            return redirect('/login')
     return render(request, 'login.html')
 
 def logout(request):
@@ -671,14 +684,39 @@ def item_status_inactive(request):
 
 def des_add(request):
     accesskey = request.session['accesskey']
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        regionlist = data['regionlist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        item_masterlist = data['itemmasterlist']
+
     if request.method == 'POST':
 
-        url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
+        url = "http://13.235.112.1/ziva/mobile-api/addpricemaster.php"
 
         payload = {
             "accesskey":accesskey,
-            "type": "DESIGNATION",
-            "value": request.POST.get('designation'),
+            "regionname":  request.POST.get('regionnmae'),
+            "regioncode":  request.POST.get('regionid'),
+            "itemcode":  request.POST.get('itemid'),
+            "itemname":  request.POST.get('itemname'),
+            "mrp":  request.POST.get('amount'),
         }
         headers = {
             'Content-Type': 'text/plain'
@@ -695,8 +733,8 @@ def des_add(request):
                 messages.error(request, r['message'])
             except:
                 messages.error(request, response.text)
-        return render(request, 'category_master/df.html',{'des':'active'})
-    return render(request, 'category_master/df.html',{'des':'active'})
+        return render(request, 'category_master/df.html',{'des':'active','regionlist':regionlist,'item_masterlist':item_masterlist})
+    return render(request, 'category_master/df.html',{'des':'active','regionlist':regionlist,'item_masterlist':item_masterlist})
 
 
 def role(request):
@@ -1105,7 +1143,7 @@ def category_list(request):
 
 def des_list(request):
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
+    url = "http://13.235.112.1/ziva/mobile-api/price-list.php"
 
     payload = json.dumps({"accesskey":accesskey,   "name":"DESIGNATION"})
     headers = {
@@ -1115,7 +1153,7 @@ def des_list(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = response.json()
-        des_list = data['itemmasterlist']
+        des_list = data['pricelist']
         return render(request, 'category_master/des_list.html', {"all_data": des_list})
     else:
         try:
@@ -1239,6 +1277,23 @@ def uom_status_inactive(request):
         except:
             messages.error(request, response.text)
         return redirect('/uom_list')
+
+def get_price(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/price-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    data = response.json()
+    return JsonResponse({'data':data})
 
 def role_status_inactive(request):
     accesskey = request.session['accesskey']
@@ -3220,9 +3275,8 @@ def deliver_challan_update(request):
     payload = json.dumps({
         "accesskey":accesskey,
         "sonumber":request.POST.get('txtHdnId'),
-        "qty":request.POST.get('qty'),
-        "noofbottles":request.POST.get('nob'),
-        "price":request.POST.get('price')
+        "paymentmode":request.POST.get('paymenttype'),
+
     })
     headers = {
         'Content-Type': 'application/json'
@@ -3236,6 +3290,33 @@ def deliver_challan_update(request):
         data = response.json()
         messages.error(request, data['message'])
         return redirect('sales_list')
+
+def deliver_challan_item_update(request):
+    accesskey = request.session['accesskey']
+    id=request.POST.get('txtHdnId')
+    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-itemqtyupdate.php"
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sonumber":id,
+        "qty": request.POST.get('qty'),
+        "uom": request.POST.get('cases'),
+        "mrp": request.POST.get('mrp'),
+        "sno": request.POST.get('sno')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        url = reverse('sales_item_list_pending', args=[id])
+        return redirect(url)
+    else:
+        data = response.json()
+        messages.error(request, data['message'])
+        url = reverse('sales_item_list_pending', args=[id])
+        return redirect(url)
 
 
 def create_indent(request):
@@ -4778,8 +4859,7 @@ def bus_add(request):
                     messages.error(request, data['message'])
                     return redirect('/bus_list')
     return render(request,'busstation/bus_add.html',{'data':depolist})
-def \
-        get_bus(request):
+def  get_bus(request):
 
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/bus-search.php"
