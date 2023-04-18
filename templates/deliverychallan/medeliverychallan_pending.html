@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Sales Approve  List</b></h3>
+                <h3 style="color:#1372ba"><b>Sales   List</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -19,20 +19,29 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  method="POST" action="deliver_challan"  enctype="multipart/form-data">
+						<form  method="POST" action="medeliver_challan_pending"  enctype="multipart/form-data">
 									{% csrf_token %}
-					<div class="row filter-row">
+
+
                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
-									<label class="focus-label">Bus Station</label>
-								     <input type="hidden" name="busstationname1" id="busstationname1" />
-                                         <input type="hidden" name="busstation1" id="busstation1" value="{{ busstationid1 }}" />
-												<select class="form-control" name="busstationid" id="busstationid1" >
+									<label class="focus-label">Depot</label>
+								     <input type="hidden" name="depotname" id="depotname" />
+                                         <input type="hidden" name="depotname1" id="depotname1" value="{{ depo }}" />
+												<select class="form-control" name="depoid" id="depoid" >
                                                      <option value=" ">All</option>
                                                     {% for data1 in data1 %}
 													    <option value="{{data1.id }}">{{ data1.name }}</option>
                                                     {% endfor %}
 												</select>
-                                <div id="selected-value"></div>
+							</div>
+
+                        	<div class="col-sm-3 col-md-3 form-group has-feedback">
+								    <label> Bus Station</label>
+                                <input type="hidden" name="busstation1" id="busstation1" value="{{ busstation }}" />
+											 <input type="hidden" name="busstationname" id="busstationname" />
+												<select class="form-control" name="busstationid" id="busstationid">
+													<option value=""> All </option>
+												</select>
 							</div>
 
 						<div class="col-sm-3 col-md-3 form-group has-feedback">
@@ -46,10 +55,6 @@
                         </form>
 
 
-                         <div class="col-md-2 col-sm-2 form-group has-feedback">
-                 <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick()" data-toggle="modal" data-target="#bs-example-modal-sm">  Delivery challan </span>
-
-                </div>
 						</div>
                 <div class="x_panel">
                     <div class="clearfix"></div>
@@ -67,8 +72,7 @@
   </colgroup>
                       <thead>
                         <tr>
-                                   <th></th>
-                                    <th><input type="checkbox" class="btnSelectAll" /></th>
+                                        <th></th>
                                     <th>S NO</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
@@ -83,9 +87,8 @@
                       </thead>
 
                             {% for all_data in all_data %}
-                                    <tr class="row-select">
-                                     <td class="id">{{ all_data.id }}</td>
-                                        <td><input type="checkbox"  name="language"/></td>
+                                    <tr>
+                                        <th></th>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ all_data.bus_station }}</td>
                                     <td>{{ all_data.storename }}</td>
@@ -95,15 +98,11 @@
                                     <td>{{ all_data.delivery_date }}</td>
                                         <td>{{ all_data.itemcount }}</td>
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
-                                        {% if all_data.status == "Delivery Pending" %}
-                                        <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> {{ all_data.status }} </span></a>
-                                         </td>
-                                        {% else %}
+
                                          <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge bg-green"> {{ all_data.status }} </span></a>
+                                            <a href="medeliver_challan/{{ all_data.sonumber }}/"><span class="badge badge-warning"> {{ all_data.status }} </span></a>
                                          </td>
-                                        {% endif %}
+
                                     </tr>
 
 
@@ -124,8 +123,8 @@
 </div>
   <div class="inner-fabs">
 
-                                  <div class="fab bg-green round" id="fab3"><a href="deliver_challan_approve"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
-                                 <div class="fab bg-yellow round" id="fab2"><a href="deliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                                  <div class="fab bg-green round" id="fab3"><a href="medeliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="medeliver_challan_pending"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
                               </div>
                                <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
@@ -179,34 +178,45 @@
 
 <script>
 
-$("#busstationid1").change(function() {
+$("#busstationid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
-    $("#busstationname1").val(selectedOptionText);
+    $("#busstationname").val(selectedOptionText);
 });
 
-function VerifyClick(){
-$("#name").val("");
-$("#agentno").val("");
-$("#vehicaldetails").val("");
-$("#remarks").val("");
-}
+$("#depoid").change(function() {
+    var selectedOptionText = $(this).find(":selected").text();
+    $("#depotname").val(selectedOptionText);
+});
 
- $(document).ready(function() {
-  $('.btnSubmit').click(function() {
-    var arr = [];
-  $('.row-select input:checked').each(function(){
-   id=$(this).closest('tr').find('.id').html();
-     arr.push(id);
-     $('#txtHdnId1').val(arr);
-    })
-  })
- $(".btnSelectAll").click(function() {
-    $("tbody td input[type=checkbox]").prop("checked", this.checked);
-    })
+
+	$("#depoid").change(function() {
+
+        	var depo = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_salebus" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid").empty();
+			 		$("#busstationid").append("<option  value=''>All</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$(document).ready(function(){
+  var optionValue = $("#busstation1").val();
+  $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
 $(document).ready(function(){
-  var optionValue = $("#busstation1").val();
-  $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
+  var optionValue = $("#depotname1").val();
+  $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
  </script>
 {% endblock %}

@@ -45,11 +45,6 @@
                                        </div>
                         </form>
 
-
-                         <div class="col-md-2 col-sm-2 form-group has-feedback">
-                 <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick()" data-toggle="modal" data-target="#bs-example-modal-sm">  Delivery challan </span>
-
-                </div>
 						</div>
                 <div class="x_panel">
                     <div class="clearfix"></div>
@@ -68,7 +63,6 @@
                       <thead>
                         <tr>
                                    <th></th>
-                                    <th><input type="checkbox" class="btnSelectAll" /></th>
                                     <th>S NO</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
@@ -84,8 +78,7 @@
 
                             {% for all_data in all_data %}
                                     <tr class="row-select">
-                                     <td class="id">{{ all_data.id }}</td>
-                                        <td><input type="checkbox"  name="language"/></td>
+                                     <td></td>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ all_data.bus_station }}</td>
                                     <td>{{ all_data.storename }}</td>
@@ -184,26 +177,7 @@ $("#busstationid1").change(function() {
     $("#busstationname1").val(selectedOptionText);
 });
 
-function VerifyClick(){
-$("#name").val("");
-$("#agentno").val("");
-$("#vehicaldetails").val("");
-$("#remarks").val("");
-}
 
- $(document).ready(function() {
-  $('.btnSubmit').click(function() {
-    var arr = [];
-  $('.row-select input:checked').each(function(){
-   id=$(this).closest('tr').find('.id').html();
-     arr.push(id);
-     $('#txtHdnId1').val(arr);
-    })
-  })
- $(".btnSelectAll").click(function() {
-    $("tbody td input[type=checkbox]").prop("checked", this.checked);
-    })
-})
 $(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);

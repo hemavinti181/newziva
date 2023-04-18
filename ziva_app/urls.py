@@ -158,7 +158,8 @@ urlpatterns = [
     path('edit_sale_item',views.edit_sale_item,name='edit_sale_item'),
     path('deliver_challan_approve',views.deliver_challan_approve,name='deliver_challan_approve'),
     path('get_price',views.get_price,name='get_price'),
-    path('deliver_challan_item_update',views.deliver_challan_item_update,name='deliver_challan_item_update')
-
-
+    path('deliver_challan_item_update',views.deliver_challan_item_update,name='deliver_challan_item_update'),
+    path('medeliver_challan',views.medeliver_challan,name='medeliver_challan'),
+    path('get_salebus',views.get_salebus,name='get_salebus'),
+    path('medeliver_challan_pending',views.medeliver_challan_pending,name='medeliver_challan_pending')
 ]

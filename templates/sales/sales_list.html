@@ -22,7 +22,21 @@
             </div>
               </div>
             <div class="clearfix"></div>
-
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                               			<!-- Search Filter -->
+						<form  method="POST" action="sales_list"  enctype="multipart/form-data">
+									{% csrf_token %}
+                            <div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">Select Delivery Date</label>
+									<input class="form-control" type="date" name="date" placeholder="Select Delivery Date" id="getdate" value="{{ date }}" required>
+							</div>
+                             <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>
+                        </form>
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
@@ -62,11 +76,17 @@
                         <td>{{ all_data.delivery_date }}</td>
                        <td>{{ all_data.itemcount }}</td>
                              <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
+                           {% if all_data.status == "Approved" %}
                                 <td>
                                    <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-success">{{ all_data.status }} </span></a>
                                       <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">Update</span>
 
                                 </td>
+                           {% else %}
+                            <td>
+                                 <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge bg-green">{{ all_data.status }} </span></a>
+                            </td>
+                           {% endif %}
 
                       </tr>
                       {% endfor %}
@@ -101,6 +121,7 @@
                                         <div class="modal-body">
                                              <form method="post" action="deliver_challan_update">
                                                     {% csrf_token %}
+                                                  <input type="hidden" id="txtHdnId" name="txtHdnId"  />
                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                          <label><h4><b>Payment Mode</b></h4></label>
                                                  </div>
@@ -131,6 +152,12 @@
                                         </div>
                                     </div>
                                 </div>
+ <div class="inner-fabs">
+
+                                  <div class="fab bg-green round" id="fab3"><a href="sales_list_outpass"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -145px !important;">Tax Invoice</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="sales_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <script>
 function VerifyClick(id,id1,id2,id3,id4){
 $("#qty").val(id1);

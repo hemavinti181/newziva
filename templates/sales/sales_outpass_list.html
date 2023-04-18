@@ -106,27 +106,12 @@
                                         </div>
                                     </div>
                                 </div>
-<script>
-    let fab1 = document.getElementById('fab1');
-let innerFabs = document.getElementsByClassName('inner-fabs')[0];
+<div class="inner-fabs">
 
-fab1.addEventListener('click', function () {
-  innerFabs.classList.toggle('show');
-});
+                                  <div class="fab bg-green round" id="fab3"><a href="sales_list_outpass"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -145px !important;">Tax Invoice</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="sales_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 
-document.addEventListener('click', function (e) {
-  switch (e.target.id) {
-    case "fab1":
-    case "fab2":
-    case "fab3":
-    case "fab4":
-    case "fabIcon":
-      break;
-    default:
-      innerFabs.classList.remove('show');
-      break;}
-
-});
-</script>
 {% endblock %}
 
