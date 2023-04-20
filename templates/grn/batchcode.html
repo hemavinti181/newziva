@@ -30,6 +30,7 @@
                       <thead>
                         <tr>
                                     <th>S NO</th>
+                                   <th>Item Name</th>
                                     <th>Batch Code</th>
                                     <th>Expiry Date</th>
 
@@ -42,6 +43,7 @@
 
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
+                                        <td>{{ all_data.itemname }}</td>
                                         <td>{{ all_data.batchcode }}</a></td>
                                         <td> {{ all_data.expirydate }} </td>
                                     </tr>

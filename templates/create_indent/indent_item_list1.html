@@ -3,7 +3,7 @@
 {% block htmlbody %}
 
 
-<div class="right_col" role="main">
+<div class="right_col" role="main" xmlns="http://www.w3.org/1999/html">
           <div class="">
             <div class="page-title">
               <div class="title_left">
@@ -64,17 +64,19 @@
             </div>
           </div>
 </div>
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal custom-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered">
-                                            <div class="modal-content">
-
-
+                                            <div class="modal-content style">
+<h4 class="modal-title text-info" id="myModalLabel" style="text-align:center;">Delivery Challan</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                            </div>
 
                                         <div class="modal-body">
                                             <form method="post" action="{% url 'update_ack' %}">
                                                     {% csrf_token %}
-                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                                            </button>
+
                                             <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update</h4>
 
                                                  <label for="qty">Quantity *</label>
@@ -89,7 +91,7 @@
 
                                             </div>
                                         </div>
-
+</form>
 
                                         </div>
                                     </div>

@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"> <b>Indent Item List<b></h3>
+                <h3 style="color:#1372ba"> <b>Indent Item List</b></h3>
               </div>
 
               </div>
@@ -51,7 +51,7 @@
                                     <td>{{all_data.indent_no}}</td>
                                      <td>{{ remarks }}</td>
                                     <td>
-                                     <span data-target=".bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.sno }}')" class="badge badge-success" >Update </span></a>
+                                     <span data-target="#bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.sno }}','{{ all_data.mrp }}','{{ all_data.qty }}','{{ all_data.uom}}','{{all_data.noofbottles }}')" class="badge badge-success" >Update </span></a>
                                     </td>
                                 </tr>
                              {% endfor %}
@@ -67,30 +67,44 @@
             </div>
           </div>
 </div>
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-sm modal-dialog-centered">
-                                            <div class="modal-content">
-
-
-
+<div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content style">
+                                                  <div class="modal-header">
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Payment</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
                                         <div class="modal-body">
-                                            <form method="post" action="{% url 'update_ack' %}">
+                                             <form method="post" action="/update_ack">
                                                     {% csrf_token %}
-                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                                            </button>
-                                            <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Acknowledgement</h4>
-
-                                                 <label for="qty">Quantity *</label>
-                                                <textarea class="form-control" rows="1"  name="qty" id="qty"></textarea>
-
-                                            <label for="remarks">Remarks *</label>
-                                            <input type="hidden" id="txtHdnId" name="id" />
-                                                <textarea class="form-control" rows="3"  name="remarks" id="remarks"></textarea>
-                                            <p></p>
-                                           <div class="col-md-6 col-sm-6  offset-md-3">
-                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-info">UPDATE</button></a>
-
+                                            <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+                                                 <input type="hidden" id="mrp" name="mrp"  />
+                                                   <input type="hidden" id="sno" name="sno"  />
+                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                        <label>Qty (In Cases)</label>
+										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
                                             </div>
+                                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                         <label>Number Of Botteles</label>
+										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob">
+                                            </div>
+                                            <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                <label>Total Price</label>
+										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" >
+										    </div>
+                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                <label>remarks</label>
+										        <input type="text" class="form-control" placeholder="remarks" name="remarks" id="remarks" >
+										    </div>
+
+                                                <input type="hidden" name="cases" id="cases" />
+
+                                            <div class="col-md-6 col-sm-6  offset-md-4">
+                                                  <button type="submit" class="btn btn-info">Update Payment</button>
+                                            </div>
+                                             </form>
                                         </div>
 
 
@@ -98,10 +112,27 @@
                                     </div>
                                 </div>
 <script>
-   function VerifyClick(id){
-$("#qty").val(" ");
-$("#remarks").val(" ");
+  function VerifyClick(id,id1,id2,id3,id4){
+$("#qty").val(id2);
+$("#nob").val(id4);
 $("#txtHdnId").val(id);
+$("#cases").val(id3)
+$("#mrp").val(id1)
+$("#remarks").val(" ")
 }
+        $('#qty').on('input', function()  {
+            $("#nob").val(" ");
+            $("#price").val(" ");
+    	    val  = $("#qty").val();
+            val1 = $("#cases").val();
+            mrp = $("#mrp").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp)
+            $("#nob").val(val2);
+            $("#price").val(" ");
+            $("#price").val(val3);
+
+         });
+
 </script>
 {% endblock %}

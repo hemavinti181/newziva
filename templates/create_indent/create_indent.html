@@ -25,6 +25,7 @@
 									<br />
 									<form class="form-label-left input_mask"  method="POST" action="create_indent"   enctype="multipart/form-data">
 										{% csrf_token %}
+                                        {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
                                         	<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Select Warehouse *</label>
 										    	 <select class="form-control" name="whcode" id="whcode">
@@ -36,6 +37,12 @@
                                                     {% endfor %}
                                                 </select>
 										</div>
+                                        {% else %}
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Depot *</label>
+                                              <input type="text" class="form-control"  name="deponame" id="depo" value="{{ deponame }}">
+                                        </div>
+                                        {% endif %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Select Items *</label>
 										    	 <select class="form-control" name="itemcode" id="itemcode">
@@ -53,7 +60,7 @@
 							</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Quantity(In Cases) *</label>
-										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" readonly>
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
 										</div>
                                          <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Quantity(In Bottles) *</label>

@@ -172,9 +172,9 @@
                        <td>{{ all_data.invoiceamount }}</td>
                        <td>{{ all_data.totalprice }}</td>
                        <td>{{ all_data.totalitems }}</td>
-                           <td>
+                           <td  class="text-center">
                                {%if all_data.status == "pending" %}
-                               <a href="#" onclick="VerifyClick('{{all_data.grn}}')" ><span class="badge badge-info" data-toggle="modal"  data-target=".bs-example-modal-sm">Verify</span></a>
+                               <a href="{{ data.Image_path }} " onclick="VerifyClick('{{all_data.grn}}')"  target="_blank"><i class="fa fa-edit"  style='font-size:20px;color:blue'></i></a><span class="badge badge-info" data-toggle="modal"  data-target=".bs-example-modal-sm">Verify</span>
                                {% else %}
                                      <span class="badge badge-warning">
                                     Verified</span>
