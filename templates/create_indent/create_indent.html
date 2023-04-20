@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"> <b>Add Indent <b></h3>
+                <h3 style="color:#1372ba"> <b>Add Indent </b></h3>
               </div>
 
               <div class="title_right">
@@ -28,8 +28,7 @@
                                         	<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Select Warehouse *</label>
 										    	 <select class="form-control" name="whcode" id="whcode">
-
-													<option value=" ">select warehouse</option>
+                                                     <option value="">select warehouse</option>
                                                     {% for data in wh_masterlist %}
                                                         {% if data.status == "Active" %}
                                                             <option value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
@@ -44,7 +43,6 @@
                                                     {% for data in item_masterlist %}
                                                         {% if data.status == "Active" %}
                                                             <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
-
                                                         {% endif %}
                                                     {% endfor %}
                                                 </select>
@@ -55,15 +53,15 @@
 							</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Quantity(In Cases) *</label>
-										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" readonly>
 										</div>
                                          <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Quantity(In Bottles) *</label>
-										    <input type="text" class="form-control" placeholder="quantity in bottles" name="nob" id="nob">
+										    <input type="text" class="form-control" placeholder="quantity in bottles" name="nob" id="nob" readonly>
 										</div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>MRP *</label>
-										    <input type="text" class="form-control" placeholder="mrp" id="price" name="price">
+										    <input type="text" class="form-control" placeholder="mrp" id="mrp" name="price" readonly>
 										</div>
 
 										<div class="col-md-2 col-sm-2 form-group has-feedback">
@@ -110,19 +108,22 @@ $("#itemcode").change(function() {
                             $("#cases1").val(obj[0].uom);
                             $("#quantity").val(" ");
                             $("#nob").val(" ");
-                            $("#price").val(" ");
+                            $("#mrp").val(obj[0].mrp);
 					}
              	}
         	});
     	});
     	$('#quantity').on('input', function()  {
+
     	    val  = $("#quantity").val();
             val1 = $("#cases1").val();
             mrp2 = $("#mrp1").val( );
             val2 =    (val * val1)
             val3 = (val2 * mrp2)
             $("#nob").val(val2);
-            $("#price").val(val3);
+            $("#mrp").val(val3);
          });
+         $('#getdate').val(new Date().toJSON().slice(0,10));
+
 </script>
 {% endblock %}

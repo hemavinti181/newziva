@@ -31,130 +31,9 @@ class BytesEncoder(json.JSONEncoder):
 
 @login_required
 def index(request):
-    role = request.session['role']
-    if role == 'Admin':
-        accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
+    return render(request,'base.html')
 
-        data = response.json()
-        wh_masterlist = data['warehouselist']
-
-        url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
-
-        payload = json.dumps({"accesskey": accesskey, "name": "Storetype"})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-
-        response = requests.request("GET", url, headers=headers, data=payload)
-
-        data = response.json()
-        storetype_list = data['itemmasterlist']
-
-        if request.method == 'POST':
-
-            url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
-
-            payload = json.dumps({
-
-                "accesskey": accesskey,
-                "warehouseid": request.POST.get('warehouseid'),
-                "regionid": request.POST.get('regionid'),
-                "depoid": request.POST.get('depoid'),
-                "busstationid": request.POST.get('busstationid')
-
-            })
-            headers = {
-                'Content-Type': 'application/json'
-            }
-
-            response = requests.request("GET", url, headers=headers, data=payload)
-            if response.status_code == 200:
-                data = response.json()
-                store_masterlist = data['adminstoremasterlistdata']
-                return render(request, 'masters/store_master_Sub_list.html',
-                              {"list": store_masterlist, 'wh_masterlist': wh_masterlist,
-                               'storetype_list': storetype_list})
-            else:
-                return render(request, 'masters/store_master_Sub_list.html',
-                              {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
-        else:
-
-            url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
-
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "warehouseid": 'All',
-
-                "regionid": 'All',
-                "depoid": 'All',
-                "busstationid": 'All'
-
-            })
-            headers = {
-                'Content-Type': 'application/json'
-            }
-            response = requests.request("GET", url, headers=headers, data=payload)
-            if response.status_code == 200:
-                data = response.json()
-                store_masterlist = data['adminstoremasterlistdata']
-                return render(request, 'masters/store_master_Sub_list.html',
-                              {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list,
-                               'list': store_masterlist})
-            else:
-                return render(request, 'masters/store_master_Sub_list.html',
-                              {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
-
-    else:
-        accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-
-        data = response.json()
-        wh_masterlist = data['warehouselist']
-
-        url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
-
-        payload = json.dumps({"accesskey": accesskey, "name": "Storetype"})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-
-        response = requests.request("GET", url, headers=headers, data=payload)
-
-        data = response.json()
-        storetype_list = data['itemmasterlist']
-
-        url = "http://13.235.112.1/ziva/mobile-api/store-master-list.php"
-
-        payload = json.dumps({
-            "accesskey": accesskey
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
-
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            store_masterlist = data['storemasterlist']
-            return render(request, 'masters/store_master_list.html',
-                          {"list": store_masterlist, 'wh_masterlist': wh_masterlist,
-                           'storetype_list': storetype_list})
-        else:
-            return render(request, 'masters/store_master_list.html',
-                          {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
 
 
 def login(request):
@@ -175,6 +54,8 @@ def login(request):
         if response.status_code == 200:
             data = response.json()
             role = data['role']
+            name=data['name']
+            displayrole = data['displayrole']
             deponame = data['deponame']
             depoid = data['depoid']
             accesskey = data['accesskey']
@@ -183,6 +64,8 @@ def login(request):
             code = data['code']
             regionid = data['regionid']
             warehouseid = data['warehouseid']
+            request.session['name'] = name
+            request.session['displayrole'] = displayrole
             request.session['accesskey'] = accesskey
             request.session['username'] = username
             request.session['role'] = role
@@ -193,7 +76,7 @@ def login(request):
             request.session['warehousename'] = warehousename
             request.session['warehouseid'] = warehouseid
 
-            url = "http://13.235.112.1/ziva/mobile-api/dashboard-permissions.php"
+            url = "http://13.235.112.1/ziva/mobile-api/sidemenu-permissions.php"
 
             payload = json.dumps({
 
@@ -204,25 +87,11 @@ def login(request):
             }
             response = requests.request("GET", url, headers=headers, data=payload)
             data1 = response.json()
-            data2=data1['dashboardlist']
-            data2 = data2[0]['webcontroller']
-
-            url = "http://13.235.112.1/ziva/mobile-api/sub-dashboard-permissions.php"
-
-            payload = json.dumps({
-
-                "accesskey": accesskey,
-                "menu":data2
-            })
-            headers = {
-                'Content-Type': 'application/json'
-            }
-            response = requests.request("GET", url, headers=headers, data=payload)
-            data3 = response.json()
-            data3 = data3['dashboardlist']
-
+            menuname = data1['mylist']
+            request.session['mylist'] = menuname
+            #sidebar_items = {'submenu':submenu,'weblinks':weblinks}
             messages.success(request,data['message'])
-            return render(request,'masters/store_master_list.html',{'data2':data2,'sidebar_items':data3})
+            return render(request,'masters/store_master_list.html',{'menuname':menuname})
         else:
             try:
                 data = response.json()
@@ -238,6 +107,7 @@ def logout(request):
     del request.session['username']
     return redirect('/login')
 def store_master(request):
+    menuname = request.session['mylist']
     role = request.session['role']
     if role == 'Admin':
         accesskey  = request.session['accesskey']
@@ -286,10 +156,10 @@ def store_master(request):
             if response.status_code == 200:
                 data = response.json()
                 store_masterlist = data['adminstoremasterlistdata']
-                return render(request, 'masters/store_master_Sub_list.html', {"list": store_masterlist,'wh_masterlist':wh_masterlist,'storetype_list':storetype_list})
+                return render(request, 'masters/store_master_Sub_list.html', {"list": store_masterlist,'wh_masterlist':wh_masterlist,'storetype_list':storetype_list,'menuname':menuname})
             else:
                 return render(request, 'masters/store_master_Sub_list.html',
-                              {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
+                              {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list,'menuname':menuname})
         else:
 
                 url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
@@ -310,10 +180,10 @@ def store_master(request):
                 if response.status_code == 200:
                     data = response.json()
                     store_masterlist = data['adminstoremasterlistdata']
-                    return render(request, 'masters/store_master_Sub_list.html', {'wh_masterlist': wh_masterlist,'storetype_list':storetype_list,'list':store_masterlist})
+                    return render(request, 'masters/store_master_Sub_list.html', {'wh_masterlist': wh_masterlist,'storetype_list':storetype_list,'list':store_masterlist,'menuname':menuname})
                 else:
                     return render(request, 'masters/store_master_Sub_list.html',
-                                  {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
+                                  {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list,'menuname':menuname})
 
     else:
             accesskey = request.session['accesskey']
@@ -355,14 +225,15 @@ def store_master(request):
                 store_masterlist = data['storemasterlist']
                 return render(request, 'masters/store_master_list.html',
                               {"list": store_masterlist, 'wh_masterlist': wh_masterlist,
-                               'storetype_list': storetype_list})
+                               'storetype_list': storetype_list,'menuname':menuname})
             else:
                 return render(request, 'masters/store_master_list.html',
-                              {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list})
+                              {'wh_masterlist': wh_masterlist, 'storetype_list': storetype_list,'menuname':menuname})
 
 
 
 def get_store(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     id = request.POST.get('id')
     url = "http://13.235.112.1/ziva/mobile-api/store-master-list.php"
@@ -394,10 +265,11 @@ def get_store(request):
             data = response.json()
             messages.error(request,data['message'])
         except:
-            messages.error(request, data['message'])
+            messages.error(request,response.text)
         return redirect('/add_store')
 
 def add_store(request):
+    menuname = request.session['mylist']
     g = geocoder.ip('me', user_agent='http')
     latlng = g.latlng
     lat = latlng[0]
@@ -517,10 +389,11 @@ def add_store(request):
                 messages.error(request,response.text)
                 return redirect('store_master')
     else:
-        return render(request, 'masters/store_master_add.html', {'warehouse': wh_masterlist,'data':storetype_list})
+        return render(request, 'masters/store_master_add.html', {'warehouse': wh_masterlist,'data':storetype_list,'menuname':menuname})
 
 
 def store_edit(request):
+
     accesskey = request.session['accesskey']
     if request.method == "POST":
                 url = "http://13.235.112.1/ziva/mobile-api/edit-storemaster.php"
@@ -600,6 +473,7 @@ def store_status_active(request):
 
 
 def store_status_inactive(request, id):
+
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -615,7 +489,6 @@ def store_status_inactive(request, id):
 
     response = requests.request("POST", url, headers=headers, data=payload)
     data = response.json()
-    print(response)
     if response.status_code == 200:
         messages.success(request, data['message'])
         return redirect('store_master')
@@ -625,6 +498,7 @@ def store_status_inactive(request, id):
 
 
 def item_add(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
     payload=json.dumps({
@@ -663,7 +537,7 @@ def item_add(request):
         url = "http://13.235.112.1/ziva/mobile-api/add-item-master.php"
         payload = {
 
-            "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+            "accesskey":accesskey ,
             "itemname": request.POST.get('name'),
             "hsncode": request.POST.get('hsncode'),
             "lpp": request.POST.get('latestpurchase'),
@@ -694,9 +568,9 @@ def item_add(request):
 
     else:
 
-        return render(request, 'Item_master/item_add.html', {'uom_data': uom, 'cat_data': category})
+        return render(request, 'Item_master/item_add.html', {'uom_data': uom, 'cat_data': category,'menuname':menuname})
 def storetype_list(request):
-
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
@@ -709,15 +583,16 @@ def storetype_list(request):
     if response.status_code == 200:
         data = response.json()
         storetype_list = data['itemmasterlist']
-        return render(request, 'category_master/storetype_list.html', {"all_data": storetype_list})
+        return render(request, 'category_master/storetype_list.html', {"all_data": storetype_list,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/storetype_list.html')
+            return render(request, 'category_master/storetype_list.html',{'menuname':menuname})
         except:
             messages.error(request, response.text)
-        return render(request, 'category_master/storetype_list.html')
+        return render(request, 'category_master/storetype_list.html',{'menuname':menuname})
 def item_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -756,12 +631,13 @@ def item_list(request):
     if response.status_code == 200:
         data = response.json()
         item_masterlist = data['itemmasterlist']
-        return render(request, 'Item_master/item_list.html', {'all_data': item_masterlist,'category':category,'uom':uom})
+        return render(request, 'Item_master/item_list.html', {'all_data': item_masterlist,'category':category,'uom':uom,'menuname':menuname})
     else:
-        return render(request, 'Item_master/item_list.html')
+        return render(request, 'Item_master/item_list.html',{'menuname':menuname})
 
 
 def item_status_active(request):
+
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -822,6 +698,7 @@ def item_status_inactive(request):
 
 
 def des_add(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
     payload = json.dumps({"accesskey": accesskey})
@@ -872,11 +749,12 @@ def des_add(request):
                 messages.error(request, r['message'])
             except:
                 messages.error(request, response.text)
-        return render(request, 'category_master/df.html',{'des':'active','regionlist':regionlist,'item_masterlist':item_masterlist})
-    return render(request, 'category_master/df.html',{'des':'active','regionlist':regionlist,'item_masterlist':item_masterlist})
+        return render(request, 'category_master/df.html',{'des':'active','regionlist':regionlist,'item_masterlist':item_masterlist,'menuname':menuname})
+    return render(request, 'category_master/df.html',{'des':'active','regionlist':regionlist,'item_masterlist':item_masterlist,'menuname':menuname})
 
 
 def role(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
 
@@ -900,15 +778,15 @@ def role(request):
 
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'category_master/df.html', {"role": "active"})
+                return render(request, 'category_master/df.html', {"role": "active","menuname":menuname})
             except:
                 messages.error(request,response.text)
-            return render(request, 'category_master/df.html', {"role": "active"})
-    return render(request, 'category_master/df.html', {"role": "active"})
+            return render(request, 'category_master/df.html', {"role": "active","menuname":menuname})
+    return render(request, 'category_master/df.html', {"role": "active","menuname":menuname})
 
 
 def level(request):
-
+    menuname = request.session['mylist']
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
@@ -932,11 +810,12 @@ def level(request):
         else:
             r = response.json()
             messages.error(request, r['message'])
-            return render(request, 'category_master/df.html',{"level": "active"})
-    return render(request, 'category_master/df.html',{"level": "active"})
+            return render(request, 'category_master/df.html',{"level": "active","menuname":menuname})
+    return render(request, 'category_master/df.html',{"level": "active","menuname":menuname})
 
 
 def city(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
 
@@ -960,13 +839,14 @@ def city(request):
             try:
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'category_master/df.html', {"city": "active"})
+                return render(request, 'category_master/df.html', {"city": "active","menuname":menuname})
             except:
                     messages.error(request,response.text)
-            return render(request, 'category_master/df.html', {"city": "active"})
-    return render(request, 'category_master/df.html', {"city": "active"})
+            return render(request, 'category_master/df.html', {"city": "active","menuname":menuname})
+    return render(request, 'category_master/df.html', {"city": "active","menuname":menuname})
 
 def state(request):
+    menuname = request.session['mylist']
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
@@ -990,14 +870,15 @@ def state(request):
             try:
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'category_master/df.html', {"state": "active"})
+                return render(request, 'category_master/df.html', {"state": "active",'menuname':menuname})
             except:
                 messages.error(request,response.text)
-        return render(request, 'category_master/df.html', {"state": "active"})
-    return render(request, 'category_master/df.html', {"state": "active"})
+        return render(request, 'category_master/df.html', {"state": "active",'menuname':menuname})
+    return render(request, 'category_master/df.html', {"state": "active",'menuname':menuname})
 
 
 def uom(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
 
@@ -1023,12 +904,13 @@ def uom(request):
                 messages.error(request, r['message'])
             except:
                 messages.error(request,response.text)
-        return render(request, 'Category_master/df.html', {"uom": "active"})
+        return render(request, 'Category_master/df.html', {"uom": "active",'menuname':menuname})
 
-    return render(request, 'Category_master/df.html', {"uom": "active"})
+    return render(request, 'Category_master/df.html', {"uom": "active",'menuname':menuname})
 
 
 def storetype(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
 
@@ -1052,15 +934,16 @@ def storetype(request):
             try:
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'Category_master/df.html', {"storetype": "active"})
+                return render(request, 'Category_master/df.html', {"storetype": "active",'menuname':menuname})
             except:
                 messages.error(request,response.text)
-            return render(request, 'Category_master/df.html', {"storetype": "active"})
-    return render(request, 'Category_master/df.html', {"storetype": "active"})
+            return render(request, 'Category_master/df.html', {"storetype": "active",'menuname':menuname})
+    return render(request, 'Category_master/df.html', {"storetype": "active",'menuname':menuname})
 
 
 
 def gst(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
 
@@ -1085,13 +968,13 @@ def gst(request):
                 r = response.json()
                 messages.error(request, r['message'])
             except:
-                r = response.json()
                 messages.error(request, response.text)
-            return render(request, 'Category_master/df.html', {"gst": "active"})
-    return render(request, 'Category_master/df.html', {"gst": "active"})
+            return render(request, 'Category_master/df.html', {"gst": "active",'menuname':menuname})
+    return render(request, 'Category_master/df.html', {"gst": "active",'menuname':menuname})
 
 
 def category(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
 
@@ -1116,11 +999,12 @@ def category(request):
                 messages.error(request, r['message'])
             except:
                 messages.error(request, response.text)
-            return render(request, 'Category_master/df.html', {"category": "active"})
-    return render(request, 'Category_master/df.html', {"category": "active"})
+            return render(request, 'Category_master/df.html', {"category": "active",'menuname':menuname})
+    return render(request, 'Category_master/df.html', {"category": "active",'menuname':menuname})
 
 
 def role_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
@@ -1133,17 +1017,18 @@ def role_list(request):
     if response.status_code == 200:
         data = response.json()
         role_list = data['itemmasterlist']
-        return render(request, 'category_master/role_list.html', {"all_data": role_list})
+        return render(request, 'category_master/role_list.html', {"all_data": role_list,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/role_list.html')
+            return render(request, 'category_master/role_list.html',{'menuname':menuname})
         except:
             messages.error(request, response.text)
-        return render(request, 'category_master/role_list.html')
+        return render(request, 'category_master/role_list.html',{'menuname':menuname})
 
 
 def level_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
@@ -1156,16 +1041,17 @@ def level_list(request):
     if response.status_code == 200:
         data = response.json()
         level_list = data['itemmasterlist']
-        return render(request, 'category_master/level_list.html', {"all_data": level_list})
+        return render(request, 'category_master/level_list.html', {"all_data": level_list,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/level_list.html')
+            return render(request, 'category_master/level_list.html',{'menuname':menuname})
         except:
             messages.error(request, response.text)
-        return render(request, 'category_master/level_list.html')
+        return render(request, 'category_master/level_list.html',{'menuname':menuname})
 
 def city_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
@@ -1178,17 +1064,18 @@ def city_list(request):
     if response.status_code == 200:
         data = response.json()
         city_list = data['itemmasterlist']
-        return render(request, 'category_master/city_list.html', {"all_data": city_list})
+        return render(request, 'category_master/city_list.html', {"all_data": city_list,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/city_list.html')
+            return render(request, 'category_master/city_list.html',{'menuname':menuname})
         except:
             messages.error(request, response.text)
-        return render(request, 'category_master/city_list.html')
+        return render(request, 'category_master/city_list.html',{'menuname':menuname})
 
 
 def state_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
@@ -1201,16 +1088,17 @@ def state_list(request):
     if response.status_code == 200:
         data = response.json()
         state_list = data['itemmasterlist']
-        return render(request, 'category_master/state_list.html', {"all_data": state_list})
+        return render(request, 'category_master/state_list.html', {"all_data": state_list,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/state_list.html')
+            return render(request, 'category_master/state_list.html',{'menuname':menuname})
         except:
             messages.error(request, response.text)
-        return render(request, 'category_master/state_list.html')
+        return render(request, 'category_master/state_list.html',{'menuname':menuname})
 
 def uom_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
@@ -1223,17 +1111,18 @@ def uom_list(request):
     if response.status_code == 200:
         data = response.json()
         uom_list = data['itemmasterlist']
-        return render(request, 'category_master/uom_list.html', {"all_data": uom_list})
+        return render(request, 'category_master/uom_list.html', {"all_data": uom_list,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/uom_list.html')
+            return render(request, 'category_master/uom_list.html',{'menuname':menuname})
         except:
             messages.error(request, response.text)
-        return render(request, 'category_master/uom_list.html')
+        return render(request, 'category_master/uom_list.html',{'menuname':menuname})
 
 
 def gst_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
@@ -1246,18 +1135,19 @@ def gst_list(request):
     if response.status_code == 200:
         data = response.json()
         gst_list = data['itemmasterlist']
-        return render(request, 'category_master/gst_list.html', {"all_data": gst_list})
+        return render(request, 'category_master/gst_list.html', {"all_data": gst_list,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/gst_list.html')
+            return render(request, 'category_master/gst_list.html',{'menuname':menuname})
         except:
             messages.error(request,response.text)
-        return render(request, 'category_master/gst_list.html')
+        return render(request, 'category_master/gst_list.html',{'menuname':menuname})
 
 
 
 def category_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
@@ -1274,13 +1164,14 @@ def category_list(request):
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/category_list.html')
+            return render(request, 'category_master/category_list.html',{'menuname':menuname})
         except:
             messages.error(request, response.text)
-        return render(request, 'category_master/category_list.html')
+        return render(request, 'category_master/category_list.html',{'menuname':menuname})
 
 
 def des_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/price-list.php"
 
@@ -1293,14 +1184,14 @@ def des_list(request):
     if response.status_code == 200:
         data = response.json()
         des_list = data['pricelist']
-        return render(request, 'category_master/des_list.html', {"all_data": des_list})
+        return render(request, 'category_master/des_list.html', {"all_data": des_list,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'category_master/des_list.html')
+            return render(request, 'category_master/des_list.html',{'menuname':menuname})
         except:
             messages.error(request,response.text)
-        return render(request, 'category_master/des_list.html')
+        return render(request, 'category_master/des_list.html',{'menuname':menuname})
 def store_status_inactive(request):
     accesskey = request.session['accesskey']
 
@@ -1579,6 +1470,7 @@ def city_status_inactive(request):
             return redirect('/city_list')
 
 def depo_add(request):
+    menuname = request.session['mylist']
     g = geocoder.ip('me', user_agent='http')
     latlng = g.latlng
     lat = latlng[0]
@@ -1642,6 +1534,7 @@ def depo_add(request):
                 payload = {
                     "accesskey": accesskey,
                     "deponame": request.POST.get("deponame"),
+
                     "gstnumber": request.POST.get("gstnumber"),
                     "address": request.POST.get("address"),
                     "depo_manager": request.POST.get("depomanager"),
@@ -1674,12 +1567,13 @@ def depo_add(request):
                     return redirect('/depo_list')
     else:
 
-        return render(request, 'depo/depo_add.html', {'data': regionlist})
+        return render(request, 'depo/depo_add.html', {'data': regionlist,'menuname':menuname})
 
 
 def depo_list(request):
     try:
         accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
         payload = json.dumps({"accesskey": accesskey})
         headers = {
             'Content-Type': 'application/json'
@@ -1699,12 +1593,12 @@ def depo_list(request):
         if response.status_code == 200:
             data = response.json()
             depolist = data['depolist']
-            return render(request, 'depo/depo_list.html', {'all_data': depolist,'data':regionlist})
+            return render(request, 'depo/depo_list.html', {'all_data': depolist,'data':regionlist,'menuname':menuname})
         else:
-            return render(request, 'depo/depo_list.html',{'data':regionlist})
+            return render(request, 'depo/depo_list.html',{'data':regionlist,'menuname':menuname})
     except:
         messages.error(request, response.text)
-    return render(request, 'depo/depo_list.html')
+    return render(request, 'depo/depo_list.html',{'menuname':menuname})
 
 
 
@@ -1733,7 +1627,7 @@ def depo_status_active(request):
             messages.error(request, data['message'])
             return redirect('depo_list')
         except:
-            messages.error(request, data['message'])
+            messages.error(request,response.text)
         return redirect('depo_list')
 
 def depo_status_inactive(request):
@@ -1762,7 +1656,7 @@ def depo_status_inactive(request):
             messages.error(request, data['message'])
             return redirect('/depo_list')
         except:
-            messages.error(request, data['message'])
+            messages.error(request, response.text)
         return redirect('/depo_list')
 def bus_status_active(request):
     accesskey = request.session['accesskey']
@@ -1789,7 +1683,7 @@ def bus_status_active(request):
             messages.error(request, data['message'])
             return redirect('bus_list')
         except:
-            messages.error(request, data['message'])
+            messages.error(request, response.text)
         return redirect('bus_list')
 
 def bus_status_inactive(request):
@@ -1818,9 +1712,11 @@ def bus_status_inactive(request):
             messages.error(request, data['message'])
             return redirect('bus_list')
         except:
-            messages.error(request, data['message'])
+            messages.error(request,response.text)
         return redirect('bus_list')
 def region_list(request):
+
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
@@ -1843,11 +1739,12 @@ def region_list(request):
     if response.status_code == 200:
         data = response.json()
         regionlist = data['regionlist']
-        return render(request, 'region/region-list.html', {'all_data': regionlist,'data':wh_masterlist})
+        return render(request, 'region/region-list.html', {'all_data': regionlist,'data':wh_masterlist,'menuname':menuname})
     else:
-        return render(request, 'region/region-list.html',{'data':wh_masterlist})
+        return render(request, 'region/region-list.html',{'data':wh_masterlist,'menuname':menuname})
 
 def region_add(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
@@ -1881,7 +1778,7 @@ def region_add(request):
             messages.error(request,data['message'])
             return redirect('/region_list')
     else:
-        return render(request,'region/region-add.html',{'data':wh_masterlist})
+        return render(request,'region/region-add.html',{'data':wh_masterlist,'menuname':menuname})
 
 
 def get_region(request):
@@ -1933,6 +1830,8 @@ def region_edit(request):
 
 
 def warehouse_list(request):
+
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
@@ -1944,12 +1843,14 @@ def warehouse_list(request):
     if response.status_code == 200:
         data = response.json()
         wh_masterlist = data['warehouselist']
-        return render(request, 'warehouse/warehouse_list.html', {'all_data': wh_masterlist})
+        return render(request, 'warehouse/warehouse_list.html', {'all_data': wh_masterlist,'menuname':menuname})
     else:
-        return render(request, 'warehouse/warehouse_list.html')
+        return render(request, 'warehouse/warehouse_list.html',{'menuname':menuname})
 
 
 def warehouse_add(request):
+
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
     payload = json.dumps({
@@ -2038,9 +1939,9 @@ def warehouse_add(request):
             except:
                 r1 = r.json()
                 messages.error(request, response.text)
-            return render(request, 'warehouse/warehouse_add.html', {'data': region})
+            return render(request, 'warehouse/warehouse_add.html', {'data': region,'menuname':menuname})
 
-    return render(request, 'warehouse/warehouse_add.html', {'data': region})
+    return render(request, 'warehouse/warehouse_add.html', {'data': region,'menuname':menuname})
 
 def warehouse_status_active(request):
     accesskey = request.session['accesskey']
@@ -2103,6 +2004,7 @@ def warehouse_status_inactive(request):
 
 def vendor_add(request):
 
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
@@ -2191,10 +2093,11 @@ def vendor_add(request):
                 messages.error(request, data['message'])
             return redirect('vendor_list')
 
-    return render(request, 'vendor/vendor_add.html', {'data': state_list,'data1':wh_masterlist})
+    return render(request, 'vendor/vendor_add.html', {'data': state_list,'data1':wh_masterlist,'menuname':menuname})
 
 
 def vendor_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
 
@@ -2207,20 +2110,21 @@ def vendor_list(request):
     if response.status_code == 200:
         data = response.json()
         vendor_masterlist = data['vendormasterlist']
-        return render(request, 'vendor/vendor_list.html', {'all_data': vendor_masterlist})
+        return render(request, 'vendor/vendor_list.html', {'all_data': vendor_masterlist,'menuname':menuname})
     else:
         try:
             data = response.json()
-            return render(request, 'vendor/vendor_list.html')
+            return render(request, 'vendor/vendor_list.html',{'menuname':menuname})
         except:
             messages.error(request,response.text)
-        return render(request, 'vendor/vendor_list.html')
+        return render(request, 'vendor/vendor_list.html',{'menuname':menuname})
 
 def vendor_status_active(request, id):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
     payload = json.dumps({
-        "accesskey": "LTIwMjIxMjE5MjIyMzcy",
+        "accesskey": accesskey,
         "sno": id,
         "type": "Vendormaster",
         "status": "Inactive"
@@ -2230,21 +2134,24 @@ def vendor_status_active(request, id):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    data = response.json()
-    print(response)
+
+
     if response.status_code == 200:
+        data = response.json()
         messages.success(request, data['message'])
         return redirect('vendor_list')
     else:
+        data = response.json()
         messages.error(request, data['message'])
         return redirect('vendor_list')
 
 
 def vendor_status_inactive(request, id):
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
     payload = json.dumps({
-        "accesskey": "LTIwMjIxMjE5MjIyMzcy",
+        "accesskey":accesskey,
         "sno": id,
         "type": "Vendormaster",
         "status": "Active"
@@ -2262,6 +2169,7 @@ def vendor_status_inactive(request, id):
         messages.error(request, data['message'])
         return redirect('vendor_list')
 def get_storeregion(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     warehouse = request.POST.get('warehouse')
     url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
@@ -2283,7 +2191,7 @@ def get_storeregion(request):
             messages.error(request, data['message'])
         except:
             messages.error(request,response.text)
-        return render(request,'masters/store_master_add.html')
+        return render(request,'masters/store_master_add.html',{'menuname':menuname})
 
 
 def get_storebus(request):
@@ -2408,6 +2316,7 @@ def get_dependent_bus(request):
     return JsonResponse({'data': data})
 
 def user_add(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
@@ -2507,10 +2416,11 @@ def user_add(request):
             return redirect('user_add')
 
     return render(request, 'user/user_add.html',
-                  {'all_data': des_list,'all_data2': role_list, 'all_data3': level_list,'data':wh_masterlist})
+                  {'all_data': des_list,'all_data2': role_list, 'all_data3': level_list,'data':wh_masterlist,'menuname':menuname})
 
 
 def user_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/user-list.php"
 
@@ -2525,9 +2435,9 @@ def user_list(request):
     if response.status_code == 200:
         data = response.json()
         user_list = data['userlist']
-        return render(request, 'user/user_list.html', {"list": user_list})
+        return render(request, 'user/user_list.html', {"list": user_list,'menuname':menuname})
     else:
-        return render(request, 'user/user_list.html')
+        return render(request, 'user/user_list.html',{'menuname':menuname})
 
 
 def user_status_active(request):
@@ -2573,12 +2483,14 @@ def user_status_inactive(request, id):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    data = response.json()
-    print(response)
+
+
     if response.status_code == 200:
+        data = response.json()
         messages.success(request, data['message'])
         return redirect('user_list')
     else:
+        data = response.json()
         messages.error(request, data['message'])
         return redirect('user_list')
 
@@ -2587,6 +2499,7 @@ def add_grn(request):
     try:
         accesskey = request.session['accesskey']
         whname = request.session['warehousename']
+        menuname = request.session['mylist']
         url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
 
         payload = json.dumps({"accesskey":accesskey})
@@ -2626,15 +2539,16 @@ def add_grn(request):
                 messages.error(request, data2['message'])
                 return redirect('add_grn')
         else:
-            return render(request, 'grn/add_grn.html', {'all_data': vendor_masterlist, 'whname': whname})
+            return render(request, 'grn/add_grn.html', {'all_data': vendor_masterlist, 'whname': whname,'menuname':menuname})
     except:
         messages.error(request,response.text)
-    return render(request, 'grn/add_grn.html')
+    return render(request, 'grn/add_grn.html',{'menuname':menuname})
 
 
 def add_grnitem(request):
     try:
         accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
 
         id = request.session['grnnumber']
         url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
@@ -2689,17 +2603,17 @@ def add_grnitem(request):
                 response = requests.request("GET", url, headers=headers, data=payload)
                 data = response.json()
                 grn_item_list = data['grnitemlist']
-                return render(request, 'grn/add_grnitem.html', {'all_data': grn_item_list,'data': item_masterlist})
+                return render(request, 'grn/add_grnitem.html', {'all_data': grn_item_list,'data': item_masterlist,'menuname':menuname})
             else:
                 r1 = r.json()
                 messages.error(request, r1['message'])
                 return redirect('add_grnitem')
 
         else:
-            return render(request, 'grn/add_grnitem.html', {'data': item_masterlist})
+            return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname})
     except:
         messages.error(request,response.text)
-    return render(request, 'grn/add_grnitem.html', {'data': item_masterlist})
+    return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname})
 
 '''def add_grnitem_list(request):
     id = request.session['grnnumber']
@@ -2739,6 +2653,7 @@ def add_grn_inventory(request):
     print(data)
     return redirect('grn_list')
 def add_pending_grn_inventory(request):
+
     url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventory.php"
 
     payload = json.dumps({
@@ -2765,6 +2680,7 @@ def add_pending_grn_inventory(request):
 
 
 def grn_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
@@ -2778,40 +2694,50 @@ def grn_list(request):
     if response.status_code == 200:
         data = response.json()
         grn_list = data['grnlist']
-        return render(request, 'grn/grn_list_all.html', {'all_data': grn_list})
+        return render(request, 'grn/grn_list_all.html', {'all_data': grn_list,'menuname':menuname})
     else:
-        return render(request, 'grn/grn_list_all.html')
+        return render(request, 'grn/grn_list_all.html',{'menuname':menuname})
 
 
 def grn_verified_status(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
 
-    payload = "{\r\n     \"accesskey\":\"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4\",\r\n     \"status\":\"verified\"\r\n}"
+    payload = json.dumps({"accesskey": accesskey, "status": "verified"})
     headers = {
         'Content-Type': 'text/plain'
     }
-
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    grn_list = data['grnlist']
-    return render(request, 'grn/grn_list_verified.html', {'all_data': grn_list})
+    if response.status_code == 200:
+        data = response.json()
+        grn_list = data['grnlist']
+        return render(request, 'grn/grn_list_verified.html', {'all_data': grn_list,'menuname':menuname})
+    else:
+        return render(request, 'grn/grn_list_pending.html',{'menuname':menuname})
 
 
 def grn_pending_status(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+
     url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
 
-    payload = "{\r\n     \"accesskey\":\"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4\",\r\n     \"status\":\"pending\"\r\n}"
+    payload = json.dumps({"accesskey":accesskey ,"status":"pending"})
     headers = {
         'Content-Type': 'text/plain'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    grn_list = data['grnlist']
-
-    return render(request, 'grn/grn_list_pending.html', {'all_data': grn_list})
+    if response.status_code == 200:
+        data = response.json()
+        grn_list = data['grnlist']
+        return render(request, 'grn/grn_list_pending.html', {'all_data': grn_list,'menuname':menuname})
+    else:
+        return render(request, 'grn/grn_list_pending.html',{'menuname':menuname})
 
 def sale_item_list(request):
+    menuname = request.session['mylist']
     stid = request.session['stid']
     stname = request.session['storename']
     deponame = request.session['deponame']
@@ -2883,12 +2809,13 @@ def sale_item_list(request):
         sale_item_list = data['saleitemlist']
         return render(request, 'sales/sales_new.html',
                       {"all_data": sale_item_list, 'deponame': deponame,'bustation':bustation, 'data': sale_item_list[0],
-                      'stname':stname,'stid':stid,'data2':data2,'data3':data2[0],'spell':spell,'netvalue':netvalue,'taxinvoice':taxinvoice})
+                      'stname':stname,'stid':stid,'data2':data2,'data3':data2[0],'spell':spell,'netvalue':netvalue,'taxinvoice':taxinvoice,'menuname':menuname})
     else:
         return render(request, 'sales/sales_new.html',
-                      {'deponame': deponame,'bustation':bustation,'stname':stname,'data2':data2,'data3':data2[0],'spell':spell})
+                      {'deponame': deponame,'bustation':bustation,'stname':stname,'data2':data2,'data3':data2[0],'spell':spell,'menuname':menuname})
 
 def sales_item_list_pending(request,id):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
 
@@ -2907,17 +2834,19 @@ def sales_item_list_pending(request,id):
     if response.status_code == 200:
         data = response.json()
         sale_item_list = data['saleitemlist']
-        return render(request, 'sales/sale_item_list.html',{"all_data": sale_item_list})
+        return render(request, 'sales/sale_item_list.html',{"all_data": sale_item_list,'menuname':menuname})
     else:
         data = response.json()
         messages.error(request,data['message'])
-        return render(request, 'sales/sale_item_list.html')
+        return render(request, 'sales/sale_item_list.html',{'menuname':menuname})
 
 def proformainvoice(request):
+
     try:
         accesskey = request.session['accesskey']
         regionid = request.session['regionid']
         warehousename = request.session['warehousename']
+        menuname = request.session['mylist']
         url  = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
         payload = json.dumps({
                 "accesskey":accesskey,
@@ -2983,19 +2912,20 @@ def proformainvoice(request):
                     request.session['customer_mobile'] = cus_mobile
                     messages.success(request, data['message'])
                     return render(request, 'sales/sales_new.html',
-                                  {'data': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': deponame, 'bustation': bustname})
+                                  {'menuname':menuname,'data': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': deponame, 'bustation': bustname})
                 else:
                     try:
                         data = response.json()
                         messages.error(request,data['message'])
                     except:
                         messages.error(request,response.text)
-                    return render(request, 'sales/sales_new.html', {'data':data1,'stname':stname,'deponame': deponame,'bustation':bustname})
-        return render(request, 'sales/sales_new.html', {'data':data1})
+                    return render(request, 'sales/sales_new.html', {'menuname':menuname,'data':data1,'stname':stname,'deponame': deponame,'bustation':bustname})
+        return render(request, 'sales/sales_new.html', {'data':data1,'menuname':menuname})
     except:
         messages.error(request,response.text)
     return render(request,'sales/sales_new.html')
 def sales_item_add(request):
+    menuname = request.session['mylist']
     tdate = datetime.date.today()
     tdate = tdate.strftime("%d-%m-%Y")
     accesskey = request.session['accesskey']
@@ -3055,7 +2985,7 @@ def sales_item_add(request):
             except:
                 messages.error(request,r.text)
             return redirect('sale_item_list')
-    return render(request, 'sales/sales_new.html', {'data':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
+    return render(request, 'sales/sales_new.html', {'menuname':menuname,'data':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
 def complete_sale(request):
 
         accesskey = request.session['accesskey']
@@ -3163,6 +3093,7 @@ def edit_sale_item(request):
         return redirect('sale_item_list')
 
 def grn(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
 
@@ -3178,7 +3109,7 @@ def grn(request):
 
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-    payload = "{\r\n    \"accesskey\":\"MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4\"\r\n   \r\n}"
+    payload = json.dumps({"accesskey":accesskey})
     headers = {
         'Content-Type': 'text/plain'
     }
@@ -3215,9 +3146,10 @@ def grn(request):
             messages.error(request, data2['message'])
             return redirect('add_grn')
     else:
-        return render(request, 'grn/grn_new.html', {'all_data': vendor_masterlist, 'all_data1': wh_masterlist})
+        return render(request, 'grn/grn_new.html', {'menuname':menuname,'all_data': vendor_masterlist, 'all_data1': wh_masterlist})
 
 def deliver_challan(request):
+    menuname = request.session['mylist']
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
     try:
@@ -3247,8 +3179,9 @@ def deliver_challan(request):
             'Content-Type': 'application/json'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        data = response.json()
-        vehicals = data['vehicleslist']
+        if response.status_code == 200:
+            data = response.json()
+            vehicals = data['vehicleslist']
         if request.method == 'POST':
             date = request.POST.get('date')
             accesskey = request.session['accesskey']
@@ -3271,9 +3204,9 @@ def deliver_challan(request):
             if response.status_code == 200:
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
-                return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1,'vehicals':vehicals,'date':date,'status':'Delivery Pending','status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1})
+                return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1,'vehicals':vehicals,'date':date,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
             else:
-                return render(request, 'deliverychallan/deliverychallan.html', {'data1': data1, 'vehicals': vehicals,'date':date,'status':'Delivery Pending','status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1})
+                return render(request, 'deliverychallan/deliverychallan.html', {'data1': data1,'date':date,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
         else:
 
                 url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
@@ -3292,13 +3225,13 @@ def deliver_challan(request):
                     data = response.json()
                     deliv_challan = data['deliverypendinglist']
                     return render(request, 'deliverychallan/deliverychallan.html',
-                                  {"all_data": deliv_challan, 'data1': data1, 'vehicals': vehicals,'date':tdate,'busstation':'All'})
+                                  {"all_data": deliv_challan, 'data1': data1, 'vehicals': vehicals,'date':tdate,'busstation':'All','menuname':menuname})
                 else:
-                    return render(request, 'deliverychallan/deliverychallan.html',{'data1':data1,'vehicals':vehicals,'date':tdate,'busstation':'All'})
+                    return render(request, 'deliverychallan/deliverychallan.html',{'data1':data1,'date':tdate,'busstation':'All','menuname':menuname})
 
     except:
         messages.error(request,response.text)
-    return render(request, 'deliverychallan/deliverychallan.html')
+    return render(request, 'deliverychallan/deliverychallan.html',{'menuname':menuname})
 
 def get_salebus(request):
     accesskey = request.session['accesskey']
@@ -3319,6 +3252,7 @@ def get_salebus(request):
 
 
 def medeliver_challan(request):
+    menuname = request.session['mylist']
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
     try:
@@ -3364,10 +3298,10 @@ def medeliver_challan(request):
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
                 return render(request, 'deliverychallan/medeliverychallan.html',
-                              {"all_data": deliv_challan, 'data1': data1, 'date': date,'busstation':busstation,'depo':depo})
+                              {"all_data": deliv_challan, 'data1': data1, 'date': date,'busstation':busstation,'depo':depo,'menuname':menuname})
             else:
                 return render(request, 'deliverychallan/medeliverychallan.html',
-                              {'data1': data1,'date': date,'busstation':busstation,'depo':depo})
+                              {'data1': data1,'date': date,'busstation':busstation,'depo':depo,'menuname':menuname})
         else:
 
             url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
@@ -3387,16 +3321,17 @@ def medeliver_challan(request):
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
                 return render(request, 'deliverychallan/medeliverychallan.html',
-                              {"all_data": deliv_challan, 'data1': data1, "busstation": "All",'depo':'All','date':tdate})
+                              {"all_data": deliv_challan, 'data1': data1, "busstation": "All",'depo':'All','date':tdate,'menuname':menuname})
             else:
                 return render(request, 'deliverychallan/medeliverychallan.html',
-                              {'data1': data1, "busstation": "All",'depo':'All','date':tdate})
+                              {'data1': data1, "busstation": "All",'depo':'All','date':tdate,'menuname':menuname})
 
     except:
         messages.error(request, response.text)
-    return render(request, 'deliverychallan/medeliverychallan.html')
+    return render(request, 'deliverychallan/medeliverychallan.html',{'menuname':menuname})
 
 def medeliver_challan_pending(request):
+    menuname = request.session['mylist']
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
     try:
@@ -3441,10 +3376,10 @@ def medeliver_challan_pending(request):
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
                 return render(request, 'deliverychallan/medeliverychallan_pending.html',
-                              {"all_data": deliv_challan, 'data1': data1, 'date': date,'busstation':busstation,'depo':depo})
+                              {"all_data": deliv_challan, 'data1': data1, 'date': date,'busstation':busstation,'depo':depo,'menuname':menuname})
             else:
                 return render(request, 'deliverychallan/medeliverychallan_pending.html',
-                              {'data1': data1,'date': date,'busstation':busstation,'depo':depo})
+                              {'data1': data1,'date': date,'busstation':busstation,'depo':depo,'menuname':menuname})
         else:
 
             url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
@@ -3464,15 +3399,16 @@ def medeliver_challan_pending(request):
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
                 return render(request, 'deliverychallan/medeliverychallan_pending.html',
-                              {"all_data": deliv_challan, 'data1': data1,"busstation": "All",'depo':'All','date':tdate})
+                              {"all_data": deliv_challan, 'data1': data1,"busstation": "All",'depo':'All','date':tdate,'menuname':menuname})
             else:
                 return render(request, 'deliverychallan/medeliverychallan_pending.html',
-                              {'data1': data1,"busstation": "All",'depo':'All','date':tdate})
+                              {'data1': data1,"busstation": "All",'depo':'All','date':tdate,'menuname':menuname})
 
     except:
         messages.error(request, response.text)
-    return render(request, 'deliverychallan/medeliverychallan_pending.html')
+    return render(request, 'deliverychallan/medeliverychallan_pending.html',{'menuname':menuname})
 def deliver_challan_approve(request):
+    menuname = request.session['mylist']
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
     try:
@@ -3546,9 +3482,9 @@ def deliver_challan_approve(request):
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
                 return render(request, 'deliverychallan/deliverychallan_approve.html',
-                              {"all_data": deliv_challan, 'data1': data1, 'vehicals': vehicals,'date':tdate})
+                              {"all_data": deliv_challan, 'data1': data1, 'vehicals': vehicals,'date':tdate,'menuname':menuname})
             else:
-                return render(request, 'deliverychallan/deliverychallan_approve.html', {'data1': data1, 'vehicals': vehicals,'date':tdate})
+                return render(request, 'deliverychallan/deliverychallan_approve.html', {'menuname':menuname,'data1': data1, 'vehicals': vehicals,'date':tdate})
 
     except:
         messages.error(request, response.text)
@@ -3606,6 +3542,7 @@ def deliver_challan_update(request):
         return redirect('sales_list')
 
 def deliver_challan_item_update(request):
+
     accesskey = request.session['accesskey']
     id=request.POST.get('txtHdnId')
     url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-itemqtyupdate.php"
@@ -3634,6 +3571,7 @@ def deliver_challan_item_update(request):
 
 
 def create_indent(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
 
@@ -3687,17 +3625,18 @@ def create_indent(request):
             except:
                 messages.error(request,response.text)
             return redirect('indent_list')
-    return render(request, 'create_indent/create_indent.html',{'item_masterlist':item_masterlist,'item_masterlist1':item_masterlist[0],'wh_masterlist':wh_masterlist})
+    return render(request, 'create_indent/create_indent.html',{'menuname':menuname,'item_masterlist':item_masterlist,'item_masterlist1':item_masterlist[0],'wh_masterlist':wh_masterlist})
 
 
 
 def indent_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/indent-list.php"
 
     payload = json.dumps({
         "accesskey": accesskey,
-        "type": "Depo"
+        "type": "Region"
     })
     headers = {
         'Content-Type': 'application/json'
@@ -3707,11 +3646,12 @@ def indent_list(request):
     if response.status_code == 200:
         data = response.json()
         ind_list = data['indentlist']
-        return render(request, 'create_indent/indent_list.html', {"all_data": ind_list})
+        return render(request, 'create_indent/indent_list.html', {"all_data": ind_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/indent_list.html')
+        return render(request, 'create_indent/indent_list.html',{'menuname':menuname})
 
 def indent_item_list1(request,id):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/indent-itemqtyupdated-list.php"
 
@@ -3727,11 +3667,12 @@ def indent_item_list1(request,id):
     if response.status_code == 200:
         data = response.json()
         ind_item_list = data['indentitemlist']
-        return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list})
+        return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/indent_item_list1.html')
+        return render(request, 'create_indent/indent_item_list1.html',{'menuname':menuname})
 
 def indent_item_list2(request,id):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/indent-itemqtyupdated-list.php"
 
@@ -3747,12 +3688,13 @@ def indent_item_list2(request,id):
     if response.status_code == 200:
         data = response.json()
         ind_item_list = data['indentitemlist']
-        return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list})
+        return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/indent_item_list1.html')
+        return render(request, 'create_indent/indent_item_list1.html',{'menuname':menuname})
 
 
 def update_ack(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     id = request.session['id']
     fromname = request.session['fromname']
@@ -3794,6 +3736,7 @@ def update_ack(request):
         return redirect('/pending_indent_ack')
 
 def indent_item_list(request,id):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     request.session['id'] = id
     url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
@@ -3812,10 +3755,11 @@ def indent_item_list(request,id):
         ind_item_list = data['indentitemlist']
 
 
-        return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list})
+        return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/indent_item_list.html')
+        return render(request, 'create_indent/indent_item_list.html',{'menuname':menuname})
 def indent_item_list_ack(request, id):
+        menuname = request.session['mylist']
         accesskey = request.session['accesskey']
         request.session['id'] = id
         url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
@@ -3842,11 +3786,11 @@ def indent_item_list_ack(request, id):
             request.session['toid'] = toid
             return render(request, 'create_indent/indent_list_ack.html', {"all_data": ind_item_list})
         else:
-            return render(request, 'create_indent/indent_list_ack.html')
+            return render(request, 'create_indent/indent_list_ack.html',{'menuname':menuname})
 
 
 def out_passlist(request):
-
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/outpassgenerate-list.php"
 
@@ -3862,12 +3806,12 @@ def out_passlist(request):
         data = response.json()
         outpass_list = data['indentlist']
 
-        return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list})
+        return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/outpass_list.html')
+        return render(request, 'create_indent/outpass_list.html',{'menuname':menuname})
 
 def out_pass_itemlist(request,id):
-
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/outpassitem-list.php"
 
@@ -3884,14 +3828,14 @@ def out_pass_itemlist(request,id):
         data = response.json()
         outpassitem_list = data['Outpassitemlist']
 
-        return render(request, 'create_indent/out_pass_itemlist.html', {"all_data": outpassitem_list})
+        return render(request, 'create_indent/out_pass_itemlist.html', {"all_data": outpassitem_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/out_pass_itemlist.html')
+        return render(request, 'create_indent/out_pass_itemlist.html',{'menuname':menuname})
 
 
 
 def out_pass_scanner(request):
-
+    menuname = request.session['mylist']
     if request.method == 'POST':
 
         accesskey = request.session['accesskey']
@@ -3912,17 +3856,18 @@ def out_pass_scanner(request):
         if response.status_code == 200:
             data2 = response.json()
             messages.success(request,data2['message'])
-            return render(request, 'create_indent/out_pass_scanner.html')
+            return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
         else:
             try:
                 data2 = response.json()
-                return render(request, 'create_indent/out_pass_scanner.html')
+                return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
             except:
                 messages.error(request,response.text)
-            return render(request, 'create_indent/out_pass_scanner.html')
-    return render(request, 'create_indent/out_pass_scanner.html')
+            return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
+    return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
 
 def approved_indlist_pending(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
 
@@ -3939,14 +3884,14 @@ def approved_indlist_pending(request):
         data = response.json()
         approved_list = data['stocklist']
 
-        return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list})
+        return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/approved_indlist.html')
+        return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname})
 
 def approve_item_list(request,id):
 
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
-
     url = "http://13.235.112.1/ziva/mobile-api/departitemstocklist.php"
 
     payload = json.dumps({
@@ -3963,11 +3908,12 @@ def approve_item_list(request,id):
         data = response.json()
         approved_item_list = data['stocklist']
 
-        return render(request, 'create_indent/approved_item_list.html', {"all_data": approved_item_list})
+        return render(request, 'create_indent/approved_item_list.html', {"all_data": approved_item_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/approved_item_list.html')
+        return render(request, 'create_indent/approved_item_list.html',{'menuname':menuname})
 
 def approve_accept(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/submit-items-accepted.php"
 
@@ -3990,11 +3936,12 @@ def approve_accept(request):
         try:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request, 'create_indent/approved_item_list.html')
+            return render(request, 'create_indent/approved_item_list.html',{'menuname':menuname})
         except:
             messages.error(request,response.text)
-        return render(request, 'create_indent/approved_item_list.html')
+        return render(request, 'create_indent/approved_item_list.html',{'menuname':menuname})
 def approved_indlist_accept(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
 
@@ -4011,9 +3958,9 @@ def approved_indlist_accept(request):
         data = response.json()
         approved_list = data['stocklist']
 
-        return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list})
+        return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname})
     else:
-        return render(request, 'create_indent/approved_indlist.html')
+        return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname})
 @csrf_exempt
 def get_grn_item_data(request):
     accesskey = request.session['accesskey']
@@ -4238,6 +4185,7 @@ def level_edit(request):
 
 
 def pending_indent_ack(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
 
@@ -4253,11 +4201,12 @@ def pending_indent_ack(request):
     if response.status_code == 200:
         data = response.json()
         data = data['indentlist']
-        return render(request, 'create_indent/wh_indent_ack.html', {'data': data})
+        return render(request, 'create_indent/wh_indent_ack.html', {'data': data,'menuname':menuname})
     else:
-        return render(request, 'create_indent/wh_indent_ack.html')
+        return render(request, 'create_indent/wh_indent_ack.html',{'menuname':menuname})
 
 def pending_indent_pending(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
 
@@ -4273,9 +4222,9 @@ def pending_indent_pending(request):
     if response.status_code == 200:
         data = response.json()
         data = data['indentlist']
-        return render(request, 'create_indent/wh_indent_pending.html', {'data': data})
+        return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'menuname':menuname})
     else:
-        return render(request, 'create_indent/wh_indent_pending.html')
+        return render(request, 'create_indent/wh_indent_pending.html',{'menuname':menuname})
 
 
 def pending_ind_status(request):
@@ -4307,8 +4256,19 @@ def pending_ind_status(request):
 
 
 def readyto_ship(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/vehicle-dropdownlist.php"
+    payload = json.dumps({
 
+        "accesskey": accesskey
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    vehicals = data['vehicleslist']
     url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
 
     payload = json.dumps({
@@ -4323,10 +4283,10 @@ def readyto_ship(request):
     if response.status_code == 200:
         data = response.json()
         data = data['indentlist']
-
-        return render(request, 'create_indent/readytoship.html', {'data': data})
+        messages.success(request,data['message'])
+        return render(request, 'create_indent/readytoship.html', {'data': data,'vehicals':vehicals,'menuname':menuname})
     else:
-        return render(request, 'create_indent/readytoship.html')
+        return render(request, 'create_indent/readytoship.html',{'vehicals':vehicals,'menuname':menuname})
 
 def generate_gate_pass(request):
 
@@ -4380,6 +4340,7 @@ def generate_gate_pass(request):
     else:
         return render(request, 'create_indent/partiallysupplied.html')'''
 def sales_list(request):
+    menuname = request.session['mylist']
     if request.method  == 'POST':
         date = request.POST.get('date')
         accesskey = request.session['accesskey']
@@ -4397,9 +4358,9 @@ def sales_list(request):
         if response.status_code == 200:
             data = response.json()
             data = data['saleslist']
-            return render(request, 'sales/sales_list.html', {'data': data,'date':date})
+            return render(request, 'sales/sales_list.html', {'data': data,'date':date,'menuname':menuname})
         else:
-            return render(request, 'sales/sales_list.html',{'date':date})
+            return render(request, 'sales/sales_list.html',{'date':date,'menuname':menuname})
     else:
         accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/sales-list.php"
@@ -4416,11 +4377,12 @@ def sales_list(request):
         if response.status_code == 200:
             data = response.json()
             data = data['saleslist']
-            return render(request, 'sales/sales_list.html',{"data":data})
+            return render(request, 'sales/sales_list.html',{"data":data,'menuname':menuname})
         else:
-            return render(request, 'sales/sales_list.html')
+            return render(request, 'sales/sales_list.html',{'menuname':menuname})
 
 def sales_list_outpass(request):
+    menuname = request.session['mylist']
     if request.method == 'POST':
         date = request.POST.get('date')
         accesskey = request.session['accesskey']
@@ -4438,9 +4400,9 @@ def sales_list_outpass(request):
         if response.status_code == 200:
             data = response.json()
             data = data['saleslist']
-            return render(request, 'sales/sales_list.html', {'data': data, 'date': date})
+            return render(request, 'sales/sales_list.html', {'data': data, 'date': date,'menuname':menuname})
         else:
-            return render(request, 'sales/sales_list.html', {'date': date})
+            return render(request, 'sales/sales_list.html', {'date': date,'menuname':menuname})
     else:
         accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/sales-list.php"
@@ -4457,9 +4419,9 @@ def sales_list_outpass(request):
         if response.status_code == 200:
             data = response.json()
             data = data['saleslist']
-            return render(request, 'sales/sales_list.html', {"data": data})
+            return render(request, 'sales/sales_list.html', {"data": data,'menuname':menuname})
         else:
-            return render(request, 'sales/sales_list.html')
+            return render(request, 'sales/sales_list.html',{'menuname':menuname})
 
 def dc_pending(request):
 
@@ -4487,6 +4449,7 @@ def dc_pending(request):
             return redirect('sale_item_list')
 
 def taxinvoice_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
@@ -4509,9 +4472,9 @@ def taxinvoice_list(request):
         if response.status_code == 200:
             data = response.json()
             invlist = data['deliverypendinglist']
-            return render(request,'sales/taxinvoicelist.html',{'list':invlist,'fdate':fdate,'tdate':tdate})
+            return render(request,'sales/taxinvoicelist.html',{'list':invlist,'fdate':fdate,'tdate':tdate,'menuname':menuname})
         else:
-            return render(request, 'sales/taxinvoicelist.html',{'fdate':fdate,'tdate':tdate})
+            return render(request, 'sales/taxinvoicelist.html',{'fdate':fdate,'tdate':tdate,'menuname':menuname})
     else:
         url = "http://13.235.112.1/ziva/mobile-api/tax-invoicelist.php"
         payload = json.dumps({
@@ -4528,14 +4491,14 @@ def taxinvoice_list(request):
         if response.status_code == 200:
             data = response.json()
             invlist = data['deliverypendinglist']
-            return render(request, 'sales/taxinvoicelist.html', {'list': invlist, 'fdate': tdate, 'tdate': tdate})
+            return render(request, 'sales/taxinvoicelist.html', {'list': invlist, 'fdate': tdate, 'tdate': tdate,'menuname':menuname})
         else:
-            return render(request, 'sales/taxinvoicelist.html', {'fdate': tdate, 'tdate': tdate})
+            return render(request, 'sales/taxinvoicelist.html', {'fdate': tdate, 'tdate': tdate,'menuname':menuname})
 
 
 
 def tax_invoice(request,id):
-
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/tax-invoice.php"
 
@@ -4551,7 +4514,7 @@ def tax_invoice(request,id):
     if response1.status_code == 200:
         data = response1.json()
         data1 = data['itemslist']
-        return render(request, 'sales/invoice.html',{'data1':data1,'data':data})
+        return render(request, 'sales/invoice.html',{'data1':data1,'data':data,'menuname':menuname})
     else:
         try:
             data = response1.json()
@@ -4561,8 +4524,44 @@ def tax_invoice(request,id):
         return redirect('/taxinvoice_list')
 
 def stock_transfer(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
 
-    return render(request, 'stock_transfer/stock_transfer_home.html')
+    url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster-new.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "type": "Depo"
+
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    warehouselist = data['warehouselist']
+
+
+    url = "http://13.235.112.1/ziva/mobile-api/stock-translist.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+
+    })
+    headers = {
+
+        'Content-Type': 'application/json'
+
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        data = data['stocktransferlistto']
+        return render(request, 'stock_transfer/stock_transfer_home.html',{'data':data,'warehouselist':warehouselist,'menuname':menuname})
+    else:
+        return render(request, 'stock_transfer/stock_transfer_home.html',{'warehouselist':warehouselist,'menuname':menuname})
 
 
 def get_store_data(request):
@@ -4649,15 +4648,16 @@ def wh_search(request):
 def wh_add_stf(request):
 
     accesskey = request.session['accesskey']
-    if 'search' in request.POST:
-        wname = request.POST.get('txtWhsearch')
-        request.session['name'] = wname
+
+    menuname = request.session['mylist']
+    if  request.method == 'POST':
+
         url = "http://13.235.112.1/ziva/mobile-api/generate-transitid.php"
 
         payload = json.dumps({
             "accesskey": accesskey,
-            "id": request.POST.get('txtWhId'),
-            "name": request.POST.get('txtWhsearch'),
+            "id": request.POST.get('whid'),
+            "name": request.POST.get('warehousename'),
             "type": "Warehouse"
 
         })
@@ -4669,22 +4669,36 @@ def wh_add_stf(request):
         if response.status_code == 200:
             data = response.json()
             request.session['taxinvoice'] = data['taxinvoice']
-            request.session['id'] = request.POST.get('txtWhId')
+            request.session['id'] = request.POST.get('whid')
+            url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search-new.php"
 
-            return redirect('wh_item_add')
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "id": id
+
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            data = response.json()
+            warehouseinventorylist = data['warehouseinventorylist']
+            return redirect(request,'stock_transfer/stock_transfer_home.html',{'warehouseinventorylist':warehouseinventorylist,'menuname':menuname})
         else:
             try:
                 data = response.json()
                 messages.error(request, data['message'])
             except:
                 messages.error(request,response.text)
-            return render(request, 'stock_transfer/stock_transfer_home.html',{'wname':wname})
+            return redirect('stock_transfer')
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html')
+        return redirect('stock_transfer')
 
 def wh_item_add(request):
     depoid = request.session['depoid']
-    wname =  request.session['name']
+    id =  request.session['name']
     taxinvoice  = request.session['taxinvoice']
     accesskey = request.session['accesskey']
 
@@ -4715,12 +4729,13 @@ def wh_item_add(request):
                 return redirect('wh_item_list')
             except:
                 messages.error(request,response.text)
-            return render(request,'stock_transfer/stock_transfer_home.html',{'wname':wname})
+            return redirect('stock_transfer')
 
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'wname':wname})
+        return redirect('stock_transfer')
 
 def wh_item_list(request):
+    menuname = request.session['mylist']
     wname = request.session['name']
     accesskey = request.session['accesskey']
     taxinvoice  = request.session['taxinvoice']
@@ -4735,9 +4750,10 @@ def wh_item_list(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     data=response.json()
     wh_item_list=data['stocktransferitemlist']
-    return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'wname':wname})
+    return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'wname':wname,'menuname':menuname})
 
 def complete_whinv(request):
+    menuname = request.session['mylist']
     wname = request.session['name']
     accesskey = request.session['accesskey']
     taxinvoice = request.session['taxinvoice']
@@ -4771,7 +4787,7 @@ def complete_whinv(request):
                 messages.error(request,response.text)
             return redirect('wh_add_stf')
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'wname':wname})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'wname':wname,'menuname':menuname})
 
 def depo_search(request):
         accesskey = request.session['accesskey']
@@ -4810,7 +4826,7 @@ def get_depo_item(request):
     data=response.json()
     return JsonResponse({'data': data})
 def depo_add_stf(request):
-
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method  == 'POST':
         deponame = request.POST.get('txtdeposearch')
@@ -4841,9 +4857,10 @@ def depo_add_stf(request):
                 messages.error(request,response.text)
             return redirect('depo_item_list')
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'home':'active'})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'home':'active','menuname':menuname})
 
 def depo_item_add(request):
+    menuname = request.session['mylist']
     depo_name = request.session['name']
     code = request.session['codee']
     taxinvoice  = request.session['taxinvoice']
@@ -4876,12 +4893,13 @@ def depo_item_add(request):
                 return redirect('busstation_item_list')
             except:
                 messages.error(request,response.text)
-            return render(request,'stock_transfer/stock_transfer_home.html',{'depo_name':depo_name})
+            return render(request,'stock_transfer/stock_transfer_home.html',{'depo_name':depo_name,'menuname':menuname})
 
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'depo_name':depo_name})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'depo_name':depo_name,'menuname':menuname})
 
 def depo_item_list(request):
+    menuname = request.session['mylist']
     deponame = request.session['name']
     accesskey = request.session['accesskey']
     taxinvoice  = request.session['taxinvoice']
@@ -4896,9 +4914,10 @@ def depo_item_list(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     data=response.json()
     depo_item_list=data['stocktransferitemlist']
-    return render(request,'stock_transfer/stock_transfer_home.html',{'depo_item_list':depo_item_list,'deponame':deponame})
+    return render(request,'stock_transfer/stock_transfer_home.html',{'depo_item_list':depo_item_list,'deponame':deponame,'menuname':menuname})
 
 def complete_depoinv(request):
+    menuname = request.session['mylist']
     deponame = request.session['name']
     accesskey = request.session['accesskey']
     taxinvoice = request.session['taxinvoice']
@@ -4932,7 +4951,7 @@ def complete_depoinv(request):
                 messages.error(request,response.text)
             return redirect('depo_add_stf')
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame,'menuname':menuname})
 
 
 def busstation_search(request):
@@ -4954,7 +4973,7 @@ def busstation_search(request):
 
 
 def get_busstation_item(request):
-
+    menuname = request.session['mylist']
     code = request.session['codee']
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
@@ -4977,7 +4996,7 @@ def get_busstation_item(request):
 
 
 def busstation_add_stf(request):
-
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method  == 'POST':
         busname = request.POST.get('txBussearch')
@@ -5008,9 +5027,10 @@ def busstation_add_stf(request):
                 messages.error(request,response.text)
             return redirect('busstation_item_list')
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'home':'active'})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'home':'active','menuname':menuname})
 
 def busstation_item_add(request):
+    menuname = request.session['mylist']
     busstation_name = request.session['name']
     code = request.session['codee']
     taxinvoice = request.session['taxinvoice']
@@ -5042,13 +5062,13 @@ def busstation_item_add(request):
                 return redirect('busstation_item_list')
             except:
                 messages.error(request, response.text)
-            return render(request, 'stock_transfer/stock_transfer_home.html', {'busstation_name': busstation_name})
+            return render(request, 'stock_transfer/stock_transfer_home.html', {'busstation_name': busstation_name,'menuname':menuname})
 
     else:
-        return render(request, 'stock_transfer/stock_transfer_home.html', {'busstation_name': busstation_name})
+        return render(request, 'stock_transfer/stock_transfer_home.html', {'busstation_name': busstation_name,'menuname':menuname})
 
 def busstation_item_list(request):
-
+    menuname = request.session['mylist']
     busstation_name = request.session['name']
     accesskey = request.session['accesskey']
     taxinvoice  = request.session['taxinvoice']
@@ -5063,9 +5083,10 @@ def busstation_item_list(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     data=response.json()
     bus_item_list=data['stocktransferitemlist']
-    return render(request,'stock_transfer/stock_transfer_home.html',{'bus_item_list':bus_item_list,'busstation_name':busstation_name})
+    return render(request,'stock_transfer/stock_transfer_home.html',{'menuname':menuname,'bus_item_list':bus_item_list,'busstation_name':busstation_name})
 
 def complete_businv(request):
+    menuname = request.session['mylist']
     deponame = request.session['name']
     accesskey = request.session['accesskey']
     taxinvoice = request.session['taxinvoice']
@@ -5099,7 +5120,7 @@ def complete_businv(request):
                 messages.error(request,response.text)
             return redirect('busstation_add_stf')
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'deponame':deponame,'menuname':menuname})
 
 
 def region_status_active(request):
@@ -5132,6 +5153,7 @@ def region_status_active(request):
             messages.error(request, response.text)
         return redirect('/region_list')
 def bus_list(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
@@ -5159,12 +5181,13 @@ def bus_list(request):
     if response.status_code == 200:
         data = response.json()
         bus = data['buslist']
-        return render(request,'busstation/bus_list.html',{'bus':bus,'data':depolist})
+        return render(request,'busstation/bus_list.html',{'bus':bus,'data':depolist,'menuname':menuname})
     else:
-        return render(request, 'busstation/bus_list.html',{'data':depolist})
+        return render(request, 'busstation/bus_list.html',{'data':depolist,'menuname':menuname})
 
 
 def bus_add(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
@@ -5212,7 +5235,7 @@ def bus_add(request):
                     data = response.json()
                     messages.error(request, data['message'])
                     return redirect('/bus_list')
-    return render(request,'busstation/bus_add.html',{'data':depolist})
+    return render(request,'busstation/bus_add.html',{'data':depolist,'menuname':menuname})
 def  get_bus(request):
 
     accesskey = request.session['accesskey']
@@ -5264,4 +5287,48 @@ def bus_edit(request):
             return redirect('/bus_list')
     return redirect('/bus_list')
 
+def live_inventory(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/inventorylist-new.php"
+    payload = json.dumps(
+        {
+            "accesskey":  accesskey
 
+        })
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        inventorylist = data['inventorylist']
+        messages.success(request, data['message'])
+        return render(request,'grn/liveinventory.html',{'data':inventorylist,'menuname':menuname})
+    else:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request,'grn/liveinventory.html',{'menuname':menuname})
+
+def batch_codeexpry(request,id):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/batchcode-expdate-inventorylist.php"
+    payload = json.dumps(
+        {
+            "accesskey":accesskey ,
+            "itemcode" : id
+        })
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        inventorylist = data['inventorylist']
+        messages.success(request, data['message'])
+        return render(request, 'grn/batchcode.html', {'data': inventorylist,'menuname':menuname})
+    else:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'grn/batchcode.html',{'menuname':menuname})

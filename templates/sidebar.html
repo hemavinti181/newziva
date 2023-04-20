@@ -2,13 +2,21 @@
 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 <div class="menu_section">
 <ul class="nav side-menu">
-<li><a><i class="fa fa-user"></i>{{ data2 }}<span class="fa fa-chevron-down"></span></a>
+     {% for  item in menuname %}
+<li><a><i class="{{ item.icon }}"></i>{{ item.name }}<span class="fa fa-chevron-down"></span></a>
     <ul class="nav child_menu">
-        {% for  item in sidebar_items %}
-            <li><a href="{{ item.webcontroller }}">{{ item.displayname }}</a></li>
+        {% for  list in item.list %}
+          <li><a  href="{{ list.weblinks }}">{{ list.name }}<span class="{{ list.subicon }}"></span></a>
+                <ul class="nav child_menu">
+                      {% for  sublist in list.sublist %}
+                        <li><a href="{{ sublist.weblinks }}">{{ sublist.displayname }}</a></li>
+                     {% endfor %}
+                </ul>
+          </li>
         {% endfor %}
     </ul>
 </li>
+    {% endfor %}
 </ul>
 </div>
 </div>

@@ -1,0 +1,63 @@
+
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Item Details</h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                  <!--<a href="region_add"><button type="submit" class="btn btn-success">Add Region</button>-->
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+            <div class="row" style="display: block;">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S NO</th>
+                                    <th>Batch Code</th>
+                                    <th>Expiry Date</th>
+
+
+                        </tr>
+                      </thead>
+                          <tbody>
+
+                            {% for all_data in data %}
+
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ all_data.batchcode }}</a></td>
+                                        <td> {{ all_data.expirydate }} </td>
+                                    </tr>
+
+                            {% endfor %}
+                            </tbody>
+                          </table>
+                  </div>
+                  </div>
+
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+
+{% endblock %}

@@ -161,5 +161,7 @@ urlpatterns = [
     path('deliver_challan_item_update',views.deliver_challan_item_update,name='deliver_challan_item_update'),
     path('medeliver_challan',views.medeliver_challan,name='medeliver_challan'),
     path('get_salebus',views.get_salebus,name='get_salebus'),
-    path('medeliver_challan_pending',views.medeliver_challan_pending,name='medeliver_challan_pending')
+    path('medeliver_challan_pending',views.medeliver_challan_pending,name='medeliver_challan_pending'),
+    path('live_inventory',views.live_inventory,name='live_inventory'),
+    path('batch_codeexpry/<str:id>/',views.batch_codeexpry,name='batch_codeexpry')
 ]

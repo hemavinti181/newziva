@@ -2,7 +2,6 @@
 
 {% block htmlbody %}
 
-
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -44,12 +43,17 @@
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
-
+                            {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
 
                          <div class="col-md-2 col-sm-2 form-group has-feedback">
-                 <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick()" data-toggle="modal" data-target="#bs-example-modal-sm">  Delivery challan </span>
-
+                 <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick()" data-toggle="modal" data-target="#bs-example-modal-hm">  Delivery Challan </span>
                 </div>
+                  {% else %}
+                   <div class="col-md-2 col-sm-2 form-group has-feedback">
+                 <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick1()" data-toggle="modal" data-target="#bs-example-modal-sm">  Delivery Challan </span>
+                </div>
+                  {% endif %}
+
 						</div>
                 <div class="x_panel">
                     <div class="clearfix"></div>
@@ -128,7 +132,7 @@
                                  <div class="fab bg-yellow round" id="fab2"><a href="deliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
                               </div>
                                <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-<div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal custom-modal fade"  id="bs-example-modal-hm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                   <div class="modal-header">
@@ -172,6 +176,34 @@
                                         </div>
                                     </div>
                                 </div>
+<div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                  <div class="modal-header">
+                              <h4 class="modal-title text-info"  style="text-align:center;">Delivery Challan</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+                                        <div class="modal-body">
+                                             <form method="POST" action="deliver_challan_status">
+                                                    {% csrf_token %}
+                                                 <input type="hidden" id="txtHdnId2" name="txtHdnId[]"  />
+
+                                               <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <textarea class="form-control" name="remarks" rows="2" placeholder="Remarks" id="remarks1"></textarea>
+										    </div>
+                                            <p></p>
+                                            <div class="col-md-6 col-sm-8  offset-md-5">
+                                                  <button type="submit" class="btn btn-info">Approve</button>
+                                            </div>
+                                             </form>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
 <!-- Include jQuery and jQuery UI libraries -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
@@ -191,6 +223,10 @@ $("#vehicaldetails").val("");
 $("#remarks").val("");
 }
 
+function VerifyClick1(){
+$("#remarks1").val("");
+}
+
  $(document).ready(function() {
   $('.btnSubmit').click(function() {
     var arr = [];
@@ -198,6 +234,7 @@ $("#remarks").val("");
    id=$(this).closest('tr').find('.id').html();
      arr.push(id);
      $('#txtHdnId1').val(arr);
+      $('#txtHdnId2').val(arr);
     })
   })
  $(".btnSelectAll").click(function() {

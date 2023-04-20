@@ -27,7 +27,9 @@
                                     <th>S No</th>
                                     <th>Indent Number</th>
                                     <th>DC Number</th>
-                                    <th>Indent Details</th>
+                                    <th>Outpass Number</th>
+                                    <th>Indent From</th>
+                                   <th>Indent To</th>
                                     <th>Created By</th>
                                     <th>Status</th>
 
@@ -40,7 +42,9 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ all_data.indent_no }}</td>
                                     <td>{{ all_data.dc_number }}</td>
-                                    <td>{{ all_data.region_name }} ->{{ all_data.warehouse_name }}</td>
+                                    <td><a href="{{ all_data.pdfurl }}" style="color:#075ab3;" target="_blank">{{ all_data.outpass_number }}</a></td>
+                                    <td>{{ all_data.region_name }}</td>
+                                    <td>{{ all_data.warehouse_name }}</td>
                                     <td>{{ all_data.createdby }}</td>
                                     <td>
                                          <a href="out_pass_itemlist/{{ all_data.dc_number }}/"><span class="badge badge-success">{{ all_data.status }} </span></a>

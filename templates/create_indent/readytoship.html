@@ -134,7 +134,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Partially / Fully Supplied</b></h3>
+                <h3 style="color:#1372ba"><b>Ready To Ship</b></h3>
               </div>
 
               <div class="title_right">
@@ -161,7 +161,8 @@
                                     <th>S No</th>
                                     <th>Indent number</th>
                                     <th>DC Number</th>
-                                    <th>Indent Details</th>
+                                    <th>Indent From</th>
+                                    <th>Indent To</th>
                                     <th>Created By</th>
                                     <th>Status</th>
                         </tr>
@@ -171,12 +172,13 @@
                            <td>{{ forloop.counter }}</td>
                           <td> {{ all_data.indentno }}</td>
                          <td>{{ all_data.dc_number }}</td>
-                      <td> {{ all_data.region_name }} ->{{ all_data.warehouse_name }}</td>
+                      <td> {{ all_data.region_name }} </td>
+                           <td>{{ all_data.warehouse_name }}</td>
                        <td>{{  all_data.created_by}}</td>
 
                                 <td>
                                   <a href="indent_item_list1/{{ all_data.dc_number }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>
-                                    <span data-target=".bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}')" class="badge badge-info" >Generate Gate Pass </span></a>
+                                    <span data-target=".custom-modal"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}')" class="badge badge-info" >Generate Gate Pass </span></a>
                                 </td>
                       </tr>
                       {% endfor %}
@@ -203,11 +205,9 @@
                                 <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
                         </div>-->
               </div>
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal custom-modal  fade " tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered">
-                                            <div class="modal-content">
-
-
+                                            <div class="modal-content style">
 
                                         <div class="modal-body">
                                             <form method="post" action="{% url 'generate_gate_pass' %}">
@@ -215,14 +215,28 @@
                                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
                                             </button>
                                             <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Generate Gate Pass</h4>
-
-                                            <label for="remarks">Remarks *</label>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                                <p></p>
                                                 <input type="hidden" id="txtHdnId" name="id" />
                                                 <input type="hidden" id="rname" name="rname" />
                                                 <input type="hidden" id="rid" name="rid" />
                                                 <input type="hidden" id="wname" name="wname" />
                                                 <input type="hidden" id="wid" name="wid" />
-                                                <textarea class="form-control" rows="2"  name="remarks" id="remarks"></textarea>
+                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+										            <input type="text" class="form-control" placeholder="Driver Name" name="agentname" id="name">
+                                            </div>
+                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+										        <input type="hidden" class="form-control" placeholder="Vehicals Details" name="vehicaldetails1" id="veh1">
+                                                	<select class="form-control" name="vehicaldetails" id="veh">
+                                                    <option value=" ">Vehical Details</option>
+                                                    {% for data1 in vehicals %}
+													    <option value="{{data1.vehicleno }}">{{ data1.vehicleno }}</option>
+                                                    {% endfor %}
+												</select>
+
+										    </div>
                                             <p></p>
                                            <div class="col-md-6 col-sm-6  offset-md-3">
                                                   <a href="add_grn_inventory"><button type="submit" class="btn btn-info">UPDATE</button></a>

@@ -32,7 +32,8 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Indent No</th>
-                                    <th>Indent Details</th>
+                                    <th>Indent From</th>
+                                    <th>Indent To</th>
                                     <th>Created By</th>
                                     <th>Date</th>
                                     <th>Indent Items</th>
@@ -43,7 +44,8 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ all_data.indent_no }}</td>
-                                    <td>{{ all_data.region_name }} ->{{ all_data.warehouse_name }}</td>
+                                    <td>{{ all_data.region_name }}</td>
+                                    <td>{{ all_data.warehouse_name }}</td>
                                     <td>{{ all_data.createdby }}</td>
                                     <td>{{all_data.createdon}}</td>
                                     <td class="text-center"><a href = "indent_item_list/{{ all_data.indent_no  }}"><i class="fa fa-list-ul"  style='font-size:20px;color:blue'></i></a></td>
