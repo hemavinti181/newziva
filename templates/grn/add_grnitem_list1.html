@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>GRN Item Details</h3>
+              </div>
+
+              <!--<div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                    <a href="/add_grnitem"><button type="submit" class="btn btn-primary">Add GRN Item</button></a>
+                </div>-->
+            </div>
+              </div>
+             <div class="clearfix"></div>
+            <div class="row" style="display: block;">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_content">
+                        <table id="datatable-buttons" class="display table-bordered" style="width:100%;">
+                      <thead>
+                        <tr>
+
+                                    <th>S No</th>
+                                    <th>Item Name</th>
+                                    <th>Qty(In Cases)</th>
+                                    <th>Expiry Date</th>
+                                    <th>HSN</th>
+                                    <th>UOM</th>
+                                    <th>MRP</th>
+
+
+                        </tr>
+                      </thead>
+                            {% for all_data in all_data %}
+                       <tr>
+                           <td>{{ forloop.counter }}</td>
+                      <td>{{ all_data.item_name }}</td>
+                       <td> {{ all_data.quantity }} </td>
+                       <td>{{  all_data.expiry_date}}</td>
+                        <td>{{ all_data.hsn }}</td>
+                       <td>{{ all_data.uom }}</td>
+                       <td>{{ all_data.mrp }}</td>
+                      </tr>
+                      {% endfor %}
+
+
+                      <tbody>
+                      </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+
+
+{% endblock %}
+

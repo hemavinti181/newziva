@@ -15,7 +15,7 @@
       <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3  style="color:#1372ba"><b>Store List</b></h3>
+                <h3  style="color:#1372ba"><b>Stall List</b></h3>
               </div>
         </div>
 
@@ -41,7 +41,7 @@
                                     <th>Depo</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
-                                    <th>Store type</th>
+                                    <!--<th>Store type</th>-->
                                     <th>Contact Person</th>
                                     <th>Mobile Number</th>
                                     <th>Store Location</th>
@@ -56,10 +56,10 @@
 							<td>{{ forloop.counter }}</td>
                             <td>{{ list.warehouse }}</td>
                             <td>{{ list.region }}</td>
-                            <td>{{ list.depo }}</td>
+                            <td>{{ list.deponame }}</td>
                             <td>{{ list.bus_station }}</td>
                         <td><a href="{{ list.storephoto }}" style="color:#075ab3;" target="_blank">{{ list.storename }}</a></td>
-                        <td>{{ list.storetype}}</a></td>
+                        <!--<td>{{ list.storetype}}</a></td>-->
                         <td>{{ list.contact_person}}</a></td>
                         <td>{{ list.mobile_no }}</a></td>
 
@@ -78,8 +78,6 @@
                                           Inactive</span></a>
                                      {% endif %}
                                 </td>
-
-
                         </tr>
                     {% endfor %}
                       </tbody>

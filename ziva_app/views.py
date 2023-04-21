@@ -89,9 +89,11 @@ def login(request):
             data1 = response.json()
             menuname = data1['mylist']
             request.session['mylist'] = menuname
+            context = {'menuname':menuname}
             #sidebar_items = {'submenu':submenu,'weblinks':weblinks}
             messages.success(request,data['message'])
-            return render(request,'masters/store_master_list.html',{'menuname':menuname})
+            return redirect('store_master')
+
         else:
             try:
                 data = response.json()
@@ -167,7 +169,6 @@ def store_master(request):
                 payload = json.dumps({
                     "accesskey": accesskey,
                     "warehouseid": 'All',
-
                     "regionid": 'All',
                     "depoid": 'All',
                     "busstationid": 'All'
@@ -2615,9 +2616,10 @@ def add_grnitem(request):
         messages.error(request,response.text)
     return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname})
 
-def add_grnitem_list(request):
+def add_grnitem_list(request,id):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
-    id = request.session['grnnumber']
+
 
     url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
@@ -2630,34 +2632,69 @@ def add_grnitem_list(request):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        grn_item_list = data['grnitemlist']
+        return render(request, 'grn/add_grnitem_list.html', {'all_data': grn_item_list,'menuname':menuname})
+    else:
+        return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname})
 
-    data = response.json()
-    grn_item_list = data['grnitemlist']
-    return render(request, 'grn/add_grnitem_list.html', {'all_data': grn_item_list})
+def add_grnitem_list1(request,id):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
 
-def add_grn_inventory(request):
-    url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventory.php"
+
+    url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
     payload = json.dumps({
-        "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
-        "grn_no": request.POST.get('txtHdnId'),
-        "comments": request.POST.get('comment')
+        "accesskey": accesskey,
+        "grnno": id
+    })
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        grn_item_list = data['grnitemlist']
+        return render(request, 'grn/add_grnitem_list1.html', {'all_data': grn_item_list,'menuname':menuname})
+    else:
+        return render(request, 'grn/add_grnitem_list1.html',{'menuname':menuname})
+
+
+
+def add_grn_inventory(request):
+    accesskey = request.session['accesskey']
+    sno = request.POST.get('sno')
+    url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventoryitem.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sno": request.POST.get('txtHdnId'),
+        "qty": request.POST.get('qty')
     })
     headers = {
         'Content-Type': 'application/json'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    print(data)
-    return redirect('grn_list')
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request,data['message'])
+        url=reverse('add_grnitem_list',args=[sno])
+        return  redirect(url)
+    else:
+        data = response.json()
+        messages.error(request,data['message'])
+        url = reverse('add_grnitem_list', args=[sno])
+        return redirect(url)
 def add_pending_grn_inventory(request):
-
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventory.php"
 
     payload = json.dumps({
-        "accesskey": "MDY5MjAyMDIyLTEyLTE3IDA2OjE1OjU4",
+        "accesskey": accesskey,
         "grn_no": request.POST.get('txtHdnId'),
         "comments": request.POST.get('comment')
     })
@@ -2675,6 +2712,30 @@ def add_pending_grn_inventory(request):
     else:
         messages.error(request, data['message'])
         return redirect('grn_pending_status')
+
+def add_apending_grn_inventory1(request):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventory.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "grn_no": request.POST.get('txtHdnId'),
+        "comments": request.POST.get('comment')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+
+    if response.status_code == 200:
+        messages.success(request, data['message'])
+        return redirect('grn_list')
+    else:
+        messages.error(request, data['message'])
+        return redirect('grn_list')
 
 
 
@@ -2697,6 +2758,26 @@ def grn_list(request):
         return render(request, 'grn/grn_list_all.html', {'all_data': grn_list,'menuname':menuname})
     else:
         return render(request, 'grn/grn_list_all.html',{'menuname':menuname})
+
+def grn_list1(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
+
+    payload = json.dumps({"accesskey":accesskey,"status":"All"})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        grn_list = data['grnlist']
+        return render(request, 'grn/grn_list1.html', {'all_data': grn_list,'menuname':menuname})
+    else:
+        return render(request, 'grn/grn_list1.html',{'menuname':menuname})
+
 
 
 def grn_verified_status(request):
@@ -4658,6 +4739,7 @@ def tax_invoice(request,id):
 def stock_transfer(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
+    displayrole = request.session['displayrole']
 
     url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster-new.php"
 
@@ -4693,7 +4775,7 @@ def stock_transfer(request):
         data = data['stocktransferlistto']
         return render(request, 'stock_transfer/stock_transfer_home.html',{'data':data,'warehouselist':warehouselist,'menuname':menuname})
     else:
-        return render(request, 'stock_transfer/stock_transfer_home.html',{'warehouselist':warehouselist,'menuname':menuname})
+        return render(request, 'stock_transfer/stock_transfer_home.html',{'warehouselist':warehouselist,'menuname':menuname,'displayrole':displayrole})
 
 
 def get_store_data(request):
@@ -4780,6 +4862,7 @@ def wh_search(request):
 def wh_add_stf(request):
 
     accesskey = request.session['accesskey']
+    depoid = request.session['depoid']
 
     menuname = request.session['mylist']
     if  request.method == 'POST':
@@ -4801,12 +4884,12 @@ def wh_add_stf(request):
         if response.status_code == 200:
             data = response.json()
             request.session['taxinvoice'] = data['taxinvoice']
-            request.session['id'] = request.POST.get('whid')
+            #request.session['id'] = request.POST.get('whid')
             url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search-new.php"
 
             payload = json.dumps({
                 "accesskey": accesskey,
-                "id": id
+                "id": depoid
 
             })
             headers = {

@@ -66,7 +66,7 @@ urlpatterns = [
     path('user_status_inactive',views.user_status_inactive,name='vendor_status_inactive'),
     path('add_grn',views.add_grn,name='add_grn'),
     path('add_grnitem', views.add_grnitem,name='add_grnitem'),
-    #path('add_grnitem_list', views.add_grnitem_list,name='add_grnitem_list'),
+    path('add_grnitem_list/<str:id>/', views.add_grnitem_list,name='add_grnitem_list'),
     path('add_grn_inventory',views.add_grn_inventory,name='add_grn_inventory'),
     path('grn_list',views.grn_list,name='grn_list'),
     path('sales_item_add',views.sales_item_add,name='sales_item_add'),
@@ -163,5 +163,9 @@ urlpatterns = [
     path('get_salebus',views.get_salebus,name='get_salebus'),
     path('medeliver_challan_pending',views.medeliver_challan_pending,name='medeliver_challan_pending'),
     path('live_inventory',views.live_inventory,name='live_inventory'),
-    path('batch_codeexpry/<str:id>/',views.batch_codeexpry,name='batch_codeexpry')
+    path('batch_codeexpry/<str:id>/',views.batch_codeexpry,name='batch_codeexpry'),
+    path('add_apending_grn_inventory1',views.add_apending_grn_inventory1,name='add_apending_grn_inventory1'),
+    path('grn_list1',views.grn_list1,name='grn_list1'),
+    path('add_grnitem_list1/<str:id>/',views.add_grnitem_list1,name='add_grnitem_list1')
+
 ]

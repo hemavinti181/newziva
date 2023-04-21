@@ -42,11 +42,14 @@
                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
 										</div>
+                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
+										    <input type="text" class="form-control" placeholder="number of bottles" name="nob" id="nob" readoly>
+										</div>
                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="text" class="form-control" id="latestpurchase" placeholder="Latest Purchase" name="latestpurchase" value="{{ data.item_code }}"required>
+										    <input type="text" class="form-control" id="latestpurchase" placeholder="price per bottle" name="latestpurchase" value="{{ data.item_code }}"required>
 										</div>
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="date" class="form-control"  name="expdate" id="expdate">
+										    <input type="date" class="form-control"  name="expdate" id="tdate">
 										</div>
 										<!--<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="MRP" id="mrp" name="mrp" value="{{ data.mrp }}" required>
@@ -83,17 +86,17 @@
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display  tabe-bordered" style="width:100%">
                       <thead>
                         <tr>
 
-                                   <th>S NO</th>
+                                   <th>S No</th>
                                     <th>Item Name</th>
-                                    <th>QTY</th>
-                                    <th>ExpDate</th>
-                                    <th>HSN</th>
-                                    <th>UOM</th>
-                                    <th>MRP</th>
+                                    <th>Qty(In Cases)</th>
+                                    <th>Expiry Date</th>
+                                    <!--<th>HSN</th>-->
+                                    <th>Cases</th>
+                                    <th>Purchase Per Bottle</th>
 
                         </tr>
                       </thead>
@@ -105,7 +108,7 @@
                        <td>{{  all_data.expiry_date}}</td>
                         <td>{{ all_data.hsn }}</td>
                        <td>{{ all_data.uom }}</td>
-                       <td>{{ all_data.mrp }}</td>
+                       <td>{{ all_data.purchase_price }}</td>
                       </tr>
                       {% endfor %}
 
@@ -131,6 +134,7 @@
   var selectedOptionText = $(this).find(":selected").text();
   $("#txtItemName").val(selectedOptionText);
 });
+
 	$("#itemname").change(function() {
         	var itemname = $('#itemname').val();
         	$.ajax({
@@ -143,12 +147,21 @@
 			 		 var obj = data.data.itemmasterlist
                         console.log(obj[0].gst);
                         if(obj.length>0){
-                            $("#latestpurchase").val(obj[0].lpp);
+                            $("#uom").val(obj[0].uom);
+                            $("#mrp").val(obj[0].mrp);
+
+
 
 					}
              	}
         	});
     	});
+$('#quantity').on('input', function()  {
+            val  = $("#quantity").val();
+            val1 = $("#uom").val();
+            val2 =    (val * val1)
+            $("#nob").val(val2);
+            });
 
 </script>
 {% endblock %}

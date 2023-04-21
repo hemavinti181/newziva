@@ -43,18 +43,31 @@
                       <div class="tab-pane fade show active" id="wh_add" role="tabpanel" aria-labelledby="wh-tab">
                             <form class="form-label-left input_mask"  method="POST" action="wh_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
+                                {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
+                                               <div class="col-md-3 col-sm-4 form-group has-feedback">
+											<input type="hidden" name="warehousename" id="deponame" />
+
+												<select class="form-control" name="whid" id="depoid" >
+                                                    <option value="">Warehouse</option>
+													{% for data1 in warehouselist %}
+                            							<option value="{{ data1.id }}">{{ data1.name }}</option>
+                                                    {% endfor %}
+												</select>
+												</div>
+                                {% endif %}
+                                 {% if request.session.displayrole == 'UPPAL ZONAL STORES' %}
+
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
 											<input type="hidden" name="warehousename" id="warehousename" />
 
 												<select class="form-control" name="whid" id="whid" >
-                                                    <option value="">Warehouse</option>
+                                                    <option value="">Depot</option>
 													{% for data1 in warehouselist %}
-                            							<option value="{{ data1.warehouseid }}">{{ data1.warehouse }}</option>
+                            							<option value="{{ data1.id }}">{{ data1.name }}</option>
                                                     {% endfor %}
 												</select>
-
-
                                          </div>
+                                {% endif %}
                                              <div class="col-md-3 col-sm-4 form-group has-feedback">
                                                <button type="submit" name="search" class="btn btn-primary store">Add</button>
                                             </div>
@@ -162,7 +175,7 @@
                 </div>
                 </div>
                       </div>
-                           <div class="tab-pane fade show" id="depo" role="tabpanel" aria-labelledby="depo-tab">
+                           <div class="tab-pane fade " id="depo" role="tabpanel" aria-labelledby="depo-tab">
                                <form class="form-label-left input_mask"  method="POST" action="depo_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
@@ -278,7 +291,7 @@
                 </div>
                       </div>
 
-                              <div class="tab-pane fade show" id="busstation" role="tabpanel" aria-labelledby="bus-tab">
+                              <div class="tab-pane fade " id="busstation" role="tabpanel" aria-labelledby="bus-tab">
                                      <form class="form-label-left input_mask"  method="POST" action="busstation_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">

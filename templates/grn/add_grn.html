@@ -54,7 +54,7 @@
 										</div>
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
 											<label>Invoice Date *</label>
-										    <input type="date" class="form-control" placeholder="invoice date" name="invoicedate">
+										    <input type="date" class="form-control" placeholder="invoice date" id="tdate"  name="invoicedate">
 										</div>
 									   <div class="col-md-3 col-sm-6  form-group has-feedback">
 											<label>Invoice Amount</label>
@@ -101,4 +101,7 @@
             </div>
           </div>
 </div>
+<script>
+	$('#tdate').val(new Date().toJSON().slice(0,10));
+</script>
 {% endblock %}

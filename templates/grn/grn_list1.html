@@ -141,7 +141,7 @@
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                  <!--<a href="region_add"><button type="submit" class="btn btn-success">Add Region</button>-->
+                  <a href="/add_grn"><button type="submit" class="btn btn-primary">Add GRN</button>
                 </div>
             </div>
               </div>
@@ -176,15 +176,17 @@
                        <td>{{ all_data.invoiceamount }}</td>
                        <td>{{ all_data.totalprice }}</td>
                        <td>{{ all_data.totalitems }}</td>
-                           <td  class="text-center">
-                               {%if all_data.status == "pending" %}
-                               <a href="/add_grnitem_list/{{ all_data.grn }}"><span class="badge badge-warning">{{ all_data.status }} </span></a>
-                          <span class="badge badge-info" data-toggle="modal"  data-target="#bs-example-modal-sm">Verify</span>
+
+
+                            <td  class="text-center">
+                            {%if all_data.status == "pending" %}
+                               <a href="/add_grnitem_list1/{{ all_data.grn }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>
                                {% else %}
-                                     <span class="badge bg-green">Verified</span>
+                                     <span class="badge bg-green">{{ all_data.status }}</span>
                                 <!-- /modals -->
                                 {% endif %}
-                           </td>
+                            </td>
+
                       </tr>
                       {% endfor %}
                       </tbody>
@@ -202,51 +204,14 @@
             </div>
 
           </div>
-                             <div class="inner-fabs">
-                                  <div class="fab bg-blue round" id="fab4"><a href="grn_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -95px !important;">All</span></div>
-                                  <div class="fab bg-green round" id="fab3"><a href="grn_verified_status"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Verified</span></div>
-                                  <div class="fab bg-yellow round" id="fab2"><a href="grn_pending_status"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                            <!-- <div class="inner-fabs">
+                                  <div class="fab bg-blue round" id="fab4"><a href="grn_list1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -95px !important;">All</span></div>
+                                  <div class="fab bg-green round" id="fab3"><a href="grn_list1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Verified</span></div>
+                                  <div class="fab bg-yellow round" id="fab2"><a href="grn_list1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
                               </div>
                                <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-                            </div>
+                            </div>-->
 
-                                 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content style">
-                                                  <div class="modal-header">
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Payment</h4>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-                                </div>
-                                        <div class="modal-body">
-                                             <form method="post" action="/add_pending_grn_inventory1">
-                                                    {% csrf_token %}
-                                            <input type="hidden" id="txtHdnId" name="txtHdnId"  />
-
-                                            <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                <label>Remarks</label>
-                                                <textarea class="form-control" placeholder="remarks" name="comment" id="comment" ></textarea>
-										    </div>
-                                                <input type="hidden" name="cases" id="cases" />
-
-                                            <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-info">Update</button>
-                                            </div>
-                                             </form>
-                                        </div>
-
-
-                                        </div>
-                                    </div>
-                                </div>
-<script>
-
-function VerifyClick(id){
-$("#comment").val("");
-$("#txtHdnId").val(id);
-}
-</script>
 
 {% endblock %}
 
