@@ -166,6 +166,9 @@ urlpatterns = [
     path('batch_codeexpry/<str:id>/',views.batch_codeexpry,name='batch_codeexpry'),
     path('add_apending_grn_inventory1',views.add_apending_grn_inventory1,name='add_apending_grn_inventory1'),
     path('grn_list1',views.grn_list1,name='grn_list1'),
-    path('add_grnitem_list1/<str:id>/',views.add_grnitem_list1,name='add_grnitem_list1')
+    path('add_grnitem_list1/<str:id>/',views.add_grnitem_list1,name='add_grnitem_list1'),
+    path('delete_stk_item',views.delete_stk_item,name='delete_stk_item'),
+    path('edit_stk_item',views.edit_stk_item,name='edit_stk_item')
+
 
 ]

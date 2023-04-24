@@ -487,28 +487,7 @@ ZIVA <a href="#"></a>
                     })
                 })
 
-                $('#itemsearch').change(function() {
-                    var searchterm = $("#itemsearch").val();
-                    $.ajax({
-                      data: {"searchterm":searchterm, "wh_id":$("#wh_id").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
-                      url: "{% url 'get_wh_item' %}",
-                      type: 'POST',
-                      success: function(data){
-                        var obj = data.data.warehouseinventorylist
-                        console.log("obj");
-                         console.log(obj);
-                        if(obj.length>0){
-                            $("#freequantity").val(obj[0].freeqty);
-                            $("#expdate").val(obj[0].expirydate);
-                            $("#batchno").val(obj[0].batchcode);
-                             $("#cpsno").val(obj[0].cp_sno);
-                        }
-                      },
-                      errors: function(e) {
-                      alert(e);
-                      }
-                    })
-                })
+
                 $('#itemsearch1').change(function() {
                     var searchterm = $("#itemsearch1").val();
                     $.ajax({

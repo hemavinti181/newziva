@@ -7,13 +7,17 @@
 	position: absolute !important;
 	width: 70% !important;
 	}
+	.style1{
+	padding:  4px !important;
+	float:right
+	}
 </style>
 
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h4 style="color:#1372ba"><b>Stock Transfer</b></h4>
+                <h3 style="color:#1372ba"><b>Stock Transfer</b></h3>
               </div>
 
               <div class="title_right">
@@ -29,7 +33,7 @@
                     <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
                         {% for item in data %}
                         <li class="nav-item">
-                        <a class="nav-link " id="wh-tab" data-toggle="tab" href="#wh_add" role="tab" aria-controls="home" aria-selected="true">{{ item.stock }}</a>
+                        <a class="nav-link" id="wh-tab" data-toggle="tab" href="#wh_add" role="tab" aria-controls="home" aria-selected="true">{{ item.stock }}</a>
                       </li>
                         {% endfor %}
                       <!--<li class="nav-item">
@@ -40,29 +44,30 @@
                       </li>-->
                     </ul>
                        <div class="tab-content" id="myTabContent">
-                      <div class="tab-pane fade show active" id="wh_add" role="tabpanel" aria-labelledby="wh-tab">
-                            <form class="form-label-left input_mask"  method="POST" action="wh_add_stf"   enctype="multipart/form-data">
+                      <div class="tab-pane fade show {{ wh }} " id="wh_add" role="tabpanel" aria-labelledby="wh-tab">
+                            <form id="myFormclass" class="form-label-left input_mask"  method="POST" action="/wh_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
                                 {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
-											<input type="hidden" name="warehousename" id="deponame" />
-
-												<select class="form-control" name="whid" id="depoid" >
+											<input  type="text" class="form-control"  name="warehousename" id="warehousename"  value="{{ warehouselist.name }}"/>
+                                                	<input type="hidden" name="warehouseid" id="warehouseid" value="{{ warehouselist.id  }}" />
+												<!--<select class="form-control" name="whid" id="whid" >
                                                     <option value="">Warehouse</option>
 													{% for data1 in warehouselist %}
-                            							<option value="{{ data1.id }}">{{ data1.name }}</option>
+                            							<option value="{{ data1.id }}" selected>{{ data1.name }}</option>
                                                     {% endfor %}
-												</select>
+												</select>-->
 												</div>
                                 {% endif %}
+
                                  {% if request.session.displayrole == 'UPPAL ZONAL STORES' %}
 
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
-											<input type="hidden" name="warehousename" id="warehousename" />
+											<input type="hidden" name="deponame" id="deponame" />
 
-												<select class="form-control" name="whid" id="whid" >
+												<select class="form-control" name="deponame" id="depoid" >
                                                     <option value="">Depot</option>
-													{% for data1 in warehouselist %}
+													{% for data1 in depolist %}
                             							<option value="{{ data1.id }}">{{ data1.name }}</option>
                                                     {% endfor %}
 												</select>
@@ -86,11 +91,19 @@
                                                     {% endfor %}
 												</select>
 										</div>
-                                        <div class="col-md-1 col-sm-2 form-group has-feedback">
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
 
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity">
 										</div>
-                                        <div class="col-md-1 col-sm-1  form-group has-feedback">
+                                        <div class="col-md-2 col-sm-3 form-group has-feedback">
+
+										    <input type="text" class="form-control" placeholder="number of bottles" name="nob" id="nob" readonly>
+										</div>
+                                        <div class="col-md-2 col-sm-3 form-group has-feedback">
+
+										    <input type="text" class="form-control" placeholder="remarks" name="remarks" />
+										</div>
+                                        <!--<div class="col-md-1 col-sm-1  form-group has-feedback">
 
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
 										</div>
@@ -101,38 +114,45 @@
                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
 
                                            <input type="text" class="form-control" placeholder="free quantity" name="freequantity" id="freequantity">
-                                       </div>
+                                       </div>-->
                                        <div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
 										</div>
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data.sno }}"required>
+										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"  required>
 										</div>
                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" name="add" style="margin-top: -23px;" class="btn btn-primary">Add</button>
                                        </div>
+                                       <input type="hidden" class="form-control" name="uom" id="uom" />
+                                       <input type="hidden" class="form-control" name="mrp" id="mrp" />
 
                                        <input type="hidden" id="store_id" name="store_id" />
                                    </form>
-                                     </div>
-                <div class="x_content">
-                  <div class="row">
+
+
+
+
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
                           <div class="col-sm-12">
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
                                     <th>Item Name</th>
-                                    <th>QTY</th>
-                                    <th>ExpDate</th>
-                                    <th>HSN</th>
+                                    <th>Qty(In Cases)</th>
+                                    <th>Expiry Date</th>
+                                    <!--<th>HSN</th>-->
                                     <th>Batch</th>
-                                    <th>MRP</th>
-                                    <th>Manufacture</th>
+                            <!--<th>MRP</th>
+                                    <th>Manufacture</th>-->
                                     <th>Action</th>
 
                         </tr>
@@ -144,37 +164,41 @@
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
                        <td>{{  all_data.expiry_date }}</td>
-                        <td>{{ all_data.hsn }}</td>
+                        <!--<td>{{ all_data.hsn }}</td>-->
                        <td>{{ all_data.batch_no }}</td>
-                       <td>{{ all_data.mrp }}</td>
-                           <td>{{all_data.manufacturer}}</td>
+                       <!--<td>{{ all_data.mrp }}</td>
+                           <td>{{all_data.manufacturer}}</td>-->
 
                        <td>
                            <a href="item_add" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                            <span  class="badge-warning" style="padding:  4px !important;" data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#complete">COMPLETE SALE</span>
+                           <span  data-toggle="modal"   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
+
                        </td>
                             </tbody>
                            <tfoot>
                            <tr>
-                               <th colspan="9">
-                                   Invoice No: {{all_data.transit_id}}
-            <span style="float:right;">Net : {{all_data.total}}</span>
 
+                      </tr>
+                            <tbody>
+                      </tbody>
+                      {% endfor %}
+ <td colspan="9" >
+                                   Invoice No: {{wh_item_list1.transit_id}}
+
+     <span style="float:right;"><span   class="badge-warning"  style="padding:  4px !important;"    data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#complete">COMPLETE SALE</span></span>
                                </th>
                           </tr>
                            </tfoot>
-                      </tr>
-                      {% endfor %}
 
 
-                      <tbody>
-                      </tbody>
                       </table>
                             </div>
                           </div>
                 </div>
                 </div>
                       </div>
+                  </div>
+                         </div>
                            <div class="tab-pane fade " id="depo" role="tabpanel" aria-labelledby="depo-tab">
                                <form class="form-label-left input_mask"  method="POST" action="depo_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
@@ -285,11 +309,13 @@
                       </table>
                             </div>
                           </div>
-
-
                 </div>
                 </div>
                       </div>
+                      </div>
+                       </div>
+                  </div>
+
 
                               <div class="tab-pane fade " id="busstation" role="tabpanel" aria-labelledby="bus-tab">
                                      <form class="form-label-left input_mask"  method="POST" action="busstation_add_stf"   enctype="multipart/form-data">
@@ -429,7 +455,7 @@
      <div class="modal-dialog modal-dialog-centered" role="document">
          <div class="modal-content style">
              <div class="modal-header">
-                             <h5 class="modal-title">Complete Transfer</h5>
+                             <h4 class="modal-title text-info" id="myModalLabel1"  class="modal-title">Complete Transfer</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -440,13 +466,15 @@
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
 
 
-                                                 	  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                 <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
 										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" >
-										    </div>
+										    </div>-->
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
+
 										      <textarea class="form-control" name="remarks" id="remarks"  placeholder="remarks" ></textarea>
+                                                      <p></p>
 										    </div>
                                                   <div class="col-md-6 col-sm-6  offset-md-3">
                                                   <button type="submit" name="complete" class="btn btn-info">Complete</button>
@@ -504,10 +532,10 @@
                                                           <input type="hidden" id="id" name="id"  />
 
 
-                                                 	  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                 	  <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
 										        <input type="date" class="form-control" name="date" id="date3"  placeholder="remarks" >
-										    </div>
+										    </div>-->
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
 										      <textarea class="form-control" name="remarks" id="remarks3"  placeholder="remarks" ></textarea>
@@ -522,6 +550,44 @@
                                     </div>
                                 </div>
 
+<div class="modal custom-modal fade"  id="edit_stk_item" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content style">
+                                                  <div class="modal-header">
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Edit Transfer Item</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+                                        <div class="modal-body">
+                                             <form method="post" action="/edit_stk_item">
+                                                    {% csrf_token %}
+                                            <input type="hidden" id="uom" name="uom"  />
+
+                                                   <input type="hidden" id="sno" name="sno"  />
+                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                         <label>Item Name </label>
+										            <input type="text" class="form-control"  name="item" id="item" readonly>
+                                            </div>
+                                            <div class="col-md-12 col-sm-12 form-group has-feedback">
+                                                        <label>Quantity (In Cases)</label>
+										            <input type="text" class="form-control"  name="qty" id="qty">
+                                            </div>
+
+
+                                                <input type="hidden" name="cases" id="cases" />
+
+                                            <div class="col-md-6 col-sm-6  offset-md-4">
+                                                  <button type="submit" class="btn btn-info">Update</button>
+                                            </div>
+                                             </form>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
 
 <script>
 
@@ -529,6 +595,58 @@ $("#whid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename").val(selectedOptionText);
 });
+$("#itemid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#itemname").val(selectedOptionText);
+});
+ $('#itemid').change(function() {
+                    var searchterm = $("#itemname").val();
+                    $.ajax({
+                      data: {"searchterm":searchterm,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_wh_item' %}",
+                      type: 'POST',
+                      success: function(data){
+                        var obj = data.data.warehouseinventorylist
+                        console.log("obj");
+                         console.log(obj);
+                        if(obj.length>0){
+                            $("#freequantity").val(obj[0].freeqty);
+                            $("#expdate").val(obj[0].expirydate);
+                            $("#batchno").val(obj[0].batchcode);
+                             $("#cpsno").val(obj[0].cp_sno);
+                             $("#uom").val(obj[0].uom);
+                        }
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+ })
+$('#quantity').on('input', function()  {
+            $("#nob").val(" ");
 
+    	    val  = $("#quantity").val();
+            val1 = $("#uom").val();
+            val2 =    (val * val1)
+            $("#nob").val(val2);
+
+
+         });
+  $(document).ready(function(){
+  var optionValue = $("#warehouseid").val();
+  $("#whid").find("option[value='" + optionValue + "']").prop("selected", true);
+})
+function VerifyClick(id,id1,id2){
+$("#qty").val(id);
+$("#sno").val(id1);
+$("#item").val(id2);
+}
+
+
+$(document).ready(function() {
+  $('#myTab').click(function() {
+    $('#myFormclass').attr('action','http://www.example.com');
+  });
+});
 </script>
 {% endblock %}
