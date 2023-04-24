@@ -53,18 +53,26 @@
 
                                                     {% if deponame %}
                                                     	<select class="form-control" name="depoid1" id="depoid1">
-													<option value="{{  deponame }}"> {{ deponame }}</option>
+													<option value="{{  deponame }}" > {{ deponame }}</option>
                                                     </select>
                                                     {% else %}
+                                                    {% if request.session.displayrole == 'BUS STATION CONTROLLER' %}
+                                                     <input type="text"  class="form-control" name="deponame"  value="{{ busdeponame }}" />
+                                                    <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}" />
+                                                     <!--<select class="form-control depoid" name="depoid2"  >
+                                                      <option value="">depot </option>
+                                                           <option value="{{ busdepoid}}" selected>{{  busdeponame  }} </option>
+												    </select>-->
+                                                    {% else %}
                                                      <input type="hidden" name="deponame" id="deponame" />
-                                                    <select class="form-control" name="depoid" id="depoid">
+                                                    <select class="form-control depoid" name="depoid" id="depoid">
                                                       <option value="">depot </option>
                                                         {% for data in data %}
                                                            <option value="{{ data.id }}">{{ data.name }} </option>
                                                         {% endfor %}
-
 												    </select>
                                                     {% endif %}
+                                                 {% endif %}
                                                 </div>
                                         <div class="col-md-3 col-sm-4  form-group has-feedback">
 
@@ -407,6 +415,10 @@ $("#depoid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#deponame").val(selectedOptionText);
 });
+$("#depoid2").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame").val(selectedOptionText);
+});
 $("#busstationid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busstationname").val(selectedOptionText);
@@ -437,8 +449,8 @@ function editSale(id){
         }
       });
   }
- 	$("#depoid").change(function() {
-        	var depo = $(this).val();
+$(document).ready(function() {
+        	var depo = $('#depoid2').val();
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_proformabus" %}',
@@ -455,10 +467,54 @@ function editSale(id){
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
                 	}
+                	}
+          });
+   });
+
+   $("#depoid").change(function() {
+        	var depo = $('#depoid').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_proformabus" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+
+			 		$("#busstationid").empty();
+			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+                }
+            });
+   });
+$("#busstationid").change(function() {
+        	var depoid = $('#depoid2').val();
+        	var busid = $('#busstationid').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_proformastore" %}',
+            	data: {
+                	'depo':depoid,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.adminstoremasterlistdata
+					if(obj) {
+			 		$("#stid").empty();
+			 		$("#stid").append("<option  value=''>Choose Store</option>");
+                	$.each(obj, function (index, item) {
+                    $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
+					});
+                	}
              	}
         	});
-
     	});
+
+
     	$("#busstationid").change(function() {
         	var depoid = $('#depoid').val();
         	var busid = $('#busstationid').val();
@@ -541,5 +597,6 @@ function editSale(id){
             $("#price1").val(val3);
     });
 $('#todate').val(new Date().toJSON().slice(0,10));
+$('#date').val(new Date().toJSON().slice(0,10));
 </script>
 {% endblock %}

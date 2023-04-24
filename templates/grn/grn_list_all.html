@@ -154,13 +154,14 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
+                                   <!-- <th>Vendor Id</th>-->
                                     <th>Vendor Name</th>
                                     <th>GRN</th>
                                     <th>Invoice Id</th>
                                     <th>Invoice Date</th>
                                     <th>Invoice Amount</th>
-                                    <th>MRP</th>
-                                    <th>Qty</th>
+                                    <!--<th>MRP</th>
+                                    <th>Qty</th>-->
                                     <th>Status</th>
 
                         </tr>
@@ -169,17 +170,18 @@
                           {% for all_data in all_data %}
                        <tr>
                            <td>{{ forloop.counter }}</td>
-                      <td>{{ all_data.vendorname }}</td>
+                            <!--<th>{{  all_data.invoice_id }}</th>-->
+                     <td>{{ all_data.vendorname }}</td>
                        <td> {{ all_data.grn }} </td>
                        <td>{{  all_data.invoice_id}}</td>
                         <td>{{ all_data.invoicedate }}</td>
                        <td>{{ all_data.invoiceamount }}</td>
-                       <td>{{ all_data.totalprice }}</td>
-                       <td>{{ all_data.totalitems }}</td>
+                       <!--<td>{{ all_data.totalprice }}</td>
+                       <td>{{ all_data.totalitems }}</td>-->
                            <td  class="text-center">
                                {%if all_data.status == "pending" %}
                                <a href="/add_grnitem_list/{{ all_data.grn }}"><span class="badge badge-warning">{{ all_data.status }} </span></a>
-                          <span class="badge badge-info" data-toggle="modal"  data-target="#bs-example-modal-sm">Verify</span>
+
                                {% else %}
                                      <span class="badge bg-green">Verified</span>
                                 <!-- /modals -->
@@ -220,7 +222,7 @@
 								</button>
                                 </div>
                                         <div class="modal-body">
-                                             <form method="post" action="/add_pending_grn_inventory1">
+                                             <form method="post" action="/add_pending_grn_inventory">
                                                     {% csrf_token %}
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
 

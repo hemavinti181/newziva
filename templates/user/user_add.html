@@ -70,7 +70,7 @@
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback" >
 
 												<select class="form-control" name="role" id="role">
-													<option> Role</option></option>
+													<option> Role</option>
 													{% for all_data2 in all_data2 %}
 														{% if  all_data2.status == "Active" %}
 															<option  value="{{ all_data2.ddcode}}">{{ all_data2.displayname }}</option>

@@ -93,7 +93,6 @@ def login(request):
             #sidebar_items = {'submenu':submenu,'weblinks':weblinks}
             messages.success(request,data['message'])
             return redirect('store_master')
-
         else:
             try:
                 data = response.json()
@@ -2501,6 +2500,7 @@ def add_grn(request):
         accesskey = request.session['accesskey']
         whname = request.session['warehousename']
         menuname = request.session['mylist']
+        warehouseid = request.session['warehouseid']
         url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
 
         payload = json.dumps({"accesskey":accesskey})
@@ -2519,8 +2519,8 @@ def add_grn(request):
                 "invoiceno": request.POST.get('invno'),
                 "invoicedate": request.POST.get('invoicedate'),
                 "invoiceamount": request.POST.get('invoiceamount'),
-                "vendorid": request.POST.get('vname'),
-                "whcode": request.POST.get('whname')
+                "vendorid": request.POST.get('vid'),
+                "whcode": warehouseid
             }
             payload = json.dumps(payload, cls=BytesEncoder)
             headers = {
@@ -2928,6 +2928,8 @@ def proformainvoice(request):
         regionid = request.session['regionid']
         warehousename = request.session['warehousename']
         menuname = request.session['mylist']
+        busdeponame = request.session['deponame']
+        busdepoid = request.session['depoid']
         url  = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
         payload = json.dumps({
                 "accesskey":accesskey,
@@ -2993,15 +2995,15 @@ def proformainvoice(request):
                     request.session['customer_mobile'] = cus_mobile
                     messages.success(request, data['message'])
                     return render(request, 'sales/sales_new.html',
-                                  {'menuname':menuname,'data': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': deponame, 'bustation': bustname})
+                                  {'busdeponame':busdeponame,'busdepoid':busdepoid,'menuname':menuname,'data': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': deponame, 'bustation': bustname})
                 else:
                     try:
                         data = response.json()
                         messages.error(request,data['message'])
                     except:
                         messages.error(request,response.text)
-                    return render(request, 'sales/sales_new.html', {'menuname':menuname,'data':data1,'stname':stname,'deponame': deponame,'bustation':bustname})
-        return render(request, 'sales/sales_new.html', {'data':data1,'menuname':menuname})
+                    return render(request, 'sales/sales_new.html', {'busdeponame':busdeponame,'menuname':menuname,'data':data1,'stname':stname,'deponame': deponame,'bustation':bustname})
+        return render(request, 'sales/sales_new.html', {'data':data1,'menuname':menuname,'busdepoid':busdepoid,'busdeponame':busdeponame})
     except:
         messages.error(request,response.text)
     return render(request,'sales/sales_new.html')
@@ -3093,7 +3095,7 @@ def complete_sale(request):
                 del request.session['storename']
                 del request.session['stid']
                 del request.session['bustname']
-                del request.session['deponame']
+
 
                 messages.success(request, data['message'])
                 return redirect('proformainvoice')
@@ -3459,7 +3461,7 @@ def medeliver_challan(request):
                               {'data1': data1,'date': date,'busstation':busstation,'depo':depo,'menuname':menuname})
         else:
 
-            url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list-region.php"
             payload = json.dumps({
                 "accesskey": accesskey,
                 "busstation": "All",
@@ -3537,7 +3539,7 @@ def medeliver_challan_pending(request):
                               {'data1': data1,'date': date,'busstation':busstation,'depo':depo,'menuname':menuname})
         else:
 
-            url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list-region.php"
             payload = json.dumps({
                 "accesskey": accesskey,
                 "busstation": "All",
@@ -3844,7 +3846,7 @@ def indent_list(request):
     if displayrole == 'DEPOT STORE EXECUTIVE':
         payload = json.dumps({
             "accesskey": accesskey,
-            "type": "Regiion"
+            "type": "Region"
         })
     else:
         payload = json.dumps({
@@ -4469,37 +4471,38 @@ def pending_ind_status(request):
 
 
 def readyto_ship(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/vehicle-dropdownlist.php"
-    payload = json.dumps({
 
-        "accesskey": accesskey
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    vehicals = data['vehicleslist']
-    url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/vehicle-dropdownlist.php"
+        payload = json.dumps({
 
-    payload = json.dumps({
-        "accesskey":accesskey ,
-        "status":"Ready to Ship"
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        vehicals = data['vehicleslist']
+        url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data1 = response.json()
-        data2 = data1['indentlist']
-        messages.success(request,data1['message'])
-        return render(request, 'create_indent/readytoship.html', {'data': data2,'vehicals':vehicals,'menuname':menuname})
-    else:
-        return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'menuname':menuname})
+        payload = json.dumps({
+            "accesskey":accesskey ,
+            "status":"Ready to Ship"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data1 = response.json()
+            data2 = data1['indentlist']
+            messages.success(request,data1['message'])
+            return render(request, 'create_indent/readytoship.html', {'data': data2,'vehicals':vehicals,'menuname':menuname})
+        else:
+            return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'menuname':menuname})
 
 def generate_gate_pass(request):
 
@@ -4752,6 +4755,7 @@ def stock_transfer(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
     depolist = data['warehouselist']
+
     url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster-new.php"
     payload = json.dumps({
         "accesskey": accesskey,
@@ -4770,6 +4774,7 @@ def stock_transfer(request):
     payload = json.dumps({
         "accesskey": accesskey,
         "type": "Bus station"
+
     })
     headers = {
         'Content-Type': 'application/json'
@@ -4777,6 +4782,8 @@ def stock_transfer(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
     buslist = data['warehouselist']
+
+
 
 
     url = "http://13.235.112.1/ziva/mobile-api/stock-translist.php"

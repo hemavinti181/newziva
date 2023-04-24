@@ -24,10 +24,10 @@
                                    <div class="row">
 
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
-
-											<label>Vendor Name *</label>
-										    	<select class="country form-control" name="vname">
-													<option>vendor name search</option>
+											  <input type="hidden" class="form-control" name="vname" id="vname"  >
+											<label>Select Vendor *</label>
+										    	<select class=" form-control" name="vid" id="vid">
+													<option>select vendor</option>
 												{% for data in all_data %}
 													<option  value="{{ data.vendorcode}}">{{ data.vendorname }}</option>
 												{% endfor %}
@@ -102,6 +102,11 @@
           </div>
 </div>
 <script>
-	$('#tdate').val(new Date().toJSON().slice(0,10));
+
+$("#vid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#vname").val(selectedOptionText);
+});
+$('#tdate').val(new Date().toJSON().slice(0,10));
 </script>
 {% endblock %}

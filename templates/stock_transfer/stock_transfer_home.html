@@ -48,23 +48,27 @@
                             <form id="myFormclass" class="form-label-left input_mask"  method="POST" action="/wh_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
                                 {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
-                                               <div class="col-md-3 col-sm-4 form-group has-feedback">
-											<input  type="text" class="form-control"  name="warehousename" id="warehousename"  value="{{ warehouselist.name }}"/>
+
+                                               <div class="col-md-3 col-sm-4 form-group has-feedback" id="warehousename_group">
+											<input  type="text" class="form-control"  name="warehousename" id="warehousename"  value="{{ warehouselist.name }}"  />
                                                 	<input type="hidden" name="warehouseid" id="warehouseid" value="{{ warehouselist.id  }}" />
-												<!--<select class="form-control" name="whid" id="whid" >
-                                                    <option value="">Warehouse</option>
-													{% for data1 in warehouselist %}
-                            							<option value="{{ data1.id }}" selected>{{ data1.name }}</option>
+												 <input type="hidden" name="busid" id="busid" />
+                                               </div>
+                                  <div class="col-md-3 col-sm-4 form-group has-feedback" id="busname_group">
+											<select class="form-control" name="busname" id="busname"  >
+                                                    <option value="">Bus Station</option>
+													{% for data1 in buslist %}
+                            							<option value="{{ data1.id }}">{{ data1.name }}</option>
                                                     {% endfor %}
-												</select>-->
+												</select>
 												</div>
+
                                 {% endif %}
 
                                  {% if request.session.displayrole == 'UPPAL ZONAL STORES' %}
 
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
 											<input type="hidden" name="deponame" id="deponame" />
-
 												<select class="form-control" name="deponame" id="depoid" >
                                                     <option value="">Depot</option>
 													{% for data1 in depolist %}
@@ -73,6 +77,7 @@
 												</select>
                                          </div>
                                 {% endif %}
+
                                              <div class="col-md-3 col-sm-4 form-group has-feedback">
                                                <button type="submit" name="search" class="btn btn-primary store">Add</button>
                                             </div>
@@ -644,9 +649,27 @@ $("#item").val(id2);
 
 
 $(document).ready(function() {
-  $('#myTab').click(function() {
-    $('#myFormclass').attr('action','http://www.example.com');
-  });
+    $(".nav-link").click(function() {
+        var value = $(this).text();
+        if (value === "Warehouse") {
+            $("#warehousename_group").show();
+            $("#busname_group").hide();
+        } else if (value === "Bus station") {
+            $("#warehousename_group").hide();
+            $("#busname_group").show();
+        } else {
+            $("#warehousename_group").hide();
+            $("#busname_group").hide();
+        }
+    });
 });
+
+
+
+
+
+
+
+
 </script>
 {% endblock %}

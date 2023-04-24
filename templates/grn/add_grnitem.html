@@ -27,7 +27,7 @@
 
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
                                                  <input type="hidden" id="wh_id" name="wh_id" />
-
+                                                       <label>Select Items *</label>
                                                 <select class="form-control" name="itemname" id="itemname">
 													<option value=" ">Items</option>
                                                     {% for data in data %}
@@ -37,19 +37,24 @@
                                             <input type="hidden" id="txtItemName" name="txtItemName" />
                                             </div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                             <label>Barch Number *</label>
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
 										</div>
                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
+                                             <label>Qty(In Cases) *</label>
 										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
 										</div>
                                          <div class="col-md-2 col-sm-3  form-group has-feedback">
+                                              <label>Number Of Bottles *</label>
 										    <input type="text" class="form-control" placeholder="number of bottles" name="nob" id="nob" readoly>
 										</div>
                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
+                                              <label>Price Per Bottle *</label>
 										    <input type="text" class="form-control" id="latestpurchase" placeholder="price per bottle" name="latestpurchase" value="{{ data.item_code }}"required>
 										</div>
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="date" class="form-control"  name="expdate" id="tdate">
+                                             <label>Expiry Date *</label>
+										    <input type="date" class="form-control"  name="expdate" id="expdate">
 										</div>
 										<!--<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="MRP" id="mrp" name="mrp" value="{{ data.mrp }}" required>
@@ -61,14 +66,15 @@
 										    <input type="text" class="form-control" placeholder="HSN" id="hsn" name="hsn" value="{{ data.hsn }}"equired >
 										</div>-->
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
+                                            <label>Free Quantity</label>
 										    <input type="text" class="form-control" placeholder="free quantity" id="freequantity" name="freequantity">
 										</div>
 
 											<div class="col-md-2 col-sm-3 form-group has-feedback">
-												<button type="submit" class="btn btn-primary">Add</button>
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">Add</button>
 											</div>
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control"  id="uom" name="uom" value="{{ data.uom}}"required>
+										    <input type="hidden" class="form-control"  id="uom" name="uom">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" id="manufacture" name="manufacture" required>
@@ -90,11 +96,10 @@
                       <thead>
                         <tr>
 
-                                   <th>S No</th>
+                                    <th>S No</th>
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
                                     <th>Expiry Date</th>
-                                    <!--<th>HSN</th>-->
                                     <th>Cases</th>
                                     <th>Purchase Per Bottle</th>
 
@@ -106,7 +111,6 @@
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
                        <td>{{  all_data.expiry_date}}</td>
-                        <td>{{ all_data.hsn }}</td>
                        <td>{{ all_data.uom }}</td>
                        <td>{{ all_data.purchase_price }}</td>
                       </tr>

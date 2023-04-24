@@ -4,7 +4,7 @@
 {% block htmlbody %}
 
         <!-- page content -->
-        <div class="right_col" role="main">
+        <div class="right_col" role="main" id="content">
           <div class="">
             <div class="page-title">
               <div class="title_left">
@@ -12,12 +12,12 @@
               </div>
 
             </div>
-             <div class="title_right">
-                <div class="col-md-6 col-sm-7 offset-md-12">
+             <div class="title_right row no-print">
+                <div class="col-md-12 col-sm-12 offset-md-12 ">
 
 
                           <!--<button class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment</button>-->
-                          <button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button>
+                          <button class="btn btn-primary pull-right" onclick="generatePDF()" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button>
                            <button class="btn btn-default pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
 
                 </div>
@@ -63,7 +63,7 @@
                           <h6 class="text-success"><b>APPROVED</b></h6>
                         </div>
                              <div class="col-sm-2 invoice-col">
-                              <img src="https://chart.googleapis.com/chart?cht=qr&chl={{ data.invoicenumber }}&chs=160x160&chld=L|0" width="75" class="qr-code img-thumbnail img-responsive" />
+                              <img src="https://chart.googleapis.com/chart?cht=qr&chl={{ data.invoicenumber }}&chs=160x160&chld=L|0" width="75" height="70" class="qr-code img-thumbnail img-responsive" />
                         </div>
                         <!-- /.col -->
                       </div>
@@ -184,4 +184,21 @@
           </div>
         </div>
         <!-- /page content -->
+<script>
+   function generatePDF() {
+  const pdf = new jsPDF({
+  format: [612, 792] // set the page size to 8.5 x 11 inches
+});
+
+  const options = {
+    pagesplit: true
+
+  };
+  const elementToPrint = document.getElementById("content"); // change this to the ID of the element you want to print
+  pdf.addHTML(elementToPrint, options, function() {
+    pdf.save('filename.pdf');
+  });
+}
+
+</script>
 {% endblock %}

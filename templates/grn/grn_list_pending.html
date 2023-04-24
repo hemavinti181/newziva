@@ -147,8 +147,8 @@
                                     <th>Invoice Id</th>
                                     <th>Invoice Date</th>
                                     <th>Invoice Amount</th>
-                                    <th>MRP</th>
-                                    <th>Qty</th>
+                                    <!--<th>MRP</th>
+                                    <th>Qty</th>-->
                                     <th></th>
 
                         </tr>
@@ -164,8 +164,8 @@
                                         <td>{{  all_data.invoice_id}}</td>
                                         <td>{{ all_data.invoicedate }}</td>
                                         <td>{{ all_data.invoiceamount }}</td>
-                                        <td>{{ all_data.totalprice }}</td>
-                                        <td>{{ all_data.totalitems }}</td>
+                                        <!--<td>{{ all_data.totalprice }}</td>
+                                        <td>{{ all_data.totalitems }}</td>-->
                                         <td>
                                             <a href="/add_grnitem_list/{{ all_data.grn }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>
                                              <span  class="badge badge-info"  data-toggle="modal"  onclick="VerifyClick('{{all_data.grn}}')" data-target="#bs-example-modal-sm">
