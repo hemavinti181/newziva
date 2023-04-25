@@ -164,6 +164,7 @@
                                     <th>Indent From</th>
                                     <th>Indent To</th>
                                     <th>Created By</th>
+                                    <th>Created On</th>
                                     <th>Status</th>
                         </tr>
                       </thead>
@@ -175,6 +176,7 @@
                       <td> {{ all_data.region_name }} </td>
                            <td>{{ all_data.warehouse_name }}</td>
                        <td>{{  all_data.created_by}}</td>
+                           <td>{{ all_data.created_on }}</td>
 
                                 <td>
                                   <a href="indent_item_list1/{{ all_data.dc_number }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>

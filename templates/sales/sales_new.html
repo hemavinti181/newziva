@@ -88,7 +88,6 @@
                                                 {% endif %}
 										</div>
                                        <div class="col-md-3 col-sm-4  form-group has-feedback">
-
                                             {% if stname %}
                                              <input type="hidden" name="stid2" id="stid2" value="{{ stid }}"  />
                                                 <select class="form-control" name="stid" id="stid1">
@@ -136,7 +135,7 @@
                                             <input type="hidden" id="txtItemName2" name="txtItemName2" />
 										</div>
                                         <div class="col-md-1 col-sm-1  form-group has-feedback">
-											<label>Qty In Cases *</label>
+											<label>Qty(In Cases) *</label>
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity" onchange="myFunction(this.value)">
 										</div>
                                          <div class="col-md-1 col-sm-1 form-group has-feedback">
@@ -352,19 +351,15 @@
                                                 </select>
 										</div>-->
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Qty In Cases *</label>
+											<label>Qty(In Cases) *</label>
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity1" onchange="myFunction(this.value)">
 										</div>
                                          <div class="col-md-6 col-sm-6 form-group has-feedback">
 											<label>No Of bottles *</label>
                                            <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles1"  readonly/>
+                                       </div>
 
-                                       </div>
-                                        <div class="col-md-6 col-sm-6 form-group has-feedback">
-											<label>Date *</label>
-                                           <input class="form-control"    type="date" name="date" id="todate1"   required>
-                                       </div>
-                                         <div class="col-md-6 col-sm-6 form-group has-feedback">
+                                         <div class="col-md-12 col-sm-12 form-group has-feedback">
 											<label>Price *</label>
                                            <input type="text" class="form-control" placeholder="0" name="mrp" id="price1" readonly/>
                                        </div>
@@ -376,10 +371,7 @@
 											<label>Expiry Date *</label>
 										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate1" >
 										</div>-->
-                                           <div class="col-md-6 col-sm-6 form-group has-feedback">
-											<label>Remarks </label>
-                                               <textarea  class="form-control" placeholder="remarks" name="remarks" id="remarks2"></textarea>
-                                       </div>
+
                                             <input type="hidden" class="form-control" name="cases" id="cases1">
                                              <input type="hidden" class="form-control" name="mrp" id="mrp1">
                                                   <div class="col-md-6 col-sm-6  offset-md-5">

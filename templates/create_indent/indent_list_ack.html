@@ -27,13 +27,13 @@
                                     <th>S No</th>
                                     <th>Item code</th>
                                     <th>Item Name</th>
-                                    <th>QTY</th>
+                                    <th>Qty(In Cases)</th>
                                     <th>MRP</th>
                                     <th>Dispatch Qty</th>
-                                    <th>Batch Code</th>
-                                    <th>ExpDate date</th>
+                                   <th>Batch Code</th>
+                                    <th>Created  date</th>
                                     <th>Indent no</th>
-                                    <th>Remarks</th>
+
                                     <th>Action</th>
 
                         </tr>
@@ -41,17 +41,17 @@
                             {% for all_data in all_data %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ all_data.item_code }}</td>
+                                    <td>{{ all_data.item_code_org }}</td>
                                     <td>{{ all_data.item_name }}</td>
                                      <td> {{ all_data.qty }} </td>
                                     <td>{{ all_data.mrp }}</td>
                                     <td>{{all_data.dispatch_qty}}</td>
-                                    <td>{{ all_data.batch_code }}</td>
+                            <td>{{ all_data.batch_code }}</td>
                                     <td>{{  all_data.expirydate }}</td>
                                     <td>{{all_data.indent_no}}</td>
-                                     <td>{{ remarks }}</td>
+
                                     <td>
-                                     <span data-target="#bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.sno }}','{{ all_data.mrp }}','{{ all_data.qty }}','{{ all_data.uom}}','{{all_data.noofbottles }}')" class="badge badge-success" >Update </span></a>
+                                     <span data-target="#bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.sno }}','{{ all_data.mrp }}','{{ all_data.qty }}','{{ all_data.uom}}','{{all_data.noofbottles }}','{{ all_data.totalprice }}')" class="badge badge-success" >Update </span></a>
                                     </td>
                                 </tr>
                              {% endfor %}
@@ -71,7 +71,7 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
                                                   <div class="modal-header">
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Payment</h4>
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Quantity</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -87,12 +87,12 @@
 										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                         <label>Number Of Botteles</label>
-										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob">
+                                                         <label>No Of Bottles</label>
+										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob" readonly>
                                             </div>
                                             <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                 <label>Total Price</label>
-										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" >
+										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" readonly >
 										    </div>
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                 <label>remarks</label>
@@ -102,7 +102,7 @@
                                                 <input type="hidden" name="cases" id="cases" />
 
                                             <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-info">Update Payment</button>
+                                                  <button type="submit" class="btn btn-info">Update</button>
                                             </div>
                                              </form>
                                         </div>
@@ -112,12 +112,13 @@
                                     </div>
                                 </div>
 <script>
-  function VerifyClick(id,id1,id2,id3,id4){
+  function VerifyClick(id,id1,id2,id3,id4,id5){
 $("#qty").val(id2);
 $("#nob").val(id4);
 $("#txtHdnId").val(id);
 $("#cases").val(id3)
 $("#mrp").val(id1)
+ $("#price").val(id5);
 $("#remarks").val(" ")
 }
         $('#qty').on('input', function()  {

@@ -159,9 +159,10 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Indent NO</th>
-                                    <th>Warehouse Name</th>
-                                    <th>Region Name</th>
+                                    <th>Indent From</th>
+                                    <th>Indent To</th>
                                     <th>Created By</th>
+                                    <th>Created Date</th>
                                     <th>Status</th>
                         </tr>
                       </thead>
@@ -169,9 +170,10 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.indent_no }}</td>
-                       <td> {{ all_data.warehouse_name }} </td>
-                       <td>{{  all_data.region_name}}</a></td>
+                       <td> {{ all_data.region_name }} </td>
+                       <td>{{  all_data.warehouse_name}}</a></td>
                         <td>{{ all_data.createdby }}</a></td>
+                           <td>{{ all_data.createdon }}</td>
                                 <td>
                                   <a href="indent_item_list_ack/{{ all_data.indent_no }}/"><span class="badge badge-success">{{ all_data.status }} </span></a>
                                 </td>

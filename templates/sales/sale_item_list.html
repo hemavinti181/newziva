@@ -31,11 +31,13 @@
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
                                     <th>ExpDate</th>
-                                    <th>HSN</th>
+                                    <!--<th>HSN</th>-->
                                     <th>Batch</th>
                                     <th>Total</th>
                                     <th>Manufacture</th>
+                            {% if request.session.displayrole ==  'BUS STATION CONTROLLER' or  request.session.displayrole ==  'DEPOT STORE EXECUTIVE' %}
                                     <th>Action</th>
+                            {% endif %}
                         </tr>
                       </thead>
                             {% for all_data in all_data %}
@@ -45,14 +47,15 @@
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
                        <td>{{  all_data.expiry_date }}</td>
-                        <td>{{ all_data.hsn }}</td>
+                        <!--<td>{{ all_data.hsn }}</td>-->
                        <td>{{ all_data.batch_no }}</td>
                        <td class="text-success">₹ {{ all_data.total }}</td>
                            <td>{{all_data.manufacturer}}</td>
-
+                         {% if request.session.displayrole == 'BUS STATION CONTROLLER' or  request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
                       <td>
                           <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}',{{ all_data.noofbottles }},{{ all_data.id }})"  data-target="#bs-example-modal-sm">Quantity Update</span>
                        </td>
+                           {% endif %}
                       </tr>
                       {% endfor %}
                       <tbody>
@@ -71,7 +74,7 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
                                                   <div class="modal-header">
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Payment</h4>
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Quantity</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -87,17 +90,17 @@
 										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                         <label>Number Of Botteles</label>
-										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob">
+                                                         <label>No Of Bottles</label>
+										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob" readonly>
                                             </div>
                                             <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                 <label>Total Price</label>
-										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" >
+										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" readonly>
 										    </div>
                                                 <input type="hidden" name="cases" id="cases" />
-
+<p></p>
                                             <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-info">Update Payment</button>
+                                                  <button type="submit" class="btn btn-info">Update</button>
                                             </div>
                                              </form>
                                         </div>

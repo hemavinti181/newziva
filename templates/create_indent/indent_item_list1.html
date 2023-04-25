@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b> Indent Item List<b></h3>
+                <h3 style="color:#1372ba"><b> Indent Item List</b></h3>
               </div>
 
               </div>
@@ -50,7 +50,7 @@
                                     <td>{{  all_data.expirydate }}</td>
                                     <td>{{all_data.indent_no}}</td>
                                     <td>
-                          <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}',{{ all_data.noofbottles }},{{ all_data.id }})"  data-target="#bs-example-modal-sm">Quantity Update</span>
+                          <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sno}}','{{ all_data.qty }}','{{ all_data.uom }}','{{ all_data.mrp }}')"  data-target="#bs-example-modal-sm">Quantity Update</span>
                        </td>
                                 </tr>
                              {% endfor %}
@@ -66,37 +66,43 @@
             </div>
           </div>
 </div>
+
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
                                                   <div class="modal-header">
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Payment</h4>
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Quantity</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
                                 </div>
                                         <div class="modal-body">
-                                             <form method="post" action="/deliver_challan_item_update">
+                                             <form method="post" action="/qtyupdate_readytoship">
                                                     {% csrf_token %}
+                                                   <input type="hidden" id="dcid" name="dcid"  value="{{ id }}"/>
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
                                                  <input type="hidden" id="mrp" name="mrp"  />
-                                                   <input type="hidden" id="sno" name="sno"  />
+
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                        <label>Quantity (In CaseS)</label>
+                                                        <label>Quantity (In Cases)</label>
 										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                         <label>Number Of Botteles</label>
-										            <input type="text" class="form-control" placeholder="Number Of Botteles" name="nob" id="nob">
+                                                         <label>No Of Bottles</label>
+										            <input type="text" class="form-control" placeholder="No Of Bottles" name="nob" id="nob" readonly>
                                             </div>
-                                            <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                           <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                 <label>Total Price</label>
-										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" >
+										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" readonly>
 										    </div>
+                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                       <label>Remarks</label>
+                                                        <textarea class="form-control" rows="2" placeholder="remarks"  name="comment" id="comment"></textarea>
+                                                      </div>
                                                 <input type="hidden" name="cases" id="cases" />
 
                                             <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-info">Update Payment</button>
+                                                  <button type="submit" class="btn btn-info">Update</button>
                                             </div>
                                              </form>
                                         </div>
@@ -106,11 +112,26 @@
                                     </div>
                                 </div>
 <script>
-   function VerifyClick(id){
-$("#qty").val(" ");
-$("#remarks").val(" ");
+   function VerifyClick(id,id1,id2,id3){
+$("#qty").val(id1);
+$("#cases").val(id2);
 $("#txtHdnId").val(id);
+ $("#mrp").val(id3);
 }
+ $('#qty').on('input', function()  {
+            $("#nob").val(" ");
+            $("#price").val(" ");
+    	    val  = $("#qty").val();
+            val1 = $("#cases").val();
+            mrp = $("#mrp").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp)
+            $("#nob").val(val2);
+            $("#price").val(" ");
+            $("#price").val(val3);
+
+
+         });
 </script>
 {% endblock %}
 

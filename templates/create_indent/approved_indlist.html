@@ -27,7 +27,8 @@
                                     <th>S No</th>
                                     <th>DC Number</th>
                                     <th>Out pass number</th>
-                                    <th>Indent Details</th>
+                                    <th>Indent From</th>
+                                    <th>Indent To</th>
                                     <th>Created By</th>
                                     <th>Action</th>
 
@@ -38,7 +39,8 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ all_data.dc_number }}</td>
                                     <td>{{ all_data.outpass_number }}</td>
-                                    <td> {{ all_data.region_name }}->{{ all_data.warehouse_name }}</td>
+                                    <td> {{ all_data.region_name }}</td>
+                                    <td>{{ all_data.warehouse_name }}</td>
                                     <td>{{ all_data.modified_by }}</td>
                                     {% if all_data.status == 'Accepted' %}
                                     <td>
@@ -97,33 +99,14 @@
 
  </div>
                           <div class="inner-fabs">
-                                  <div class="fab round" id="fab3" data-tooltip="Pending Approved List"><a href="approved_indlist_pending"><i class="fa fa-outdent"></i></a></div>
-                                  <div class="fab round" id="fab2" data-tooltip="Approved Indent List"><a href="approved_indlist_accept"><i class="fa fa-outdent" ></i></a></div>
+                                  <div class="fab bg-green round" id="fab3" data-tooltip="Out For Delivery"><a href="approved_indlist_pending"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -170px !important;">Out For Delivery</span></div>
+                                  <div class="fab bg-purple round" id="fab2" data-tooltip="Accepted"><a href="approved_indlist_accept"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Accepted</span></div>
                           </div>
-                                <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+                                <div class="fab bg-yellow  round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
                         </div>
               </div>
 <script>
- let fab1 = document.getElementById('fab1');
-let innerFabs = document.getElementsByClassName('inner-fabs')[0];
 
-fab1.addEventListener('click', function () {
-  innerFabs.classList.toggle('show');
-});
-
-document.addEventListener('click', function (e) {
-  switch (e.target.id) {
-    case "fab1":
-    case "fab2":
-    case "fab3":
-    case "fab4":
-    case "fabIcon":
-      break;
-    default:
-      innerFabs.classList.remove('show');
-      break;}
-
-});
    function VerifyClick(qty,id){
 $("#qty").val(qty);
 $("#remarks").val(" ");
