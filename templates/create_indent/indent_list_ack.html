@@ -51,7 +51,7 @@
                                     <td>{{all_data.indent_no}}</td>
 
                                     <td>
-                                     <span data-target="#bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.sno }}','{{ all_data.mrp }}','{{ all_data.qty }}','{{ all_data.uom}}','{{all_data.noofbottles }}','{{ all_data.totalprice }}')" class="badge badge-success" >Update </span></a>
+                                     <span data-target="#bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.sno }}','{{ all_data.mrp }}','{{ all_data.qty }}','{{ all_data.uom}}','{{all_data.noofbottles }}','{{ all_data.totalprice }}','{{ all_data.indent_no }}')" class="badge badge-success" >Update </span></a>
                                     </td>
                                 </tr>
                              {% endfor %}
@@ -112,13 +112,14 @@
                                     </div>
                                 </div>
 <script>
-  function VerifyClick(id,id1,id2,id3,id4,id5){
+  function VerifyClick(id,id1,id2,id3,id4,id5,id6){
 $("#qty").val(id2);
 $("#nob").val(id4);
 $("#txtHdnId").val(id);
 $("#cases").val(id3)
 $("#mrp").val(id1)
  $("#price").val(id5);
+ $("#sno").val(id6);
 $("#remarks").val(" ")
 }
         $('#qty').on('input', function()  {

@@ -53,7 +53,7 @@
                                                </div>
 
                                         <div class="col-md-3 col-sm-4 form-group has-feedback">
-                                               <button type="submit"  class="btn btn-primary store">Add</button>
+                                               <button type="submit"  class="btn btn-primary store">Submit</button>
                                             </div>
 
                             </form>
@@ -106,23 +106,88 @@
 
                                        <input type="hidden" id="store_id" name="store_id" />
                                    </form>
-
+                     </form>
                      </div>
+                                <div class="x_content">
+                  <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Item Name</th>
+                                    <th>Qty(In Cases)</th>
+                                    <th>ExpDate</th>
+                                    <!--<th>HSN</th>-->
+                                    <th>Batch</th>
+                                    <th>MRP</th>
+                                    <th>Manufacture</th>
+                                    <th>Action</th>
+
+                        </tr>
+                      </thead>
+                            <tbody>
+                            {% for all_data in wh_item_list %}
+                       <tr>
+                           <td>{{ forloop.counter }}</td>
+                      <td>{{ all_data.item_name }}</td>
+                       <td> {{ all_data.quantity }} </td>
+                       <td>{{  all_data.expiry_date }}</td>
+                        <!--<td>{{ all_data.hsn }}</td>-->
+                       <td>{{ all_data.batch_no }}</td>
+                       <td>{{ all_data.mrp }}</td>
+                           <td>{{all_data.manufacturer}}</td>
+
+                       <td>
+                           <a href="delete_stk_item/{{ all_data.sno }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                           <span  data-toggle="modal"   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
+
+                       </td>
+                            </tbody>
+                           <tfoot>
+
+                           </tfoot>
+                      </tr>
+                      {% endfor %}
+
+
+                      <tbody>
+                      </tbody>
+                            <td colspan="9" style="color:#06911A" >
+                                   <b>Invoice No: {{ taxinvoice }}</b>
+
+     <span style="float:right;"><span   class="badge-warning"  style="padding:  4px !important;"    data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#complete">COMPLETE SALE</span></span>
+                               </th>
+                          </tr>
+                           </tfoot>
+                      </table>
+
+                              </div>
+                          </div>
+                </div>
+                </div>
                       </div>
 
-
-                           <div class="tab-pane fade show " id="depo" role="tabpanel" aria-labelledby="depo-tab">
+                           <div class="tab-pane fade show {{ depo }}" id="depo" role="tabpanel" aria-labelledby="depo-tab">
                                <form class="form-label-left input_mask"  method="POST" action="depo_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
-
-                                            <input type="search" class="form-control" id="deposearch" name="deposearch" placeholder="Depo Search" value="{{ deponame }}" autocomplete="off"/>
-
+                                                   <input type="hidden" id="txtdeposearch1" name="txtdeposearch1"  value="{{ txtDepoId }}"/>
+                                                               <select class="form-control" name="txtDepoId" id="txtDepoId">
+                                                    <option value="">Depot</option>
+													{% for data1 in depolist %}
+                            							<option value="{{ data1.id }}">{{ data1.name }}</option>
+                                                    {% endfor %}
+												</select>
                                               <input type="hidden" id="txtdeposearch" name="txtdeposearch"  />
-                                                 <input type="hidden" id="txtDepoId" name="txtDepoId"  />
+
                                          </div>
                                              <div class="col-md-3 col-sm-4 form-group has-feedback">
-                                               <button type="submit" name="search" class="btn btn-primary store">Search</button>
+                                               <button type="submit" name="search" class="btn btn-primary store">Submit</button>
                                             </div>
                             </form>
                      <div class="x_content">
@@ -134,16 +199,27 @@
                                             <input type="hidden" name="depoitemname" id="depoitemname" />
 												<select class="form-control" name="depo_id" id="depo_id" >
                                                     <option value="">Items</option>
-													{% for data1 in warehouseinventorylist %}
+													{% for data1 in items %}
                             							<option value="{{ data1.itemcode }}">{{ data1.itemname }}</option>
                                                     {% endfor %}
 												</select>
 										</div>
-                                        <div class="col-md-1 col-sm-2  form-group has-feedback">
-											<label>Quantity *</label>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="depoquantity">
 										</div>
-                                        <div class="col-md-1 col-sm-1  form-group has-feedback">
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+
+										    <input type="text" class="form-control" placeholder="no of bottles" name="deponob" id="deponob" readonly>
+										</div>
+                                        <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
+										    <input type="text" class="form-control" placeholder="price" name="depoprice" id="depoprice">
+										</div>-->
+                                         <div class="col-md-2 col-sm-3 form-group has-feedback">
+
+										    <input type="text" class="form-control" placeholder="remarks" name="remarks" />
+										</div>
+                                        <!--<div class="col-md-1 col-sm-1  form-group has-feedback">
 											<label>Batch *</label>
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="depobatchno">
 										</div>
@@ -157,17 +233,84 @@
                                        </div>
                                        <div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" name="manufacture"  id="depomanufacture" required>
-										</div>
-										<div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="cpsno" id="depocpsno"  required>
-										</div>
+										</div>-->
+
+										    <input type="hidden" class="form-control" name="depocpsno" id="depocpsno"  >
+                                             <input type="hidden" class="form-control" name="depocases" id="depocases" />
+                                       <input type="hidden" class="form-control" name="depomrp" id="depomrp" />
+
                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" name="add" style="margin-top: 5px;" class="btn btn-primary">Add</button>
                                        </div>
 
                                    </form>
-                                     </div>
-                           </div>
+                     </div>
+
+                                <div class="x_content">
+                  <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Item Name</th>
+                                    <th>Qty(In Cases)</th>
+                                    <th>ExpDate</th>
+                                    <!--<th>HSN</th>-->
+                                    <th>Batch</th>
+                                    <th>MRP</th>
+                                    <th>Manufacture</th>
+                                    <th>Action</th>
+
+                        </tr>
+                      </thead>
+                            <tbody>
+                            {% for all_data in depo_item_list %}
+                       <tr>
+                           <td>{{ forloop.counter }}</td>
+                      <td>{{ all_data.item_name }}</td>
+                       <td> {{ all_data.quantity }} </td>
+                       <td>{{  all_data.expiry_date }}</td>
+                        <!--<td>{{ all_data.hsn }}</td>-->
+                       <td>{{ all_data.batch_no }}</td>
+                       <td>{{ all_data.mrp }}</td>
+                           <td>{{all_data.manufacturer}}</td>
+
+                       <td>
+                           <a href="delete_stkdepo_item/{{ all_data.sno }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                           <span  data-toggle="modal" id="depoedit"  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
+
+                       </td>
+                            </tbody>
+                           <tfoot>
+
+                           </tfoot>
+                      </tr>
+                      {% endfor %}
+
+
+                      <tbody>
+                      </tbody>
+                            <td colspan="9" style="color:#06911A" >
+                                  <b> Invoice No: {{ taxinvoice }}</b>
+
+     <span style="float:right;"><span   class="badge-warning"  style="padding:  4px !important;"    data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#depocomplete">COMPLETE SALE</span></span>
+                               </th>
+                          </tr>
+                           </tfoot>
+                      </table>
+  </div>
+                          </div>
+
+
+                </div>
+                </div>
+                      </div>
+
 
                               <div class="tab-pane fade show  {{ bus }}" id="busstation" role="tabpanel" aria-labelledby="bus-tab">
                                      <form class="form-label-left input_mask"  method="POST" action="busstation_add_stf"   enctype="multipart/form-data">
@@ -230,9 +373,7 @@
 
                                       <!-- <input type="hidden" id="store_id" name="store_id" />-->
                                    </form>
-                     </div>
-                              </div>
-                       </div>
+                     
                                 <div class="x_content">
                   <div class="row">
                           <div class="col-sm-12">
@@ -245,7 +386,7 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Item Name</th>
-                                    <th>QTY</th>
+                                    <th>Qty(In Cases)</th>
                                     <th>ExpDate</th>
                                     <th>HSN</th>
                                     <th>Batch</th>
@@ -256,7 +397,7 @@
                         </tr>
                       </thead>
                             <tbody>
-                            {% for all_data in wh_item_list %}
+                            {% for all_data in bus_item_list %}
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>
@@ -268,8 +409,8 @@
                            <td>{{all_data.manufacturer}}</td>
 
                        <td>
-                           <a href="item_add" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                           <span  data-toggle="modal"   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
+                           <a href="delete_stkbus_item/{{ all_data.sno }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                           <span  data-toggle="modal" id="busedit"  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
 
                        </td>
                             </tbody>
@@ -282,10 +423,9 @@
 
                       <tbody>
                       </tbody>
-                            <td colspan="9" >
-                                   Invoice No: {{wh_item_list1.transit_id}}
-
-     <span style="float:right;"><span   class="badge-warning"  style="padding:  4px !important;"    data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#complete">COMPLETE SALE</span></span>
+                            <td colspan="9" style="color:#06911A" >
+                                <b>Invoice No: {{ taxinvoice }}</b>
+     <span style="float:right;"><span   class="badge-warning"  style="padding:  4px !important;"    data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#buscomplete">COMPLETE SALE</span></span>
                                </th>
                           </tr>
                            </tfoot>
@@ -298,7 +438,7 @@
                       </div>
 
 </div>
-
+                  </div>
  <div class="modal custom-modal fade" id="complete" role="dialog">
      <div class="modal-dialog modal-dialog-centered" role="document">
          <div class="modal-content style">
@@ -309,7 +449,7 @@
 								</button>
                                 </div>
 							<div class="modal-body">
-                                             <form method="POST" action="complete_whinv">
+                                             <form id='wh' method="POST" action="complete_whinv">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
 
@@ -347,11 +487,10 @@
                                                     {% csrf_token %}
                                                           <input type="hidden" id="id1" name="id1"  />
 
-
-                                                 	  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                 	  <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
 										        <input type="date" class="form-control" name="date" id="date2"  placeholder="remarks" >
-										    </div>
+										    </div>-->
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
 										      <textarea class="form-control" name="remarks" id="remarks2"  placeholder="remarks" ></textarea>
@@ -381,10 +520,10 @@
                                                           <input type="hidden" id="id" name="id"  />
 
 
-                                                 	  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                 	  <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
 										        <input type="date" class="form-control" name="date" id="date3"  placeholder="remarks" >
-										    </div>
+										    </div>-->
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
 										      <textarea class="form-control" name="remarks" id="remarks3"  placeholder="remarks" ></textarea>
@@ -409,7 +548,7 @@
 								</button>
                                 </div>
                                         <div class="modal-body">
-                                             <form method="post" action="/edit_stk_item">
+                                             <form id="myForm" method="post" action="/edit_stk_item">
                                                     {% csrf_token %}
                                             <input type="hidden" id="uom" name="uom"  />
 
@@ -447,6 +586,11 @@ $("#busname").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#txBussearch").val(selectedOptionText);
 });
+$("#txtDepoId").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#txtdeposearch").val(selectedOptionText);
+});
+
 $("#itemid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#itemname").val(selectedOptionText);
@@ -454,6 +598,10 @@ $("#itemid").change(function() {
 $("#busitem_id").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busitemname").val(selectedOptionText);
+});
+$("#depo_id").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#depoitemname").val(selectedOptionText);
 });
  $('#itemid').change(function() {
                     var searchterm = $("#itemname").val();
@@ -518,6 +666,35 @@ $('#busquantity').on('input', function()  {
 
 
          });
+          $('#depo_id').change(function() {
+                    var searchterm = $("#depoitemname").val();
+                    $.ajax({
+                      data: {"searchterm":searchterm,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_depo_item' %}",
+                      type: 'POST',
+                      success: function(data){
+                        var obj = data.data.warehouseinventorylist
+                        console.log("obj");
+                         console.log(obj);
+                        if(obj.length>0){
+                             $("#depocpsno").val(obj[0].cp_sno);
+                             $("#depocases").val(obj[0].uom);
+                        }
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+ })
+$('#depoquantity').on('input', function()  {
+            $("#nob").val(" ");
+
+    	    val  = $("#depoquantity").val();
+            val1 = $("#depocases").val();
+            val2 =    (val * val1)
+            $("#deponob").val(val2);
+
+         });
   $(document).ready(function(){
   var optionValue = $("#warehouseid").val();
   $("#whid").find("option[value='" + optionValue + "']").prop("selected", true);
@@ -531,5 +708,18 @@ $(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busname").find("option[value='" + optionValue + "']").prop("selected", true);
 })
+$('#busedit').click(function(){
+      $('#myForm').attr('action', '{% url "edit_stkbus_item" %}'); // set the new action URL
+// submit the form
+    });
+   $('#depoedit').click(function(){
+      $('#myForm').attr('action', '{% url "edit_stkdepo_item" %}'); // set the new action URL
+// submit the form
+    });
+ $(window).on("load", function() {
+  var optionValue1 = $("#txtdeposearch1").val();
+  $("#txtDepoId").find("option[value='" + optionValue1 + "']").prop("selected", true);
+});
+
 </script>
 {% endblock %}
