@@ -30,7 +30,7 @@
                                     <th>Qty(In Cases)</th>
                                     <th>Expiry Date</th>
                                 <th>Batch code</th>
-                                    <th>No Of Bottles</th>
+                                   <!--<th>No Of Bottles</th>-->
                                     <th> Price Per Bottle</th>
                                     <th>Action</th>
 
@@ -42,8 +42,8 @@
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
                        <td>{{  all_data.expiry_date}}</td>
-               <td>{{ all_data.batch_no }}</td>
-                       <td>{{ all_data.uom }}</td>
+                    <td>{{ all_data.batch_no }}</td>
+                        <!--<td>{{ all_data.uom }}</td>-->
                        <td>{{ all_data.purchase_price }}</td>
                          <td>
                           <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.id}}','{{ all_data.quantity }}','{{ all_data.purchase_price }}','{{ all_data.uom }}','{{ all_data.noofbottles }}','{{ all_data.grn }}','{{ all_data.purchase_value }}')"  data-target="#bs-example-modal-sm">Quantity Update</span>

@@ -2818,9 +2818,14 @@ def grn_pending_status(request):
         return render(request, 'grn/grn_list_pending.html',{'menuname':menuname})
 
 def sale_item_list(request):
+
+    data1 = request.session['daat1']
+    busdeponame = request.session['deponame']
+    busdepoid = request.session['depoid']
     menuname = request.session['mylist']
     stid = request.session['stid']
     stname = request.session['storename']
+    medepoid = request.session['medepoid']
     deponame = request.session['deponame']
     bustation = request.session['bustname']
     accesskey = request.session['accesskey']
@@ -2889,11 +2894,11 @@ def sale_item_list(request):
         data = response.json()
         sale_item_list = data['saleitemlist']
         return render(request, 'sales/sales_new.html',
-                      {"all_data": sale_item_list, 'deponame': deponame,'bustation':bustation, 'data': sale_item_list[0],
+                      {'depolist':data1,'busdeponame':busdeponame,'busdepoid':busdepoid,"all_data": sale_item_list, 'deponame': medepoid,'bustation':bustation, 'data': sale_item_list[0],
                       'stname':stname,'stid':stid,'data2':data2,'data3':data2[0],'spell':spell,'netvalue':netvalue,'taxinvoice':taxinvoice,'menuname':menuname})
     else:
         return render(request, 'sales/sales_new.html',
-                      {'deponame': deponame,'bustation':bustation,'stname':stname,'data2':data2,'data3':data2[0],'spell':spell,'menuname':menuname})
+                      {'depolist':data1,'busdeponame':busdeponame,'busdepoid':busdepoid,'deponame': medepoid,'bustation':bustation,'stname':stname,'data2':data2,'data3':data2[0],'spell':spell,'menuname':menuname})
 
 def sales_item_list_pending(request,id):
     menuname = request.session['mylist']
@@ -2946,6 +2951,7 @@ def proformainvoice(request):
         if response.status_code == 200:
             data = response.json()
             data1 = data['dropdownlist']
+            request.session['daat1'] = data1
 
         if request.method == 'POST':
 
@@ -2953,10 +2959,10 @@ def proformainvoice(request):
                 stid = request.POST.get('stid')
                 request.session['stid'] = stid
                 request.session['storename']=stname
-                deponame =  request.POST.get('deponame')
-                depoid = request.POST.get('depoid')
-                request.session['depoid'] = depoid
-                request.session['deponame']=deponame
+                medeponame =  request.POST.get('deponame')
+                medepoid = request.POST.get('depoid')
+                request.session['medepoid'] = medepoid
+                request.session['medeponame']=medeponame
                 bustname = request.POST.get('busstationname')
                 request.session['bustname'] = bustname
                 url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
@@ -2995,15 +3001,15 @@ def proformainvoice(request):
                     request.session['customer_mobile'] = cus_mobile
                     messages.success(request, data['message'])
                     return render(request, 'sales/sales_new.html',
-                                  {'busdeponame':busdeponame,'busdepoid':busdepoid,'menuname':menuname,'data': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': deponame, 'bustation': bustname})
+                                  {'busdeponame':busdeponame,'busdepoid':busdepoid,'menuname':menuname,'depolist': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': medepoid, 'bustation': bustname})
                 else:
                     try:
                         data = response.json()
                         messages.error(request,data['message'])
                     except:
                         messages.error(request,response.text)
-                    return render(request, 'sales/sales_new.html', {'busdeponame':busdeponame,'menuname':menuname,'data':data1,'stname':stname,'deponame': deponame,'bustation':bustname})
-        return render(request, 'sales/sales_new.html', {'data':data1,'menuname':menuname,'busdepoid':busdepoid,'busdeponame':busdeponame})
+                    return render(request, 'sales/sales_new.html', {'busdeponame':busdeponame,'menuname':menuname,'depolist':data1,'stname':stname,'deponame': medepoid,'bustation':bustname})
+        return render(request, 'sales/sales_new.html', {'depolist':data1,'menuname':menuname,'busdepoid':busdepoid,'busdeponame':busdeponame})
     except:
         messages.error(request,response.text)
     return render(request,'sales/sales_new.html')
@@ -3068,7 +3074,7 @@ def sales_item_add(request):
             except:
                 messages.error(request,r.text)
             return redirect('sale_item_list')
-    return render(request, 'sales/sales_new.html', {'menuname':menuname,'data':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
+    return render(request, 'sales/sales_new.html', {'menuname':menuname,'depolist':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
 def complete_sale(request):
 
         accesskey = request.session['accesskey']
@@ -3118,20 +3124,15 @@ def delete_sale_item(request,id):
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
             data = response.json()
-            del request.session['taxinvoice']
-            del request.session['storename']
-            del request.session['stid']
-            del request.session['bustname']
-            del request.session['deponame']
             messages.success(request, data['message'])
-            return redirect('sales_item_list')
+            return redirect('sale_item_list')
         else:
             try:
                 data = response.json()
                 messages.error(request, data['message'])
             except:
                 messages.error(request,response.text)
-            return redirect('sales_item_list')
+            return redirect('sale_item_list')
 
 def get_sale_item(request):
     accesskey = request.session['accesskey']
@@ -3491,6 +3492,7 @@ def medeliver_challan_pending(request):
     menuname = request.session['mylist']
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
+
     try:
         accesskey = request.session['accesskey']
         regionid = request.session['regionid']
@@ -3520,8 +3522,10 @@ def medeliver_challan_pending(request):
             payload = json.dumps({
                 "accesskey": accesskey,
                 "date": request.POST.get('date'),
-                "depo":request.POST.get('depotname'),
+                "depo":request.POST.get('depoid'),
                 "busstation": request.POST.get('busstationname'),
+                "regionid":regionid,
+                "warehouseid":"All",
                 "type": "Pending"
             })
             headers = {
@@ -3545,6 +3549,8 @@ def medeliver_challan_pending(request):
                 "busstation": "All",
                 "date": "All",
                 "depo":"All",
+                "regionid":"All",
+                "warehouseid": "All",
                 "type": "Pending"
             })
             headers = {
@@ -4177,15 +4183,15 @@ def approve_accept(request):
     if response.status_code == 200:
         data = response.json()
         messages.success(request,data['message'])
-        return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname})
+        return redirect('/approved_indlist_pending')
     else:
         try:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname})
+
         except:
             messages.error(request,response.text)
-        return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname})
+        return redirect('/approved_indlist_pending')
 def approved_indlist_accept(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']

@@ -19,13 +19,11 @@
                                         <form class="form-label-left input_mask"  method="POST" action="out_pass_scanner"   enctype="multipart/form-data">
 										{% csrf_token %}
 
-										<div class="col-md-5 col-sm-5   form-group pull-right top_search">
-                                          <div class="input-group">
-                                            <input type="text" class="form-control" id="outpassid" name="outpassid" placeholder="Enter Outpass Number..." required />
-                                              <span class="input-group-btn">
-                                                <button class="btn btn-primary btn-xs" name="search" type="submit">Approve!</button>
-                                              </span>
+										<div class="col-md-3 col-sm-3   form-group">
+                                            <input type="text" class="form-control" id="outpassid" name="outpassid" placeholder="enter outpass number..." required />
                                             </div>
+                                             <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                             <button class="btn btn-primary btn-xs" name="search" type="submit">Approve</button>
                                         </div>
                                         </form>
                 </div>

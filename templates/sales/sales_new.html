@@ -51,11 +51,8 @@
 										</div>-->
                                             	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
 
-                                                    {% if deponame %}
-                                                    	<select class="form-control" name="depoid1" id="depoid1">
-													<option value="{{  deponame }}" > {{ deponame }}</option>
-                                                    </select>
-                                                    {% else %}
+
+
                                                     {% if request.session.displayrole == 'BUS STATION CONTROLLER' %}
                                                      <input type="text"  class="form-control" name="deponame"  value="{{ busdeponame }}" />
                                                     <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}" />
@@ -65,13 +62,13 @@
 												    </select>-->
                                                     {% else %}
                                                      <input type="hidden" name="deponame" id="deponame" />
+                                                       <input type="hidden" name="depoid1" id="depoid1"  value="{{  deponame }}" />
                                                     <select class="form-control depoid" name="depoid" id="depoid">
                                                       <option value="">depot </option>
-                                                        {% for data in data %}
+                                                        {% for data in depolist %}
                                                            <option value="{{ data.id }}">{{ data.name }} </option>
                                                         {% endfor %}
 												    </select>
-                                                    {% endif %}
                                                  {% endif %}
                                                 </div>
                                         <div class="col-md-3 col-sm-4  form-group has-feedback">
@@ -123,9 +120,9 @@
                                    <form class="form-label-left input_mask"  method="POST" action="sales_item_add"   enctype="multipart/form-data">
 										{% csrf_token %}
 
-										<div class="col-md-2 col-sm-3 input-icons  form-group has-feedback">
+										<div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
                                                <input type="hidden" id="wh_id" name="wh_id" />
-                                            <label>Select Items *</label>
+                                            <label>Select Items </label>
                                                 <select class="form-control" name="itemname" id="saleitem">
 													<option value=" ">Items</option>
                                                     {% for data in data2 %}
@@ -135,20 +132,20 @@
                                             <input type="hidden" id="txtItemName2" name="txtItemName2" />
 										</div>
                                         <div class="col-md-1 col-sm-1  form-group has-feedback">
-											<label>Qty(In Cases) *</label>
+											<label>Qty(In Cases) </label>
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity" onchange="myFunction(this.value)">
 										</div>
                                          <div class="col-md-1 col-sm-1 form-group has-feedback">
-											<label>No Of bottles *</label>
+											<label>No Of bottles </label>
                                            <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles"  readonly/>
 
                                        </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
-											<label>Date *</label>
+											<label>Date </label>
                                            <input class="form-control"    type="date" name="date" id="todate"  required>
                                        </div>
-                                         <div class="col-md-1 col-sm-2 form-group has-feedback">
-											<label>Price *</label>
+                                         <div class="col-md-1 col-sm-1 form-group has-feedback">
+											<label>Price </label>
                                            <input type="text" class="form-control" placeholder="0" name="mrp" id="price" readonly/>
                                        </div>
                                         <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
@@ -160,7 +157,7 @@
 										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate1" >
 										</div>-->
                                            <div class="col-md-3 col-sm-3 form-group has-feedback">
-											<label>Remarks *</label>
+											<label>Remarks </label>
                                                <input type="text"  class="form-control" placeholder="remarks" name="remarks" id="remarks1"/>
                                        </div>
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
@@ -193,7 +190,7 @@
                                     <th>Item Name</th>
                                     <th>Qty In Cases</th>
                                     <th>Qty In Bottles</th>
-                                    <th>HSN</th>
+                                    <!--<th>HSN</th>-->
                                     <th>Batch</th>
                                     <th>Total </th>
                                     <th>Manufacture</th>
@@ -209,14 +206,14 @@
                        <td> {{ all_data.quantity }} </td>
                            <td> {{ all_data.noofbottles }}</td>
 
-                        <td>{{ all_data.hsn }}</td>
+                        <!--<td>{{ all_data.hsn }}</td>-->
                        <td>{{ all_data.batch_no }}</td>
                        <td class="text-success">₹ {{ all_data.total }}</td>
                            <td>{{all_data.manufacturer}}</td>
 
                        <td>
-                            <a href="delete_sale_item/{{ all_data.id }}/"><i class="fa fa-trash"></i></a>
-                            <a class="edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><i class="fa fa-edit"></i></a>
+                            <a href="/delete_sale_item/{{ all_data.id }}/"><i class="fa fa-trash"></i></a>
+                            <a class="/edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><i class="fa fa-edit"></i></a>
                        </td>
                             </tbody>
                            <!--<tfoot>
@@ -240,14 +237,14 @@
 
                      <div class="x_content saleslist">
                                 <div class="col-sm-6 invoice-col">
-                            <h6 style="color:black"><b>Invoice No : </b><b class="text-info">{{ taxinvoice }}</b></h6>
+                            <h6 style="color:black"><b>Invoice No : </b><b style="color:#06911A">{{ taxinvoice }}</b></h6>
                                 </div>
                                <div class="col-sm-4 invoice-col">
-                             <h6 style="color:black"><b> Net Value : </b><b class="text-info">{{ netvalue }}</b></h6>
+                             <h6 style="color:black"><b> Net Value : </b><b style="color:#06911A">{{ netvalue }}</b></h6>
                                </div>
                          <div class="col-sm-2 invoice-col">
 
-                           <button type="button" class="btn btn-success" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
+                           <button type="button" class="btn btn-primary" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
                         </div>
                       <!-- /.row -->
                             </div>
@@ -590,5 +587,9 @@ $("#busstationid").change(function() {
     });
 $('#todate').val(new Date().toJSON().slice(0,10));
 $('#date').val(new Date().toJSON().slice(0,10));
+$(document).ready(function(){
+  var optionValue = $("#depoid1").val();
+  $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
+})
 </script>
 {% endblock %}

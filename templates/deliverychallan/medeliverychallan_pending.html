@@ -190,7 +190,6 @@ $("#depoid").change(function() {
 
 
 	$("#depoid").change(function() {
-
         	var depo = $(this).val();
         	$.ajax({
             	type: "POST",
@@ -210,6 +209,7 @@ $("#depoid").change(function() {
              	}
         	});
     	});
+
     	$(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
