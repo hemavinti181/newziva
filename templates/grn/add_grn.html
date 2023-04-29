@@ -57,7 +57,7 @@
 										    <input type="date" class="form-control" placeholder="invoice date" id="tdate"  name="invoicedate">
 										</div>
 									   <div class="col-md-3 col-sm-6  form-group has-feedback">
-											<label>Invoice Amount</label>
+											<label>Invoice Amount(Including GST)</label>
 										    <input type="text" class="form-control" placeholder="invoice amount" name="invoiceamount">
 										</div>
 
@@ -107,6 +107,6 @@ $("#vid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#vname").val(selectedOptionText);
 });
-$('#tdate').val(new Date().toJSON().slice(0,10));
+
 </script>
 {% endblock %}

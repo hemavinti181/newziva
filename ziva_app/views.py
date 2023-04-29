@@ -232,7 +232,6 @@ def store_master(request):
 
 
 def get_store(request):
-    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     id = request.POST.get('id')
     url = "http://13.235.112.1/ziva/mobile-api/store-master-list.php"
@@ -3593,10 +3592,10 @@ def medeliver_challan_pending(request):
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
                 return render(request, 'deliverychallan/medeliverychallan_pending.html',
-                              {"wh":wh,'reg':reg,'depo1':depo1,'bus':bus,"wh2":wh2,"all_data": deliv_challan, 'wh_masterlist':wh_masterlist,'data1': data1, 'date': date,'busstation':busstation,'depo':depo,'menuname':menuname})
+                              {"wh":wh,'reg':reg,'depo1':depo1,'bus':bus,"wh2":wh2,"all_data": deliv_challan, 'wh_masterlist':wh_masterlist,'data1': data1, 'date': date,'busstation':busstation,'depo':depo,'menuname':menuname,'mewh':warehousename,'mereg':regionid})
             else:
                 return render(request, 'deliverychallan/medeliverychallan_pending.html',
-                              {"wh":wh,'reg':reg,'depo1':depo1,'bus':bus,"wh2":wh2,'data1': data1,'date': date,'wh_masterlist':wh_masterlist,'busstation':busstation,'depo':depo,'menuname':menuname})
+                              {"wh":wh,'reg':reg,'depo1':depo1,'bus':bus,"wh2":wh2,'data1': data1,'date': date,'wh_masterlist':wh_masterlist,'busstation':busstation,'depo':depo,'menuname':menuname,'mewh':warehousename,'mereg':regionid})
         else:
 
             url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list-region.php"
@@ -3618,10 +3617,10 @@ def medeliver_challan_pending(request):
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
                 return render(request, 'deliverychallan/medeliverychallan_pending.html',
-                              {"all_data": deliv_challan, 'wh_masterlist':wh_masterlist,'data1': data1,"busstation": "All",'depo':'All','date':tdate,'menuname':menuname})
+                              {'mewh':warehousename,'mereg':regionid,"all_data": deliv_challan, 'wh_masterlist':wh_masterlist,'data1': data1,"busstation": "All",'date':tdate,'menuname':menuname})
             else:
                 return render(request, 'deliverychallan/medeliverychallan_pending.html',
-                              {'data1': data1,"busstation": "All",'wh_masterlist':wh_masterlist,'depo':'All','date':tdate,'menuname':menuname})
+                              {'mewh':warehousename,'mereg':regionid,'data1': data1,"busstation": "All",'wh_masterlist':wh_masterlist,'date':tdate,'menuname':menuname})
 
     except:
         messages.error(request, response.text)

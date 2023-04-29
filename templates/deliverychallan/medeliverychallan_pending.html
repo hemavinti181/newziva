@@ -66,6 +66,8 @@
                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Depot</label>
 								     <input type="hidden" name="depotname" id="depotname" />
+                                  <input type="hidden" name="wh1" id="wh1" value="{{ mewh }}" />
+                                  <input type="hidden" name="reg1" id="reg1" value="{{ mereg }}" />
                                          <input type="hidden" name="depotname1" id="depotname1" value="{{ depo }}" />
 												<select class="form-control" name="depoid" id="depoid" >
                                                      <option value=" ">All</option>
@@ -228,7 +230,27 @@ $("#depoid").change(function() {
     $("#depotname").val(selectedOptionText);
 });
 
+ $(document).ready(function() {
 
+        	var depo = $('#depotname1').val()
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_salebus" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid").empty();
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+					var optionValue = $("#busstationid2").val();
+                    $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
+                	}
+             	}
+        	});
 	$("#depoid").change(function() {
         	var depo = $(this).val();
         	$.ajax({
@@ -241,7 +263,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value=''>All</option>");
+			 		$("#busstationid").append("<option  value=''>Choose Depo</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -249,11 +271,9 @@ $("#depoid").change(function() {
              	}
         	});
     	});
+});
 
-    	$(document).ready(function(){
-  var optionValue = $("#busstation1").val();
-  $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
-})
+
 $(document).ready(function(){
   var optionValue = $("#depotname1").val();
   $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);

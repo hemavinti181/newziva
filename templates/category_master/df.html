@@ -52,7 +52,7 @@
                       <div class="tab-pane fade fade show {{ des }}" id="category_add" role="tabpanel" aria-labelledby="des-tab">
                             <form class="form-label-left input_mask"  method="POST" action="des_add"   enctype="multipart/form-data">
 										{% csrf_token %}
-                                   <div  class="col-md-4 col-sm-4 form-group has-feedback">
+                                   <div  class="col-md-3 col-sm-3 form-group has-feedback">
 
 													<label>Select Region *</label>
 											<input type="hidden" name="regionnmae" id="regionnmae" />
@@ -65,7 +65,7 @@
                                                     {% endfor %}
 												</select>
 										</div>
-                                 <div  class="col-md-4 col-sm-4 form-group has-feedback">
+                                 <div  class="col-md-3 col-sm-3 form-group has-feedback">
 
 													<label>Select Item *</label>
 											<input type="hidden" name="itemname" id="itemname" />
@@ -78,64 +78,44 @@
                                                     {% endfor %}
 												</select>
 										</div>
-                                   <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                   <div class="col-md-3 col-sm-3  form-group has-feedback">
                                 <label>Add Amount</label>
                                     <input type="text" class="form-control" placeholder="enter amount" name="amount">
                             </div>
 
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">save</button>
+
+											<div class="col-md-3 col-sm-3 form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">save</button>
 											</div>
-										</div>
+
                             </form>
                         </div>
                            <div class="tab-pane fade show {{ role }}" id="role" role="tabpanel" aria-labelledby="role-tab">
                               <form class="form-label-left input_mask"  method="POST" action="role"  enctype="multipart/form-data">
 										{% csrf_token %}
-                                <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                <div class="col-md-3 col-sm-3  form-group has-feedback">
                                     <label>Add Role</label>
                                     <input type="text" class="form-control" placeholder=" role name" name="role">
                                  </div>
-                                    <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
 
-										<div class="form-group" >
-											<div class="col-md-6 col-sm-6 form-group has-feedback  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
+											<div class="col-md-3 col-sm-3 form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">Save</button>
 											</div>
-                                        </div>
+
                               </form>
                             </div>
                            <div class="tab-pane fade show {{ level }}" id="level" role="tabpanel" aria-labelledby="level-tab">
                                 <form class="form-label-left input_mask"  method="POST" action="level"   enctype="multipart/form-data">
 										{% csrf_token %}
-                                <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                <div class="col-md-3 col-sm-3  form-group has-feedback">
                                     <label>Add Level</label>
-                                        <input type="text" class="form-control" placeholder="Level name" name="level">
+                                        <input type="text" class="form-control"  placeholder="Level name" name="level">
                                 </div>
-                                      <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
 
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
+											<div class="col-md-3 col-sm-3  form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">Save</button>
 											</div>
-										</div>
+
                             </form>
                             </div>
                             <div class="tab-pane fade show {{ city }}" id="city" role="tabpanel" aria-labelledby="city-tab">
@@ -145,46 +125,25 @@
                                         <label>Add City</label>
                                         <input type="text" class="form-control" placeholder="city name" name="city">
                                      </div>
-                                      <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-
-
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
+											<div class="col-md-3 col-sm-3 form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">Save</button>
 											</div>
-										</div>
+
                             </form>
                             </div>
                             <div class="tab-pane fade show {{ state }}" id="state" role="tabpanel" aria-labelledby="state-tab">
                                   <form class="form-label-left input_mask"  method="POST" action="state"   enctype="multipart/form-data">
 										{% csrf_token %}
-                                <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                <div class="col-md-3 col-sm-3  form-group has-feedback">
                                         <label>Add State</label>
                                             <input type="text" class="form-control" placeholder="state name" name="state">
                                  </div>
-                                        <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
 
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
+
+											<div class="col-md-3 col-sm-3 form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">Save</button>
 											</div>
-										</div>
+
                             </form>
                             </div>
                             <div class="tab-pane fade show {{ gst }}" id="gst" role="tabpanel" aria-labelledby="gst-tab">
@@ -194,22 +153,13 @@
                                  <label>Add GST</label>
                                     <input type="text" class="form-control" placeholder="GST name" name="gst">
                              </div>
-                                   <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
 
 
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
+
+											<div class="col-md-6 col-sm-6  form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;"  class="btn btn-primary">Save</button>
 											</div>
-										</div>
+
                             </form>
                             </div>
                             <div class="tab-pane fade show {{ category }}" id="category" role="tabpanel" aria-labelledby="category-tab">
@@ -219,14 +169,12 @@
                                     <label>Add Category</label>
                                         <input type="text" class="form-control" placeholder="category name" name="category">
                                  </div>
-                                        <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                      <div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
+
+
+											<div class="col-md-3 col-sm-3  form-group has-feedback">
+												<button type="submit"  style="margin-top: 25px;" class="btn btn-primary">Save</button>
 											</div>
-										</div>
+
                             </form>
                                 </form>
                             </div>
@@ -237,21 +185,12 @@
                                             <label>Add Case</label>
                                              <input type="text" class="form-control" placeholder="enter case" name="uom">
                                         </div>
-                                      <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
 
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
+
+											<div class="col-md-6 col-sm-6  form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">Save</button>
 											</div>
-										</div>
+
                                     </form>
                                </div>
                             <div class="tab-pane fade show {{ storetype }}" id="type" role="tabpanel" aria-labelledby="storetype-tab">
@@ -261,21 +200,10 @@
                                             <label>Add Store Type</label>
                                              <input type="text" class="form-control" placeholder="store type" name="stotetype">
                                         </div>
-                                      <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-                                         <div class="form-group row">
-											<label class="col-form-label col-md-3 col-sm-3 "></label>
-										</div>
-
-										<div class="form-group">
-											<div class="col-md-6 col-sm-6  offset-md-5">
-												<button type="submit" class="btn btn-primary">Save</button>
+											<div class="col-md-3 col-sm-3 form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">Save</button>
 											</div>
-										</div>
+
                                     </form>
                                </div>
 
