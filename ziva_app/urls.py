@@ -173,5 +173,7 @@ urlpatterns = [
     path('edit_stkbus_item',views.edit_stkbus_item,name='edit_stkbus_item'),
     path('edit_stkdepo_item',views.edit_stkdepo_item,name='edit_stkdepo_item'),
     path('delete_stkdepo_item/<str:id>/',views.delete_stkdepo_item,name='delete_stkdepo_item'),
-    path('delete_stkbus_item/<str:id>/',views.delete_stkbus_item,name='delete_stkbus_item')
+    path('delete_stkbus_item/<str:id>/',views.delete_stkbus_item,name='delete_stkbus_item'),
+    path('sales_admin_list',views.sales_admin_list,name='sales_admin_list'),
+    path('sales_admin_approvelist',views.sales_admin_approvelist,name='sales_admin_approvelist')
 ]

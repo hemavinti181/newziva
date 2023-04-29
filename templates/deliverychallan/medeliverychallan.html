@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Sales   List</b></h3>
+                <h3 style="color:#1372ba"><b>Sales List</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -21,8 +21,49 @@
                                			<!-- Search Filter -->
 						<form  method="POST" action="medeliver_challan"  enctype="multipart/form-data">
 									{% csrf_token %}
+                        {% if request.session.role == 'Admin' %}
+                            	<div  class="col-md-2  form-group has-feedback">
+													<label> Warehouse</label>
+											 <input type="hidden" name="warehousename1" id="warehousename1" />
+                                         <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ wh }}">{{ wh2 }}</option>
+												</select>
+												<select class="form-control" name="warehouseid1" id="warehouseid1">
+													<option value=""> Warehouse</option>
+													{% for data1 in wh_masterlist %}
+															{% if data1.status == 'Active' %}
+                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif  %}
+                                                     {% endfor %}
+												</select>
+										</div>
+											<div  class="col-md-2  form-group has-feedback">
+													<label> Region</label>
+                                                   <input type="hidden" name="regionid2" id="regionid2" value="{{ reg }}" />
+											 <input type="hidden" name="regionname1" id="regionname1" />
+												<select class="form-control" name="regionid1" id="regionid1">
+													<option value=""> Region</option>
+												</select>
+										</div>
+											<div  class="col-md-2  form-group has-feedback">
+                                                  <input type="hidden" name="depoid2" id="depoid2" value="{{ depo1 }}" />
+													<label> Depot</label>
+											 <input type="hidden" name="deponame1" id="deponame1" />
+												<select class="form-control" name="depoid1" id="depoid1">
+													<option value=""> depot</option>
+												</select>
 
+                            </div>
 
+										<div  class="col-md-2  form-group has-feedback">
+                                             <input type="hidden" name="busstationid2" id="busstationid2" value="{{ bus }}" />
+													<label> Bus Station</label>
+											 <input type="hidden" name="busstationname1" id="busstationname1" />
+												<select class="form-control" name="busstationid1" id="busstationid1">
+													<option value=""> bus station</option>
+												</select>
+										</div>
+              {% else %}
                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Depot</label>
 								     <input type="hidden" name="depotname" id="depotname" />
@@ -43,13 +84,13 @@
 													<option value=""> All </option>
 												</select>
 							</div>
-
-						<div class="col-sm-3 col-md-3 form-group has-feedback">
+                {% endif %}
+						<div class="col-sm-2 col-md-2 form-group has-feedback">
 									<label class="focus-label">Select Date</label>
 									<input class="form-control" type="date" name="date" id="getdate" value="{{ date }}" required>
 							</div>
 
-                               <div class="col-md-3 col-sm-3  form-group has-feedback">
+                               <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
@@ -187,10 +228,32 @@ $("#depoid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#depotname").val(selectedOptionText);
 });
+    });
+     $(document).ready(function() {
+    		var warehousename = $('#warehouseid2').find(":selected").text();
+        	var regionname = $('#regionid2').val();
+        	var depo = $('#depoid2').val()
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storebus" %}',
+            	data: {
+                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid1").empty();
 
+                	$.each(obj, function (index, item) {
+                    $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+					var optionValue = $("#busstationid2").val();
+                    $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                	}
+             	}
+        	});
 
-	$("#depoid").change(function() {
-
+$("#depoid").change(function() {
         	var depo = $(this).val();
         	$.ajax({
             	type: "POST",
@@ -210,7 +273,8 @@ $("#depoid").change(function() {
              	}
         	});
     	});
-   $(document).ready(function(){
+});
+    	$(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
@@ -218,6 +282,173 @@ $(document).ready(function(){
   var optionValue = $("#depotname1").val();
   $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
+
+
+
+
+	$(document).ready(function() {
+    // Get the initial warehouse name
+  var warehousename = $("#warehouseid2").find(":selected").text();
+    console.log(warehousename);
+    $.ajax({
+        type: "POST",
+        url: '{% url "get_storeregion" %}',
+        data: {
+            'warehouse':warehousename,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+            var obj = data.data.dropdownlist
+            if (obj) {
+                $("#regionid1").empty();
+
+                $.each(obj, function(index, item) {
+                    $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                });
+                var optionValue = $("#regionid2").val();
+                $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+            }
+        }
+    });
+
+    $("#warehouseid1").change(function() {
+        var warehousename = $(this).find(":selected").text();
+        $.ajax({
+            type: "POST",
+            url: '{% url "get_storeregion" %}',
+            data: {
+                'warehouse':warehousename,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                var obj = data.data.dropdownlist
+                if (obj) {
+                    $("#regionid1").empty();
+                    $("#regionid1").append("<option value=''>Choose region</option>");
+                    $.each(obj, function(index, item) {
+                        $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                    });
+                }
+            }
+        });
+    });
+ });
+   $(document).ready(function() {
+    // Get the initial warehouse name
+    var warehousename = $("#warehouseid2").find(":selected").text();
+    var regionname = $("#regionid2").val();
+    // Send an AJAX request to get the storeregion dropdown options
+    $.ajax({
+        type: "POST",
+        url: '{% url "get_storedepo" %}',
+      data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+        success: function(data) {
+            var obj = data.data.dropdownlist
+            if (obj) {
+                $("#depoid1").empty();
+                $.each(obj, function(index, item) {
+                    $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                });
+                 var optionValue = $("#depoid2").val();
+                 $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+            }
+        }
+    });
+    	$("#regionid1").change(function() {
+    		var warehousename = $('#warehouseid1').find(":selected").text();
+        	var regionname = $('#regionid1').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storedepo" %}',
+            	data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#depoid1").empty();
+			 		$("#depoid1").append("<option  value=''>Choose Depo</option>");
+                	$.each(obj, function (index, item) {
+                    $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+ });
+    $(document).ready(function() {
+    		var warehousename = $('#warehouseid2').find(":selected").text();
+        	var regionname = $('#regionid2').val();
+        	var depo = $('#depoid2').val()
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storebus" %}',
+            	data: {
+                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid1").empty();
+
+                	$.each(obj, function (index, item) {
+                    $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+					var optionValue = $("#busstationid2").val();
+                    $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                	}
+             	}
+        	});
+
+    	$("#depoid1").change(function() {
+    		var warehousename = $('#warehouseid1').find(":selected").text();
+        	var regionname = $('#regionid1').val();
+
+        	var depo = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storebus" %}',
+            	data: {
+                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid1").empty();
+			 		$("#busstationid1").append("<option  value=''>Choose Bus station</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+        });
+});
+ $("#warehouseid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+});
+$("#regionid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regionname1").val(selectedOptionText);
+});
+$("#depoid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+("#deponame1").val(selectedOptionText);
+});
+$("#busstationid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#busstationname1").val(selectedOptionText);
+
+});
+$(document).ready(function(){
+  var optionValue = $("#warehouseid2").val();
+  $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
+})
+
+
  </script>
 {% endblock %}
 

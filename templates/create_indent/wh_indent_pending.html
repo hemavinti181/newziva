@@ -177,7 +177,7 @@
                                         <td>{{ all_data.createdon }}</td>
                                     <td>
                                         <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-warning">{{ all_data.status }}</span></a>
-                                         <span class="badge badge-info" data-toggle="modal"  onclick="VerifyClick('{{all_data.sno}}')" data-target=".bs-example-modal-sm">
+                                         <span class="badge badge-info" data-toggle="modal"  onclick="VerifyClick('{{all_data.indent_no}}','{{ all_data.region_name }}','{{ all_data.warehouse_name }}','{{ all_data.warehouse_id }}','{{ all_data.region_id }}')" data-target=".bs-example-modal-sm">
                                              Acknowledgement</span>
                                     </td>
                                     </tr>
@@ -199,11 +199,11 @@
           </div>
 </div>
 <div class="inner-fabs">
-                                  <div class="fab bg-blue round" id="fab3" ><a href="pending_indent_ack"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Verified</span></div>
+                                  <!--<div class="fab bg-blue round" id="fab3" ><a href="pending_indent_ack"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Verified</span></div>
                                   <div class="fab bg-orange  round" id="fab2"><a href="pending_indent_pending"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Pending</span></div>
                                     </div>
                                 <div class="fab bg-green round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-                        </div>
+                        </div>-->
 
  <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered">
@@ -220,6 +220,10 @@
 
                                             <label for="comment">Remarks *</label>
                                             <input type="hidden" id="txtHdnId" name="txtHdnId" />
+                                                  <input type="hidden" id="from" name="from" />
+                                                  <input type="hidden" id="to" name="to" />
+                                                 <input type="hidden" id="fromid" name="fromid" />
+                                                  <input type="hidden" id="toid" name="toid" />
                                                 <textarea class="form-control" rows="1"  name="comment" id="comment"></textarea>
                                             <p></p>
                                            <div class="col-md-6 col-sm-6  offset-md-3">
@@ -234,9 +238,14 @@
                                 </div>
 <script>
 
-function VerifyClick(id){
+function VerifyClick(id,id1,id2,id3,id4){
 $("#comment").val(" ");
 $("#txtHdnId").val(id);
+$("#from").val(id1);
+$("#to").val(id2);
+$("#fromid").val(id4);
+$("#toid").val(id3);
+$("#toid").val(id3);
 }
 </script>
 
