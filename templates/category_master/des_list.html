@@ -7,12 +7,12 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Price List</b></h3>
+                <h3>Price List</h3>
               </div>
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                    <a href="des_add"><button type="submit" class="btn btn-primary">Add Designation</button></a>
+                    <a href="des_add"><button type="submit" class="btn btn-primary">Add Price</button></a>
                 </div>
             </div>
               </div>
@@ -42,13 +42,13 @@
                                <td>
                                       {% if data.status == "Active" %}
 
-                                         <a class="editstore" href="#" onclick="editDepo('{{ data.sno }}')"  data-id="{{  data.sno }}"><i class="fa fa-edit"></i></a>
+                                         <a href="#" onclick="editStoretype('{{  data.price_code }}')"><i class="fa fa-edit"></i></a>
 
-                                          <a href="#" onclick="VerifyClick('{{ data.sno }}','Inactive')"><span class="badge badge-success" data-toggle="modal" data-target="#des-status1">
+                                          <a href="#" onclick="VerifyClick('{{ data.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#des-status1">
                                           Active</span></a>
                                      {% else %}
 
-                                        <a href="#" onclick="VerifyClick1('{{ data.sno }}','Active')" ><span class="badge badge-danger" data-toggle="modal" data-target="#des-status">
+                                        <a href="#" onclick="VerifyClick1('{{ data.sno }}')" ><span class="badge badge-danger" data-toggle="modal" data-target="#des-status">
                                           Inactive</span></a>
                                      {% endif %}
                                 </tr>
@@ -80,7 +80,7 @@
                                 <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
                         </div>
               </div>
-<div class="modal custom-modal fade" id="des-edit" role="dialog">
+<div class="modal custom-modal fade" id="des-status1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-body">
@@ -95,7 +95,7 @@
 								</div>
 									  <div class="modal-btn delete-action">
 									<input type="hidden" id="id" name="id"  />
-                                          <input type="hidden" id="status" name="status"  />
+                                          <input type="hidden" id="status" name="status" value ="Inactive"  />
 									<div class="row">
 										<div class="col-6">
 											<button class="btn btn-primary submit-btn">Yes</button>
@@ -143,7 +143,7 @@
 					</div>
 				</div>
 
-<div class="modal custom-modal fade" id="des-status1" role="dialog">
+<div class="modal custom-modal fade" id="status1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-body">
@@ -196,40 +196,61 @@
 						</div>
 					</div>
 				</div>
-<script>
+<div class="modal custom-modal fade" id="storetype_edit" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content style">
 
- function VerifyClick(id,status){
+                                        <div class="modal-body">
+                                            <form method="post" action="/edit_price">
+                                                {% csrf_token %}
+                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                            </button>
+                                            <h3  style="text-align:center;">Edit Price</h3>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                                <p></p>
+                                                <input type="hidden" id="txtHdnId" name="txtHdnId" />
+                                                <input type="hidden" id="txtHdnId2" name="txtHdnId2" />
+
+                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+										            <input type="text" class="form-control" name="price" id="price">
+                                                       <p></p>
+                                            </div>
+
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-primary">UPDATE</button></a>
+
+                                            </div>
+                                        </div>
+                                        </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+<script>
+ function VerifyClick(id){
 $("#id").val(id);
-$("#status").val(status);
 }
-function VerifyClick1(id,status1){
+function VerifyClick1(id){
 $("#id1").val(id);
-$("#status1").val(status1);
 }
-function editDepo(id){
+ function editStoretype(id){
       $.ajax({
-        url: "{% url 'get_price' %}",
+        url: "{% url 'get_pricelist' %}",
         type: 'POST',
         data: {
           'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         success: function(data) {
-         var obj = data.data.pricelist
-
-          	console.log(obj[0].region_name);
+         var obj = data.data
+          	console.log(data);
              if(obj){
-             $("#depoid").val(obj[0].region_code);
-             $("#deponame1").val(obj[0].region_name);
-             $("#depomanager1").val(obj[0].item_name);
-             $("#mobileno1").val(obj[0].item_code);
-             $("#gstnumber1").val(obj[0].mrp);
-             $("#whname").val(obj[0].warehouse);
-             $("#license1").val(obj[0].licenseno);
-             $("#whid").val(obj[0].warehouseid);
-             $("#regionid1").val(obj[0].regionid);
-             $("#regn").val(obj[0].regionname);
-             $("#address1").val(obj[0].address);
-             $('#depo-edit').modal('show');
+             $("#txtHdnId").val(obj.price_code);
+             $("#price").val(obj.mrp);
+             $("#txtHdnId2").val(obj.sno);
+             $('#storetype_edit').modal('show');
         	}
         }
       });

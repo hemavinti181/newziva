@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Category List</b></h3>
+                <h3 style="color:#1372ba">Category List</h3>
               </div>
 
               <div class="title_right">
@@ -43,7 +43,7 @@
                                 <td>
                                       {% if data.status == "Active" %}
 
-                                         <a class="editstore" href="#"  data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
+                                         <a href="#" onclick="editCategory('{{ data.ddcode }}')"><i class="fa fa-edit"></i></a>
 
                                           <a href="#" onclick="VerifyClick('{{ data.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#category-status1">
                                           Active</span></a>
@@ -68,7 +68,7 @@
 </div>
 
                         <div class="inner-fabs">
-                                 <!--<div class="fab bg-green white round" id="fab3"><a href="des_list"><i class="fa fa-outdent" style="color:#fff;"></i></a> <span class="tooltiptext" style="margin-left: -182px !important;">Designation List</span></div>-->
+                                 <div class="fab bg-green white round" id="fab3"><a href="des_list"><i class="fa fa-outdent" style="color:#fff;"></i></a> <span class="tooltiptext" style="margin-left: -142px !important;">Price List</span></div>
                                  <div class="fab bg-blue round" id="fab2"><a href="role_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Role List</span></div>
                                  <div class="fab bg-orange round" id="fab4"><a href="level_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" >Level List</span></div>
                                  <div class="fab bg-blue-sky round" id="fab5"><a href="city_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">City List</span></div>
@@ -143,6 +143,38 @@
 						</div>
 					</div>
 				</div>
+<div class="modal custom-modal fade" id="category_edit" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content style">
+
+                                        <div class="modal-body">
+                                            <form method="post" action="/edit_category">
+                                                {% csrf_token %}
+                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                            </button>
+                                            <h3  style="text-align:center;">Edit Category</h3>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                                <p></p>
+                                                <input type="hidden" id="txtHdnId" name="txtHdnId" />
+                                                <input type="hidden" id="txtHdnId2" name="txtHdnId2" />
+
+                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+										            <input type="text" class="form-control" name="category" id="category">
+                                                       <p></p>
+                                            </div>
+
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-primary">UPDATE</button></a>
+
+                                            </div>
+                                        </div>
+
+                                        </div>
+                                    </div>
+                                </div>
 <script>
 
  function VerifyClick1(id){
@@ -151,6 +183,25 @@ $("#id1").val(id);
 function VerifyClick(id){
 $("#id").val(id);
 }
+function editCategory(id){
+      $.ajax({
+        url: "{% url 'get_category' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data
+          	console.log(data);
+             if(obj){
+             $("#txtHdnId").val(obj.ddcode);
+             $("#category").val(obj.displayname);
+             $("#txtHdnId2").val(obj.sno);
+             $('#category_edit').modal('show');
+        	}
+        }
+      });
+  }
 </script>
 {% endblock %}
 

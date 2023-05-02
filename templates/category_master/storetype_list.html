@@ -2,12 +2,18 @@
 
 {% block htmlbody %}
 
+<style xmlns="http://www.w3.org/1999/html">
+	.style{
+	position: absolute !important;
+	width: 100% !important;
+	}
+</style>
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
               <div class="title_left">
 
-                <h3 style="color:#1372ba"><b>Store Type List</b></h3>
+                <h3 style="color:#1372ba">Store Type List</h3>
               </div>
 
               <div class="title_right">
@@ -39,7 +45,7 @@
                                <td>
                                       {% if data.status == "Active" %}
 
-                                         <a class="editstore" href="#"  data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
+                                         <a  href="#" onclick="editStoretype('{{  data.ddcode }}')"><i class="fa fa-edit"></i></a>
 
                                           <a href="#" onclick="VerifyClick('{{ data.sno }}','Inactive')"><span class="badge badge-success" data-toggle="modal" data-target="#des-status1">
                                           Active</span></a>
@@ -140,6 +146,39 @@
 						</div>
 					</div>
 				</div>
+<div class="modal custom-modal fade" id="storetype_edit" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content style">
+
+                                        <div class="modal-body">
+                                            <form method="post" action="/edit_storetype">
+                                                {% csrf_token %}
+                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                            </button>
+                                            <h3  style="text-align:center;">Edit Store Type</h3>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                                <p></p>
+                                                <input type="hidden" id="txtHdnId" name="txtHdnId" />
+                                                <input type="hidden" id="txtHdnId2" name="txtHdnId2" />
+
+                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+										            <input type="text" class="form-control" name="storetypename" id="storetypename">
+                                                       <p></p>
+                                            </div>
+
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-primary">UPDATE</button></a>
+
+                                            </div>
+                                        </div>
+                                        </form>
+
+                                        </div>
+                                    </div>
+                                </div>
 <script>
 
  function VerifyClick(id,status){
@@ -150,6 +189,24 @@ function VerifyClick1(id,status1){
 $("#id1").val(id);
 $("#status1").val(status1);
 }
+function editStoretype(id){
+      $.ajax({
+        url: "{% url 'get_storetype' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data
+             if(obj){
+             $("#txtHdnId").val(obj.ddcode);
+             $("#storetypename").val(obj.displayname);
+             $("#txtHdnId2").val(obj.sno);
+             $('#storetype_edit').modal('show');
+        	}
+        }
+      });
+  }
 </script>
 {% endblock %}
 

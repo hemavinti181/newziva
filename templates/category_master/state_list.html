@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>State List</b></h3>
+                <h3 style="color:#1372ba">State List</h3>
               </div>
 
               <div class="title_right">
@@ -44,7 +44,7 @@
                                 <td> {{ data.displayname }} </td>
                                 <td>  {% if data.status == "Active" %}
 
-                                         <a class="editstore" href="#"  data-id="{{ data.storecode }}"><i class="fa fa-edit"></i></a>
+                                         <a href="#" onclick="editStoretype('{{  data.ddcode }}')"><i class="fa fa-edit"></i></a>
 
                                           <a href="#" onclick="VerifyClick('{{ data.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#state-status1">
                                           Active</span></a>
@@ -146,6 +146,40 @@
 					</div>
 				</div>
 
+<div class="modal custom-modal fade" id="storetype_edit" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content style">
+
+                                        <div class="modal-body">
+                                            <form method="post" action="/edit_state">
+                                                {% csrf_token %}
+                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                            </button>
+                                            <h3  style="text-align:center;">Edit State</h3>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                                <p></p>
+                                                <input type="hidden" id="txtHdnId" name="txtHdnId" />
+                                                <input type="hidden" id="txtHdnId2" name="txtHdnId2" />
+
+                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+										            <input type="text" class="form-control" name="state" id="state">
+                                                       <p></p>
+                                            </div>
+
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-primary">UPDATE</button></a>
+
+                                            </div>
+                                        </div>
+                                        </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+
 <script>
 
  function VerifyClick1(id){
@@ -154,6 +188,25 @@ $("#id1").val(id);
 function VerifyClick(id){
 $("#id").val(id);
 }
+function editStoretype(id){
+      $.ajax({
+        url: "{% url 'get_state' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data
+          	console.log(data);
+             if(obj){
+             $("#txtHdnId").val(obj.ddcode);
+             $("#state").val(obj.displayname);
+             $("#txtHdnId2").val(obj.sno);
+             $('#storetype_edit').modal('show');
+        	}
+        }
+      });
+  }
 </script>
 {% endblock %}
 
