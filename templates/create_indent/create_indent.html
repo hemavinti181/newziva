@@ -28,7 +28,7 @@
                                         {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
                                         	<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Select Warehouse *</label>
-										    	 <select class="form-control" name="whcode" id="whcode">
+										    	 <select class="form-control items" name="whcode" id="whcode" required>
                                                      <option value="">select warehouse</option>
                                                     {% for data in wh_masterlist %}
                                                         {% if data.status == "Active" %}
@@ -45,8 +45,8 @@
                                         {% endif %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Select Items *</label>
-										    	 <select class="form-control" name="itemcode" id="itemcode">
-													<option value=" ">Items</option>
+										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+													<option value="">Items</option>
                                                     {% for data in item_masterlist %}
                                                         {% if data.status == "Active" %}
                                                             <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
@@ -60,7 +60,7 @@
 							</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Quantity(In Cases) *</label>
-										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" required>
 										</div>
                                          <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Quantity(In Bottles) *</label>
@@ -131,6 +131,11 @@ $("#itemcode").change(function() {
             $("#mrp").val(val3);
          });
          $('#getdate').val(new Date().toJSON().slice(0,10));
-
+$('.items').change(function() {
+    console.log('Dropdown value changed');
+    if($(this).val() === '') {
+      alert('Please select an option');
+    }
+  });
 </script>
 {% endblock %}
