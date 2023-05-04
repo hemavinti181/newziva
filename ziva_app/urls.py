@@ -193,5 +193,6 @@ urlpatterns = [
     path('get_state', views.get_state, name='get_state'),
     path('edit_state', views.edit_state, name='edit_state'),
     path('get_pricelist', views.get_pricelist, name='get_pricelist'),
-    path('edit_price', views.edit_price, name='edit_price')
+    path('edit_price', views.edit_price, name='edit_price'),
+    path('payment_report',views.payment_report,name='payment_report')
 ]

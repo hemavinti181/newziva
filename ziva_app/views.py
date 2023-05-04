@@ -4178,51 +4178,78 @@ def out_pass_scanner(request):
 def approved_indlist_pending(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
+        fdate = request.POST.get('fdate')
+        tdate = request.POST.get('tdate')
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "fdate": fdate,
+            "tdate": tdate,
+            "status":"Out For Delivery"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "status":"Out For Delivery"
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            approved_list = data['stocklist']
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        approved_list = data['stocklist']
-
-        return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname})
+            return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        else:
+            return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
-        return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname})
+        url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "fdate": "All",
+            "tdate": "All",
+            "status": "Out For Delivery"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            approved_list = data['stocklist']
+
+            return render(request, 'create_indent/approved_indlist.html',
+                          {"all_data": approved_list, 'menuname': menuname})
+        else:
+            return render(request, 'create_indent/approved_indlist.html',
+                          {'menuname': menuname})
 
 def approve_item_list(request,id):
 
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/departitemstocklist.php"
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
 
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "dcnumber": id
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        url = "http://13.235.112.1/ziva/mobile-api/departitemstocklist.php"
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "dcnumber": id
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    if response.status_code == 200:
-        data = response.json()
-        approved_item_list = data['stocklist']
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-        return render(request, 'create_indent/approved_item_list.html', {"all_data": approved_item_list,'menuname':menuname})
-    else:
-        return render(request, 'create_indent/approved_item_list.html',{'menuname':menuname})
+        if response.status_code == 200:
+            data = response.json()
+            approved_item_list = data['stocklist']
+
+            return render(request, 'create_indent/approved_item_list.html', {"all_data": approved_item_list,'menuname':menuname})
+        else:
+            return render(request, 'create_indent/approved_item_list.html',{'menuname':menuname})
+
 
 def approve_accept(request):
-    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/submit-items-accepted.php"
 
@@ -4252,24 +4279,51 @@ def approve_accept(request):
 def approved_indlist_accept(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
+        fdate = request.POST.get('fdate')
+        tdate = request.POST.get('tdate')
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "fdate": fdate,
+            "tdate": tdate,
+            "status": "Accept",
 
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "status": "Accept"
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        approved_list = data['stocklist']
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            approved_list = data['stocklist']
 
-        return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname})
+            return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        else:
+            return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
-        return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname})
+        url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "fdate": "All",
+            "tdate": "All",
+            "status": "Accept"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            approved_list = data['stocklist']
+
+            return render(request, 'create_indent/approved_indlist.html',
+                          {"all_data": approved_list, 'menuname': menuname})
+        else:
+            return render(request, 'create_indent/approved_indlist.html', {'menuname': menuname})
 @csrf_exempt
 def get_grn_item_data(request):
     accesskey = request.session['accesskey']
@@ -4496,6 +4550,7 @@ def level_edit(request):
 def pending_indent_ack(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
+
     url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
 
     payload = json.dumps({
@@ -4517,24 +4572,47 @@ def pending_indent_ack(request):
 def pending_indent_pending(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
+        fdate = request.POST.get('fdate')
+        tdate = request.POST.get('tdate')
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "status": "pending",
+            "fdate":fdate,
+            "tdate":tdate
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "status": "pending"
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        data = data['indentlist']
-        return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'menuname':menuname})
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            data = data['indentlist']
+            return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        else:
+            return render(request, 'create_indent/wh_indent_pending.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
-        return render(request, 'create_indent/wh_indent_pending.html',{'menuname':menuname})
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
 
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "status": "pending",
+            "fdate":"All",
+            "tdate":"All"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            data = data['indentlist']
+            return render(request, 'create_indent/wh_indent_pending.html', {'data': data, 'menuname': menuname})
+        else:
+            return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname})
 
 def pending_ind_status(request):
     accesskey = request.session['accesskey']
@@ -4584,24 +4662,52 @@ def readyto_ship(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         vehicals = data['vehicleslist']
-        url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
+        if request.method == 'POST':
+            fdate=request.POST.get('fdate')
+            tdate = request.POST.get('tdate')
+            url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
 
-        payload = json.dumps({
-            "accesskey":accesskey ,
-            "status":"Ready to Ship"
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
+            payload = json.dumps({
+                "accesskey":accesskey,
+                "fdate":fdate,
+                "tdate":tdate,
+                "status":"Ready to Ship"
 
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data1 = response.json()
-            data2 = data1['indentlist']
-            messages.success(request,data1['message'])
-            return render(request, 'create_indent/readytoship.html', {'data': data2,'vehicals':vehicals,'menuname':menuname})
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data1 = response.json()
+                data2 = data1['indentlist']
+                messages.success(request,data1['message'])
+                return render(request, 'create_indent/readytoship.html', {'data': data2,'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+            else:
+                return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
         else:
-            return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'menuname':menuname})
+            url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
+
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "status": "Ready to Ship",
+                "fdate":"All",
+                "tdate":"All"
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data1 = response.json()
+                data2 = data1['indentlist']
+                messages.success(request, data1['message'])
+                return render(request, 'create_indent/readytoship.html',
+                              {'data': data2, 'vehicals': vehicals, 'menuname': menuname})
+            else:
+                return render(request, 'create_indent/readytoship.html', {'vehicals': vehicals, 'menuname': menuname})
     except:
         messages.error(request,response.text)
     return render(request, 'create_indent/readytoship.html', {'menuname': menuname})
@@ -6484,5 +6590,8 @@ def edit_price(request):
             return redirect('/des_list')
     return redirect('/des_list')
 
+
+def payment_report(request):
+    return render(request,'Reports/payments.html')
 
 
