@@ -6592,6 +6592,98 @@ def edit_price(request):
 
 
 def payment_report(request):
-    return render(request,'Reports/payments.html')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    selectrange = data['timingslist']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+    if request.method == 'POST':
+        range = request.POST.get('from')
+        url = "http://13.235.112.1/ziva/mobile-api/daywise-sales-report.php"
+
+        if range == 'Custom Dates':
+            payload = json.dumps(
+                {
+                    "accesskey": accesskey,
+                    "warehouseid": request.POST.get('warehouseid1'),
+                    "regionid": request.POST.get('regionid1'),
+                    "depoid": request.POST.get('depoid1'),
+                    "busstationid": request.POST.get('busstationid1'),
+                    "fromdate": request.POST.get('fdate'),
+                    "todate": request.POST.get('tdate')
+
+                })
+        else:
+            payload = json.dumps(
+                {
+                    "accesskey": accesskey,
+                    "warehouseid": request.POST.get('warehouseid1'),
+                    "regionid": request.POST.get('regionid1'),
+                    "depoid": request.POST.get('depoid1'),
+                    "busstationid": request.POST.get('busstationid1'),
+                    "fromdate":range,
+                    "todate": range
+
+                })
+
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            daywisesaleslist = data['daywisesaleslist']
+            messages.success(request, data['message'])
+            return render(request, 'Reports/payments.html', {'data': daywisesaleslist,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+        else:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request,'Reports/payments.html',{"wh_masterlist":wh_masterlist,'selectrange':selectrange})
+    else:
+        payload = json.dumps(
+                {
+
+                    "accesskey": accesskey,
+                    "warehouseid": "All",
+                    "regionid": "All",
+                    "depoid": "All",
+                    "busstationid": "All",
+                    "fromdate": "Current Month",
+                    "todate": "Current Month"
+
+            })
+
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/daywise-sales-report.php"
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            daywisesaleslist = data['daywisesaleslist']
+            messages.success(request, data['message'])
+            return render(request, 'Reports/payments.html',{'data':daywisesaleslist,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+        else:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'Reports/payments.html',{'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+
 
 
