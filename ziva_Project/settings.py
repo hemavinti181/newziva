@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -74,14 +75,33 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ziva_Project.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'authentication_django_ziva',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_ALL_TABLES',
+        },
+        'USER': 'testing_user',
+        'PASSWORD': 'testuser34@',
+        'HOST': 'krkdbmed.c7i4sc0w6dwr.ap-south-1.rds.amazonaws.com',
+        'PORT': '3306',
+    },
+    'auth': {
+        'ENGINE': 'django.db.backends.mysql',
+
+        'NAME': 'ziva',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_ALL_TABLES',
+        },
+        'USER': 'ziva_django',
+        'PASSWORD': '0212@GRTcover',
+        'HOST': 'krkdbmed.c7i4sc0w6dwr.ap-south-1.rds.amazonaws.com',
+        'PORT': '3306',
+    },
 }
 
 

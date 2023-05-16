@@ -15,8 +15,8 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template
 from xhtml2pdf import pisa
-import os
-
+from django.db.models import F,Subquery
+from ziva_app.models import *
 
 
 class BytesEncoder(json.JSONEncoder):
@@ -141,14 +141,11 @@ def store_master(request):
             url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
 
             payload = json.dumps({
-
-
                 "accesskey": accesskey,
                 "warehouseid": request.POST.get('warehouseid'),
                 "regionid": request.POST.get('regionid'),
                 "depoid": request.POST.get('depoid'),
                 "busstationid": request.POST.get('busstationid')
-
             })
             headers = {
                 'Content-Type': 'application/json'
@@ -2192,7 +2189,6 @@ def get_storeregion(request):
         except:
             messages.error(request,response.text)
         return render(request,'masters/store_master_add.html',{'menuname':menuname})
-
 
 def get_storebus(request):
     accesskey = request.session['accesskey']
@@ -6685,5 +6681,20 @@ def payment_report(request):
             messages.error(request, data['message'])
             return render(request, 'Reports/payments.html',{'wh_masterlist':wh_masterlist,'selectrange':selectrange})
 
+def depot_stock(request):
+    #depoinventory = DepoInventory.objects.using('auth').filter(region_id='DEPO0002').values()
+    #depos = DepoMaster.objects.using('auth').filter(depoid='DEPO0052',depoid__in=DepoInventory.objects.using('auth').values('region_id'))
+    '''for depo in depos:
+        print(depo.depoid)  # Access the depoid field of the DepoMaster object
+        print(depo.depo_name)'''
+
+    depo_master = DepoMaster.objects.using('auth').get(depoid='DEPO0052')
+    depo_inventory = depo_master.depoinventory_set.filter(region_id=depo_master.depoid)
+    depo_inventory = DepoInventory.objects.using('auth').filter(region_id=depo_master.depoid, depo_master=depo_master)
+    print(depo_inventory)
+    return render(request, 'Reports/depo_stockreport.html')
+def storelist(request):
+    list = Storemaster.objects.using('auth').all()
+    print(list[0].storecode)
 
 

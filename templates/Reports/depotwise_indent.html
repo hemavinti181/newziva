@@ -8,7 +8,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba">Bus Station Collection Summary report</h3>
+                <h3 style="color:#1372ba"><b>Depot  Wise quantity Supplied</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -107,28 +107,25 @@
                      <thead>
                                     <tr>
                                       <th>S No</th>
-                                        <th>Date</th>
                                       <th>Depot</th>
-                                      <th>Bus Station</th>
-                                      <th>Stall Name</th>
-                                        <th>Item</th>
-                                      <th>Invoice Number</th>
-                                      <th>Itemcount</th>
-                                      <th>Amount Collected</th>
+                                      <th>Region Name </th>
+                                      <th>Depot Name</th>
+                                      <th>Item</th>
+                                      <th>Indent Number</th>
+                                        <th>Qty Indented</th>
+                                      <th>Qty Supplied</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     {% for all_data in data %}
                                     <tr>
                                       <td>{{ forloop.counter }}</td>
-                                      <td>{{ all_data.date }}</td>
                                       <td>{{ all_data.fromname }}</td>
                                       <td>{{ all_data.busstationname }}</td>
                                       <td>{{ all_data.storename }}</td>
-                                        <td>{{ all_data.item_name }}</td>
                                       <td>{{ all_data.invnumber }}</td>
-                                      <td>{{ all_data.itemcount }}</td>
-                                      <td>{{ all_data.total }}</td>
+                                      <td>{{ all_data.item_name }}</td>
+                                      <td>{{ all_data.itemcount }}</td><td>{{ all_data.date }}</td>
                                     </tr>
                                     {% endfor %}
                                   </tbody>

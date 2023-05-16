@@ -121,10 +121,15 @@ body {
       <img src="{% static 'build/images/logo2.jpeg' %}" alt="..." class="img-circle profile_img">
       <p></p>
      <!--<h2 style="color: #06911A"><b>ZIVA</b></h2>-->
-      <input type="text" name="Username"  placeholder="User Id"/>
-      <input type="password"  name="Password"  placeholder="Password"/>
-      <button type="submit">login</button>
-      <p class="message">Not registered? <a href="#">Create an account</a></p>
+       <div>
+                <input type="text" class="form-control" name="Username" placeholder="User Id" required="" />
+              </div>
+              <div>
+                <input type="password" class="form-control" name="Password" placeholder="Password" required="" />
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary">Login</button>
+      <!--<p class="message">Not registered? <a href="#">Create an account</a></p>-->
     </form>
   </div>
 </div>
