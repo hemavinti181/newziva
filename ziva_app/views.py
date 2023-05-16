@@ -6681,18 +6681,24 @@ def payment_report(request):
             messages.error(request, data['message'])
             return render(request, 'Reports/payments.html',{'wh_masterlist':wh_masterlist,'selectrange':selectrange})
 
+
+
 def depot_stock(request):
     #depoinventory = DepoInventory.objects.using('auth').filter(region_id='DEPO0002').values()
     #depos = DepoMaster.objects.using('auth').filter(depoid='DEPO0052',depoid__in=DepoInventory.objects.using('auth').values('region_id'))
-    '''for depo in depos:
-        print(depo.depoid)  # Access the depoid field of the DepoMaster object
-        print(depo.depo_name)'''
+    queryset = DepoInventory.objects.using('auth').extra(
+        tables=['depo_master'],
+        where=['depo_master.depoid = depo_inventory.region_id'],
+        select={
+             'depo_inventory_itemname': 'depo_inventory.itemname',
+              'depo_inventory_sale_qty': 'depo_inventory.sale_qty',
+              'depo_iventory_region_id':'depo_iventory.region_id',
+              'depo_inventory_createdon':'depo_inventory.createdon'
+        }
+    )
+    return render(request, 'Reports/depo_stockreport.html',{"queryset":queryset})
 
-    depo_master = DepoMaster.objects.using('auth').get(depoid='DEPO0052')
-    depo_inventory = depo_master.depoinventory_set.filter(region_id=depo_master.depoid)
-    depo_inventory = DepoInventory.objects.using('auth').filter(region_id=depo_master.depoid, depo_master=depo_master)
-    print(depo_inventory)
-    return render(request, 'Reports/depo_stockreport.html')
+
 def storelist(request):
     list = Storemaster.objects.using('auth').all()
     print(list[0].storecode)

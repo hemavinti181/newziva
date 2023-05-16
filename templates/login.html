@@ -105,19 +105,9 @@ body {
 
   <div class="form">
 
-    <form class="register-form" >
-
-      <input type="text" placeholder="name"/>
-      <input type="password" placeholder="password"/>
-      <input type="text" placeholder="email address"/>
-      <button>create</button>
-      <!--<p class="message">Already registered? <a href="#">Sign In</a></p>-->
-    </form>
-
-
 
     <form action=" " method="POST">
-               {% csrf_token %}
+       {% csrf_token %}
       <img src="{% static 'build/images/logo2.jpeg' %}" alt="..." class="img-circle profile_img">
       <p></p>
      <!--<h2 style="color: #06911A"><b>ZIVA</b></h2>-->
