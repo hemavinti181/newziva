@@ -8,6 +8,7 @@ import datetime
 import geocoder as geocoder
 from django.shortcuts import render, HttpResponse, redirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
 import requests
 from django.contrib import messages
@@ -37,6 +38,7 @@ def index(request):
 
 
 
+@csrf_exempt
 def login(request):
     if request.method == 'POST':
         url = "http://13.235.112.1/ziva/mobile-api/login.php"

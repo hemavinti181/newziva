@@ -106,8 +106,8 @@ body {
   <div class="form">
 
 
-    <form action=" " method="POST">
-       {% csrf_token %}
+    	<form class="form-label-left input_mask" method="POST" action="login"   enctype="multipart/form-data">
+           {% csrf_token %}
       <img src="{% static 'build/images/logo2.jpeg' %}" alt="..." class="img-circle profile_img">
       <p></p>
      <!--<h2 style="color: #06911A"><b>ZIVA</b></h2>-->

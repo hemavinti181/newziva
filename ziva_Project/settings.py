@@ -164,4 +164,8 @@ MESSAGE_TAGS = {
  }
 
 LOGIN_URL = '/login'
+
 CSRF_COOKIE_DOMAIN = '.tsrtcziva.com'
+
+CSRF_TRUSTED_ORIGINS = ['https://tsrtcziva.com']
+
