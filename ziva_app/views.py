@@ -1,8 +1,9 @@
 import base64
 import json
+from django.db.models import Sum, Case, When, F
 import io
 import time
-
+from django.db.models import Sum
 import datetime
 import geocoder as geocoder
 from django.shortcuts import render, HttpResponse, redirect
@@ -6684,19 +6685,24 @@ def payment_report(request):
 
 
 def depot_stock(request):
-    #depoinventory = DepoInventory.objects.using('auth').filter(region_id='DEPO0002').values()
-    #depos = DepoMaster.objects.using('auth').filter(depoid='DEPO0052',depoid__in=DepoInventory.objects.using('auth').values('region_id'))
+    createdon = "2023-05-12 13:21:31"
     queryset = DepoInventory.objects.using('auth').extra(
         tables=['depo_master'],
-        where=['depo_master.depoid = depo_inventory.region_id'],
+        where=[
+            'depo_master.depoid = depo_inventory.region_id',
+            'depo_inventory.createdon = %s'
+        ],
+        params=[createdon],
         select={
-             'depo_inventory_itemname': 'depo_inventory.itemname',
-              'depo_inventory_sale_qty': 'depo_inventory.sale_qty',
-              'depo_iventory_region_id':'depo_iventory.region_id',
-              'depo_inventory_createdon':'depo_inventory.createdon'
+            'depo_master_deponame': 'depo_master.deponame',
+            'depo_inventory_itemname': 'depo_inventory.itemname',
+            'depo_inventory_sale_qty': 'depo_inventory.sale_qty',
+            'depo_inventory_region_id': 'depo_inventory.region_id',
+            'depo_inventory_createdon': 'depo_inventory.createdon',
         }
-    )
-    return render(request, 'Reports/depo_stockreport.html',{"queryset":queryset})
+    ).values()
+
+    return render(request, 'Reports/depo_stockreport.html', {"data": queryset})
 
 
 def storelist(request):

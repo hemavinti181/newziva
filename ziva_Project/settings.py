@@ -164,4 +164,4 @@ MESSAGE_TAGS = {
  }
 
 LOGIN_URL = '/login'
-
+CSRF_COOKIE_DOMAIN = '.tsrtcziva.com'
