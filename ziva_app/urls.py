@@ -198,5 +198,6 @@ urlpatterns = [
     path('edit_price', views.edit_price, name='edit_price'),
     path('payment_report',views.payment_report,name='payment_report'),
     path('depot_stock',views.depot_stock,name='depot_stock'),
-    path('storelist',views.storelist,name='storelist')
+    path('storelist',views.storelist,name='storelist'),
+    path('depot_indent_report',views.depot_indent_report,name='depot_indent_report')
 ]

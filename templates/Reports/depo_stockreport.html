@@ -113,7 +113,7 @@
                                 <th>Date</th>
                                 <th>Depot Name</th>
                                 <th colspan="3">Items</th>
-                              <th colspan="3">Avg consumption per day</th>
+
                             </tr>
                             <tr>
                                 <td></td>
@@ -122,26 +122,21 @@
                                 <td>1000 ml</td>
                                 <td>250 ml</td>
                                 <td>500 ml</td>
-                               <td>1000 ml</td>
-                                <td>250 ml</td>
-                                <td>500 ml</td>
                             </tr>
                                   </thead>
                                   <tbody>
 
-                            {% for data in data %}
-                                    <tr>
-                                       <td></td>
-                                          <td>{{ data.depo_inventory_createdon }}</td>
-                                          <td>{{ data.depo_master_deponame }}</td>
-                                          <td>{{ data.depo_inventory_sale_qty  }} </td>
-                                          <td>{{ data.depo_inventory_sale_qty }}</td>
-                                          <td>{{ data.depo_inventory_sale_qty  }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                        {% for entry in data %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ entry.createdon }}</td>
+      <td>{{ entry.depo_master_deponame }}</td>
+      <td>{{ entry.sale_qty_1000ml }}</td>
+                <td>{{ entry.sale_qty_250ml }}</td>
+                <td>{{ entry.sale_qty_500ml }}</td>
+
     </tr>
-                            {% endfor %}
+    {% endfor %}
                                     </tr>
 
                                   </tbody>

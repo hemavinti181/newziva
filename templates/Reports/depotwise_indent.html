@@ -20,9 +20,9 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  method="POST" action="payment_report"  enctype="multipart/form-data">
+						<form  method="POST" action="depot_indent_report"  enctype="multipart/form-data">
 									{% csrf_token %}
-                            <div class="col-md-2  form-group has-feedback">
+                            <!--<div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
@@ -39,10 +39,10 @@
                               <label for="start-date">From Date</label>
                               <input type="date" id="start-date" class="form-control">
                             </div>
-                              <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
-                                  <label  for="end-date">To Date</label>
-                              <input type="date" id="end-date" class="form-control">
-                            </div>
+                              <div class="col-md-2  form-group has-feedback" id="tdate">
+                                  <label  for="end-date">Select Date</label>
+                              <input type="date" id="end-date" name="date" class="form-control">
+                            </div>-->
 
 
                             	<div  class="col-md-2  form-group has-feedback">
@@ -78,14 +78,14 @@
 
                             </div>
 
-										<div  class="col-md-2  form-group has-feedback">
+										<!--<div  class="col-md-2  form-group has-feedback">
                                              <input type="hidden" name="busstationid2" id="busstationid2" value="{{ request.POST.busstationid1 }}" />
 													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value=""> bus station</option>
 												</select>
-										</div>
+										</div>-->
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
@@ -107,7 +107,7 @@
                      <thead>
                                     <tr>
                                       <th>S No</th>
-                                      <th>Depot</th>
+                                      <th>Date</th>
                                       <th>Region Name </th>
                                       <th>Depot Name</th>
                                       <th>Item</th>
@@ -117,17 +117,18 @@
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {% for all_data in data %}
+                                            {% for data in entry %}
                                     <tr>
                                       <td>{{ forloop.counter }}</td>
-                                      <td>{{ all_data.fromname }}</td>
-                                      <td>{{ all_data.busstationname }}</td>
-                                      <td>{{ all_data.storename }}</td>
-                                      <td>{{ all_data.invnumber }}</td>
-                                      <td>{{ all_data.item_name }}</td>
-                                      <td>{{ all_data.itemcount }}</td><td>{{ all_data.date }}</td>
+                                      <td>{{ data.indent_item_createdon }}</td>
+                                        <td>{{ data.depo_master_regionname }}</td>
+                                      <td>{{ data.generate_indent_to_name }}</td>
+                                          <td>{{ data.indent_item_item_name }}</td>
+                                      <td>{{ data.indent_item_indent_no }}</td>
+                                      <td>{{ data.indent_item_qty }}</td>
+                                        <td>{{ data.outpass_item_qty }}</td>
                                     </tr>
-                                    {% endfor %}
+{% endfor %}
                                   </tbody>
                       </table>
                   </div>
@@ -417,7 +418,8 @@ $("#regionid1").change(function() {
 });
 $("#depoid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-    ("#deponame1").val(selectedOptionText);
+  alert(selectedOptionText)
+   $("#deponame1").val(selectedOptionText);
 });
 $("#busstationid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -428,22 +430,20 @@ $(document).ready(function(){
   var optionValue = $("#warehouseid2").val();
   $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
   var optionValue1 = $("#range2").val();
-
-
   $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
   })
 
-$(document).ready(function(){
+/* $(document).ready(function(){
  $('#date-range-fields').hide();
   $('#daterangeselect').change(function() {
     var selectedOption = $(this).find(":selected").text();
     if (selectedOption == 'Custom Dates') {
       $('#date-range-fields').show();
-      $('#tdate').show();// show the date fields if custom option is selected
+      $('#tdate').show();
       displayResults();
     } else {
       $('#date-range-fields').hide();
-      $('#tdate').hide();// hide the date fields if another option is selected
+      $('#tdate').hide();
           displayOtherResults(selectedOption);
     }
   });
@@ -451,14 +451,12 @@ $(document).ready(function(){
 function displayResults() {
   var fromDate = $('#date-range-fields').val();
   var toDate = $('#tdate').val();
-  // Use the selected dates to display results
-  // Code to display results...
+
 }
 
 function displayOtherResults(selectedOption) {
-  // Use the selected option to display results for other options
-  // Code to display results...
-}
+
+} */
 
 
  </script>

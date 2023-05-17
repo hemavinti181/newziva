@@ -1,23 +1,18 @@
 import base64
 import json
-from django.db.models import Sum, Case, When, F
-import io
-import time
-from django.db.models import Sum
+from datetime import datetime
+from django.db.models.functions import Cast,TruncDate
+from django.db.models import DateField, Sum ,F
 import datetime
 import geocoder as geocoder
 from django.shortcuts import render, HttpResponse, redirect
 from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.cache import cache
+
 import requests
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.db.models import F,Subquery
 from ziva_app.models import *
 
 
@@ -6687,7 +6682,7 @@ def payment_report(request):
 
 
 def depot_stock(request):
-    createdon = "2023-05-12 13:21:31"
+    createdon = "2023-02-27 18:50:46"
     queryset = DepoInventory.objects.using('auth').extra(
         tables=['depo_master'],
         where=[
@@ -6702,13 +6697,133 @@ def depot_stock(request):
             'depo_inventory_region_id': 'depo_inventory.region_id',
             'depo_inventory_createdon': 'depo_inventory.createdon',
         }
-    ).values()
+    ).values('depo_master_deponame','depo_inventory_itemname','depo_inventory_sale_qty','depo_inventory_region_id','depo_inventory_createdon')
 
-    return render(request, 'Reports/depo_stockreport.html', {"data": queryset})
+    merged_dict = {}
+
+    for d in queryset:
+        key = d['depo_master_deponame']
+        key2 = d['depo_inventory_createdon']
+        if key in merged_dict:
+            merged_dict[key]['depo_inventory_items'].append({
+                'itemname': d['depo_inventory_itemname'],
+                'sale_qty': d['depo_inventory_sale_qty'],
+            })
+        else:
+            merged_dict[key] = {
+                'depo_master_deponame': key,
+                'createdon':key2,
+                'depo_inventory_items': [{
+                    'itemname': d['depo_inventory_itemname'],
+                    'sale_qty': d['depo_inventory_sale_qty'],
+                }]
+            }
+        merged_list = list(merged_dict.values())
+        def get_sale_qty(inventory_items, itemname):
+            for item in inventory_items:
+                if item['itemname'].lower() == itemname.lower():
+                    return item['sale_qty']
+            return None
+
+        for entry in merged_list:
+            entry['sale_qty_1000ml'] = get_sale_qty(entry['depo_inventory_items'], '1000 ML')
+            entry['sale_qty_250ml'] = get_sale_qty(entry['depo_inventory_items'], '250 ml')
+            entry['sale_qty_500ml'] = get_sale_qty(entry['depo_inventory_items'], '500ml')
+
+
+    return render(request, 'Reports/depo_stockreport.html', {"data": merged_list})
+
+
+def depot_indent_report(request):
+    #createdon = "2023-05-02 16:43:33"
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    selectrange = data['timingslist']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    if request.method == 'POST':
+        #date = request.POST.get('date')
+        warehouseid1 = request.POST.get('warehousename1')
+        regionname1 = request.POST.get('regionname1')
+        deponame1 = request.POST.get('deponame1')
+        depo_data = DepoMaster.objects.using('auth').filter(
+            warehouse=warehouseid1,
+            regionname=regionname1,
+            deponame=deponame1
+        ).values('warehouse', 'regionname', 'deponame')
+
+
+        queryset = IndentItem.objects.using('auth').extra(
+            tables=['outpass_item', 'generate_indent', 'depo_master'],
+            where=[
+                'indent_item.indent_no = outpass_item.indent_no',
+                'indent_item.indent_no = generate_indent.indent_no',
+                f"depo_master.deponame = '{deponame1}'",
+                'depo_master.deponame = generate_indent.to_name',
+            ],
+            select={
+                'generate_indent_to_name': 'generate_indent.to_name',
+                'indent_item_indent_no': 'indent_item.indent_no',
+                'indent_item_item_name': 'indent_item.item_name',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'outpass_item_qty': 'outpass_item.qty',
+                'indent_item_qty': 'indent_item.qty',
+                'depo_master_deponame': 'depo_master.deponame',
+                'depo_master_regionname': 'depo_master.regionname',
+            }
+        ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon', 'generate_indent_to_name',
+                 'depo_master_deponame', 'depo_master_regionname', 'indent_item_qty', 'outpass_item_qty')
+
+
+        print('queryset')
+        return render(request, 'Reports/depotwise_indent.html',
+                      {'entry': queryset, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange})
+    else:
+        queryset = IndentItem.objects.using('auth').extra(
+            tables=['outpass_item', 'generate_indent', 'depo_master'],
+            where=[
+                'indent_item.indent_no = outpass_item.indent_no',
+                'indent_item.indent_no = generate_indent.indent_no',
+                'depo_master.deponame = generate_indent.to_name',
+            ],
+            select={
+                'generate_indent_to_name': 'generate_indent.to_name',
+                'indent_item_indent_no': 'indent_item.indent_no',
+                'indent_item_item_name': 'indent_item.item_name',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",  # Extract the date portion only
+                'outpass_item_qty': 'outpass_item.qty',
+                'indent_item_qty':'indent_item.qty',
+                'depo_master_deponame': 'depo_master.deponame',
+                'depo_master_regionname': 'depo_master.regionname',
+            }
+        ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon', 'generate_indent_to_name',
+                 'depo_master_deponame', 'depo_master_regionname','indent_item_qty','outpass_item_qty')
+
+
+        #for item in queryset:
+            #item['indent_item_createdon'] = item['indent_item_createdon'].strftime('%Y-%m-%d')
+        print('queryset')
+        return render(request,'Reports/depotwise_indent.html',{'entry':queryset,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+
 
 
 def storelist(request):
     list = Storemaster.objects.using('auth').all()
     print(list[0].storecode)
-
-
