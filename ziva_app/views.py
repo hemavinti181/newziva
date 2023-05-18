@@ -1,19 +1,20 @@
 import base64
 import json
 from datetime import datetime
-from django.db.models.functions import Cast,TruncDate
-from django.db.models import DateField, Sum ,F
+from django.db.models.functions import Cast, TruncDate, Substr
+from django.db.models import DateField, Sum, F, CharField, Value, OuterRef, Subquery
 import datetime
 import geocoder as geocoder
 from django.shortcuts import render, HttpResponse, redirect
 from django.urls import reverse
-
+from django.db.models.functions import Cast
 import requests
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from ziva_app.models import *
+from django.db.models import Sum
 
 
 class BytesEncoder(json.JSONEncoder):
@@ -6682,56 +6683,143 @@ def payment_report(request):
 
 
 def depot_stock(request):
-    createdon = "2023-02-27 18:50:46"
-    queryset = DepoInventory.objects.using('auth').extra(
-        tables=['depo_master'],
-        where=[
-            'depo_master.depoid = depo_inventory.region_id',
-            'depo_inventory.createdon = %s'
-        ],
-        params=[createdon],
-        select={
-            'depo_master_deponame': 'depo_master.deponame',
-            'depo_inventory_itemname': 'depo_inventory.itemname',
-            'depo_inventory_sale_qty': 'depo_inventory.sale_qty',
-            'depo_inventory_region_id': 'depo_inventory.region_id',
-            'depo_inventory_createdon': 'depo_inventory.createdon',
-        }
-    ).values('depo_master_deponame','depo_inventory_itemname','depo_inventory_sale_qty','depo_inventory_region_id','depo_inventory_createdon')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
-    merged_dict = {}
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
 
-    for d in queryset:
-        key = d['depo_master_deponame']
-        key2 = d['depo_inventory_createdon']
-        if key in merged_dict:
-            merged_dict[key]['depo_inventory_items'].append({
-                'itemname': d['depo_inventory_itemname'],
-                'sale_qty': d['depo_inventory_sale_qty'],
-            })
-        else:
-            merged_dict[key] = {
-                'depo_master_deponame': key,
-                'createdon':key2,
-                'depo_inventory_items': [{
+    data = response.json()
+    selectrange = data['timingslist']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+    if request.method == 'POST':
+        warehouseid1 = request.POST.get('warehouseid1')
+        regionname1 = request.POST.get('regionid1')
+        deponame1 = request.POST.get('depoid1')
+        depo_data = DepoMaster.objects.using('auth').filter(
+            warehouse=warehouseid1,
+            regionname=regionname1,
+            deponame=deponame1
+        ).values('warehouse', 'regionname', 'deponame')
+        queryset = DepoInventory.objects.using('auth').extra(
+            tables=['depo_master'],
+            where=[
+                'depo_master.depoid = depo_inventory.region_id',
+                'depo_master.depoid = %s'
+                # 'depo_inventory.createdon = %s'
+            ],
+            #params=[deponame1],
+            select={
+                'depo_master_deponame': 'depo_master.deponame',
+                'depo_inventory_itemname': 'depo_inventory.itemname',
+                'depo_inventory_sale_qty': 'depo_inventory.sale_qty',
+                'depo_inventory_region_id': 'depo_inventory.region_id',
+                'depo_inventory_createdon': "DATE_FORMAT(depo_inventory.createdon, '%%Y-%%m-%%d')",
+            }
+        ).values('depo_master_deponame', 'depo_inventory_itemname', 'depo_inventory_sale_qty',
+                 'depo_inventory_region_id', 'depo_inventory_createdon')
+
+        merged_dict = {}
+
+        for d in queryset:
+            key = d['depo_master_deponame']
+            key2 = d['depo_inventory_createdon']
+            if key in merged_dict:
+                merged_dict[key]['depo_inventory_items'].append({
                     'itemname': d['depo_inventory_itemname'],
                     'sale_qty': d['depo_inventory_sale_qty'],
-                }]
-            }
-        merged_list = list(merged_dict.values())
-        def get_sale_qty(inventory_items, itemname):
-            for item in inventory_items:
-                if item['itemname'].lower() == itemname.lower():
-                    return item['sale_qty']
-            return None
-
-        for entry in merged_list:
-            entry['sale_qty_1000ml'] = get_sale_qty(entry['depo_inventory_items'], '1000 ML')
-            entry['sale_qty_250ml'] = get_sale_qty(entry['depo_inventory_items'], '250 ml')
-            entry['sale_qty_500ml'] = get_sale_qty(entry['depo_inventory_items'], '500ml')
 
 
-    return render(request, 'Reports/depo_stockreport.html', {"data": merged_list})
+                })
+            else:
+                merged_dict[key] = {
+                    'depo_master_deponame': key,
+                    'createdon': key2,
+                    'depo_inventory_items': [{
+                        'itemname': d['depo_inventory_itemname'],
+                        'sale_qty': d['depo_inventory_sale_qty'],
+
+                    }]
+                }
+            merged_list = list(merged_dict.values())
+
+            def get_sale_qty(inventory_items, itemname):
+                for item in inventory_items:
+                    if item['itemname'].lower() == itemname.lower():
+                        return item['sale_qty']
+                return None
+
+            for entry in merged_list:
+                entry['sale_qty_1000ml'] = get_sale_qty(entry['depo_inventory_items'], '1000 ML')
+                entry['sale_qty_250ml'] = get_sale_qty(entry['depo_inventory_items'], '250 ml')
+                entry['sale_qty_500ml'] = get_sale_qty(entry['depo_inventory_items'], '500ml')
+        return render(request, 'Reports/depo_stockreport.html',
+                          {"data": merged_list, 'wh_masterlist': wh_masterlist})
+
+    else:
+
+            #createdon = "2023-02-27 18:50:46"
+            queryset = DepoInventory.objects.using('auth').extra(
+                tables=['depo_master'],
+                where=[
+                    'depo_master.depoid = depo_inventory.region_id',
+                    #'depo_inventory.createdon = %s'
+                ],
+                #params=[],
+                select={
+                    'depo_master_deponame': 'depo_master.deponame',
+                    'depo_inventory_itemname': 'depo_inventory.itemname',
+                    'depo_inventory_sale_qty': 'depo_inventory.sale_qty',
+                    'depo_inventory_region_id': 'depo_inventory.region_id',
+                    'depo_inventory_createdon':"DATE_FORMAT(depo_inventory.createdon, '%%Y-%%m-%%d')",
+                }
+            ).values('depo_master_deponame','depo_inventory_itemname','depo_inventory_sale_qty','depo_inventory_region_id','depo_inventory_createdon')
+
+            merged_dict = {}
+
+            for d in queryset:
+                key = d['depo_master_deponame']
+                key2 = d['depo_inventory_createdon']
+                if key in merged_dict:
+                    merged_dict[key]['depo_inventory_items'].append({
+                        'itemname': d['depo_inventory_itemname'],
+                        'sale_qty': d['depo_inventory_sale_qty'],
+                    })
+                else:
+                    merged_dict[key] = {
+                        'depo_master_deponame': key,
+                        'createdon':key2,
+                        'depo_inventory_items': [{
+                            'itemname': d['depo_inventory_itemname'],
+                            'sale_qty': d['depo_inventory_sale_qty'],
+                        }]
+                    }
+                merged_list = list(merged_dict.values())
+                def get_sale_qty(inventory_items, itemname):
+                    for item in inventory_items:
+                        if item['itemname'].lower() == itemname.lower():
+                            return item['sale_qty']
+                    return None
+
+                for entry in merged_list:
+                    entry['sale_qty_1000ml'] = get_sale_qty(entry['depo_inventory_items'], '1000 ML')
+                    entry['sale_qty_250ml'] = get_sale_qty(entry['depo_inventory_items'], '250 ml')
+                    entry['sale_qty_500ml'] = get_sale_qty(entry['depo_inventory_items'], '500ml')
+
+
+            return render(request, 'Reports/depo_stockreport.html', {"data": merged_list,'wh_masterlist':wh_masterlist})
 
 
 def depot_indent_report(request):
@@ -6759,7 +6847,7 @@ def depot_indent_report(request):
     wh_masterlist = data['warehouselist']
 
     if request.method == 'POST':
-        #date = request.POST.get('date')
+        date = request.POST.get('date')
         warehouseid1 = request.POST.get('warehousename1')
         regionname1 = request.POST.get('regionname1')
         deponame1 = request.POST.get('deponame1')
@@ -6769,6 +6857,7 @@ def depot_indent_report(request):
             deponame=deponame1
         ).values('warehouse', 'regionname', 'deponame')
 
+        from django.db.models import F
 
         queryset = IndentItem.objects.using('auth').extra(
             tables=['outpass_item', 'generate_indent', 'depo_master'],
@@ -6777,6 +6866,7 @@ def depot_indent_report(request):
                 'indent_item.indent_no = generate_indent.indent_no',
                 f"depo_master.deponame = '{deponame1}'",
                 'depo_master.deponame = generate_indent.to_name',
+                f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
             ],
             select={
                 'generate_indent_to_name': 'generate_indent.to_name',
@@ -6788,11 +6878,13 @@ def depot_indent_report(request):
                 'depo_master_deponame': 'depo_master.deponame',
                 'depo_master_regionname': 'depo_master.regionname',
             }
-        ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon', 'generate_indent_to_name',
-                 'depo_master_deponame', 'depo_master_regionname', 'indent_item_qty', 'outpass_item_qty')
+        ).values(
+            'indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
+            'generate_indent_to_name', 'depo_master_deponame', 'depo_master_regionname',
+            'indent_item_qty', 'outpass_item_qty'
+        )
 
-
-        print('queryset')
+        print(queryset)
         return render(request, 'Reports/depotwise_indent.html',
                       {'entry': queryset, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange})
     else:
@@ -6822,8 +6914,109 @@ def depot_indent_report(request):
         print('queryset')
         return render(request,'Reports/depotwise_indent.html',{'entry':queryset,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
 
+def Vendor_itemsply(request):
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        queryset = GrnItem.objects.using('auth').extra(
+            tables=['grn', 'grn_item', 'warehouse_master'],
+            where=[
+                'grn.grn = grn_item.grn',
+                'grn.warehouse_id = warehouse_master.warehouseid',
+                f"DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d') = '{date}'"
+            ],
+            select={
+                'grn_grn': 'grn.grn',
+                'grn_warehouse_id': 'grn.warehouse_id',
+                'grn_vendorname': 'grn.vendorname',
+                'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d')",
+                'grn_item_item_name': 'grn_item.item_name',
+                'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
+                'warehouse_master_warehousename': 'warehouse_master.warehousename'
+            }
+        ).values(
+            'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
+            'grn_item_created_on', 'grn_item_item_name', 'grn_item_quantity', 'warehouse_master_warehousename'
+        )
+
+        queryset2 = queryset.values('grn_vendorname', 'warehouse_master_warehousename', 'grn_item_created_on',
+                                    'grn_item_item_name')
+        queryset1 = queryset.values('grn_item_created_on', 'grn_item_item_name').annotate(
+            total_quantity=Cast(Sum('quantity'), CharField()))
+        merged_data = []
+        for data1 in queryset1:
+            for data2 in queryset2:
+                if data1['grn_item_created_on'] == data2['grn_item_created_on'] and data1['grn_item_item_name'] == \
+                        data2[
+                            'grn_item_item_name']:
+                    merged_data.append({
+                        'grn_item_created_on': data1['grn_item_created_on'],
+                        'grn_item_item_name': data1['grn_item_item_name'],
+                        'total_quantity': data1['total_quantity'],
+                        'grn_vendorname': data2['grn_vendorname'],
+                        'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
+                    })
+                    break
+
+        return render(request, 'Reports/vendor_itemsupply.html', {"entry": merged_data})
+
+    else:
+        queryset = GrnItem.objects.using('auth').extra(
+            tables=['grn', 'grn_item', 'warehouse_master'],
+            where=[
+                'grn.grn = grn_item.grn',
+                'grn.warehouse_id = warehouse_master.warehouseid',
+            ],
+            select={
+                'grn_grn': 'grn.grn',
+                'grn_warehouse_id': 'grn.warehouse_id',
+                'grn_vendorname': 'grn.vendorname',
+                'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d')",
+                'grn_item_item_name': 'grn_item.item_name',
+                'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
+                'warehouse_master_warehousename': 'warehouse_master.warehousename'
+            }
+        ).values(
+            'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
+            'grn_item_created_on', 'grn_item_item_name', 'grn_item_quantity', 'warehouse_master_warehousename'
+        )
+
+        queryset2 = queryset.values('grn_vendorname', 'warehouse_master_warehousename', 'grn_item_created_on','grn_item_item_name')
+        queryset1 = queryset.values('grn_item_created_on', 'grn_item_item_name').annotate(
+            total_quantity=Cast(Sum('quantity'), CharField()))
+        merged_data = []
+        for data1 in queryset1:
+            for data2 in queryset2:
+                if data1['grn_item_created_on'] == data2['grn_item_created_on'] and data1['grn_item_item_name'] == data2[
+                    'grn_item_item_name']:
+                    merged_data.append({
+                        'grn_item_created_on': data1['grn_item_created_on'],
+                        'grn_item_item_name': data1['grn_item_item_name'],
+                        'total_quantity': data1['total_quantity'],
+                        'grn_vendorname': data2['grn_vendorname'],
+                        'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
+                    })
+                    break
+
+        return render(request,'Reports/vendor_itemsupply.html',{"entry":merged_data})
 
 
-def storelist(request):
-    list = Storemaster.objects.using('auth').all()
-    print(list[0].storecode)
+def busstation_stalls(request):
+    queryset = GrnItem.objects.using('auth').extra(
+        tables=['grn', 'grn_item', 'warehouse_master'],
+        where=[
+            'grn.grn = grn_item.grn',
+            'grn.warehouse_id = warehouse_master.warehouseid',
+        ],
+        select={
+            'grn_grn': 'grn.grn',
+            'grn_warehouse_id': 'grn.warehouse_id',
+            'grn_vendorname': 'grn.vendorname',
+            'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d')",
+            'grn_item_item_name': 'grn_item.item_name',
+            'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
+            'warehouse_master_warehousename': 'warehouse_master.warehousename'
+        }
+    ).values(
+        'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
+        'grn_item_created_on', 'grn_item_item_name', 'grn_item_quantity', 'warehouse_master_warehousename'
+    )

@@ -23,9 +23,9 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  method="POST" action="payment_report"  enctype="multipart/form-data">
+						<form  method="POST" action="depot_stock"  enctype="multipart/form-data">
 									{% csrf_token %}
-                            <div class="col-md-2  form-group has-feedback">
+                            <!--<div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
@@ -45,7 +45,7 @@
                               <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" class="form-control">
-                            </div>
+                            </div>-->
 
 
                             	<div  class="col-md-2  form-group has-feedback">
@@ -116,12 +116,13 @@
 
                             </tr>
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>1000 ml</td>
-                                <td>250 ml</td>
-                                <td>500 ml</td>
+                                  <th class="row2"></th>
+                                <th class="row2"></th>
+                                <th class="row2"></th>
+                                <th class="row2">1000 ml</th>
+                                <th class="row2">250 ml</th>
+                                <th class="row2">500 ml</th>
+
                             </tr>
                                   </thead>
                                   <tbody>
