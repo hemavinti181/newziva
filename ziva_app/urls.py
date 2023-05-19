@@ -200,5 +200,7 @@ urlpatterns = [
     path('depot_stock',views.depot_stock,name='depot_stock'),
     path('Vendor_itemsply',views.Vendor_itemsply,name='Vendor_itemsply'),
     path('depot_indent_report',views.depot_indent_report,name='depot_indent_report'),
-    path('busstation_stalls',views.busstation_stalls,name='busstation_stalls')
+    path('busstation_stalls',views.busstation_stalls,name='busstation_stalls'),
+    path('depot_qtyissued',views.depot_qtyissued,name='depot_qtyissued'),
+    path('get_price1',views.get_price1,name='get_price1')
 ]

@@ -2,7 +2,7 @@ import base64
 import json
 from datetime import datetime
 from django.db.models.functions import Cast, TruncDate, Substr
-from django.db.models import DateField, Sum, F, CharField, Value, OuterRef, Subquery
+from django.db.models import DateField, Sum, F, CharField, Value, OuterRef, Subquery, Case, When, Q, Count
 import datetime
 import geocoder as geocoder
 from django.shortcuts import render, HttpResponse, redirect
@@ -62,6 +62,7 @@ def login(request):
             warehousename = data['warehousename']
             code = data['code']
             regionid = data['regionid']
+            region = data['region']
             warehouseid = data['warehouseid']
             request.session['name'] = name
             request.session['displayrole'] = displayrole
@@ -72,6 +73,7 @@ def login(request):
             request.session['depoid'] = depoid
             request.session['codee'] = code
             request.session['regionid'] = regionid
+            request.session['region'] = region
             request.session['warehousename'] = warehousename
             request.session['warehouseid'] = warehouseid
 
@@ -1305,6 +1307,7 @@ def uom_status_inactive(request):
         return redirect('/uom_list')
 
 def get_price(request):
+
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/price-list.php"
@@ -4339,7 +4342,25 @@ def get_grn_item_data(request):
     data2 = data.json()
     return JsonResponse({'data': data2})
 
+def get_price1(request):
+    region = request.session['region']
+    accesskey = request.session['accesskey']
+    itemname = request.POST.get('itemname')
 
+    url = "http://13.235.112.1/ziva/mobile-api/price-search-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "searchname": region
+    })
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    data = requests.request("POST", url, headers=headers, data=payload)
+    data2 = data.json()
+    return JsonResponse({'data': data2})
 @csrf_exempt
 def get_item_data(request):
     accesskey = request.session['accesskey']
@@ -6587,6 +6608,7 @@ def edit_price(request):
 
 
 def payment_report(request):
+    menuname=request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
@@ -6646,11 +6668,11 @@ def payment_report(request):
             data = response.json()
             daywisesaleslist = data['daywisesaleslist']
             messages.success(request, data['message'])
-            return render(request, 'Reports/payments.html', {'data': daywisesaleslist,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+            return render(request, 'Reports/payments.html', {'menuname':menuname,'data': daywisesaleslist,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
         else:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request,'Reports/payments.html',{"wh_masterlist":wh_masterlist,'selectrange':selectrange})
+            return render(request,'Reports/payments.html',{'menuname':menuname,"wh_masterlist":wh_masterlist,'selectrange':selectrange})
     else:
         payload = json.dumps(
                 {
@@ -6674,15 +6696,16 @@ def payment_report(request):
             data = response.json()
             daywisesaleslist = data['daywisesaleslist']
             messages.success(request, data['message'])
-            return render(request, 'Reports/payments.html',{'data':daywisesaleslist,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+            return render(request, 'Reports/payments.html',{'menuname':menuname,'data':daywisesaleslist,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
         else:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request, 'Reports/payments.html',{'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+            return render(request, 'Reports/payments.html',{'menuname':menuname,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
 
 
 
 def depot_stock(request):
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
@@ -6766,7 +6789,7 @@ def depot_stock(request):
                 entry['sale_qty_250ml'] = get_sale_qty(entry['depo_inventory_items'], '250 ml')
                 entry['sale_qty_500ml'] = get_sale_qty(entry['depo_inventory_items'], '500ml')
         return render(request, 'Reports/depo_stockreport.html',
-                          {"data": merged_list, 'wh_masterlist': wh_masterlist})
+                          {"data": merged_list, 'wh_masterlist': wh_masterlist,'menuname':menuname})
 
     else:
 
@@ -6819,11 +6842,12 @@ def depot_stock(request):
                     entry['sale_qty_500ml'] = get_sale_qty(entry['depo_inventory_items'], '500ml')
 
 
-            return render(request, 'Reports/depo_stockreport.html', {"data": merged_list,'wh_masterlist':wh_masterlist})
+            return render(request, 'Reports/depo_stockreport.html', {"data": merged_list,'wh_masterlist':wh_masterlist,'menuname':menuname})
 
 
 def depot_indent_report(request):
-    #createdon = "2023-05-02 16:43:33"
+
+    menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
@@ -6857,7 +6881,193 @@ def depot_indent_report(request):
             deponame=deponame1
         ).values('warehouse', 'regionname', 'deponame')
 
-        from django.db.models import F
+
+        queryset = IndentItem.objects.using('auth').extra(
+            tables=['outpass_item', 'generate_indent', 'depo_master'],
+            where=[
+                'indent_item.indent_no = outpass_item.indent_no',
+                'indent_item.indent_no = generate_indent.indent_no',
+                ' depo_master.warehouseid =generate_indent.to_id',
+                f"depo_master.deponame = '{deponame1}'",
+                'depo_master.depoid =generate_indent.from_id',
+                f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
+            ],
+            select={
+                'generate_indent_from_name': 'generate_indent.from_name',
+                'indent_item_indent_no': 'indent_item.indent_no',
+                'indent_item_item_name': 'indent_item.item_name',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'indent_item_qty': 'indent_item.qty',
+                'depo_master_deponame': 'depo_master.deponame',
+                'depo_master_regionname': 'depo_master.regionname',
+                'outpass_item_qty':'outpass_item.qty',
+                'depo_master_warehouse' :'depo_master.warehouse'
+
+            }
+        ).values(
+            'indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
+            'generate_indent_from_name', 'depo_master_deponame', 'depo_master_regionname',
+            'indent_item_qty','outpass_item_qty','depo_master_warehouse'
+        )
+        queryset2 = OutpassItem.objects.using('auth').extra(
+            tables=['indent_item','depo_master','generate_indent'],
+            where=[
+                'indent_item.indent_no = outpass_item.indent_no',
+                f"depo_master.deponame = '{deponame1}'",
+                'indent_item.indent_no = generate_indent.indent_no',
+                'depo_master.depoid =generate_indent.from_id',
+                f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
+            ],
+            select={
+                'indent_item_item_name': 'indent_item.item_name',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'outpass_item_qty': 'outpass_item.qty'
+            }
+        ).values('outpass_item_qty','indent_item_item_name', 'indent_item_createdon')
+        outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+            outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+        )
+        queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+            indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+        )
+        merged_data = []
+        for data1 in queryset1:
+            for data2 in outpass_sum:
+                if data1['indent_item_createdon'] == data2['indent_item_createdon']\
+                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                    merged_data.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'outpass_sum_item': data2['outpass_sum_item'],
+                        'indent_sum_item': data1['indent_sum_item'],
+                    })
+                    break
+        result = []
+        for data1 in merged_data:
+            for data2 in queryset:
+                if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                    result.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'outpass_sum_item': data1['outpass_sum_item'],
+                        'indent_sum_item': data1['indent_sum_item'],
+                        'depo_master_deponame':data2['depo_master_deponame'],
+                        'depo_master_regionname': data2['depo_master_regionname'],
+                        'indent_item_indent_no':data2['indent_item_indent_no'],
+                        'depo_master_warehouse':data2['depo_master_warehouse']
+                    })
+                    break
+        result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
+
+        return render(request, 'Reports/depotwise_indent.html',
+                      {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
+    else:
+        queryset = IndentItem.objects.using('auth').extra(
+            tables=['outpass_item', 'generate_indent', 'depo_master'],
+            where=[
+                'indent_item.indent_no = outpass_item.indent_no',
+                'indent_item.indent_no = generate_indent.indent_no',
+                'depo_master.depoid = generate_indent.from_id',
+            ],
+            select={
+
+                'indent_item_indent_no': 'indent_item.indent_no',
+                'indent_item_item_name': 'indent_item.item_name',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",  # Extract the date portion only
+                'indent_item_qty':'indent_item.qty',
+                'depo_master_deponame': 'depo_master.deponame',
+                'depo_master_warehouse': 'depo_master.warehouse',
+                'depo_master_regionname': 'depo_master.regionname',
+            }
+        ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
+                 'depo_master_deponame', 'depo_master_regionname','indent_item_qty', 'depo_master_warehouse')
+        queryset2 = OutpassItem.objects.using('auth').extra(
+            tables=['indent_item', 'generate_indent', 'depo_master'],
+            where=[
+                'indent_item.indent_no = outpass_item.indent_no',
+                'indent_item.indent_no = generate_indent.indent_no',
+                'depo_master.depoid =generate_indent.from_id',
+            ],
+            select={
+
+                'indent_item_item_name': 'indent_item.item_name',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'outpass_item_qty': 'outpass_item.qty',
+
+            }
+        ).values('outpass_item_qty','indent_item_item_name', 'indent_item_createdon')
+        outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+            outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+        )
+        queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+            indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+        )
+        merged_data = []
+        for data1 in queryset1:
+            for data2 in outpass_sum:
+                if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                    merged_data.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'outpass_sum_item': data2['outpass_sum_item'],
+                        'indent_sum_item': data1['indent_sum_item'],
+                    })
+                    break
+        result = []
+        for data1 in merged_data:
+            for data2 in queryset:
+                if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                    result.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'outpass_sum_item': data1['outpass_sum_item'],
+                        'indent_sum_item': data1['indent_sum_item'],
+                        'depo_master_deponame': data2['depo_master_deponame'],
+                        'depo_master_regionname': data2['depo_master_regionname'],
+                        'indent_item_indent_no': data2['indent_item_indent_no'],
+                        'depo_master_warehouse':data2['depo_master_warehouse']
+                    })
+                    break
+        result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
+
+        return render(request,'Reports/depotwise_indent.html',{'menuname':menuname,'entry':result,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+def depot_qtyissued(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    selectrange = data['timingslist']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        warehouseid1 = request.POST.get('warehousename1')
+        regionname1 = request.POST.get('regionname1')
+        deponame1 = request.POST.get('deponame1')
+        depo_data = DepoMaster.objects.using('auth').filter(
+            warehouse=warehouseid1,
+            regionname=regionname1,
+            deponame=deponame1
+        ).values('warehouse', 'regionname', 'deponame')
 
         queryset = IndentItem.objects.using('auth').extra(
             tables=['outpass_item', 'generate_indent', 'depo_master'],
@@ -6865,56 +7075,158 @@ def depot_indent_report(request):
                 'indent_item.indent_no = outpass_item.indent_no',
                 'indent_item.indent_no = generate_indent.indent_no',
                 f"depo_master.deponame = '{deponame1}'",
-                'depo_master.deponame = generate_indent.to_name',
+                'depo_master.depoid =generate_indent.to_id',
                 f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
             ],
             select={
-                'generate_indent_to_name': 'generate_indent.to_name',
                 'indent_item_indent_no': 'indent_item.indent_no',
                 'indent_item_item_name': 'indent_item.item_name',
                 'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
-                'outpass_item_qty': 'outpass_item.qty',
                 'indent_item_qty': 'indent_item.qty',
                 'depo_master_deponame': 'depo_master.deponame',
                 'depo_master_regionname': 'depo_master.regionname',
+                'outpass_item_qty': 'outpass_item.qty',
+                'depo_master_warehouse': 'depo_master.warehouse'
+
             }
         ).values(
             'indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
-            'generate_indent_to_name', 'depo_master_deponame', 'depo_master_regionname',
-            'indent_item_qty', 'outpass_item_qty'
+            'depo_master_deponame', 'depo_master_regionname',
+            'indent_item_qty', 'outpass_item_qty', 'depo_master_warehouse'
         )
+        queryset2 = OutpassItem.objects.using('auth').extra(
+            tables=['indent_item', 'depo_master', 'generate_indent'],
+            where=[
+                'indent_item.indent_no = outpass_item.indent_no',
+                f"depo_master.deponame = '{deponame1}'",
+                'indent_item.indent_no = generate_indent.indent_no',
+                'depo_master.depoid =generate_indent.to_id',
+                f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
+            ],
+            select={
+                'indent_item_item_name': 'indent_item.item_name',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'outpass_item_qty': 'outpass_item.qty'
+            }
+        ).values('outpass_item_qty', 'indent_item_item_name', 'indent_item_createdon')
+        outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+            outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+        )
+        queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+            indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+        )
+        merged_data = []
+        for data1 in queryset1:
+            for data2 in outpass_sum:
+                if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                    merged_data.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'outpass_sum_item': data2['outpass_sum_item'],
+                        'indent_sum_item': data1['indent_sum_item'],
+                    })
+                    break
+        result = []
+        for data1 in merged_data:
+            for data2 in queryset:
+                if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                    result.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'outpass_sum_item': data1['outpass_sum_item'],
+                        'indent_sum_item': data1['indent_sum_item'],
+                        'depo_master_deponame': data2['depo_master_deponame'],
+                        'depo_master_regionname': data2['depo_master_regionname'],
+                        'indent_item_indent_no': data2['indent_item_indent_no'],
+                        'depo_master_warehouse': data2['depo_master_warehouse']
+                    })
+                    break
+        result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
 
-        print(queryset)
-        return render(request, 'Reports/depotwise_indent.html',
-                      {'entry': queryset, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange})
+        return render(request, 'Reports/depot_qtyissued.html',
+                      {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
     else:
         queryset = IndentItem.objects.using('auth').extra(
             tables=['outpass_item', 'generate_indent', 'depo_master'],
             where=[
                 'indent_item.indent_no = outpass_item.indent_no',
                 'indent_item.indent_no = generate_indent.indent_no',
-                'depo_master.deponame = generate_indent.to_name',
+                'depo_master.depoid = generate_indent.to_id',
             ],
             select={
                 'generate_indent_to_name': 'generate_indent.to_name',
                 'indent_item_indent_no': 'indent_item.indent_no',
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",  # Extract the date portion only
-                'outpass_item_qty': 'outpass_item.qty',
-                'indent_item_qty':'indent_item.qty',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                # Extract the date portion only
+                'indent_item_qty': 'indent_item.qty',
                 'depo_master_deponame': 'depo_master.deponame',
+                'depo_master_warehouse': 'depo_master.warehouse',
                 'depo_master_regionname': 'depo_master.regionname',
             }
         ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon', 'generate_indent_to_name',
-                 'depo_master_deponame', 'depo_master_regionname','indent_item_qty','outpass_item_qty')
+                 'depo_master_deponame', 'depo_master_regionname', 'indent_item_qty', 'depo_master_warehouse')
+        queryset2 = OutpassItem.objects.using('auth').extra(
+            tables=['indent_item', 'generate_indent', 'depo_master'],
+            where=[
+                'indent_item.indent_no = outpass_item.indent_no',
+                'indent_item.indent_no = generate_indent.indent_no',
+                'depo_master.depoid =generate_indent.to_id',
+
+            ],
+            select={
+
+                'indent_item_item_name': 'indent_item.item_name',
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'outpass_item_qty': 'outpass_item.qty',
+                'indent_item_indent_no': 'indent_item.indent_no',
 
 
-        #for item in queryset:
-            #item['indent_item_createdon'] = item['indent_item_createdon'].strftime('%Y-%m-%d')
-        print('queryset')
-        return render(request,'Reports/depotwise_indent.html',{'entry':queryset,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+            }
+        ).values('outpass_item_qty', 'indent_item_item_name', 'indent_item_createdon', 'indent_item_indent_no')
+        queryset1 = queryset.values('indent_item_indent_no')
+        outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+            outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+        )
+        queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+            indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+        )
+        merged_data = []
+        for data1 in queryset1:
+            for data2 in outpass_sum:
+                if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                    merged_data.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'outpass_sum_item': data2['outpass_sum_item'],
+                        'indent_sum_item': data1['indent_sum_item'],
+                    })
+                    break
+        result = []
+        for data1 in merged_data:
+            for data2 in queryset:
+                if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                    result.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'outpass_sum_item': data1['outpass_sum_item'],
+                        'indent_sum_item': data1['indent_sum_item'],
+                        'depo_master_deponame': data2['depo_master_deponame'],
+                        'depo_master_regionname': data2['depo_master_regionname'],
+                        'indent_item_indent_no': data2['indent_item_indent_no'],
+                        'depo_master_warehouse': data2['depo_master_warehouse']
+                    })
+                    break
+        result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
 
+        return render(request, 'Reports/depot_qtyissued.html',
+                      {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
 def Vendor_itemsply(request):
+    menuname = request.session['mylist']
     if request.method == 'POST':
         date = request.POST.get('date')
         queryset = GrnItem.objects.using('auth').extra(
@@ -6956,8 +7268,8 @@ def Vendor_itemsply(request):
                         'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
                     })
                     break
-
-        return render(request, 'Reports/vendor_itemsupply.html', {"entry": merged_data})
+        merged_data = sorted(merged_data, key=lambda x: x['grn_item_created_on'], reverse=True)
+        return render(request, 'Reports/vendor_itemsupply.html', {"entry": merged_data,'menuname':menuname})
 
     else:
         queryset = GrnItem.objects.using('auth').extra(
@@ -6996,27 +7308,36 @@ def Vendor_itemsply(request):
                         'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
                     })
                     break
-
-        return render(request,'Reports/vendor_itemsupply.html',{"entry":merged_data})
+        merged_data = sorted(merged_data, key=lambda x: x['grn_item_created_on'], reverse=True)
+        return render(request,'Reports/vendor_itemsupply.html',{"entry":merged_data,'menuname':menuname})
 
 
 def busstation_stalls(request):
-    queryset = GrnItem.objects.using('auth').extra(
-        tables=['grn', 'grn_item', 'warehouse_master'],
-        where=[
-            'grn.grn = grn_item.grn',
-            'grn.warehouse_id = warehouse_master.warehouseid',
-        ],
-        select={
-            'grn_grn': 'grn.grn',
-            'grn_warehouse_id': 'grn.warehouse_id',
-            'grn_vendorname': 'grn.vendorname',
-            'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d')",
-            'grn_item_item_name': 'grn_item.item_name',
-            'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
-            'warehouse_master_warehousename': 'warehouse_master.warehousename'
-        }
-    ).values(
-        'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
-        'grn_item_created_on', 'grn_item_item_name', 'grn_item_quantity', 'warehouse_master_warehousename'
-    )
+    accesskey = request.session['accesskey']
+    payload = json.dumps(
+        {
+
+            "accesskey": accesskey,
+            "warehouseid": "All",
+            "regionid": "All",
+            "depoid": "All",
+            "busstationid": "All",
+            "fromdate": "Current Month",
+            "todate": "Current Month"
+
+        })
+
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    url = "http://13.235.112.1/ziva/mobile-api/daywise-sales-report.php"
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    data = data['daywisesaleslist']
+    item_count = Sales.objects.using('auth').values('created_on', 'from_name').annotate(total_items=Count('item_count'))
+
+    # Get stall count for all dates and bus stations
+    stall_count = Sales.objects.using('auth').values('created_on', 'from_name', 'from_id').distinct().annotate(
+        total_stalls=Count('from_id'))
+
+    return HttpResponse({'data':data})
