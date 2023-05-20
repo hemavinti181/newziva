@@ -538,7 +538,7 @@ $("#busstationid").change(function() {
                 	'itemname':itemname1,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		 var obj = data.data.pricelist
+			 		 var obj = data.data.pricemasterlist
                         console.log(obj[0].mrp);
                         if(obj.length>0){
                             $("#mrp").val(obj[0].mrp);

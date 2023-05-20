@@ -1,10 +1,230 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block htmlbody %}
+
+<!--<style>
+.row2{
+	background-color: #1c87c9 !important;; /* add color to the background of the second row of th tags */
+	}
+</style>-->
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba"><b>Warehouse Wise Stock On Hand Report</b></h3>
+              </div>
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                               			<!-- Search Filter -->
+						<form  method="POST" action="warehouse_stock"  enctype="multipart/form-data">
+									{% csrf_token %}
+                            <!--<div class="col-md-2  form-group has-feedback">
+                              <label for="daterangeselect">Frequency</label>
+                                                 <select class="form-control" name="range2" id="range2" hidden>
+                            		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
+												</select>
+                                <input type="hidden" name="from" id="from" />
+                              <select id="daterangeselect" class="form-control" name="range">
+                                   <option value="">All</option>
+                                  {% for selectrange in selectrange %}
+                                       <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
+                                  {% endfor %}
+                              </select>
+                            </div>
+                             <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
+                              <label for="start-date">From Date</label>
+                              <input type="date" id="start-date" class="form-control">
+                            </div>-->
+                              <!--<div class="col-md-2  form-group has-feedback" id="tdate" />
+                                  <label  for="end-date">Select Date</label>
+                              <input type="date" id="end-date" name="date" class="form-control">
+                            </div>
+
+
+                            	<div  class="col-md-2  form-group has-feedback">
+													<label> Warehouse</label>
+                                         <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+												</select>
+                                    <!--<select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ warehouseid }}">{{ warehouse }}</option>
+												</select>
+											 <input type="hidden" name="warehousename1" id="warehousename1" />
+												<select class="form-control" name="warehouseid1" id="warehouseid1">
+													<option value=""> Warehouse</option>
+													{% for data1 in wh_masterlist %}
+															{% if data1.status == 'Active' %}
+                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif  %}
+                                                     {% endfor %}
+												</select>
+                                </div>
+
+                               <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>
+                        </form>-->
+
+
+						</div>
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                            <!--<tr>
+                               <th>S NO</th>
+                                <th>Date</th>
+                                <th>WareHouse</th>
+                                <th colspan="3">Items</th>
+
+                            </tr>-->
+                            <tr>
+                                  <th class="row2">S NO</th>
+                                <th class="row2">Date</th>
+                                <th class="row2">WareHouse</th>
+                                <th class="row2">Item Name</th>
+                                <th class="row2">Quantity</th>
+
+                            </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for item_quantity in item_quantities %}
+                                        <tr>
+                                          <td>{{ forloop.counter }}</td>
+                                          <td>{{ item_quantity.createdon}}</td>
+                                          <td>{{ item_quantity.warehousename }}</td>
+                                          <td>{{ item_quantity.itemname }} </td>
+                                            <td>{{ item_quantity.quantity }}</td>
+
+                                        </tr>
+                                        {% endfor %}
+                                  </tbody>
+                      </table>
+                  </div>
+                              <input type="hidden" id="id1" name="id1" />
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+  <!--<div class="inner-fabs">
+
+                                  <div class="fab bg-green round" id="fab3"><a href="medeliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="medeliver_challan_pending"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>-->
+<div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                  <div class="modal-header">
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Delivery Challan</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+                                        <div class="modal-body">
+                                             <form method="POST" action="deliver_challan_status">
+                                                    {% csrf_token %}
+                                                 <input type="hidden" id="txtHdnId1" name="txtHdnId[]"  />
+                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+										            <input type="text" class="form-control" placeholder="Driver Name" name="agentname" id="name">
+                                            </div>
+                                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+										            <input type="text" class="form-control" placeholder="Driver Number" name="agentno" id="agentno">
+                                            </div>
+                                            <div class="col-md-12 col-sm-12  form-group has-feedback">
+										        <input type="hidden" class="form-control" placeholder="Vehicals Details" name="vehicaldetails1" id="veh1">
+                                                	<select class="form-control" name="vehicaldetails" id="veh">
+                                                    <option value=" ">Vehical Details</option>
+                                                    {% for data1 in vehicals %}
+													    <option value="{{data1.vehicleno }}">{{ data1.vehicleno }}</option>
+                                                    {% endfor %}
+												</select>
+
+										    </div>
+                                               <div class="col-md-12 col-sm-12  form-group has-feedback">
+
+                                                   <textarea class="form-control" name="remarks" rows="2" placeholder="Remarks" id="remarks"></textarea>
+										    </div>
+                                            <p></p>
+                                            <div class="col-md-6 col-sm-8  offset-md-5">
+                                                  <button type="submit" class="btn btn-info">Approve</button>
+                                            </div>
+                                             </form>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+<!-- Include jQuery and jQuery UI libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script>
+
+
+$("#daterangeselect").change(function() {
+    var selectedOptionText = $(this).find(":selected").text();
+    $("#from").val(selectedOptionText);
+});
+
+$(document).ready(function(){
+  var optionValue = $("#warehouseid2").val();
+  $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
+  var optionValue1 = $("#range2").val();
+  $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
+  })
+
+$(document).ready(function(){
+ $('#date-range-fields').hide();
+  $('#daterangeselect').change(function() {
+    var selectedOption = $(this).find(":selected").text();
+    if (selectedOption == 'Custom Dates') {
+      $('#date-range-fields').show();
+      $('#tdate').show();// show the date fields if custom option is selected
+      displayResults();
+    } else {
+      $('#date-range-fields').hide();
+      $('#tdate').hide();// hide the date fields if another option is selected
+          displayOtherResults(selectedOption);
+    }
+  });
+});
+function displayResults() {
+  var fromDate = $('#date-range-fields').val();
+  var toDate = $('#tdate').val();
+  // Use the selected dates to display results
+  // Code to display results...
+}
+
+function displayOtherResults(selectedOption) {
+  // Use the selected option to display results for other options
+  // Code to display results...
+}
+
+
+ </script>
+{% endblock %}
+
+
+

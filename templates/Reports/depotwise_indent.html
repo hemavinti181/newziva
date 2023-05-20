@@ -62,14 +62,18 @@
                                 </div>
 											<div  class="col-md-2  form-group has-feedback">
 													<label> Region</label>
-                                                   <input type="hidden" name="regionid2" id="regionid2" value="{{ request.POST.regionid1 }}" />
+                                              <select class="form-control" name="regionid2" id="regionid2" hidden>
+                            		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+												</select>
 											 <input type="hidden" name="regionname1" id="regionname1" />
 												<select class="form-control" name="regionid1" id="regionid1">
 													<option value=""> Region</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
-                                                  <input type="hidden" name="depoid2" id="depoid2" value="{{ request.POST.depoid1  }}" />
+                                                  <select class="form-control" name="depoid2" id="depoid2" hidden>
+                            		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
+												</select>
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
@@ -197,7 +201,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
-
+$("#button1").click(function() {
+  var selectedOptionText = $('#warehouseid1').find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+});
 $("#busstationid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#busstationname").val(selectedOptionText);

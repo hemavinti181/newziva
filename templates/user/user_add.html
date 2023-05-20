@@ -68,8 +68,8 @@
                                         </div>-->
 
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback" >
-
-												<select class="form-control" name="role" id="role">
+													<input type="hidden" name="role" id="rolename" />
+												<select class="form-control" name="role1" id="role">
 													<option> Role</option>
 													{% for all_data2 in all_data2 %}
 														{% if  all_data2.status == "Active" %}

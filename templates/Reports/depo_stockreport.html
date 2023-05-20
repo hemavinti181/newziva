@@ -11,7 +11,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Depot Stock Wise Report</b></h3>
+                <h3 style="color:#1372ba"><b>Depot Wise Stock On Hand Report</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -53,6 +53,9 @@
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
 												</select>
+                                    <!--<select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ warehouseid }}">{{ warehouse }}</option>
+												</select>-->
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value=""> Warehouse</option>
@@ -65,15 +68,21 @@
                                 </div>
 											<div  class="col-md-2  form-group has-feedback">
 													<label> Region</label>
-                                                   <input type="hidden" name="regionid2" id="regionid2" value="{{ request.POST.regionid1 }}" />
+                                                   <select class="form-control" name="regionid2" id="regionid2" hidden>
+                            		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+												</select>
+
 											 <input type="hidden" name="regionname1" id="regionname1" />
 												<select class="form-control" name="regionid1" id="regionid1">
 													<option value=""> Region</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
-                                                  <input type="hidden" name="depoid2" id="depoid2" value="{{ request.POST.depoid1  }}" />
-													<label> Depot</label>
+                                                <label> Depot</label>
+                                                 <select class="form-control" name="depoid2" id="depoid2" hidden>
+                            		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
+												</select>
+
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
 													<option value=""> depot</option>
@@ -81,14 +90,14 @@
 
                             </div>
 
-										<div  class="col-md-2  form-group has-feedback">
+										<!--<div  class="col-md-2  form-group has-feedback">
                                              <input type="hidden" name="busstationid2" id="busstationid2" value="{{ request.POST.busstationid1 }}" />
 													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value=""> bus station</option>
 												</select>
-										</div>
+										</div>-->
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
@@ -420,7 +429,11 @@ $(document).ready(function(){
         	});
         });
 });
- $("#warehouseid1").change(function() {
+$("#button1").click(function() {
+  var selectedOptionText = $('#warehouseid1').find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+});
+$("#warehouseid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename1").val(selectedOptionText);
 });
@@ -476,7 +489,6 @@ function displayOtherResults(selectedOption) {
 
  </script>
 {% endblock %}
-
 
 
 

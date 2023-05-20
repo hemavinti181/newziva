@@ -27,7 +27,7 @@
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
 												</select>
-                                <input type="hidden" name="from" id="from" />
+                                <input type="hidden" name="from" id="from" value="{{ request.POST.from }}" />
                               <select id="daterangeselect" class="form-control" name="range">
                                    <option value="">All</option>
                                   {% for selectrange in selectrange %}
@@ -62,14 +62,18 @@
                                 </div>
 											<div  class="col-md-2  form-group has-feedback">
 													<label> Region</label>
-                                                   <input type="hidden" name="regionid2" id="regionid2" value="{{ request.POST.regionid1 }}" />
+                                                    <select class="form-control" name="regionid2" id="regionid2" hidden>
+                            		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+												</select>
 											 <input type="hidden" name="regionname1" id="regionname1" />
 												<select class="form-control" name="regionid1" id="regionid1">
 													<option value=""> Region</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
-                                                  <input type="hidden" name="depoid2" id="depoid2" value="{{ request.POST.depoid1  }}" />
+                                                 <select class="form-control" name="depoid2" id="depoid2" hidden>
+                            		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
+												</select>
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
@@ -199,7 +203,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
-
+$("#button1").click(function() {
+  var selectedOptionText = $('#daterangeselect').find(":selected").text();
+  $("#from").val(selectedOptionText);
+});
+$("#button1").click(function() {
+  var selectedOptionText = $('#warehouseid1').find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+});
 $("#busstationid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#busstationname").val(selectedOptionText);
@@ -213,6 +224,7 @@ $("#depoid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#depotname").val(selectedOptionText);
 });
+
 
      $(document).ready(function() {
     		var warehousename = $('#warehouseid2').find(":selected").text();
@@ -431,8 +443,6 @@ $(document).ready(function(){
   var optionValue = $("#warehouseid2").val();
   $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
   var optionValue1 = $("#range2").val();
-
-
   $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
   })
 
