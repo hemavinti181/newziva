@@ -41,11 +41,11 @@
                              <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
                               <label for="start-date">From Date</label>
                               <input type="date" id="start-date" class="form-control">
-                            </div>
-                              <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
-                                  <label  for="end-date">To Date</label>
-                              <input type="date" id="end-date" class="form-control">
                             </div>-->
+                              <div class="col-md-2  form-group has-feedback" id="tdate">
+                                  <label  for="end-date">Select Date</label>
+                              <input type="date" id="end-date" name="date" class="form-control" value="{{ request.POST.date }}">
+                            </div>
 
 
                             	<div  class="col-md-2  form-group has-feedback">
@@ -83,7 +83,7 @@
                             		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
 												</select>
 
-											 <input type="hidden" name="deponame1" id="deponame1" />
+											 <input type="hidden" name="deponame1" id="deponame1"  value="{{ request.POST.deponame1 }}"/>
 												<select class="form-control" name="depoid1" id="depoid1">
 													<option value=""> depot</option>
 												</select>
@@ -120,12 +120,14 @@
                             <tr>
                                <th>S NO</th>
                                 <th>Date</th>
+                                <th>Region Name</th>
                                 <th>Depot Name</th>
                                 <th colspan="3">Items</th>
 
                             </tr>
                             <tr>
                                   <th class="row2"></th>
+                                <th class="row2"></th>
                                 <th class="row2"></th>
                                 <th class="row2"></th>
                                 <th class="row2">1000 ml</th>
@@ -140,6 +142,7 @@
     <tr>
       <td>{{ forloop.counter }}</td>
       <td>{{ entry.createdon }}</td>
+        <td>{{ entry.depo_master_regionname }}</td>
       <td>{{ entry.depo_master_deponame }}</td>
       <td>{{ entry.sale_qty_1000ml }}</td>
                 <td>{{ entry.sale_qty_250ml }}</td>
@@ -279,6 +282,7 @@ $("#depoid").change(function() {
     	});
 });
     	$(document).ready(function(){
+
   var optionValue = $("#busstation1").val();
   $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
@@ -305,7 +309,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-
+                $("#regionid1").append("<option value=''>All</option>");
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -328,7 +332,7 @@ $(document).ready(function(){
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value=''>Choose region</option>");
+                    $("#regionid1").append("<option value=''>All</option>");
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -352,6 +356,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
+                $("#depoid1").append("<option  value='1'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -373,7 +378,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value=''>Choose Depo</option>");
+			 		$("#depoid1").append("<option  value='1'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -396,7 +401,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-
+                    $("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -420,7 +425,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value=''>Choose Bus station</option>");
+			 		$("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -432,6 +437,10 @@ $(document).ready(function(){
 $("#button1").click(function() {
   var selectedOptionText = $('#warehouseid1').find(":selected").text();
   $("#warehousename1").val(selectedOptionText);
+   var selectedOptionText = $('#regionid1').find(":selected").text();
+  $("#regionname1").val(selectedOptionText);
+   var selectedOptionText = $('#depoid1').find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
 });
 $("#warehouseid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -443,7 +452,7 @@ $("#regionid1").change(function() {
 });
 $("#depoid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-    ("#deponame1").val(selectedOptionText);
+   $("#deponame1").val(selectedOptionText);
 });
 $("#busstationid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -454,8 +463,6 @@ $(document).ready(function(){
   var optionValue = $("#warehouseid2").val();
   $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
   var optionValue1 = $("#range2").val();
-
-
   $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
   })
 

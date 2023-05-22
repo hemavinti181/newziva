@@ -6730,39 +6730,43 @@ def depot_stock(request):
     data = response.json()
     wh_masterlist = data['warehouselist']
     if request.method == 'POST':
-        warehouseid1 = request.POST.get('warehouseid1')
-        #warehousename1 = request.POST.get('warehousename1')
-        regionname1 = request.POST.get('regionid1')
-        deponame1 = request.POST.get('depoid1')
+        date = request.POST.get('date')
+        #warehouseid1 = request.POST.get('warehouseid1')
+        warehousename1 = request.POST.get('warehousename1')
+        regionname1 = request.POST.get('regionname1')
+        deponame1 = request.POST.get('deponame1')
         depo_data = DepoMaster.objects.using('auth').filter(
-            warehouseid=warehouseid1,
-            regionid=regionname1,
-            depoid=deponame1
+            warehouse=warehousename1,
+            regionname=regionname1,
+            deponame=deponame1
         ).values('warehouse', 'regionname', 'deponame')
         queryset = DepoInventory.objects.using('auth').extra(
-            tables=['depo_master'],
+            tables=['depo_master','depo_inventory'],
             where=[
                 'depo_master.depoid = depo_inventory.region_id',
-                'depo_master.depoid = %s'
-                # 'depo_inventory.createdon = %s'
+                f"depo_master.deponame = '{deponame1}' OR  depo_master.regionname = '{regionname1}' OR depo_master.warehouse = '{warehousename1}'",
+                #f"DATE_FORMAT(depo_inventory.createdon, '%%Y-%%m-%%d') = '{date}'",
             ],
-            params=[deponame1],
+
             select={
                 'depo_master_deponame': 'depo_master.deponame',
+                'depo_master_regionname':'depo_master.regionname',
                 'depo_inventory_itemname': 'depo_inventory.itemname',
                 'depo_inventory_sale_qty': 'depo_inventory.sale_qty',
                 'depo_inventory_region_id': 'depo_inventory.region_id',
-                'depo_inventory_createdon': "DATE_FORMAT(depo_inventory.createdon, '%%Y-%%m-%%d')",
+                'depo_inventory_createdon': "DATE_FORMAT(depo_inventory.createdon, '%%d-%%b-%%Y')",
             }
         ).values('depo_master_deponame', 'depo_inventory_itemname', 'depo_inventory_sale_qty',
-                 'depo_inventory_region_id', 'depo_inventory_createdon')
-
+                 'depo_inventory_region_id', 'depo_inventory_createdon','depo_master_regionname')
+        if date:
+            queryset = queryset.filter(createdon__date=date)
 
         if queryset:
             merged_dict = {}
             for d in queryset:
                 key = d['depo_master_deponame']
                 key2 = d['depo_inventory_createdon']
+                key3 = d['depo_master_regionname']
                 if key in merged_dict:
                     merged_dict[key]['depo_inventory_items'].append({
                         'itemname': d['depo_inventory_itemname'],
@@ -6774,6 +6778,7 @@ def depot_stock(request):
                     merged_dict[key] = {
                         'depo_master_deponame': key,
                         'createdon': key2,
+                        'depo_master_regionname':key3,
                         'depo_inventory_items': [{
                             'itemname': d['depo_inventory_itemname'],
                             'sale_qty': d['depo_inventory_sale_qty'],
@@ -6801,7 +6806,7 @@ def depot_stock(request):
 
     else:
 
-            #createdon = "2023-02-27 18:50:46"
+
             queryset = DepoInventory.objects.using('auth').extra(
                 tables=['depo_master'],
                 where=[
@@ -6810,19 +6815,21 @@ def depot_stock(request):
                 ],
                 #params=[],
                 select={
+                    'depo_master_regionname':'depo_master.regionname',
                     'depo_master_deponame': 'depo_master.deponame',
                     'depo_inventory_itemname': 'depo_inventory.itemname',
                     'depo_inventory_sale_qty': 'depo_inventory.sale_qty',
                     'depo_inventory_region_id': 'depo_inventory.region_id',
-                    'depo_inventory_createdon':"DATE_FORMAT(depo_inventory.createdon, '%%Y-%%m-%%d')",
+                    'depo_inventory_createdon':"DATE_FORMAT(depo_inventory.createdon, '%%d-%%b-%%Y')",
                 }
-            ).values('depo_master_deponame','depo_inventory_itemname','depo_inventory_sale_qty','depo_inventory_region_id','depo_inventory_createdon')
+            ).values('depo_master_regionname','depo_master_deponame','depo_inventory_itemname','depo_inventory_sale_qty','depo_inventory_region_id','depo_inventory_createdon')
 
             merged_dict = {}
 
             for d in queryset:
                 key = d['depo_master_deponame']
                 key2 = d['depo_inventory_createdon']
+                key3 = d['depo_master_regionname']
                 if key in merged_dict:
                     merged_dict[key]['depo_inventory_items'].append({
                         'itemname': d['depo_inventory_itemname'],
@@ -6832,6 +6839,7 @@ def depot_stock(request):
                     merged_dict[key] = {
                         'depo_master_deponame': key,
                         'createdon':key2,
+                        'depo_master_regionname':key3,
                         'depo_inventory_items': [{
                             'itemname': d['depo_inventory_itemname'],
                             'sale_qty': d['depo_inventory_sale_qty'],
@@ -6890,21 +6898,21 @@ def depot_indent_report(request):
         ).values('warehouse', 'regionname', 'deponame')
 
 
-        queryset = IndentItem.objects.using('auth').extra(
-            tables=['outpass_item', 'generate_indent', 'depo_master'],
+        queryset = DepoMaster.objects.using('auth').extra(
+            tables=['outpass_item', 'indent_item','generate_indent', 'depo_master'],
             where=[
                 'indent_item.indent_no = outpass_item.indent_no',
                 'indent_item.indent_no = generate_indent.indent_no',
                 ' depo_master.warehouseid =generate_indent.to_id',
-                f"depo_master.deponame = '{deponame1}'",
+                f"depo_master.deponame = '{deponame1}' OR depo_master.regionname = '{regionname1}' OR depo_master.warehouse = '{warehouseid1}'",
                 'depo_master.depoid =generate_indent.from_id',
-                f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
+                #f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
             ],
             select={
                 'generate_indent_from_name': 'generate_indent.from_name',
                 'indent_item_indent_no': 'indent_item.indent_no',
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%d-%b-%Y')",
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                 'indent_item_qty': 'indent_item.qty',
                 'depo_master_deponame': 'depo_master.deponame',
                 'depo_master_regionname': 'depo_master.regionname',
@@ -6917,29 +6925,57 @@ def depot_indent_report(request):
             'generate_indent_from_name', 'depo_master_deponame', 'depo_master_regionname',
             'indent_item_qty','outpass_item_qty','depo_master_warehouse'
         )
+        if deponame1 != 'All':
+            queryset = queryset.filter(deponame=deponame1)
+        elif regionname1 != 'All':
+            queryset = queryset.filter(regionname=regionname1)
+        if date:
+            queryset = queryset.filter(createdon__date=date)
+        queryset1 = IndentItem.objects.using('auth').values('createdon__date', 'item_name').annotate(
+                indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+            )
+        merged_data = []
+        for data2 in queryset1 :
+            for data1 in queryset:
+                createdon = data2['createdon__date']
+                date_createdon = createdon.strftime("%d-%b-%Y")
+                if data1['indent_item_createdon'] == date_createdon \
+                        and data1['indent_item_item_name'] == data2['item_name']:
+                    merged_data.append({
+                        'indent_item_createdon': data1['indent_item_createdon'],
+                        'indent_item_item_name': data1['indent_item_item_name'],
+                        'indent_sum_item': data2['indent_sum_item'],
+                        'depo_master_deponame': data1['depo_master_deponame'],
+                        'depo_master_regionname': data1['depo_master_regionname'],
+                        'indent_item_indent_no': data1['indent_item_indent_no'],
+                        'depo_master_warehouse': data1['depo_master_warehouse']
+                    })
+                    break
         queryset2 = OutpassItem.objects.using('auth').extra(
             tables=['indent_item','depo_master','generate_indent'],
             where=[
                 'indent_item.indent_no = outpass_item.indent_no',
-                f"depo_master.deponame = '{deponame1}'",
+                f"depo_master.warehouse = '{warehouseid1}'",
                 'indent_item.indent_no = generate_indent.indent_no',
                 'depo_master.depoid =generate_indent.from_id',
-                f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
+                #f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
             ],
             select={
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                 'outpass_item_qty': 'outpass_item.qty'
             }
         ).values('outpass_item_qty','indent_item_item_name', 'indent_item_createdon')
+
+
+        if date:
+                queryset2 = queryset2.filter(createdon__date=date)
         outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
             outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
         )
-        queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
-            indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-        )
-        merged_data = []
-        for data1 in queryset1:
+
+        result = []
+        '''for data1 in queryset1:
             for data2 in outpass_sum:
                 if data1['indent_item_createdon'] == data2['indent_item_createdon']\
                         and data1['indent_item_item_name'] == data2['indent_item_item_name']:
@@ -6950,20 +6986,20 @@ def depot_indent_report(request):
                         'indent_sum_item': data1['indent_sum_item'],
                     })
                     break
-        result = []
+        result = []'''
         for data1 in merged_data:
-            for data2 in queryset:
+            for data2 in outpass_sum:
                 if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
                         and data1['indent_item_item_name'] == data2['indent_item_item_name']:
                     result.append({
                         'indent_item_createdon': data1['indent_item_createdon'],
                         'indent_item_item_name': data1['indent_item_item_name'],
-                        'outpass_sum_item': data1['outpass_sum_item'],
+                        'outpass_sum_item': data2['outpass_sum_item'],
                         'indent_sum_item': data1['indent_sum_item'],
-                        'depo_master_deponame':data2['depo_master_deponame'],
-                        'depo_master_regionname': data2['depo_master_regionname'],
-                        'indent_item_indent_no':data2['indent_item_indent_no'],
-                        'depo_master_warehouse':data2['depo_master_warehouse']
+                        'depo_master_deponame':data1['depo_master_deponame'],
+                        'depo_master_regionname': data1['depo_master_regionname'],
+                        'indent_item_indent_no':data1['indent_item_indent_no'],
+                        'depo_master_warehouse':data1['depo_master_warehouse']
                     })
                     break
         result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
@@ -6971,8 +7007,8 @@ def depot_indent_report(request):
         return render(request, 'Reports/depotwise_indent.html',
                       {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
     else:
-        queryset = IndentItem.objects.using('auth').extra(
-            tables=['outpass_item', 'generate_indent', 'depo_master'],
+        queryset = DepoMaster.objects.using('auth').extra(
+            tables=['outpass_item', 'indent_item','generate_indent', 'depo_master'],
             where=[
                 'indent_item.indent_no = outpass_item.indent_no',
                 'indent_item.indent_no = generate_indent.indent_no',
@@ -6982,7 +7018,7 @@ def depot_indent_report(request):
 
                 'indent_item_indent_no': 'indent_item.indent_no',
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%M-%%Y')",  # Extract the date portion only
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",  # Extract the date portion only
                 'indent_item_qty':'indent_item.qty',
                 'depo_master_deponame': 'depo_master.deponame',
                 'depo_master_warehouse': 'depo_master.warehouse',
@@ -7000,7 +7036,7 @@ def depot_indent_report(request):
             select={
 
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%M-%%Y')",
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                 'outpass_item_qty': 'outpass_item.qty',
 
             }
@@ -7008,35 +7044,40 @@ def depot_indent_report(request):
         outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
             outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
         )
-        queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+        queryset1 = IndentItem.objects.using('auth').values('createdon__date', 'item_name').annotate(
             indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
         )
         merged_data = []
-        for data1 in queryset1:
-            for data2 in outpass_sum:
-                if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                        and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+        for data2 in queryset1:
+            for data1 in queryset:
+                createdon = data2['createdon__date']
+                date_createdon = createdon.strftime("%d-%b-%Y")
+                if data1['indent_item_createdon'] == date_createdon \
+                        and data1['indent_item_item_name'] == data2['item_name']:
                     merged_data.append({
                         'indent_item_createdon': data1['indent_item_createdon'],
                         'indent_item_item_name': data1['indent_item_item_name'],
-                        'outpass_sum_item': data2['outpass_sum_item'],
-                        'indent_sum_item': data1['indent_sum_item'],
+                        'indent_sum_item': data2['indent_sum_item'],
+                        'depo_master_deponame': data1['depo_master_deponame'],
+                        'depo_master_regionname': data1['depo_master_regionname'],
+                        'indent_item_indent_no': data1['indent_item_indent_no'],
+                        'depo_master_warehouse': data1['depo_master_warehouse']
                     })
                     break
         result = []
         for data1 in merged_data:
-            for data2 in queryset:
+            for data2 in outpass_sum:
                 if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
                         and data1['indent_item_item_name'] == data2['indent_item_item_name']:
                     result.append({
                         'indent_item_createdon': data1['indent_item_createdon'],
                         'indent_item_item_name': data1['indent_item_item_name'],
-                        'outpass_sum_item': data1['outpass_sum_item'],
+                        'outpass_sum_item': data2['outpass_sum_item'],
                         'indent_sum_item': data1['indent_sum_item'],
-                        'depo_master_deponame': data2['depo_master_deponame'],
-                        'depo_master_regionname': data2['depo_master_regionname'],
-                        'indent_item_indent_no': data2['indent_item_indent_no'],
-                        'depo_master_warehouse':data2['depo_master_warehouse']
+                        'depo_master_deponame': data1['depo_master_deponame'],
+                        'depo_master_regionname': data1['depo_master_regionname'],
+                        'indent_item_indent_no': data1['indent_item_indent_no'],
+                        'depo_master_warehouse':data1['depo_master_warehouse']
                     })
                     break
         result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
@@ -7081,12 +7122,12 @@ def depot_qtyissued(request):
                 'indent_item.indent_no = generate_indent.indent_no',
                 f"depo_master.deponame = '{deponame1}'",
                 'depo_master.depoid =generate_indent.to_id',
-                f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
+                #f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
             ],
             select={
                 'indent_item_indent_no': 'indent_item.indent_no',
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                 'indent_item_qty': 'indent_item.qty',
                 'depo_master_deponame': 'depo_master.deponame',
                 'depo_master_regionname': 'depo_master.regionname',
@@ -7099,6 +7140,8 @@ def depot_qtyissued(request):
             'depo_master_deponame', 'depo_master_regionname',
             'indent_item_qty', 'outpass_item_qty', 'depo_master_warehouse'
         )
+        if date:
+            queryset = queryset.filter(createdon__date=date)
         queryset2 = OutpassItem.objects.using('auth').extra(
             tables=['indent_item', 'depo_master', 'generate_indent'],
             where=[
@@ -7106,14 +7149,16 @@ def depot_qtyissued(request):
                 f"depo_master.deponame = '{deponame1}'",
                 'indent_item.indent_no = generate_indent.indent_no',
                 'depo_master.depoid =generate_indent.to_id',
-                f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
+                #f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'",
             ],
             select={
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                 'outpass_item_qty': 'outpass_item.qty'
             }
         ).values('outpass_item_qty', 'indent_item_item_name', 'indent_item_createdon')
+        if date:
+            queryset2 = queryset2.filter(createdon__date=date)
         outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
             outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
         )
@@ -7164,7 +7209,7 @@ def depot_qtyissued(request):
                 'generate_indent_to_name': 'generate_indent.to_name',
                 'indent_item_indent_no': 'indent_item.indent_no',
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                 # Extract the date portion only
                 'indent_item_qty': 'indent_item.qty',
                 'depo_master_deponame': 'depo_master.deponame',
@@ -7184,7 +7229,7 @@ def depot_qtyissued(request):
             select={
 
                 'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')",
+                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                 'outpass_item_qty': 'outpass_item.qty',
                 'indent_item_indent_no': 'indent_item.indent_no',
 
@@ -7226,7 +7271,7 @@ def depot_qtyissued(request):
                         'depo_master_warehouse': data2['depo_master_warehouse']
                     })
                     break
-        result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
+        result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=False)
 
         return render(request, 'Reports/depot_qtyissued.html',
                       {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
@@ -7245,7 +7290,7 @@ def Vendor_itemsply(request):
                 'grn_grn': 'grn.grn',
                 'grn_warehouse_id': 'grn.warehouse_id',
                 'grn_vendorname': 'grn.vendorname',
-                'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d')",
+                'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%d-%%b-%%Y')",
                 'grn_item_item_name': 'grn_item.item_name',
                 'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
                 'warehouse_master_warehousename': 'warehouse_master.warehousename'
@@ -7273,7 +7318,7 @@ def Vendor_itemsply(request):
                         'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
                     })
                     break
-        merged_data = sorted(merged_data, key=lambda x: x['grn_item_created_on'], reverse=True)
+        merged_data = sorted(merged_data, key=lambda x: x['grn_item_created_on'], reverse=False)
         return render(request, 'Reports/vendor_itemsupply.html', {"entry": merged_data,'menuname':menuname})
 
     else:
@@ -7287,7 +7332,7 @@ def Vendor_itemsply(request):
                 'grn_grn': 'grn.grn',
                 'grn_warehouse_id': 'grn.warehouse_id',
                 'grn_vendorname': 'grn.vendorname',
-                'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%d%%m%%Y')",
+                'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%d-%%b-%%Y')",
                 'grn_item_item_name': 'grn_item.item_name',
                 'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
                 'warehouse_master_warehousename': 'warehouse_master.warehousename'
@@ -7314,7 +7359,7 @@ def Vendor_itemsply(request):
                         'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
                     })
                     break
-        merged_data = sorted(merged_data, key=lambda x: x['grn_item_created_on'], reverse=True)
+        merged_data = sorted(merged_data, key=lambda x: x['grn_item_created_on'], reverse=False)
         return render(request,'Reports/vendor_itemsupply.html',{"entry":merged_data,'menuname':menuname})
 
 
@@ -7341,7 +7386,6 @@ def busstation_stalls(request):
     data = response.json()
     data = data['daywisesaleslist']
     item_count = Sales.objects.using('auth').values('created_on', 'from_name').annotate(total_items=Count('item_count'))
-
     # Get stall count for all dates and bus stations
     stall_count = Sales.objects.using('auth').values('created_on', 'from_name', 'from_id').distinct().annotate(
         total_stalls=Count('from_id'))
@@ -7349,8 +7393,13 @@ def busstation_stalls(request):
     return HttpResponse({'data':data})
 
 
+
 def busstation_stock(request):
     pass
+
+
+
+
 
 def warehouse_stock(request):
     menuname = request.session['mylist']
@@ -7366,17 +7415,37 @@ def warehouse_stock(request):
     wh_masterlist = data['warehouselist']
     if request.method == 'POST':
         warehouse_id = request.POST.get('warehouseid1')
-        date = "2022-11-30 11:52:53"
+        date = request.POST.get('date')
         item_quantities = WarehouseInventory.objects.using('auth').filter(
-            warehouse_id=warehouse_id, createdon=date
+            warehouse_id=warehouse_id, createdon__date=date
         ).exclude(
             Q(itemname='Bottle') | Q(itemname='Bottles 500ml') |  Q(itemname='bottle')
-        ).values('warehouse_id', 'itemname').annotate(quantity=Sum('sale_qty'))
-        return render(request,'Reports/warehouse_stock.html',{"menuname":menuname,'wh_masterlist':wh_masterlist})
+        ).values('warehouse_id','createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+        warehouse = WarehouseMaster.objects.using('auth').values('warehousename', 'warehouseid')
+        merged_data = []
+        for data2 in item_quantities:
+            for data1 in warehouse:
+                if data1['warehouseid'] == data2['warehouse_id']:
+                    merged_data.append({
+                        'warehousename': data1['warehousename'],
+                        'warehouse_id': data2['warehouse_id'],
+                        'quantity': data2['quantity'],
+                        'itemname': data2['itemname'],
+                        'createdon': data2['createdon__date'],
+                    })
+                    break
+
+        for entry in merged_data:
+            createdon = entry['createdon']
+            date_createdon = createdon.strftime("%d-%b-%Y")
+            entry['createdon'] = date_createdon
+        merged_data = sorted(merged_data, key=lambda x: x['createdon'], reverse=False)
+        return render(request,'Reports/warehouse_stock.html',{"menuname":menuname,'wh_masterlist':wh_masterlist,'item_quantities':merged_data})
     else:
-        item_quantities = WarehouseInventory.objects.using('auth').all().exclude(
-            Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-        ).values('warehouse_id', 'createdon' ,'itemname').annotate(quantity=Sum('sale_qty'))
+        item_quantities = WarehouseInventory.objects.using('auth').values('warehouse_id', 'createdon' ,'itemname','sale_qty').exclude(
+            Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle'))
+
+        item_quantities = item_quantities.values('warehouse_id', 'createdon__date' ,'itemname').annotate(quantity=Sum('sale_qty'))
 
         warehouse = WarehouseMaster.objects.using('auth').all().values('warehousename','warehouseid')
         merged_data =[]
@@ -7390,7 +7459,7 @@ def warehouse_stock(request):
                         'warehouse_id': data2['warehouse_id'],
                         'quantity': data2['quantity'],
                         'itemname': data2['itemname'],
-                        'createdon': data2['createdon'],
+                        'createdon': data2['createdon__date'],
                     })
                     break
 
@@ -7398,4 +7467,10 @@ def warehouse_stock(request):
             createdon = entry['createdon']
             date_createdon = createdon.strftime("%d-%b-%Y")
             entry['createdon'] = date_createdon
+        merged_data = sorted(merged_data, key=lambda x: x['createdon'], reverse=False)
         return render(request, 'Reports/warehouse_stock.html', {"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_quantities':merged_data})
+
+
+
+
+
