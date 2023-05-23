@@ -7136,7 +7136,7 @@ def depot_qtyissued(request):
         )
         where = [
             'indent_item.indent_no = outpass_item.indent_no',
-            f"depo_master.deponame = '{deponame1}'",
+            f"depo_master.warehouse = '{warehouseid1}'",
             'indent_item.indent_no = generate_indent.indent_no',
             'depo_master.depoid =generate_indent.to_id',
 

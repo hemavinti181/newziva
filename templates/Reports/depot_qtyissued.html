@@ -244,7 +244,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-
+                     $("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -266,7 +266,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value=''>All</option>");
+			 		$("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -302,7 +302,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-
+                $("#regionid1").append("<option value=''>All</option>");
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -349,6 +349,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
+                $("#depoid1").append("<option  value=''>All</option>");
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
