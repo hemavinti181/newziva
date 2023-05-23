@@ -58,7 +58,7 @@
 												</select>-->
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value=""> Warehouse</option>
+													<option value="">All</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -74,7 +74,7 @@
 
 											 <input type="hidden" name="regionname1" id="regionname1" />
 												<select class="form-control" name="regionid1" id="regionid1">
-													<option value=""> Region</option>
+													<option value="">All</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
@@ -85,7 +85,7 @@
 
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value=""> depot</option>
+													<option value="">All</option>
 												</select>
 
                             </div>
@@ -123,6 +123,7 @@
                                       <th>Date</th>
                                       <th>Region Name </th>
                                       <th>Depot Name</th>
+                                      <th>Bus Station</th>
                                       <th>Item</th>
                                       <th>Indent Number</th>
                                         <th>Qty(In Cases) Indented</th>
@@ -136,6 +137,7 @@
                                       <td>{{ data.indent_item_createdon }}</td>
                                         <td>{{ data.depo_master_regionname }}</td>
                                       <td>{{ data.depo_master_deponame }}</td>
+                                        <td>{{ data.generate_indent_fromname }}</td>
                                           <td>{{ data.indent_item_item_name }}</td>
                                       <td>{{ data.indent_item_indent_no }}</td>
                                       <td>{{ data.indent_sum_item }}</td>
@@ -322,7 +324,7 @@ $(document).ready(function(){
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value=''>Choose region</option>");
+                    $("#regionid1").append("<option value=''>All</option>");
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -367,7 +369,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value=''>Choose Depo</option>");
+			 		$("#depoid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -414,7 +416,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value=''>Choose Bus station</option>");
+			 		$("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});

@@ -34,11 +34,11 @@
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
                                   {% endfor %}
                               </select>
-                            </div>-->
+                            </div>
                              <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
                               <label for="start-date">From Date</label>
                               <input type="date" id="start-date" class="form-control">
-                            </div>
+                            </div>-->
                               <div class="col-md-2  form-group has-feedback" id="tdate">
                                   <label  for="end-date">Select Date</label>
                               <input type="date" id="end-date" name="date" class="form-control" value="{{ request.POST.date }}">
@@ -52,7 +52,7 @@
 												</select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value=""> All</option>
+													<option value="">All</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
