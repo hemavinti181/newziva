@@ -3556,8 +3556,8 @@ def medeliver_challan_pending(request):
         if request.method == 'POST':
             date = request.POST.get('date')
             accesskey = request.session['accesskey']
-            busstation = request.POST.get('busstationid')
-            depo = request.POST.get('depoid')
+            busstation = request.POST.get('busstationname1')
+            depo = request.POST.get('deponame1')
             wh=request.POST.get('warehouseid1')
             wh2 = request.POST.get('warehousename1')
             reg = request.POST.get('regionid1')
@@ -4941,11 +4941,6 @@ def sales_admin_approvelist(request):
     wh_masterlist = data['warehouselist']
     if request.method == 'POST':
         date = request.POST.get('date')
-        wh = request.POST.get('warehouseid1')
-        wh2 = request.POST.get('warehousename1')
-        reg = request.POST.get('regionid1')
-        depo = request.POST.get('depoid1')
-        bus = request.POST.get('busstationid1')
         accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/sales-list-admin.php"
 
@@ -4966,10 +4961,10 @@ def sales_admin_approvelist(request):
             data = response.json()
             data = data['saleslist']
             return render(request, 'sales/sales_admin_list.html',
-                          {'data': data, 'date': date, 'menuname': menuname, 'wh_masterlist': wh_masterlist,"wh":wh,'reg':reg,'depo':depo,'bus':bus,'wh2':wh2})
+                          {'data': data, 'date': date, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
         else:
             return render(request, 'sales/sales_admin_list.html',
-                          {'date': date, 'menuname': menuname, 'wh_masterlist': wh_masterlist,"wh":wh,'reg':reg,'depo':depo,'bus':bus,'wh2':wh2})
+                          {'date': date, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
     else:
         accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/sales-list-admin.php"
@@ -7479,6 +7474,52 @@ def warehouse_stock(request):
         return render(request, 'Reports/warehouse_stock.html', {"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_quantities':merged_data})
 
 
+def payment_request(request):
+    if request.method == 'POST':
+        amount = request.POST.get('amount')
+        # Collect other required details from the form
 
+        # Construct the Paytm request payload
+
+        payload = {
+            'MID': "TSRTCP03244016260030",
+            'ORDER_ID': 'ts01',
+            'TXN_AMOUNT': str(amount),
+            'CUST_ID': 'customer_id',
+            'CHANNEL_ID': 'WEB',
+            'INDUSTRY_TYPE_ID': 'Retail',
+            'WEBSITE': 'WEBSTAGING',
+            'CALLBACK_URL':"http://localhost:8000/payment_callback/",  # Replace with your callback URL
+            # Add any other required parameters
+        }
+
+        # Make a POST request to Paytm's API endpoint
+        response = requests.post('https://securegw.paytm.in/order/process', data=payload)
+
+        # Extract the redirect URL from the response
+        redirect_url = response.json().get('redirect_url')
+
+        # Redirect the user to Paytm's payment page
+        return redirect(redirect_url)
+
+    return render(request, 'payment.html')
+
+def payment_callback(request):
+    # Retrieve and process the callback data from Paytm
+    # Validate the transaction status and update your application's records
+    # ...
+
+    # Verify the transaction status with Paytm's API
+    payload = {
+        'MID': "TSRTCP03244016260030",
+        'ORDER_ID': 'unique_order_id',
+        # Add other required parameters
+    }
+
+    response = requests.post('https://securegw.paytm.in/order/status', data=payload)
+    transaction_status = response.json().get('status')
+
+    if transaction_status == 'TXN_SUCCESS':
+        return HttpResponse(status=200)
 
 

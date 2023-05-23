@@ -215,7 +215,6 @@ $("#busstationid1").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#busstationname1").val(selectedOptionText);
 });
-
 function VerifyClick(){
 $("#name").val("");
 $("#agentno").val("");
@@ -245,6 +244,17 @@ $(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
 })
+$("#button1").click(function() {
+  var selectedOptionText = $('#warehouseid1').find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+   var selectedOptionText = $('#regionid1').find(":selected").text();
+  $("#regionname1").val(selectedOptionText);
+   var selectedOptionText = $('#depoid1').find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
+  var selectedOptionText = $('#busstationid1').find(":selected").text();
+  $("#busstationname1").val(selectedOptionText);
+});
+
  </script>
 {% endblock %}
 

@@ -204,5 +204,7 @@ urlpatterns = [
     path('depot_qtyissued',views.depot_qtyissued,name='depot_qtyissued'),
     path('get_price1',views.get_price1,name='get_price1'),
     path('busstation_stock',views.busstation_stock,name='busstation_stock'),
-    path('warehouse_stock',views.warehouse_stock,name='warehouse_stock')
+    path('warehouse_stock',views.warehouse_stock,name='warehouse_stock'),
+    path('payment/', views.payment_request, name='payment_request'),
+    path('payment/callback/', views.payment_callback, name='payment_callback'),
 ]
