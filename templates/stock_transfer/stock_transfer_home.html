@@ -628,7 +628,6 @@ $("#depo_id").change(function() {
  })
 $('#quantity').on('input', function()  {
             $("#nob").val(" ");
-
     	    val  = $("#quantity").val();
             val1 = $("#uom").val();
             val2 =    (val * val1)
@@ -658,7 +657,6 @@ $('#quantity').on('input', function()  {
  })
 $('#busquantity').on('input', function()  {
             $("#nob").val(" ");
-
     	    val  = $("#busquantity").val();
             val1 = $("#busuom").val();
             val2 =    (val * val1)
@@ -688,12 +686,10 @@ $('#busquantity').on('input', function()  {
  })
 $('#depoquantity').on('input', function()  {
             $("#nob").val(" ");
-
     	    val  = $("#depoquantity").val();
             val1 = $("#depocases").val();
             val2 =    (val * val1)
             $("#deponob").val(val2);
-
          });
   $(document).ready(function(){
   var optionValue = $("#warehouseid").val();

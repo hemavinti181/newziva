@@ -4346,7 +4346,7 @@ def get_grn_item_data(request):
 def get_price1(request):
     region = request.session['regionid']
     accesskey = request.session['accesskey']
-    itemcode = request.POST.get('itemname')
+    itemcode = request.POST.get('itemcode')
 
     url = "http://13.235.112.1/ziva/mobile-api/price-master-list.php"
 
@@ -7402,8 +7402,6 @@ def busstation_stock(request):
 
 
 
-
-
 def warehouse_stock(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
@@ -7500,7 +7498,7 @@ def payment_request(request):
         redirect_url = response.json().get('redirect_url')
 
         # Redirect the user to Paytm's payment page
-        return redirect(redirect_url)
+        #return redirect(redirect_url)
 
     return render(request, 'payment.html')
 

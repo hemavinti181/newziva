@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba">Depot Wise Qty Accepted Against Indent Report</h3>
+              </div>
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+<form method="POST" action="https://securegw.paytm.in/order/process">
+  {% csrf_token %}
+  <label for="amount">Amount:</label>
+  <input type="number" name="amount" required>
+  <button type="submit">Pay with Paytm</button>
+</form>
+                     </div>
+            </div>
+          </div>
+</div>
+
+{% endblock %}
+
