@@ -11,7 +11,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Depot Stock Wise Report</b></h3>
+                <h3 style="color:#1372ba"><b>Bus Station  Wise Stock On Hand Report</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -23,9 +23,9 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  method="POST" action="payment_report"  enctype="multipart/form-data">
+						<form  method="POST" action="busstation_stock"  enctype="multipart/form-data">
 									{% csrf_token %}
-                            <div class="col-md-2  form-group has-feedback">
+                            <!--<div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
@@ -41,19 +41,24 @@
                              <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
                               <label for="start-date">From Date</label>
                               <input type="date" id="start-date" class="form-control">
+                            </div>-->
+                              <div class="col-md-2  form-group has-feedback" id="tdate">
+                                  <label  for="end-date">Select Date</label>
+                              <input type="date" id="end-date" name="date" class="form-control" value="{{ request.POST.date }}">
                             </div>
-                              <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
-                                  <label  for="end-date">To Date</label>
-                              <input type="date" id="end-date" class="form-control">
-                            </div>
+
+
                             	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
 												</select>
+                                    <!--<select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ warehouseid }}">{{ warehouse }}</option>
+												</select>-->
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value=""> Warehouse</option>
+													<option value="">All</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -63,28 +68,34 @@
                                 </div>
 											<div  class="col-md-2  form-group has-feedback">
 													<label> Region</label>
-                                                   <input type="hidden" name="regionid2" id="regionid2" value="{{ request.POST.regionid1 }}" />
+                                                   <select class="form-control" name="regionid2" id="regionid2" hidden>
+                            		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+												</select>
+
 											 <input type="hidden" name="regionname1" id="regionname1" />
 												<select class="form-control" name="regionid1" id="regionid1">
-													<option value=""> Region</option>
+													<option value="">All</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
-                                                  <input type="hidden" name="depoid2" id="depoid2" value="{{ request.POST.depoid1  }}" />
-													<label> Depot</label>
-											 <input type="hidden" name="deponame1" id="deponame1" />
+                                                <label> Depot</label>
+                                                 <select class="form-control" name="depoid2" id="depoid2" hidden>
+                            		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
+												</select>
+
+											 <input type="hidden" name="deponame1" id="deponame1"  value="{{ request.POST.deponame1 }}"/>
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value=""> depot</option>
+													<option value="">All</option>
 												</select>
 
                             </div>
 
-										<div  class="col-md-2  form-group has-feedback">
+									<div  class="col-md-2  form-group has-feedback">
                                              <input type="hidden" name="busstationid2" id="busstationid2" value="{{ request.POST.busstationid1 }}" />
 													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
-													<option value=""> bus station</option>
+													<option value="">All</option>
 												</select>
 										</div>
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
@@ -104,37 +115,27 @@
                     </p>
 
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
-
-                     <thead>
-                            <tr>
-                               <th>S NO</th>
+                            <thead>
+                                 <tr>
+                                  <th>S NO</th>
                                 <th>Date</th>
-                                <th>Depot Name</th>
-                                <th colspan="3">Items</th>
-
-                            </tr>
-                            <tr>
-                                <th ></th>
-                                <th></th>
-                                <th></th>
-                                <th>100ml</th>
-                                <th>250ml</th>
-                                <th>500ml</th>
+                                <th>Bus Station</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
 
                             </tr>
                                   </thead>
                                   <tbody>
+                                        {% for data in item_quantities %}
+                                        <tr>
+                                          <td>{{ forloop.counter }}</td>
+                                          <td>{{ data.createdon }}</td>
+                                          <td>{{ data.busstationname }}</td>
+                                          <td>{{ data.itemname }}</td>
+                                            <td>{{ data.quantity }}</td>
 
-                                    <tr>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-
-                                    </tr>
-
+                                        </tr>
+                                    {% endfor %}
                                   </tbody>
                       </table>
                   </div>
@@ -264,6 +265,7 @@ $("#depoid").change(function() {
     	});
 });
     	$(document).ready(function(){
+
   var optionValue = $("#busstation1").val();
   $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
@@ -290,7 +292,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-
+                $("#regionid1").append("<option value=''>All</option>");
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -313,7 +315,7 @@ $(document).ready(function(){
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value=''>Choose region</option>");
+                    $("#regionid1").append("<option value=''>All</option>");
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -337,6 +339,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
+                $("#depoid1").append("<option  value='1'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -358,7 +361,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value=''>Choose Depo</option>");
+			 		$("#depoid1").append("<option  value='1'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -381,7 +384,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-
+                    $("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -405,7 +408,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value=''>Choose Bus station</option>");
+			 		$("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -414,7 +417,15 @@ $(document).ready(function(){
         	});
         });
 });
- $("#warehouseid1").change(function() {
+$("#button1").click(function() {
+  var selectedOptionText = $('#warehouseid1').find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+   var selectedOptionText = $('#regionid1').find(":selected").text();
+  $("#regionname1").val(selectedOptionText);
+   var selectedOptionText = $('#depoid1').find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
+});
+$("#warehouseid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename1").val(selectedOptionText);
 });
@@ -424,7 +435,7 @@ $("#regionid1").change(function() {
 });
 $("#depoid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-    ("#deponame1").val(selectedOptionText);
+   $("#deponame1").val(selectedOptionText);
 });
 $("#busstationid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -435,8 +446,6 @@ $(document).ready(function(){
   var optionValue = $("#warehouseid2").val();
   $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
   var optionValue1 = $("#range2").val();
-
-
   $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
   })
 
@@ -470,7 +479,6 @@ function displayOtherResults(selectedOption) {
 
  </script>
 {% endblock %}
-
 
 
 

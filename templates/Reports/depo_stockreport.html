@@ -120,33 +120,24 @@
                             <tr>
                                <th>S NO</th>
                                 <th>Date</th>
-                                <th>Region Name</th>
+                                <!--<th>Region Name</th>-->
                                 <th>Depot Name</th>
-                                <th colspan="3">Items</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
 
                             </tr>
-                            <tr>
-                                  <th class="row2"></th>
-                                <th class="row2"></th>
-                                <th class="row2"></th>
-                                <th class="row2"></th>
-                                <th class="row2">1000 ml</th>
-                                <th class="row2">250 ml</th>
-                                <th class="row2">500 ml</th>
 
-                            </tr>
                                   </thead>
                                   <tbody>
 
-                        {% for entry in data %}
+                        {% for entry in item_quantities %}
     <tr>
       <td>{{ forloop.counter }}</td>
       <td>{{ entry.createdon }}</td>
-        <td>{{ entry.depo_master_regionname }}</td>
-      <td>{{ entry.depo_master_deponame }}</td>
-      <td>{{ entry.sale_qty_1000ml }}</td>
-                <td>{{ entry.sale_qty_250ml }}</td>
-                <td>{{ entry.sale_qty_500ml }}</td>
+        <td>{{ entry.deponame }}</td>
+      <td>{{ entry.itemname }}</td>
+      <td>{{ entry.quantity }}</td>
+
 
     </tr>
     {% endfor %}
