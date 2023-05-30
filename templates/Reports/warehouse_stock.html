@@ -25,13 +25,14 @@
                                			<!-- Search Filter -->
 						<form  method="POST" action="warehouse_stock"  enctype="multipart/form-data">
 									{% csrf_token %}
-                            <!--<div class="col-md-2  form-group has-feedback">
+                            <div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
 												</select>
                                 <input type="hidden" name="from" id="from" />
-                              <select id="daterangeselect" class="form-control" name="range">
+
+                              <select id="daterangeselect" class="form-control" name="range" >
                                    <option value="">All</option>
                                   {% for selectrange in selectrange %}
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
@@ -40,13 +41,12 @@
                             </div>
                              <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
                               <label for="start-date">From Date</label>
-                              <input type="date" id="start-date" class="form-control">
-                            </div>-->
-                              <div class="col-md-2  form-group has-feedback" id="tdate" />
-                                  <label  for="end-date">Select Date</label>
-                              <input type="date" id="end-date" name="date" class="form-control" value="{{ request.POST.date }}">
+                              <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
                             </div>
-
+                              <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none" >
+                                  <label  for="end-date">To Date</label>
+                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
+                            </div>
 
                             	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
@@ -185,7 +185,10 @@ $("#daterangeselect").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#from").val(selectedOptionText);
 });
-
+$("#button1").click(function() {
+  var selectedOptionText = $('#daterangeselect').find(":selected").text();
+  $("#from").val(selectedOptionText);
+});
 $(document).ready(function(){
   var optionValue = $("#warehouseid2").val();
   $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);

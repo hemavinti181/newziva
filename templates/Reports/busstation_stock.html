@@ -11,7 +11,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Bus Station  Wise Stock On Hand Report</b></h3>
+                <h3 style="color:#1372ba"><b>Bus Station   Wise Stock On Hand Report</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -25,7 +25,7 @@
                                			<!-- Search Filter -->
 						<form  method="POST" action="busstation_stock"  enctype="multipart/form-data">
 									{% csrf_token %}
-                            <!--<div class="col-md-2  form-group has-feedback">
+                            <div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
@@ -40,11 +40,11 @@
                             </div>
                              <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
                               <label for="start-date">From Date</label>
-                              <input type="date" id="start-date" class="form-control">
-                            </div>-->
-                              <div class="col-md-2  form-group has-feedback" id="tdate">
-                                  <label  for="end-date">Select Date</label>
-                              <input type="date" id="end-date" name="date" class="form-control" value="{{ request.POST.date }}">
+                              <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
+                            </div>
+                              <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
+                                  <label  for="end-date">To Date</label>
+                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
                             </div>
 
 
@@ -91,9 +91,11 @@
                             </div>
 
 									<div  class="col-md-2  form-group has-feedback">
-                                             <input type="hidden" name="busstationid2" id="busstationid2" value="{{ request.POST.busstationid1 }}" />
+                                             <select class="form-control" name="busstationid2" id="busstationid2" hidden>
+                            		                    <option value="{{ request.POST.busstationid1 }}">{{ request.POST.busstationname1 }}</option>
+												</select>
 													<label> Bus Station</label>
-											 <input type="hidden" name="busstationname1" id="busstationname1" />
+											 <input type="hidden" name="busstationname1" id="busstationname1"  value="{{ request.POST.deponame1 }}"/>
 												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value="">All</option>
 												</select>
@@ -265,7 +267,6 @@ $("#depoid").change(function() {
     	});
 });
     	$(document).ready(function(){
-
   var optionValue = $("#busstation1").val();
   $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
@@ -384,7 +385,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-                    $("#busstationid1").append("<option  value=''>All</option>");
+                    $("#busstationid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -408,7 +409,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value=''>All</option>");
+			 		$("#busstationid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -424,6 +425,10 @@ $("#button1").click(function() {
   $("#regionname1").val(selectedOptionText);
    var selectedOptionText = $('#depoid1').find(":selected").text();
   $("#deponame1").val(selectedOptionText);
+  var selectedOptionText = $('#busstationid1').find(":selected").text();
+  $("#busstationname1").val(selectedOptionText);
+   var selectedOptionText = $('#daterangeselect').find(":selected").text();
+  $("#from").val(selectedOptionText);
 });
 $("#warehouseid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
