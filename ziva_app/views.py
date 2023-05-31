@@ -7500,21 +7500,23 @@ def warehouse_stock(request):
                 warehouse_id=warehouse_id, createdon__date=tdate
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') |  Q(itemname='bottle')
-            ).order_by('-createdon').values('warehouse_id','createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('warehouse_id','createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Current Month':
             today = datetime.date.today()
             item_quantities = WarehouseInventory.objects.using('auth').filter(
                 warehouse_id=warehouse_id, createdon__month=today.month
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).values('warehouse_id', 'createdon__date', 'itemname').annotate(
+                quantity=Sum('sale_qty')
+            ).order_by('-createdon__date')
         elif option == 'Yesterday':
             Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
             item_quantities = WarehouseInventory.objects.using('auth').filter(
                 warehouse_id=warehouse_id, createdon__date=Previous_Date
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Current Week':
             today = datetime.date.today()
             current_week = today.isocalendar().week
@@ -7522,7 +7524,7 @@ def warehouse_stock(request):
                 warehouse_id=warehouse_id, createdon__week=current_week
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Last 7 days':
             current_date = datetime.date.today()
             start_date = current_date - timedelta(days=current_date.weekday() + 7)
@@ -7531,7 +7533,7 @@ def warehouse_stock(request):
                 warehouse_id=warehouse_id, createdon__range=[start_date, end_date]
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Custom Dates':
             fdate = request.POST.get('fdate')
             ldate = request.POST.get('ldate')
@@ -7539,7 +7541,7 @@ def warehouse_stock(request):
                 warehouse_id=warehouse_id, createdon__range=[fdate, ldate]
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         warehouse = WarehouseMaster.objects.using('auth').values('warehousename', 'warehouseid')
         merged_data = []
         for data2 in item_quantities:
