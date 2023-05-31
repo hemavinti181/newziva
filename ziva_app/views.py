@@ -5665,10 +5665,15 @@ def depo_item_list(request):
         'Content-Type': 'application/json'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data=response.json()
-    depo_item_list=data['stocktransferitemlist']
-    return render(request,'stock_transfer/stock_transfer_home.html',{'txtDepoId':txtDepoId,'depolist':depo_list,'items':depoinventorylist,'taxinvoice':taxinvoice,'data':stocktransferlistto,'depo':'active','depo_item_list':depo_item_list,'menuname':menuname})
-
+    if response.status_code == 200:
+        data=response.json()
+        depo_item_list=data['stocktransferitemlist']
+        return render(request,'stock_transfer/stock_transfer_home.html',{'txtDepoId':txtDepoId,'depolist':depo_list,'items':depoinventorylist,'taxinvoice':taxinvoice,'data':stocktransferlistto,'depo':'active','depo_item_list':depo_item_list,'menuname':menuname})
+    else:
+        return render(request, 'stock_transfer/stock_transfer_home.html',
+                      {'txtDepoId': txtDepoId, 'depolist': depo_list, 'items': depoinventorylist,
+                       'taxinvoice': taxinvoice, 'data': stocktransferlistto, 'depo': 'active',
+                        'menuname': menuname})
 
 
 def complete_depoinv(request):
@@ -6712,15 +6717,81 @@ def depot_stock(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
     wh_masterlist = data['warehouselist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    selectrange = data['timingslist']
+
     if request.method == 'POST':
-        depoid = request.POST.get('depoid1')
-        date = request.POST.get('date')
-        item_quantities = DepoInventory.objects.using('auth').filter(
-            region_id=depoid, createdon__date=date
-        ).exclude(
-            Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-        ).values('region_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
-        depo = DepoMaster.objects.using('auth').values('deponame', 'depoid')
+        option = request.POST.get('from')
+        if option == 'Today':
+            date=datetime.date.today()
+            item_quantities = DepoInventory.objects.using('auth').filter(
+               createdon__date=date
+            ).exclude(
+                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
+            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+        elif option == 'Current Month':
+            today = datetime.date.today()
+            item_quantities = DepoInventory.objects.using('auth').filter(
+                createdon__month=today.month
+            ).exclude(
+                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
+            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname').annotate(
+                quantity=Sum('sale_qty'))
+        elif option == 'Yesterday':
+            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
+            item_quantities = DepoInventory.objects.using('auth').filter(
+                createdon__date=Previous_Date
+            ).exclude(
+                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
+            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname').annotate(
+                quantity=Sum('sale_qty'))
+        elif option == 'Current Week':
+            today = datetime.date.today()
+            current_week = today.isocalendar().week
+            item_quantities = DepoInventory.objects.using('auth').filter(
+                createdon__week=current_week
+            ).exclude(
+                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
+            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname').annotate(
+                quantity=Sum('sale_qty'))
+        elif option == 'Last 7 days':
+            current_date = datetime.date.today()
+            start_date = current_date - timedelta(days=current_date.weekday() + 7)
+            end_date = current_date - timedelta(days=current_date.weekday() + 1)
+            item_quantities = DepoInventory.objects.using('auth').filter(
+                createdon__range=[start_date,end_date]
+            ).exclude(
+                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
+            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname').annotate(
+                quantity=Sum('sale_qty'))
+        elif option == 'Custom Dates':
+            fdate = request.POST.get('fdate')
+            ldate = request.POST.get('ldate')
+            item_quantities = DepoInventory.objects.using('auth').filter(
+                createdon__range=[fdate, ldate]
+            ).exclude(
+                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
+            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname').annotate(
+                quantity=Sum('sale_qty'))
+        warehouseid1 = request.POST.get('warehousename1')
+        regionname1 = request.POST.get('regionname1')
+        deponame1 = request.POST.get('deponame1')
+
+        if warehouseid1 != 'All':
+            depo = DepoMaster.objects.using('auth').filter(warehouse=warehouseid1).values('deponame', 'depoid')
+        if regionname1 != 'All':
+            depo = DepoMaster.objects.using('auth').filter(regionname=regionname1).values('deponame', 'depoid')
+        if deponame1 != 'All':
+            depo = DepoMaster.objects.using('auth').filter(deponame=deponame1).values('deponame', 'depoid')
         merged_data = []
         for data2 in item_quantities:
             for data1 in depo:
@@ -6740,7 +6811,7 @@ def depot_stock(request):
             entry['createdon'] = date_createdon
         # merged_data = sorted(merged_data, key=lambda x: x['createdon'], reverse=False)
         return render(request, 'Reports/depo_stockreport.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data})
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data,'selectrange':selectrange})
     else:
         item_quantities = DepoInventory.objects.using('auth').order_by('-createdon__date').values('region_id',
                                                                                                        'createdon__date',
@@ -6771,7 +6842,7 @@ def depot_stock(request):
             entry['createdon'] = date_createdon
         # merged_data = sorted(merged_data, key=lambda x: x['createdon'], reverse=False)
         return render(request, 'Reports/depo_stockreport.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data})
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data,'selectrange':selectrange})
 
 
 
@@ -7362,21 +7433,21 @@ def busstation_stock(request):
                 createdon__date=today
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Current Month':
             today = datetime.date.today()
             item_quantities = BusstationInventory.objects.using('auth').filter(
                createdon__month=today.month
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Yesterday':
             Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
             item_quantities = BusstationInventory.objects.using('auth').filter(
                createdon__date=Previous_Date
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Current Week':
             today = datetime.date.today()
             current_week = today.isocalendar().week
@@ -7384,7 +7455,7 @@ def busstation_stock(request):
                 createdon__week=current_week
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Last 7 days':
             current_date = datetime.date.today()
             start_date = current_date - timedelta(days=current_date.weekday() + 7)
@@ -7393,7 +7464,7 @@ def busstation_stock(request):
                 createdon__range=[start_date,end_date]
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Custom Dates':
             fdate = request.POST.get('fdate')
             ldate = request.POST.get('ldate')
@@ -7401,7 +7472,7 @@ def busstation_stock(request):
                  createdon__range=[fdate,ldate]
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
 
         warehouseid1 = request.POST.get('warehousename1')
         regionname1 = request.POST.get('regionname1')

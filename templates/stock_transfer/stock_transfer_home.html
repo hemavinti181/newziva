@@ -282,7 +282,7 @@
 
                        <td>
                            <a href="delete_stkdepo_item/{{ all_data.sno }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                           <span  data-toggle="modal" id="depoedit"  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
+                           <span  data-toggle="modal" id="depoedit"  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
 
                        </td>
                             </tbody>
@@ -561,7 +561,10 @@
                                                         <label>Quantity (In Cases)</label>
 										            <input type="text" class="form-control"  name="qty" id="qty">
                                             </div>
-
+                                             <div class="col-md-12 col-sm-12 form-group has-feedback">
+                                                        <label>Quantity (In Bottles)</label>
+										            <input type="text" class="form-control"  name="nob" id="nob1">
+                                            </div>
 
                                                 <input type="hidden" name="cases" id="cases" />
 
@@ -632,8 +635,6 @@ $('#quantity').on('input', function()  {
             val1 = $("#uom").val();
             val2 =    (val * val1)
             $("#nob").val(val2);
-
-
          });
    $('#busitem_id').change(function() {
                     var searchterm = $("#busitemname").val();
@@ -695,11 +696,23 @@ $('#depoquantity').on('input', function()  {
   var optionValue = $("#warehouseid").val();
   $("#whid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
-function VerifyClick(id,id1,id2){
+function VerifyClick(id,id1,id2,id3){
 $("#qty").val(id);
 $("#sno").val(id1);
 $("#item").val(id2);
+$("#uom").val(id3);
+ val  = $("#qty").val();
+  val1 = $("#uom").val();
+            val2 =    (val * val1)
+            $("#nob1").val(val2);
+
 }
+$('#qty').on('input', function()  {
+    	    val  = $("#qty").val();
+            val1 = $("#uom").val();
+            val2 =    (val * val1)
+            $("#nob1").val(val2);
+    });
 $(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busname").find("option[value='" + optionValue + "']").prop("selected", true);

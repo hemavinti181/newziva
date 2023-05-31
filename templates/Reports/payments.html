@@ -29,7 +29,7 @@
 												</select>
                                 <input type="hidden" name="from" id="from" value="{{ request.POST.from }}" />
                               <select id="daterangeselect" class="form-control" name="range">
-                                   <option value="">All</option>
+
                                   {% for selectrange in selectrange %}
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
                                   {% endfor %}
@@ -52,7 +52,7 @@
 												</select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value=""> Warehouse</option>
+													<option value="">All</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -67,7 +67,7 @@
 												</select>
 											 <input type="hidden" name="regionname1" id="regionname1" />
 												<select class="form-control" name="regionid1" id="regionid1">
-													<option value=""> Region</option>
+													<option value="">All</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
@@ -77,7 +77,7 @@
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value=""> depot</option>
+													<option value="">All</option>
 												</select>
 
                             </div>
@@ -90,7 +90,7 @@
 													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
-													<option value=""> bus station</option>
+													<option value="">All</option>
 												</select>
 										</div>
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
