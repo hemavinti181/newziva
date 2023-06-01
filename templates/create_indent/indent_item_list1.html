@@ -49,9 +49,10 @@
                                     <td>{{ all_data.batch_code }}</td>
                                     <td>{{  all_data.expirydate }}</td>
                                     <td>{{all_data.indent_no}}</td>
+                                      {% if all_data.status == 'Ready to Ship' %}
                                     <td>
-                          <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sno}}','{{ all_data.qty }}','{{ all_data.uom }}','{{ all_data.mrp }}')"  data-target="#bs-example-modal-sm">Quantity Update</span>
-                       </td>
+                                       <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sno}}','{{ all_data.qty }}','{{ all_data.uom }}','{{ all_data.mrp }}')"  data-target="#bs-example-modal-sm">Quantity Update</span>
+                                    </td>
                                 </tr>
                              {% endfor %}
                       <tbody>

@@ -2,133 +2,7 @@
 
 {% block htmlbody %}
 
-<style>
-    {
-  box-sizing: border-box;
-  margin: 0px;
-  padding: 0px;
-}
 
-
-
-.round {
-  border-radius: 50%;
-}
-
-.fab {
-  transition: all 300ms ease-in-out;
-  width: 56px;
-  height: 56px;
-  background-color: #FF4081;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  right: 30px;
-  bottom: 15px;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  cursor: pointer;
-  color: white;
-  font-size: 2em;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.16);
-}
-.fab1 {
-  transition: all 300ms ease-in-out;
-  width: 56px;
-  height: 56px;
-  background-color: #003aa5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  right: 30px;
-  bottom: 15px;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  cursor: pointer;
-  color: white;
-  font-size: 2em;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.16);
-}
-
-.fab i {
-  transition: all 300ms ease-in-out;
-  will-change: transform;
-}
-
-.inner-fabs .fab {
-  width: 40px;
-  height: 40px;
-  right: 38px;
-  bottom: 23px;
-  font-size: 1.5em;
-  will-change: bottom;
-}
-
-.inner-fabs.show .fab:nth-child(1) {
-  bottom: 80px;
-}
-
-.inner-fabs.show .fab:nth-child(2) {
-  bottom: 130px;
-}
-
-.inner-fabs.show .fab:nth-child(3) {
-  bottom: 180px;
-}
-
-.inner-fabs.show .fab:nth-child(4) {
-  bottom: 230px;
-}
-
-.inner-fabs.show .fab:nth-child(5) {
-  bottom: 280px;
-}
-
-
-.inner-fabs.show .fab:nth-child(6) {
-  bottom: 330px;
-}
-
-.inner-fabs.show + .fab i {
-  transform: rotate(135deg);
-}
-
-.fab:before {
-  content: attr(data-tooltip);
-  transition: opacity 150ms cubic-bezier(0.4, 0, 1, 1);
-  position: absolute;
-  visibility: hidden;
-  opacity: 0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  color: #ececec;
-  right: 50px;
-  top: 25%;
-  background-color: rgba(70, 70, 70, 0.9);
-  font-size: 0.5em;
-  line-height: 1em;
-  display: inline-block;
-  text-align: center;
-  white-space: nowrap;
-  border-radius: 2px;
-  padding: 6px 8px;
-  max-width: 200px;
-  font-weight: bold;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-}
-
-.inner-fabs.show .fab:hover:before {
-  content: attr(data-tooltip);
-  visibility: visible;
-  opacity: 1;
-}
-</style>
 
 <div class="right_col" role="main">
           <div class="">
@@ -192,11 +66,16 @@
                            <td>{{ all_data.warehouse_name }}</td>
                        <td>{{  all_data.created_by}}</td>
                            <td>{{ all_data.created_on }}</td>
-
+                            {% if all_data.status == 'Ready to Ship' %}
                                 <td>
                                   <a href="indent_item_list1/{{ all_data.dc_number }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>
                                     <span data-target=".custom-modal"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}')" class="badge badge-info" >Generate Gate Pass </span></a>
                                 </td>
+                           {% else %}
+                           <td>
+                                  <a href="indent_item_list1/{{ all_data.dc_number }}/"><span class="badge badge-info">{{ all_data.status }} </span></a>
+                           </td>
+                           {% endif %}
                       </tr>
                       {% endfor %}
 
@@ -215,13 +94,14 @@
           </div>
 </div>
                </div>
-                          <!--<div class="inner-fabs">
-                                  <div class="fab round" id="fab3" data-tooltip="Ready to ship"><a href="readyto_ship"><i class="fa fa-outdent"></i></a></div>
-                                  <div class="fab round" id="fab2" data-tooltip="Partially supplied"><a href="partially_supplied"><i class="fa fa-outdent" ></i></a></div></a>
-                                    </div>
-                                <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-                        </div>-->
+
               </div>
+ <div class="inner-fabs">
+
+                                  <div class="fab bg-green round" id="fab3"><a href="readyto_ship1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="readyto_ship"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <div class="modal custom-modal  fade " tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered">
                                             <div class="modal-content style">
@@ -266,27 +146,6 @@
                                     </div>
                                 </div>
 <script>
-
-    let fab1 = document.getElementById('fab1');
-let innerFabs = document.getElementsByClassName('inner-fabs')[0];
-
-fab1.addEventListener('click', function () {
-  innerFabs.classList.toggle('show');
-});
-
-document.addEventListener('click', function (e) {
-  switch (e.target.id) {
-    case "fab1":
-    case "fab2":
-    case "fab3":
-    case "fab4":
-    case "fabIcon":
-      break;
-    default:
-      innerFabs.classList.remove('show');
-      break;}
-
-});
 function VerifyClick(id,tname,tid,fname,fid){
 $("#remarks").val(" ");
 $("#txtHdnId").val(id);

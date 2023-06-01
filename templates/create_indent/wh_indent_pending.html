@@ -145,7 +145,7 @@
              <div class="clearfix"></div>
              <div class="row">
               <div class="col-md-12 col-sm-12 ">
-                  	<form  method="POST" action="pending_indent_pending"  enctype="multipart/form-data">
+                  	<form  method="POST" action=""  enctype="multipart/form-data">
 									{% csrf_token %}
 					<div class="row filter-row">
                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
@@ -186,7 +186,7 @@
                       </thead>
                             {% for all_data in data %}
 
-                                {% if all_data.status == "Pending" %}
+
                                     <tr>
                                          <td>{{ forloop.counter }}</td>
                                     <td>{{ all_data.indent_no }}</td>
@@ -195,10 +195,13 @@
                                     <td>{{ all_data.createdby }}</a></td>
                                         <td>{{ all_data.createdon }}</td>
                                     <td>
+                                        {% if all_data.status == "Pending" %}
                                         <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-warning">{{ all_data.status }}</span></a>
                                          <span class="badge badge-info" data-toggle="modal"  onclick="VerifyClick('{{all_data.indent_no}}','{{ all_data.region_name }}','{{ all_data.warehouse_name }}','{{ all_data.warehouse_id }}','{{ all_data.region_id }}')" data-target=".bs-example-modal-sm">
                                              Acknowledgement</span>
                                     </td>
+                                        {% else %}
+                                         <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-info">Approved</span></a>
                                     </tr>
                                 {% endif %}
                             {% endfor %}
@@ -217,12 +220,12 @@
             </div>
           </div>
 </div>
-<div class="inner-fabs">
-                                  <!--<div class="fab bg-blue round" id="fab3" ><a href="pending_indent_ack"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Verified</span></div>
-                                  <div class="fab bg-orange  round" id="fab2"><a href="pending_indent_pending"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Pending</span></div>
-                                    </div>
-                                <div class="fab bg-green round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-                        </div>-->
+    <div class="inner-fabs">
+
+                                  <div class="fab bg-green round" id="fab3"><a href="pending_indent_pending1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="pending_indent_pending"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 
  <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered">

@@ -4101,23 +4101,53 @@ def indent_item_list_ack(request, id):
 def out_passlist(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/outpassgenerate-list.php"
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/outpassgenerate-list.php"
 
-    payload = json.dumps({
-        "accesskey": accesskey
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "fdate": request.POST.get('fdate'),
+            "tdate": request.POST.get('tdate'),
+            "status":"Pending"
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        outpass_list = data['indentlist']
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-        return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list,'menuname':menuname})
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            outpass_list = data['indentlist']
+
+            return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list,'menuname':menuname})
+        else:
+
+            return render(request, 'create_indent/outpass_list.html',{'menuname':menuname})
     else:
-        return render(request, 'create_indent/outpass_list.html',{'menuname':menuname})
+
+        url = "http://13.235.112.1/ziva/mobile-api/outpassgenerate-list.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "fdate": request.POST.get('fdate'),
+            "tdate": request.POST.get('tdate'),
+            "status":"Pending"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            outpass_list = data['indentlist']
+
+            return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list, 'menuname': menuname})
+        else:
+
+            return render(request, 'create_indent/outpass_list.html', {'menuname': menuname})
+
 
 def out_pass_itemlist(request,id):
     menuname = request.session['mylist']
@@ -4175,6 +4205,110 @@ def out_pass_scanner(request):
             return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
     return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
 
+
+def out_passlist1(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/outpassgenerate-list.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "fdate": request.POST.get('fdate'),
+            "tdate": request.POST.get('tdate')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            outpass_list = data['indentlist']
+
+            return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list,'menuname':menuname})
+        else:
+
+            return render(request, 'create_indent/outpass_list.html',{'menuname':menuname})
+    else:
+
+        url = "http://13.235.112.1/ziva/mobile-api/outpassgenerate-list.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "fdate": request.POST.get('fdate'),
+            "tdate": request.POST.get('tdate')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            outpass_list = data['indentlist']
+
+            return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list, 'menuname': menuname})
+        else:
+
+            return render(request, 'create_indent/outpass_list.html', {'menuname': menuname})
+
+
+def out_pass_itemlist(request,id):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/outpassitem-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "dcnumber":id
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        outpassitem_list = data['Outpassitemlist']
+
+        return render(request, 'create_indent/out_pass_itemlist.html', {"all_data": outpassitem_list,'menuname':menuname})
+    else:
+        return render(request, 'create_indent/out_pass_itemlist.html',{'menuname':menuname})
+
+
+
+def out_pass_scanner(request):
+    menuname = request.session['mylist']
+    if request.method == 'POST':
+
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/outpassapproved.php"
+        outpass_id = request.POST.get("outpassid")
+        encoded_id = base64.b64encode(outpass_id.encode('utf-8'))
+        payload = {
+        "accesskey":accesskey,
+        "outpass_number":encoded_id
+
+        }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data2 = response.json()
+            messages.success(request,data2['message'])
+            return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
+        else:
+            try:
+                data2 = response.json()
+                return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
+            except:
+                messages.error(request,response.text)
+            return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
+    return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
 def approved_indlist_pending(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
@@ -4347,7 +4481,7 @@ def get_grn_item_data(request):
 def get_price1(request):
     region = request.session['regionid']
     accesskey = request.session['accesskey']
-    itemcode = request.POST.get('itemcode')
+    itemcode = request.POST.get('itemname')
 
     url = "http://13.235.112.1/ziva/mobile-api/price-master-list.php"
 
@@ -4633,6 +4767,51 @@ def pending_indent_pending(request):
         else:
             return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname})
 
+def pending_indent_pending1(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
+        fdate = request.POST.get('fdate')
+        tdate = request.POST.get('tdate')
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "status": "Approve",
+            "fdate":fdate,
+            "tdate":tdate
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            data = data['indentlist']
+            return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        else:
+            return render(request, 'create_indent/wh_indent_pending.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "status": "Approve",
+            "fdate":"All",
+            "tdate":"All"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            data = data['indentlist']
+            return render(request, 'create_indent/wh_indent_pending.html', {'data': data, 'menuname': menuname})
+        else:
+            return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname})
+
 def pending_ind_status(request):
     accesskey = request.session['accesskey']
     #url = "http://13.235.112.1/ziva/mobile-api/acknowledgement-update.php"
@@ -4730,7 +4909,71 @@ def readyto_ship(request):
     except:
         messages.error(request,response.text)
     return render(request, 'create_indent/readytoship.html', {'menuname': menuname})
+def readyto_ship1(request):
 
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/vehicle-dropdownlist.php"
+        payload = json.dumps({
+
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        vehicals = data['vehicleslist']
+        if request.method == 'POST':
+            fdate=request.POST.get('fdate')
+            tdate = request.POST.get('tdate')
+            url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
+
+            payload = json.dumps({
+                "accesskey":accesskey,
+                "fdate":fdate,
+                "tdate":tdate,
+                "status":"Approve"
+
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data1 = response.json()
+                data2 = data1['indentlist']
+                messages.success(request,data1['message'])
+                return render(request, 'create_indent/readytoship.html', {'data': data2,'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+            else:
+                return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
+
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "status": "Approve",
+                "fdate":"All",
+                "tdate":"All"
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data1 = response.json()
+                data2 = data1['indentlist']
+                messages.success(request, data1['message'])
+                return render(request, 'create_indent/readytoship.html',
+                              {'data': data2, 'vehicals': vehicals, 'menuname': menuname})
+            else:
+                return render(request, 'create_indent/readytoship.html', {'vehicals': vehicals, 'menuname': menuname})
+    except:
+        messages.error(request,response.text)
+    return render(request, 'create_indent/readytoship.html', {'menuname': menuname})
 def generate_gate_pass(request):
 
     accesskey = request.session['accesskey']
@@ -6895,7 +7138,6 @@ def depot_indent_report(request):
             where.append(f"depo_master.deponame = '{deponame1}'")
         if regionname1 != 'All':
             where.append(f"depo_master.regionname = '{regionname1}'")
-
         queryset = IndentItem.objects.using('auth').extra(
             tables=['outpass_item', 'indent_item', 'generate_indent', 'depo_master'],
             where=where,
@@ -6977,7 +7219,8 @@ def depot_indent_report(request):
                             'depo_master_warehouse':data1['depo_master_warehouse']
                         })
                         break
-            result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
+            result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'],
+                                                                             '%d-%b-%Y'), reverse=True)
 
             return render(request, 'Reports/depotwise_indent.html',
                           {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
@@ -7060,7 +7303,9 @@ def depot_indent_report(request):
                                 'depo_master_warehouse':data1['depo_master_warehouse']
                             })
                             break
-                result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
+                result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'],
+                                                                                          '%d-%b-%Y'), reverse=True)
+                #result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
                 return render(request,'Reports/depotwise_indent.html',{'menuname':menuname,'entry':result,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
         else:
             return render(request, 'Reports/depotwise_indent.html',
@@ -7191,7 +7436,9 @@ def depot_qtyissued(request):
                             'generate_indent_fromname': data2['generate_indent_fromname']
                         })
                         break
-            result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
+
+            result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'], '%d-%b-%Y'),
+                                 reverse=True)
 
             return render(request, 'Reports/depot_qtyissued.html',
                           {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
@@ -7273,7 +7520,8 @@ def depot_qtyissued(request):
                             'generate_indent_fromname':data2['generate_indent_fromname']
                         })
                         break
-            result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=False)
+            result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'], '%d-%b-%Y'),
+                            reverse=True)
             return render(request, 'Reports/depot_qtyissued.html',
                           {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
         else:
@@ -7324,7 +7572,10 @@ def Vendor_itemsply(request):
                         'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
                     })
                     break
-        merged_data = sorted(merged_data, key=lambda x: x['grn_item_created_on'], reverse=False)
+
+        merged_data = sorted(merged_data,
+                                    key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
+                                    reverse=True)
         return render(request, 'Reports/vendor_itemsupply.html', {"entry": merged_data,'menuname':menuname})
 
     else:
@@ -7365,7 +7616,9 @@ def Vendor_itemsply(request):
                         'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
                     })
                     break
-        #merged_data = sorted(merged_data, key=lambda x: x['grn_item_created_on'], reverse=False)
+        merged_data = sorted(merged_data,
+                             key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
+                             reverse=True)
         return render(request,'Reports/vendor_itemsupply.html',{"entry":merged_data,'menuname':menuname})
 
 

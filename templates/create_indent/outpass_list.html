@@ -12,7 +12,24 @@
 
               </div>
             <div class="clearfix"></div>
-  <div class="row">
+ <div class="col-md-12 col-sm-12 ">
+                  	<form  method="POST" action="out_passlist"  enctype="multipart/form-data">
+									{% csrf_token %}
+					<div class="row filter-row">
+                        	<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">From Date</label>
+									<input class="form-control" type="date" name="fdate" id="fdate" value="{{ request.POST.fdate }}" required>
+							</div>
+						<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">To Date</label>
+									<input class="form-control" type="date" name="tdate" id="tdate" value="{{ request.POST.tdate }}" required>
+							</div>
+
+                               <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>
+                        </form>
+              </div>
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_content">
