@@ -20,7 +20,7 @@
                 <!-- Search Filter -->
                 <form method="POST" action="Vendor_itemsply" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <!--<div class="col-md-2  form-group has-feedback">
+                 <div class="col-md-2  form-group has-feedback">
                         <label for="daterangeselect">Frequency</label>
                         <select class="form-control" name="range2" id="range2" hidden>
                             <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
@@ -32,28 +32,31 @@
                             <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
                             {% endfor %}
                         </select>
-                    </div>-->
+                    </div>
                     <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
                         <label for="start-date">From Date</label>
-                        <input type="date" id="start-date" class="form-control">
+                        <input type="date" id="start-date" name="fdate" class="form-control">
                     </div>
-                    <div class="col-md-2  form-group has-feedback" id="tdate">
-                        <label for="end-date">Select Date</label>
-                        <input type="date" id="end-date" name="date" class="form-control" value="{{ request.POST.date }}">
+                    <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
+                        <label for="end-date">To Date</label>
+                        <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.date }}">
                     </div>
                     <div class="col-md-2 col-sm-2  form-group has-feedback">
                         <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                     </div>
                 </form>
             </div>
-            <div class="x_panel">
-                <div class="clearfix"></div>
-                <div class="x_content">
-                    <div class="row">
-                        <div class="col-sm-12">
+        </div>
+              <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
                             <div class="card-box table-responsive">
-                                <p class="text-muted font-13 m-b-30">
-                                </p>
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
                                 <table id="datatable-buttons" class="display table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
@@ -91,8 +94,49 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+
+<script>
+    $("#daterangeselect").change(function() {
+     var selectedOptionText = $(this).find(":selected").text();
+    $("#from").val(selectedOptionText);
+});
+$("#button1").click(function() {
+  var selectedOptionText = $('#daterangeselect').find(":selected").text();
+  $("#from").val(selectedOptionText);
+
+});
+$(document).ready(function(){
+ $('#date-range-fields').hide();
+  $('#daterangeselect').change(function() {
+    var selectedOption = $(this).find(":selected").text();
+    if (selectedOption == 'Custom Dates') {
+      $('#date-range-fields').show();
+      $('#tdate').show();// show the date fields if custom option is selected
+      displayResults();
+    } else {
+      $('#date-range-fields').hide();
+      $('#tdate').hide();// hide the date fields if another option is selected
+          displayOtherResults(selectedOption);
+    }
+  });
+});
+function displayResults() {
+  var fromDate = $('#date-range-fields').val();
+  var toDate = $('#tdate').val();
+  // Use the selected dates to display results
+  // Code to display results...
+}
+
+function displayOtherResults(selectedOption) {
+  // Use the selected option to display results for other options
+  // Code to display results...
+}
+$(document).ready(function(){
+var optionValue1 = $("#range2").val();
+  $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
+  });
+</script>
 
 {% endblock %}

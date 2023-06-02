@@ -4237,8 +4237,8 @@ def out_passlist1(request):
 
         payload = json.dumps({
             "accesskey": accesskey,
-            "fdate": request.POST.get('fdate'),
-            "tdate": request.POST.get('tdate'),
+            "fdate": 'All',
+            "tdate": 'All',
             "status": "Approve"
         })
         headers = {
@@ -7095,16 +7095,7 @@ def depot_indent_report(request):
 
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    selectrange = data['timingslist']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
     payload = json.dumps({"accesskey": accesskey})
@@ -7116,6 +7107,16 @@ def depot_indent_report(request):
     data = response.json()
     wh_masterlist = data['warehouselist']
 
+    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    selectrange = data['timingslist']
     if request.method == 'POST':
         date = request.POST.get('date')
         warehouseid1 = request.POST.get('warehousename1')
@@ -7126,19 +7127,42 @@ def depot_indent_report(request):
             regionname=regionname1,
             deponame=deponame1
         ).values('warehouse', 'regionname', 'deponame')
-
+        option = request.POST.get('from')
         where = [
             'indent_item.indent_no = outpass_item.indent_no',
             'indent_item.indent_no = generate_indent.indent_no',
             'depo_master.warehouseid = generate_indent.to_id',
             f"depo_master.warehouse = '{warehouseid1}'",
             'depo_master.depoid = generate_indent.from_id',
+
         ]
-        if date:
-            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'")
-        if deponame1 != 'All':
+
+        if option == 'Today':
+            tdate = datetime.date.today()
+            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
+        elif option == 'Yesterday':
+            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
+            Previous_Date = Previous_Date.date()
+            where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
+        elif option == 'Current Month':
+            current_month = datetime.date.today().month
+            where.append(f"MONTH(indent_item.createdon) = '{current_month}'")
+        elif option == 'Current Week':
+            today = datetime.date.today()
+            current_week = today.isocalendar().week
+            where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
+        elif option == 'Last 7 days':
+            current_date = datetime.date.today()
+            start_date = current_date - timedelta(days=current_date.weekday() + 7)
+            end_date = current_date - timedelta(days=current_date.weekday() + 1)
+            where.append("grn_item.created_on >= '%s' AND grn_item.created_on <= '%s'" % (start_date, end_date))
+        elif option == 'Custom Dates':
+            fdate = request.POST.get('fdate')
+            ldate = request.POST.get('ldate')
+            where.append("grn_item.created_on >= '%s' AND grn_item.created_on <= '%s'" % (fdate, ldate))
+        elif deponame1 != 'All':
             where.append(f"depo_master.deponame = '{deponame1}'")
-        if regionname1 != 'All':
+        elif regionname1 != 'All':
             where.append(f"depo_master.regionname = '{regionname1}'")
         queryset = IndentItem.objects.using('auth').extra(
             tables=['outpass_item', 'indent_item', 'generate_indent', 'depo_master'],
@@ -7181,27 +7205,48 @@ def depot_indent_report(request):
 
             where = [
                 'indent_item.indent_no = outpass_item.indent_no',
-                 f"depo_master.deponame = '{deponame1}' OR  depo_master.regionname = '{regionname1}' OR depo_master.warehouse = '{warehouseid1}'",
+                 f"depo_master.warehouse = '{warehouseid1}'",
                 'indent_item.indent_no = generate_indent.indent_no',
                 'depo_master.depoid =generate_indent.from_id',
+                "outpass_item.status = 'Accepted'"
             ]
-            if date:
+
+            if option == 'Today':
                 where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'")
-            if deponame1 != 'All':
+            elif option == 'Yesterday':
+                Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
+                Previous_Date = Previous_Date.date()
+                where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
+            elif option == 'Current Month':
+                current_month = datetime.date.today().month
+                where.append(f"Month(indent_item.createdon) = '{current_month}'")
+            elif option == 'Current Week':
+                today = datetime.date.today()
+                current_week = today.isocalendar().week
+                where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
+            elif option == 'Last 7 days':
+                current_date = datetime.date.today()
+                start_date = current_date - timedelta(days=current_date.weekday() + 7)
+                end_date = current_date - timedelta(days=current_date.weekday() + 1)
+                where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
+            elif deponame1 != 'All':
                 where.append(f"depo_master.deponame = '{deponame1}'")
-            if regionname1 != 'All':
+            elif regionname1 != 'All':
                 where.append(f"depo_master.regionname = '{regionname1}'")
+            elif option == 'Custom Dates':
+                fdate = request.POST.get('fdate')
+                ldate = request.POST.get('ldate')
+                where.append("grn_item.created_on >= '%s' AND grn_item.created_on <= '%s'" % (fdate, ldate))
             queryset2 = OutpassItem.objects.using('auth').extra(
                 tables=['indent_item','depo_master','generate_indent'],
                  where=where,
                 select={
                     'indent_item_item_name': 'indent_item.item_name',
                     'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                    'outpass_item_qty': 'outpass_item.qty'
+                    'outpass_item_qty': 'outpass_item.qty',
                 }
             ).values('outpass_item_qty','indent_item_item_name', 'indent_item_createdon')
-            '''if date:
-                queryset2 = queryset2.filter(createdon__date=date)'''
+
             outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
                 outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
             )
@@ -7235,6 +7280,7 @@ def depot_indent_report(request):
             tables=['outpass_item', 'indent_item','generate_indent', 'depo_master'],
             where=[
                 'indent_item.indent_no = outpass_item.indent_no',
+                'depo_master.warehouseid = generate_indent.to_id',
                 'indent_item.indent_no = generate_indent.indent_no',
                 'depo_master.depoid = generate_indent.from_id',
             ],
@@ -7257,15 +7303,17 @@ def depot_indent_report(request):
                         'indent_item.indent_no = outpass_item.indent_no',
                         'indent_item.indent_no = generate_indent.indent_no',
                         'depo_master.depoid =generate_indent.from_id',
+                        "outpass_item.status = 'Accepted'"
                     ],
                     select={
 
                         'indent_item_item_name': 'indent_item.item_name',
                         'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                         'outpass_item_qty': 'outpass_item.qty',
+                        'indent_item_indent_no':'indent_item.indent_no'
 
                     }
-                ).values('outpass_item_qty','indent_item_item_name', 'indent_item_createdon')
+                ).values('outpass_item_qty','indent_item_indent_no','indent_item_item_name', 'indent_item_createdon')
                 outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
                     outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
                 )
@@ -7368,7 +7416,7 @@ def depot_qtyissued(request):
                 'depo_master_regionname': 'depo_master.regionname',
                 'outpass_item_qty': 'outpass_item.qty',
                 'depo_master_warehouse': 'depo_master.warehouse',
-                'generate_indent_fromname':'generate_indent.from_name'
+                'generate_indent_fromname':'generate_indent.from_name',
 
             }
         ).values(
@@ -7532,16 +7580,51 @@ def depot_qtyissued(request):
                            'menuname': menuname})
 
 def Vendor_itemsply(request):
+
+    accesskey = request.session['accesskey']
     menuname = request.session['mylist']
+    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    selectrange = data['timingslist']
     if request.method == 'POST':
-        date = request.POST.get('date')
+        option = request.POST.get('from')
+        where = [
+            'grn.grn = grn_item.grn',
+            'grn.warehouse_id = warehouse_master.warehouseid',
+            "grn.status = 'Verified'"
+        ]
+        if option == 'Today':
+            today = datetime.date.today()
+            where.append(f"DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d') = '{today}'")
+        elif option == 'Current Month':
+            today = datetime.date.today().month
+            where.append("MONTH(grn_item.created_on) = %s" % today)
+        elif option == 'Current Week':
+            today = datetime.date.today()
+            current_week = today.isocalendar().week
+            where.append(f"WEEK(grn_item.created_on, '%%Y-%%m-%%d') = '{current_week}'")
+        elif option == 'Last 7 days':
+            current_date = datetime.date.today()
+            start_date = current_date - timedelta(days=current_date.weekday() + 7)
+            end_date = current_date - timedelta(days=current_date.weekday() + 1)
+            where.append("grn_item.created_on >= '%s' AND grn_item.created_on <= '%s'" % (start_date, end_date))
+        elif option == 'Custom Dates':
+            fdate = request.POST.get('fdate')
+            ldate = request.POST.get('ldate')
+            where.append("grn_item.created_on >= '%s' AND grn_item.created_on <= '%s'" % (fdate, ldate))
+        elif option == 'Yesterday':
+            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
+            where.append(f"DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d') = '{Previous_Date}'")
         queryset = GrnItem.objects.using('auth').extra(
             tables=['grn', 'grn_item', 'warehouse_master'],
-            where=[
-                'grn.grn = grn_item.grn',
-                'grn.warehouse_id = warehouse_master.warehouseid',
-                f"DATE_FORMAT(grn_item.created_on, '%%Y-%%m-%%d') = '{date}'"
-            ],
+            where=where,
             select={
                 'grn_grn': 'grn.grn',
                 'grn_warehouse_id': 'grn.warehouse_id',
@@ -7549,7 +7632,7 @@ def Vendor_itemsply(request):
                 'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%d-%%b-%%Y')",
                 'grn_item_item_name': 'grn_item.item_name',
                 'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
-                'warehouse_master_warehousename': 'warehouse_master.warehousename'
+                'warehouse_master_warehousename': 'warehouse_master.warehousename',
             }
         ).values(
             'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
@@ -7558,7 +7641,7 @@ def Vendor_itemsply(request):
 
         queryset2 = queryset.values('grn_vendorname', 'warehouse_master_warehousename', 'grn_item_created_on',
                                     'grn_item_item_name')
-        queryset1 = queryset.values('grn_item_created_on', 'grn_item_item_name').annotate(
+        queryset1 = queryset.values('grn_item_created_on','grn_vendorname', 'grn_item_item_name').annotate(
             total_quantity=Cast(Sum('quantity'), CharField()))
         merged_data = []
         for data1 in queryset1:
@@ -7570,7 +7653,7 @@ def Vendor_itemsply(request):
                         'grn_item_created_on': data1['grn_item_created_on'],
                         'grn_item_item_name': data1['grn_item_item_name'],
                         'total_quantity': data1['total_quantity'],
-                        'grn_vendorname': data2['grn_vendorname'],
+                        'grn_vendorname': data1['grn_vendorname'],
                         'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
                     })
                     break
@@ -7578,7 +7661,7 @@ def Vendor_itemsply(request):
         merged_data = sorted(merged_data,
                                     key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
                                     reverse=True)
-        return render(request, 'Reports/vendor_itemsupply.html', {"entry": merged_data,'menuname':menuname})
+        return render(request, 'Reports/vendor_itemsupply.html', {"entry": merged_data,'menuname':menuname,'selectrange':selectrange})
 
     else:
         queryset = GrnItem.objects.using('auth').extra(
@@ -7586,6 +7669,7 @@ def Vendor_itemsply(request):
             where=[
                 'grn.grn = grn_item.grn',
                 'grn.warehouse_id = warehouse_master.warehouseid',
+                "grn.status = 'Verified'"
             ],
             select={
                 'grn_grn': 'grn.grn',
@@ -7594,7 +7678,8 @@ def Vendor_itemsply(request):
                 'grn_item_created_on': "DATE_FORMAT(grn_item.created_on, '%%d-%%b-%%Y')",
                 'grn_item_item_name': 'grn_item.item_name',
                 'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
-                'warehouse_master_warehousename': 'warehouse_master.warehousename'
+                'warehouse_master_warehousename': 'warehouse_master.warehousename',
+                'grn_status':'grn.status'
             }
 
         ).values(
@@ -7603,7 +7688,7 @@ def Vendor_itemsply(request):
         )
 
         queryset2 = queryset.values('grn_vendorname', 'warehouse_master_warehousename', 'grn_item_created_on','grn_item_item_name')
-        queryset1 = queryset.values('grn_item_created_on', 'grn_item_item_name').annotate(
+        queryset1 = queryset.values('grn_item_created_on', 'grn_vendorname','grn_item_item_name').annotate(
             total_quantity=Cast(Sum('quantity'), CharField()))
         merged_data = []
         for data1 in queryset1:
@@ -7614,14 +7699,14 @@ def Vendor_itemsply(request):
                         'grn_item_created_on': data1['grn_item_created_on'],
                         'grn_item_item_name': data1['grn_item_item_name'],
                         'total_quantity': data1['total_quantity'],
-                        'grn_vendorname': data2['grn_vendorname'],
+                        'grn_vendorname': data1['grn_vendorname'],
                         'warehouse_master_warehousename': data2['warehouse_master_warehousename'],
                     })
                     break
         merged_data = sorted(merged_data,
                              key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
                              reverse=True)
-        return render(request,'Reports/vendor_itemsupply.html',{"entry":merged_data,'menuname':menuname})
+        return render(request,'Reports/vendor_itemsupply.html',{"entry":merged_data,'menuname':menuname,'selectrange':selectrange})
 
 
 def busstation_stalls(request):

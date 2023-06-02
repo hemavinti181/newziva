@@ -10,19 +10,15 @@
               <div class="title_left">
                 <h3 style="color:#1372ba">Depot Wise Qty Accepted Against Indent Report</h3>
               </div>
-              <div class="title_right">
-                <div class="col-md-6 col-sm-7 offset-md-9">
-                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
-                </div>
-            </div>
+
               </div>
+          </div>
             <div class="clearfix"></div>
-            <div class="row">
-              <div class="col-md-12 col-sm-12 ">
+                 <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
 						<form  method="POST" action="depot_indent_report"  enctype="multipart/form-data">
 									{% csrf_token %}
-                            <!--<div class="col-md-2  form-group has-feedback">
+                            <div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
@@ -37,19 +33,17 @@
                             </div>
                              <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
                               <label for="start-date">From Date</label>
-                              <input type="date" id="start-date" class="form-control">
-                            </div>-->
-                              <div class="col-md-2  form-group has-feedback" id="tdate">
-                                  <label  for="end-date">Select Date</label>
-                              <input type="date" id="end-date" name="date" class="form-control" value="{{ request.POST.date }}">
+                              <input type="date" name="fdate" id="start-date" class="form-control" value="{{ request.POST.fdate }}">
                             </div>
-
-
+                              <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
+                                  <label  for="end-date">To Date</label>
+                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
+                            </div>
                             	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
-												</select>
+                                         </select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value="">All</option>
@@ -58,7 +52,7 @@
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
 														{% endif  %}
                                                      {% endfor %}
-												</select>
+                                                </select>
                                 </div>
 											<div  class="col-md-2  form-group has-feedback">
 													<label> Region</label>
@@ -96,16 +90,16 @@
                         </form>
 
 
-						</div>
+                 <div class="row">
+              <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-                    <div class="clearfix"></div>
+
                   <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
 
                      <thead>
@@ -201,6 +195,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
+$("#daterangeselect").change(function() {
+     var selectedOptionText = $(this).find(":selected").text();
+    $("#from").val(selectedOptionText);
+});
 $("#button1").click(function() {
   var selectedOptionText = $('#warehouseid1').find(":selected").text();
   $("#warehousename1").val(selectedOptionText);
@@ -208,6 +206,8 @@ $("#button1").click(function() {
   $("#regionname1").val(selectedOptionText);
    var selectedOptionText = $('#depoid1').find(":selected").text();
   $("#deponame1").val(selectedOptionText);
+  var selectedOptionText = $('#daterangeselect').find(":selected").text();
+  $("#from").val(selectedOptionText);
 });
 $("#busstationid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
@@ -268,13 +268,15 @@ $("#depoid").change(function() {
         	});
     	});
 });
-    	$(document).ready(function(){
+   $(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
 $(document).ready(function(){
   var optionValue = $("#depotname1").val();
   $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
+  var optionValue1 = $("#range2").val();
+  $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
 })
 
 
