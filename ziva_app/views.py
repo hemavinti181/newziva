@@ -4130,8 +4130,8 @@ def out_passlist(request):
 
         payload = json.dumps({
             "accesskey": accesskey,
-            "fdate": request.POST.get('fdate'),
-            "tdate": request.POST.get('tdate'),
+            "fdate": 'All',
+            "tdate": 'All',
             "status":"Pending"
         })
         headers = {
@@ -4215,7 +4215,8 @@ def out_passlist1(request):
         payload = json.dumps({
             "accesskey": accesskey,
             "fdate": request.POST.get('fdate'),
-            "tdate": request.POST.get('tdate')
+            "tdate": request.POST.get('tdate'),
+            "status":"Approve"
         })
         headers = {
             'Content-Type': 'application/json'
@@ -4237,7 +4238,8 @@ def out_passlist1(request):
         payload = json.dumps({
             "accesskey": accesskey,
             "fdate": request.POST.get('fdate'),
-            "tdate": request.POST.get('tdate')
+            "tdate": request.POST.get('tdate'),
+            "status": "Approve"
         })
         headers = {
             'Content-Type': 'application/json'
