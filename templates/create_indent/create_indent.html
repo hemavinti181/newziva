@@ -107,7 +107,7 @@ $("#itemcode").change(function() {
             	type: "POST",
             	url: '{% url "get_price1" %}',
             	data: {
-                	'itemcode':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 
 			 	success: function(data){

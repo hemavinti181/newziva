@@ -4733,7 +4733,7 @@ def pending_indent_pending(request):
         tdate = request.POST.get('tdate')
         payload = json.dumps({
             "accesskey": accesskey,
-            "status": "pending",
+            "status": "Pending",
             "fdate":fdate,
             "tdate":tdate
         })
@@ -4753,7 +4753,7 @@ def pending_indent_pending(request):
 
         payload = json.dumps({
             "accesskey": accesskey,
-            "status": "pending",
+            "status": "Pending",
             "fdate":"All",
             "tdate":"All"
         })
@@ -4882,7 +4882,7 @@ def readyto_ship(request):
             if response.status_code == 200:
                 data1 = response.json()
                 data2 = data1['indentlist']
-                messages.success(request,data1['message'])
+                #messages.success(request,data1['message'])
                 return render(request, 'create_indent/readytoship.html', {'data': data2,'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
             else:
                 return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
@@ -4903,7 +4903,7 @@ def readyto_ship(request):
             if response.status_code == 200:
                 data1 = response.json()
                 data2 = data1['indentlist']
-                messages.success(request, data1['message'])
+                #messages.success(request, data1['message'])
                 return render(request, 'create_indent/readytoship.html',
                               {'data': data2, 'vehicals': vehicals, 'menuname': menuname})
             else:
@@ -7118,7 +7118,7 @@ def depot_indent_report(request):
     data = response.json()
     selectrange = data['timingslist']
     if request.method == 'POST':
-        date = request.POST.get('date')
+
         warehouseid1 = request.POST.get('warehousename1')
         regionname1 = request.POST.get('regionname1')
         deponame1 = request.POST.get('deponame1')
@@ -7155,11 +7155,11 @@ def depot_indent_report(request):
             current_date = datetime.date.today()
             start_date = current_date - timedelta(days=current_date.weekday() + 7)
             end_date = current_date - timedelta(days=current_date.weekday() + 1)
-            where.append("grn_item.created_on >= '%s' AND grn_item.created_on <= '%s'" % (start_date, end_date))
+            where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
         elif option == 'Custom Dates':
             fdate = request.POST.get('fdate')
             ldate = request.POST.get('ldate')
-            where.append("grn_item.created_on >= '%s' AND grn_item.created_on <= '%s'" % (fdate, ldate))
+            where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
         elif deponame1 != 'All':
             where.append(f"depo_master.deponame = '{deponame1}'")
         elif regionname1 != 'All':
@@ -7212,7 +7212,8 @@ def depot_indent_report(request):
             ]
 
             if option == 'Today':
-                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{date}'")
+                tdate = datetime.date.today()
+                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
             elif option == 'Yesterday':
                 Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
                 Previous_Date = Previous_Date.date()
@@ -7236,7 +7237,7 @@ def depot_indent_report(request):
             elif option == 'Custom Dates':
                 fdate = request.POST.get('fdate')
                 ldate = request.POST.get('ldate')
-                where.append("grn_item.created_on >= '%s' AND grn_item.created_on <= '%s'" % (fdate, ldate))
+                where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
             queryset2 = OutpassItem.objects.using('auth').extra(
                 tables=['indent_item','depo_master','generate_indent'],
                  where=where,
@@ -7276,13 +7277,14 @@ def depot_indent_report(request):
                           {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,
                            'menuname': menuname})
     else:
-        queryset = DepoMaster.objects.using('auth').extra(
+        queryset = IndentItem.objects.using('auth').extra(
             tables=['outpass_item', 'indent_item','generate_indent', 'depo_master'],
             where=[
                 'indent_item.indent_no = outpass_item.indent_no',
                 'depo_master.warehouseid = generate_indent.to_id',
                 'indent_item.indent_no = generate_indent.indent_no',
                 'depo_master.depoid = generate_indent.from_id',
+                'depo_master.warehouseid = generate_indent.to_id',
             ],
             select={
 
@@ -7303,6 +7305,7 @@ def depot_indent_report(request):
                         'indent_item.indent_no = outpass_item.indent_no',
                         'indent_item.indent_no = generate_indent.indent_no',
                         'depo_master.depoid =generate_indent.from_id',
+                        'depo_master.warehouseid = generate_indent.to_id',
                         "outpass_item.status = 'Accepted'"
                     ],
                     select={
@@ -7317,16 +7320,14 @@ def depot_indent_report(request):
                 outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
                     outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
                 )
-                queryset1 = IndentItem.objects.using('auth').values('createdon__date', 'item_name').annotate(
-                    indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-                )
+                queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                                   indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                               )
                 merged_data = []
                 for data2 in queryset1:
                     for data1 in queryset:
-                        createdon = data2['createdon__date']
-                        date_createdon = createdon.strftime("%d-%b-%Y")
-                        if data1['indent_item_createdon'] == date_createdon \
-                                and data1['indent_item_item_name'] == data2['item_name']:
+                        if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                                and data1['indent_item_item_name'] == data2['indent_item_item_name']:
                             merged_data.append({
                                 'indent_item_createdon': data1['indent_item_createdon'],
                                 'indent_item_item_name': data1['indent_item_item_name'],
@@ -7337,6 +7338,7 @@ def depot_indent_report(request):
                                 'depo_master_warehouse': data1['depo_master_warehouse']
                             })
                             break
+
                 result = []
                 for data1 in merged_data:
                     for data2 in outpass_sum:
