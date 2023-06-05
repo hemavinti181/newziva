@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+           <div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                  <!--<a href="region_add"><button type="submit" class="btn btn-success">Add Region</button>-->
+                </div>
+            </div>
+              </div>
+
+
+
+    <h2><b>Callback Messsage: </b></h2>                    <br>
+    <h3> Checksum Verification: {{ message }} </h3> <br>
+    MID: {{ data_dict.mid }}                                  <br>
+    TXNID: {{ data.txnId }}                              <br>
+    ORDERID: {{ data.orderId }}                          <br>
+    BANKTXNID: {{ data.bankTxnId }}                      <br>
+    TXNAMOUNT: {{ data.txnAmount }}                      <br>
+    <!--CURRENCY: {{ CURRENCY }}                        <br>-->
+    <h3> STATUS: {{ data.resultInfo.resultStatus }} </h3>                 <br>
+    RESPCODE: {{ data.resultInfo.resultCode }}                        <br>
+    RESPMSG: {{ data.resultInfo.resultMsg }}                          <br>
+    TXNDATE: {{ data.txnDate }}                          <br>
+    GATEWAYNAME: {{ data.gatewayName }}                  <br>
+    BANKNAME: {{ data.bankName }}                        <br>
+    PAYMENTMODE: {{ data.paymentMode }}                  <br>
+  </div>
+            </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+{% endblock %}

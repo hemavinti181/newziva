@@ -1,6 +1,10 @@
 import base64
 import json
+import random
+import string
 from datetime import datetime,timedelta
+
+import paytmchecksum
 from django.db.models.functions import ExtractMonth
 from django.db.models.functions import Cast, TruncDate, Substr
 from django.db.models import DateTimeField, Sum, F, CharField, Value, OuterRef, Subquery, Case, When, Q, Count, Func
@@ -2831,6 +2835,9 @@ def sale_item_list(request):
     accesskey = request.session['accesskey']
     tax_inv = request.session['taxinvoice']
     depoid = request.session['depoid']
+
+
+
     url = "http://13.235.112.1/ziva/mobile-api/timingstypelist.php"
     payload = json.dumps({
 
@@ -3079,35 +3086,29 @@ def complete_sale(request):
 
         accesskey = request.session['accesskey']
 
-        if 'complete' in request.POST:
-            url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
+        if  request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
 
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "sonumber": request.POST.get('txtHdnId'),
-                "paymentmode": request.POST.get('paymenttype'),
-                "remarks": request.POST.get('remarks'),
-                "date": request.POST.get('date'),
-                "spelloftheday":request.POST.get('spell1')
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "sonumber": request.POST.get('txtHdnId'),
+                    "paymentmode": request.POST.get('paymenttype'),
+                    "remarks": request.POST.get('remarks'),
+                    "date": request.POST.get('date'),
+                    "spelloftheday":request.POST.get('spell1')
 
-            })
-            headers = {
-                'Content-Type': 'application/json'
-            }
-            response = requests.request("GET", url, headers=headers, data=payload)
-            data = response.json()
-            if response.status_code == 200:
-                del request.session['taxinvoice']
-                del request.session['storename']
-                del request.session['stid']
-                del request.session['bustname']
-
-
-                messages.success(request, data['message'])
-                return redirect('proformainvoice')
-            else:
-                messages.error(request, data['message'])
-                return redirect('proformainvoice')
+                })
+                headers = {
+                    'Content-Type': 'application/json'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                data = response.json()
+                if response.status_code == 200:
+                    messages.success(request, data['message'])
+                    return redirect('proformainvoice')
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('proformainvoice')
 def delete_sale_item(request,id):
         tax_inv = request.session['taxinvoice']
         accesskey = request.session['accesskey']
@@ -8004,45 +8005,94 @@ def warehouse_stock(request):
         #merged_data = sorted(merged_data, key=lambda x: x['createdon'], reverse=False)
         return render(request, 'Reports/warehouse_stock.html', {"selectrange":selectrange,"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_quantities':merged_data})
 
-
-def payment_request(request):
-    if request.method == 'POST':
-        amount = request.POST.get('amount')
-        # Collect other required details from the form
-
-        # Construct the Paytm request payload
-
-        payload = {
-            'MID': "TSRTCP03244016260030",
-            'ORDER_ID': 'ts02',
-            'TXN_AMOUNT': str(amount),
-            'CUST_ID': 'customer_id',
-            'CHANNEL_ID': 'WEB',
-            'INDUSTRY_TYPE_ID': 'Retail',
-            'WEBSITE': 'WEBSTAGING',
-            'CALLBACK_URL':"http://localhost:8000/payment_callback/",  # Replace with your callback URL
-            # Add any other required parameters
-        }
+def __id_generator__(size=6, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 
-    return render(request, 'payment.html',{'context':payload})
 
-def payment_callback(request):
-    # Retrieve and process the callback data from Paytm
-    # Validate the transaction status and update your application's records
-    # ...
+def payment(request):
 
-    # Verify the transaction status with Paytm's API
-    payload = {
-        'MID': "TSRTCP03244016260030",
-        'ORDER_ID': '1',
-        # Add other required parameters
+    paytmParams = dict()
+    order_id =__id_generator__()
+    #url = reverse('http://localhost:8000/response', args=[order_id])
+    url = "https://tsrtcziva.com/response/{}/".format(order_id)
+    paytmParams['body'] = {
+        "requestType": "Payment",
+        "mid": "TSRTCP03244016260030",
+        "websiteName": "WEBSTAGING",
+        "orderId": order_id,
+        "callbackUrl":url,
+        "txnAmount": "1.00",
+        "currency": "INR",
+        "userInfo": {
+            "custId": "CUST_001",
+        },
     }
 
-    response = requests.post('https://securegw.paytm.in/order/status', data=payload)
-    transaction_status = response.json().get('status')
+    # Generate checksum by parameters we have in body
+    # Find your Merchant Key in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+    checksum = paytmchecksum.generateSignature(json.dumps(paytmParams["body"]), "jXXQfmzmqD3PpchQ")
+    #checksum = paytmchecksum.generateSignature(json.dumps(paytmParams, "jXXQfmzmqD3PpchQ"))
+    paytmParams["head"] = {
+        "signature": checksum
+    }
 
-    if transaction_status == 'TXN_SUCCESS':
-        return HttpResponse(status=200)
+    post_data = json.dumps(paytmParams)
 
+    # for Staging
+    url = "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=TSRTCP03244016260030&orderId={}".format(order_id)
+
+    # for Production
+    #url = "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=TSRTCP03244016260030&orderId={}".format(order_id)
+    response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
+    print(response)
+    data = response['body']
+    data1=paytmParams['body']
+    txnToken = data['txnToken']
+    context = {
+        'data_dict': data1,
+        'txnToken':txnToken,
+
+    }
+    return render(request, 'payment.html',context)
+
+
+@csrf_exempt
+def response(request,id):
+
+    paytmParams = dict()
+    paytmParams['body'] = {
+        "mid": "TSRTCP03244016260030",
+        "orderId": id,
+    }
+    checksum = paytmchecksum.generateSignature(json.dumps(paytmParams["body"]), "jXXQfmzmqD3PpchQ")
+
+    # head parameters
+    paytmParams["head"] = {
+
+        # put generated checksum value here
+        "signature": checksum
+    }
+
+    # prepare JSON string for request
+    post_data = json.dumps(paytmParams)
+
+    # for Staging
+    url = "https://securegw-stage.paytm.in/v3/order/status"
+
+    # for Production
+    #url = "https://securegw.paytm.in/v3/order/status"
+
+    response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
+    print(response)
+    data = response['body']
+
+    data1 = paytmParams['body']
+    context = {
+        'data_dict': data1,
+        'data':data,
+
+
+    }
+    return render(request,'ex.html',context)
 

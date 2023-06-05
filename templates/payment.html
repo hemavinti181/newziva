@@ -1,34 +1,46 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0"/>
 
-{% block htmlbody %}
 
+</head>
+<body>
+    <script>
+        function onScriptLoad() {
+            var config = {
+                "root": "",
+                "flow": "DEFAULT",
+                "data": {
+                    "orderId": "{{ data_dict.orderId }}", /* Update with the order ID received from the transaction initiation */
+                    "token": "{{ txnToken }}", /* Update with the token value received from the transaction initiation */
+                    "tokenType": "TXN_TOKEN",
+                    "amount": "{{ data_dict.txnAmount }}" /* Update with the transaction amount */
+                },
+                "handler": {
+                    "notifyMerchant": function (eventName, data) {
+                        console.log("notifyMerchant handler function called");
+                        console.log("eventName => ", eventName);
+                        console.log("data => ", data);
+                    }
+                }
+            };
 
-
-<div class="right_col" role="main">
-          <div class="">
-            <div class="page-title">
-              <div class="title_left">
-                <h3 style="color:#1372ba">Depot Wise Qty Accepted Against Indent Report</h3>
-              </div>
-              <div class="title_right">
-                <div class="col-md-6 col-sm-7 offset-md-9">
-                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
-                </div>
-            </div>
-              </div>
-            <div class="clearfix"></div>
-            <div class="row">
-              <div class="col-md-12 col-sm-12 ">
-<form method="POST" action="https://securegw.paytm.in/order/process">
-  {% csrf_token %}
-  <label for="amount">Amount:</label>
-  <input type="number" name="amount" required>
-  <button type="submit">Pay with Paytm</button>
-</form>
-                     </div>
-            </div>
-          </div>
-</div>
-
-{% endblock %}
-
+            if (window.Paytm && window.Paytm.CheckoutJS) {
+                window.Paytm.CheckoutJS.onLoad(function executeAfterCompleteLoad() {
+                    // Initialize configuration using the init method
+                    window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                        // After successfully updating configuration, invoke JS Checkout
+                        window.Paytm.CheckoutJS.invoke();
+                    }).catch(function onError(error) {
+                        console.log("error => ", error);
+                    });
+                });
+            }
+        }
+    </script>
+ <script type="application/javascript" src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/{{ data_dict.mid }}.js" onload="onScriptLoad();" crossorigin="anonymous"></script>
+</body>
+</html>

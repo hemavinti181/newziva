@@ -1,15 +1,19 @@
+
 {% extends 'base.html' %}
 
 {% block htmlbody %}
 <style>
 	.style{
 	position: absolute !important;
-	width: 80% !important;
+	width: 100% !important;
 	}
 	.style1{
 	position: absolute !important;
 	width: 100% !important;
 	right: 20px;
+	}
+	.submit-btn{
+	width: 50% !important;
 	}
 </style>
  <div class="right_col" role="main">
@@ -17,6 +21,8 @@
           <div class="page-title">
             <div class="title_left">
               <h3 style="color:#1372ba"><b>Proforma Invoice</b></h3>
+
+
             </div>
            <!-- <div class="title_right">
               <div class="col-md-6 col-sm-9 offset-md-9">
@@ -314,10 +320,16 @@
                                                    <label for="remarks">Remarks</label>
 										        <input type="text" class="form-control" name="remarks" id="remarks"  placeholder="remarks" >
 										    </div>
-                                                  <div class="col-md-6 col-sm-6  offset-md-3">
-                                                  <button type="submit" name="complete" class="btn btn-info">Complete</button>
-                                            </div>
-  </form>
+                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<button class="btn btn-primary submit-btn">complete</button>
+                                                    </div>
+                                               <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                    <!--<button class="btn btn-info submit-btn" id="paytmWithPaytm">Pay now</button>-->
+                                                   <a href="payment" class="btn btn-info submit-btn" id="paytmWithPaytm">Pay now</a>
+
+        </div>
+
+									</div>
                                         </div>
 
                                         </div>
@@ -595,5 +607,69 @@ $(document).ready(function(){
   var optionValue = $("#depoid1").val();
   $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
+
+ document.getElementById("paytmWithPaytm").addEventListener("click", function(){
+          onScriptLoad();
+      });
+      function onScriptLoad()
+      {
+          var config = {
+              "root": "",
+              "flow": "WEBSTAGING",
+              "merchant":{
+                   "name":"XYZ Enterprises",
+                   "logo":"https://developer.paytm.com/demo//static/images/merchant-logo.png?v=1.4"
+               },
+               "style":{
+                   "headerBackgroundColor":"#8dd8ff",
+                   "headerColor":"#3f3f40"
+              },
+              "data": {
+                  "orderId": "{{ context.txnToken }}",
+                  "token": "{{ context.data_dict.orderId}}",
+                  "tokenType": "TXN_TOKEN",
+                  "amount":"{{ context.data_dict.txnAmount}}"
+              },
+
+              "handler":{
+                   // "notifyMerchant": function (eventName, data) {
+                   //    if(eventName == 'SESSION_EXPIRED'){
+                   //        alert("Your session has expired!!");
+                   //        location.reload();
+                   //    }
+                   // }
+                   "notifyMerchant": function (eventName, data) {
+                     console.log("Handler log");
+                      if(eventName == 'SESSION_EXPIRED'){
+                          alert("Your session has expired!!");
+                          location.reload();
+                          console.log("Session Expired");
+                      }
+                   }
+              }
+          };
+          console.log("onscript loaded");
+        //  console.log(window.Paytm);
+          window.Paytm.CheckoutJS.invoke();
+          if (window.Paytm && window.Paytm.CheckoutJS) {
+              // initialze configuration using init method
+              window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                  console.log('Before JS Checkout invoke');
+                  // after successfully update configuration invoke checkoutjs
+                  window.Paytm.CheckoutJS.invoke();
+              }).catch(function onError(error) {
+                console.log("Error section");
+                  console.log("Error => ", error);
+              });
+          }
+          else{
+            console.log("something went wrong");
+          }
+      }
+document.getElementById("paytmWithPaytm").addEventListener("click", function() {
+    // Redirect to the payment URL
+    window.location.href = "payment";
+});
 </script>
+
 {% endblock %}
