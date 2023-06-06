@@ -4,7 +4,7 @@
 <style>
 	.style{
 	position: absolute !important;
-	width: 80% !important;
+	width: 100% !important;
 	 right: 20px;
 	}
 	</style>
@@ -123,28 +123,33 @@
                                                     {% csrf_token %}
                                                   <input type="hidden" id="txtHdnId" name="txtHdnId"  />
                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                         <label><h4><b>Payment Mode</b></h4></label>
+                                                         <!--<label><h4><b>Payment Mode</b></h4></label>-->
                                                  </div>
-                                                 <div class="col-md-3 col-sm-3 form-group has-feedback">
-                                                  <label class="btn btn-round btn-danger">
-                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" /> CASH
+                                                    <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                                <label class="btn btn-round btn-danger">
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH"  /> CASH
                                                 </label>
-                                                     </div>
-                                                 <div class="col-md-3 col-sm-3 form-group has-feedback">
+                                                 </div>
+                                                     <div class="col-md-4 col-sm-4  form-group has-feedback">
                                                    <label class="btn btn-round btn-primary">
-                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" /> UPI
-                                                </label>
-                                                 </div>
-                                                     <div class="col-md-3 col-sm-3 form-group has-feedback">
-                                                   <label class="btn btn-round btn-success">
-                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" /> Scanner
+                                                 <input type="radio" name="paymenttype" id="upi"  value="UPI"  /> UPI
                                                 </label>
                                                      </div>
 
+                                                 <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                                   <label class="btn btn-round btn-success">
+                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" /> Scanner
+                                                </label>
+                                                 </div>
 
-                                            <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-info">Update</button>
-                                            </div>
+                                                 <div class="col-md-6 col-sm-6  form-group has-feedback">
+											    <button class="btn btn-primary submit-btn" id="complete">complete</button>
+                                                    </div>
+                                               <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                    <!--<button class="btn btn-info submit-btn" id="paytmWithPaytm">Pay now</button>-->
+                                                   <a href="payment" class="btn btn-info submit-btn" id="paytmWithPaytm">Pay now</a>
+
+        </div>
                                              </form>
                                         </div>
 
@@ -167,6 +172,7 @@ $("#txtHdnId").val(id);
 $("#cases").val(id3)
 $("#mrp").val(id4)
 }
+
 
 
 </script>

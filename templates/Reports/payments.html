@@ -52,7 +52,7 @@
 												</select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value="">All</option>
+													<option value="All">All</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -67,7 +67,7 @@
 												</select>
 											 <input type="hidden" name="regionname1" id="regionname1" />
 												<select class="form-control" name="regionid1" id="regionid1">
-													<option value="">All</option>
+													<option value="All">All</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
@@ -77,20 +77,20 @@
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value="">All</option>
+													<option value="All">All</option>
 												</select>
 
                             </div>
 
 										<div  class="col-md-2  form-group has-feedback">
                                               <select class="form-control" name="busstationid2" id="busstationid2" hidden>
-                            		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.busstationid1 }}</option>
+                            		                    <option value="{{ request.POST.busstationid1 }}">{{ request.POST.busstationname1 }}</option>
 												</select>
 
 													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
-													<option value="">All</option>
+													<option value="All">All</option>
 												</select>
 										</div>
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
@@ -213,13 +213,21 @@ $("#button1").click(function() {
 $("#button1").click(function() {
   var selectedOptionText = $('#warehouseid1').find(":selected").text();
   $("#warehousename1").val(selectedOptionText);
+  var selectedOptionText = $('#regionid1').find(":selected").text();
+  $("#regionname1").val(selectedOptionText);
+   var selectedOptionText = $('#depoid1').find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
+    var selectedOptionText = $('#busstationid1').find(":selected").text();
+  $("#busstationname1").val(selectedOptionText);
 });
+
 $("#busstationid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
-    $("#busstationname").val(selectedOptionText);
+    $("#busstationname1").val(selectedOptionText);
 });
 $("#daterangeselect").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
+
     $("#from").val(selectedOptionText);
 });
 
@@ -243,7 +251,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-
+                    $("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -301,7 +309,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-
+                 $("#regionid1").append("<option value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -324,7 +332,7 @@ $(document).ready(function(){
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value=''>Choose region</option>");
+                    $("#regionid1").append("<option value='All'>All</option>");
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -348,6 +356,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
+                  $("#depoid1").append("<option value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -392,7 +401,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-
+                    $("#busstationid1").append("<option value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});

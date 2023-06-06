@@ -35,7 +35,6 @@ class BytesEncoder(json.JSONEncoder):
 
 @login_required
 def index(request):
-
     return render(request,'base.html')
 
 
