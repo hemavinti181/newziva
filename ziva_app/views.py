@@ -7132,7 +7132,6 @@ def depot_indent_report(request):
             'indent_item.indent_no = outpass_item.indent_no',
             'indent_item.indent_no = generate_indent.indent_no',
             'depo_master.warehouseid = generate_indent.to_id',
-            f"depo_master.warehouse = '{warehouseid1}'",
             'depo_master.depoid = generate_indent.from_id',
 
         ]
@@ -7160,9 +7159,13 @@ def depot_indent_report(request):
             fdate = request.POST.get('fdate')
             ldate = request.POST.get('ldate')
             where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
-        elif deponame1 != 'All':
+        elif option == 'All':
+            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
+        if warehouseid1 != 'All':
+            where.append(f"depo_master.warehouse = '{warehouseid1}'")
+        if deponame1 != 'All':
             where.append(f"depo_master.deponame = '{deponame1}'")
-        elif regionname1 != 'All':
+        if regionname1 != 'All':
             where.append(f"depo_master.regionname = '{regionname1}'")
         queryset = IndentItem.objects.using('auth').extra(
             tables=['outpass_item', 'indent_item', 'generate_indent', 'depo_master'],
@@ -7205,7 +7208,6 @@ def depot_indent_report(request):
 
             where = [
                 'indent_item.indent_no = outpass_item.indent_no',
-                 f"depo_master.warehouse = '{warehouseid1}'",
                 'indent_item.indent_no = generate_indent.indent_no',
                 'depo_master.depoid =generate_indent.from_id',
                 "outpass_item.status = 'Accepted'"
@@ -7238,6 +7240,14 @@ def depot_indent_report(request):
                 fdate = request.POST.get('fdate')
                 ldate = request.POST.get('ldate')
                 where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
+            elif option == 'All':
+                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
+            if warehouseid1 != 'All':
+                where.append(f"depo_master.warehouse = '{warehouseid1}'")
+            if deponame1 != 'All':
+                where.append(f"depo_master.deponame = '{deponame1}'")
+            if regionname1 != 'All':
+                where.append(f"depo_master.regionname = '{regionname1}'")
             queryset2 = OutpassItem.objects.using('auth').extra(
                 tables=['indent_item','depo_master','generate_indent'],
                  where=where,
@@ -7910,14 +7920,14 @@ def warehouse_stock(request):
         #tdate = tdate.strftime("%d-%m-%Y")
         if option == 'Today':
             item_quantities = WarehouseInventory.objects.using('auth').filter(
-                warehouse_id=warehouse_id, createdon__date=tdate
+                createdon__date=tdate
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') |  Q(itemname='bottle')
             ).order_by('-createdon__date').values('warehouse_id','createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
         elif option == 'Current Month':
             today = datetime.date.today()
             item_quantities = WarehouseInventory.objects.using('auth').filter(
-                warehouse_id=warehouse_id, createdon__month=today.month
+                 createdon__month=today.month
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
             ).values('warehouse_id', 'createdon__date', 'itemname').annotate(
@@ -7926,7 +7936,7 @@ def warehouse_stock(request):
         elif option == 'Yesterday':
             Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
             item_quantities = WarehouseInventory.objects.using('auth').filter(
-                warehouse_id=warehouse_id, createdon__date=Previous_Date
+                createdon__date=Previous_Date
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
             ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
@@ -7934,7 +7944,7 @@ def warehouse_stock(request):
             today = datetime.date.today()
             current_week = today.isocalendar().week
             item_quantities = WarehouseInventory.objects.using('auth').filter(
-                warehouse_id=warehouse_id, createdon__week=current_week
+                 createdon__week=current_week
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
             ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
@@ -7943,7 +7953,7 @@ def warehouse_stock(request):
             start_date = current_date - timedelta(days=current_date.weekday() + 7)
             end_date = current_date - timedelta(days=current_date.weekday() + 1)
             item_quantities = WarehouseInventory.objects.using('auth').filter(
-                warehouse_id=warehouse_id, createdon__range=[start_date, end_date]
+                 createdon__range=[start_date, end_date]
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
             ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
@@ -7951,11 +7961,21 @@ def warehouse_stock(request):
             fdate = request.POST.get('fdate')
             ldate = request.POST.get('ldate')
             item_quantities = WarehouseInventory.objects.using('auth').filter(
-                warehouse_id=warehouse_id, createdon__range=[fdate, ldate]
+                 createdon__range=[fdate, ldate]
             ).exclude(
                 Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
             ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
-        warehouse = WarehouseMaster.objects.using('auth').values('warehousename', 'warehouseid')
+        elif option == 'All':
+            item_quantities = WarehouseInventory.objects.using('auth').order_by('-createdon__date').values(
+                'warehouse_id', 'createdon__date', 'itemname', 'sale_qty').exclude(
+                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle'))
+
+            item_quantities = item_quantities.values('warehouse_id', 'createdon__date', 'itemname').annotate(
+                quantity=Sum('sale_qty'))
+        if warehouse_id == 'All':
+            warehouse =  WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
+        else:
+            warehouse = WarehouseMaster.objects.using('auth').filter(warehouseid=warehouse_id).values('warehousename', 'warehouseid')
         merged_data = []
         for data2 in item_quantities:
             for data1 in warehouse:
@@ -8058,7 +8078,6 @@ def payment(request):
 
 @csrf_exempt
 def response(request,id):
-
     paytmParams = dict()
     paytmParams['body'] = {
         "mid": "TSRTCP03244016260030",

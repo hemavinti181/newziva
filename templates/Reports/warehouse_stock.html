@@ -43,7 +43,7 @@
                               <label for="start-date">From Date</label>
                               <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
                             </div>
-                              <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none" >
+                              <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none">
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
                             </div>
@@ -195,9 +195,20 @@ $(document).ready(function(){
   var optionValue1 = $("#range2").val();
   $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
   })
-
 $(document).ready(function(){
- $('#date-range-fields').hide();
+    var selectedOption = $('#daterangeselect').find(":selected").text();
+    if (selectedOption == 'Custom Dates') {
+      $('#date-range-fields').show();
+      $('#tdate').show();
+     // show the date fields if custom option is selected
+      displayResults();
+    } else {
+      $('#date-range-fields').hide();
+      $('#tdate').hide();// hide the date fields if another option is selected
+          displayOtherResults(selectedOption);
+    }
+});
+$(document).ready(function(){
   $('#daterangeselect').change(function() {
     var selectedOption = $(this).find(":selected").text();
     if (selectedOption == 'Custom Dates') {
