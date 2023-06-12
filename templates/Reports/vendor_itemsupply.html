@@ -64,23 +64,50 @@
                                             <th>Date</th>
                                             <th>Manufacturer</th>
                                             <th>Warehouse</th>
-                                            <th>Product</th>
-                                            <th>Qty(In Cases)</th>
-                                            <!--<th>Qty(In Bottles)</th>-->
+                                            <th colspan="3">Product</th>
+
                                         </tr>
+                                     <tr>
+                                      <td></td>
+                                       <td></td>
+                                       <td></td>
+                                         <td></td>
+                                       <td>1000ml</td>
+                                        <td>500ml</td>
+                                        <td>250ml</td>
+
+                                  </tr>
                                     </thead>
                                     <tbody>
                                      {% for data in entry %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ data.grn_item_created_on }}</td>
-        <td>{{ data.grn_vendorname }}</td>
-        <td>{{ data.warehouse_master_warehousename }}</td>
-        <td>{{ data.grn_item_item_name }}</td>
-        <td>{{ data.total_quantity }}</td>
-        <!--<td></td>-->
-    </tr>
-{% endfor %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ data.grn_item_created_on }}</td>
+                                            <td>{{ data.grn_vendorname }}</td>
+                                            <td>{{ data.warehouse_master_warehousename }}</td>
+                                              <td>
+                                              {% for item in data.items %}
+                                                {% if item.itemname == '1000ml' %}
+                                                  {{ item.quantity }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in data.items %}
+                                                {% if item.itemname == '500ml' %}
+                                                  {{ item.quantity }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in data.items %}
+                                                {% if item.itemname == '250ml' %}
+                                                  {{ item.quantity }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                        </tr>
+                                       {% endfor %}
 
                                     </tbody>
                                 </table>

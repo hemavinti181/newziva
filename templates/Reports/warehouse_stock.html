@@ -84,32 +84,54 @@
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
 
                      <thead>
-                            <!--<tr>
-                               <th>S NO</th>
-                                <th>Date</th>
-                                <th>WareHouse</th>
-                                <th colspan="3">Items</th>
-
-                            </tr>-->
                             <tr>
                                   <th class="row2">S NO</th>
                                 <th class="row2">Date</th>
                                 <th class="row2">WareHouse</th>
-                                <th class="row2">Item Name</th>
-                                <th class="row2">Quantity</th>
+                                <th class="row2" colspan="3">Items</th>
 
                             </tr>
-                                  </thead>
+
+                             <tr>
+                                      <td></td>
+                                       <td></td>
+                                       <td></td>
+                                       <td>1000ml</td>
+                                        <td>500ml</td>
+                                        <td>250ml</td>
+
+                                  </tr>
+                               </thead>
                                   <tbody>
+
                                     {% for item_quantity in item_quantities %}
                                         <tr>
                                           <td>{{ forloop.counter }}</td>
-                                          <td>{{ item_quantity.createdon}}</td>
+                                          <td>{{ item_quantity.createdon__date }}</td>
                                           <td>{{ item_quantity.warehousename }}</td>
-                                          <td>{{ item_quantity.itemname }} </td>
-                                            <td>{{ item_quantity.quantity }}</td>
 
-                                        </tr>
+                                            <td>
+                                              {% for item in item_quantity.items %}
+                                                {% if item.itemcode == 'PHA0002' %}
+                                                  {{ item.quantity }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in item_quantity.items %}
+                                                {% if item.itemname == '500ml' %}
+                                                  {{ item.quantity }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in item_quantity.items %}
+                                                {% if item.itemcode == 'PHA0004' %}
+                                                  {{ item.quantity }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                          </tr>
                                         {% endfor %}
                                   </tbody>
                       </table>

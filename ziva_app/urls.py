@@ -6,7 +6,7 @@ from ziva_app import views
 urlpatterns = [
     path('',views.index,name='index_page'),
     path('login', views.login, name='login'),
-    path('logout',views.logout,name='logout'),
+    path('signout',views.signout,name='signout'),
     path('store_master',views.store_master,name='store_master'),
     path('add_store',views.add_store,name='add_store'),
     path('store_status_active',views.store_status_active,name='store_status_active'),
