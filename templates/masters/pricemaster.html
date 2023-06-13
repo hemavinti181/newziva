@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba"> <b>Add Price</b></h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+					<a href="/des_list"><button type="submit" class="btn btn-primary">Price List</button></a>
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                 <div class="x_content">
+									<br />
+									<form class="form-label-left input_mask" method="POST" action="bus_add"   enctype="multipart/form-data">
+											{% csrf_token %}
+										<form class="form-label-left input_mask"  method="POST" action="des_add"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                   <div  class="col-md-3 col-sm-3 form-group has-feedback">
+
+													<label>Select Region *</label>
+											<input type="hidden" name="regionnmae" id="regionnmae" />
+												<select class="form-control" name="regionid" id="regionid">
+                                                    <option>select region</option>
+													{% for data1 in regionlist %}
+                                                       {% if data1.status == 'Active' %}
+                            							<option value="{{ data1.regionid }}">{{ data1.regionname }}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+                                 <div  class="col-md-3 col-sm-3 form-group has-feedback">
+
+													<label>Select Item *</label>
+											<input type="hidden" name="itemname" id="itemname" />
+												<select class="form-control" name="itemid" id="itemid">
+                                                    <option>select item</option>
+													{% for data1 in item_masterlist %}
+                                                       {% if data1.status == 'Active' %}
+                            							<option value="{{ data1.itemcode }}">{{ data1.itemname }}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+                                   <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                <label>Add Amount</label>
+                                    <input type="text" class="form-control" placeholder="enter amount" name="amount">
+                            </div>
+
+
+											<div class="col-md-3 col-sm-3 form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">save</button>
+											</div>
+
+                            </form>
+                        </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $("#regionid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regionnmae").val(selectedOptionText);
+});
+$("#itemid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#itemname").val(selectedOptionText);
+});
+
+</script>
+{% endblock %}

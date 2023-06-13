@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Sales   List</b></h3>
+                <h3 style="color:#1372ba"><b>Sales PendingList</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -147,7 +147,7 @@
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
 
                                          <td>
-                                            <a href="/sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> {{ all_data.status }} </span></a>
+                                            <a href="/sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
                                          </td>
 
                                     </tr>
@@ -168,12 +168,8 @@
             </div>
           </div>
 </div>
-  <div class="inner-fabs">
+</div>
 
-                                  <div class="fab bg-green round" id="fab3"><a href="medeliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
-                                 <div class="fab bg-yellow round" id="fab2"><a href="medeliver_challan_pending"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
-                              </div>
-                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
@@ -218,6 +214,12 @@
                                         </div>
                                     </div>
                                 </div>
+<div class="inner-fabs">
+
+                                  <div class="fab bg-green round" id="fab3"><a href="medeliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="medeliver_challan_pending"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <!-- Include jQuery and jQuery UI libraries -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>

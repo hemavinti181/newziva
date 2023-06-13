@@ -90,11 +90,11 @@
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                         {% if all_data.status == "Delivery Pending" %}
                                         <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> {{ all_data.status }} </span></a>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
                                          </td>
                                         {% else %}
                                          <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge bg-green"> {{ all_data.status }} </span></a>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
                                          </td>
                                         {% endif %}
                                     </tr>

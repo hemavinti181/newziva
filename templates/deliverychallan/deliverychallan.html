@@ -11,7 +11,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Sales Approve  List</b></h3>
+                <h3 style="color:#1372ba"><b>Sales Pending  List</b></h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -106,11 +106,11 @@
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                         {% if all_data.status == "Delivery Pending" %}
                                         <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-warning"> {{ all_data.status }} </span></a>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
                                          </td>
                                         {% else %}
                                          <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge bg-green"> {{ all_data.status }} </span></a>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
                                          </td>
                                         {% endif %}
                                     </tr>

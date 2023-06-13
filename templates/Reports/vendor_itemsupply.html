@@ -35,11 +35,11 @@
                     </div>
                     <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
                         <label for="start-date">From Date</label>
-                        <input type="date" id="start-date" name="fdate" class="form-control">
+                        <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
                     </div>
                     <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
                         <label for="end-date">To Date</label>
-                        <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.date }}">
+                        <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
                     </div>
                     <div class="col-md-2 col-sm-2  form-group has-feedback">
                         <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
@@ -61,22 +61,14 @@
                                     <thead>
                                         <tr>
                                             <th>S No</th>
-                                            <th>Date</th>
+                                            <th>Invoice Date</th>
                                             <th>Manufacturer</th>
                                             <th>Warehouse</th>
-                                            <th colspan="3">Product</th>
+                                            <th>1000ml</th>
+                                            <th>500ml</th>
+                                            <th>250ml</th>
 
                                         </tr>
-                                     <tr>
-                                      <td></td>
-                                       <td></td>
-                                       <td></td>
-                                         <td></td>
-                                       <td>1000ml</td>
-                                        <td>500ml</td>
-                                        <td>250ml</td>
-
-                                  </tr>
                                     </thead>
                                     <tbody>
                                      {% for data in entry %}
@@ -129,13 +121,26 @@
      var selectedOptionText = $(this).find(":selected").text();
     $("#from").val(selectedOptionText);
 });
+
 $("#button1").click(function() {
   var selectedOptionText = $('#daterangeselect').find(":selected").text();
   $("#from").val(selectedOptionText);
 
 });
 $(document).ready(function(){
- $('#date-range-fields').hide();
+    var selectedOption = $('#range2').find(":selected").text();
+    if (selectedOption == 'Custom Dates') {
+      $('#date-range-fields').show();
+      $('#tdate').show();
+     // show the date fields if custom option is selected
+      displayResults();
+    } else {
+      $('#date-range-fields').hide();
+      $('#tdate').hide();// hide the date fields if another option is selected
+          displayOtherResults(selectedOption);
+    }
+});
+$(document).ready(function(){
   $('#daterangeselect').change(function() {
     var selectedOption = $(this).find(":selected").text();
     if (selectedOption == 'Custom Dates') {
