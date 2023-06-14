@@ -200,6 +200,7 @@ urlpatterns = [
     path('edit_price', views.edit_price, name='edit_price'),
     path('payment_report',views.payment_report,name='payment_report'),
     path('depot_stock',views.depot_stock,name='depot_stock'),
+    path('depot_stock1',views.depot_stock1,name='depot_stock1'),
     path('Vendor_itemsply',views.Vendor_itemsply,name='Vendor_itemsply'),
     path('depot_indent_report',views.depot_indent_report,name='depot_indent_report'),
     path('busstation_stalls',views.busstation_stalls,name='busstation_stalls'),

@@ -22,11 +22,34 @@
 						<form  method="POST" action="medeliver_challan_pending"  enctype="multipart/form-data">
 									{% csrf_token %}
                              {% if request.session.role == 'Admin' %}
+                               <div class="col-md-2  form-group has-feedback">
+                              <label for="daterangeselect">Frequency</label>
+                                                 <select class="form-control" name="range2" id="range2" hidden>
+                            		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
+												</select>
+                                <input type="hidden" name="from" id="from" />
+
+                              <select id="daterangeselect" class="form-control" name="range" >
+
+                                  {% for selectrange in selectrange %}
+                                       <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
+                                  {% endfor %}
+                              </select>
+                            </div>
+                             <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
+                              <label for="start-date">From Date</label>
+                              <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
+                            </div>
+                              <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none">
+                                  <label  for="end-date">To Date</label>
+                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
+                            </div>
+
                             	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
                                                  <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
-                            		                    <option value="{{ wh }}">{{ wh2 }}</option>
+                            		                    <option value="{{ request.POST.warehouseid1 }}">{{  request.POST.warehousename1  }}</option>
 												</select>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value="All">All</option>
@@ -91,13 +114,14 @@
 													<option value=""> All </option>
 												</select>
 							</div>
-                {% endif %}
-						<div class="col-sm-2 col-md-2 form-group has-feedback">
+                            <div class="col-sm-2 col-md-2 form-group has-feedback">
 									<label class="focus-label">Select Date</label>
 									<input class="form-control" type="date" name="date" id="getdate" value="{{ date }}" required>
 							</div>
 
-                               <div class="col-md-2 col-sm-2  form-group has-feedback">
+
+                {% endif %}
+<div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
@@ -227,6 +251,10 @@
 
 <script>
 
+$("#daterangeselect").change(function() {
+    var selectedOptionText = $(this).find(":selected").text();
+    $("#from").val(selectedOptionText);
+});
 $("#busstationid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#busstationname").val(selectedOptionText);
@@ -250,6 +278,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
+			 		$("#busstationid").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -374,6 +403,7 @@ $(document).ready(function(){
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
+
                 	}
              	}
         	});
@@ -421,6 +451,7 @@ $(document).ready(function(){
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
+
                 	}
              	}
         	});
@@ -446,6 +477,8 @@ $("#busstationid1").change(function() {
 $(document).ready(function(){
   var optionValue = $("#warehouseid2").val();
   $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
+  var optionValue1 = $("#range2").val();
+  $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
 })
 $("#button1").click(function() {
   var selectedOptionText = $('#warehouseid1').find(":selected").text();
@@ -456,7 +489,47 @@ $("#button1").click(function() {
   $("#deponame1").val(selectedOptionText);
   var selectedOptionText = $('#busstationid1').find(":selected").text();
   $("#busstationname1").val(selectedOptionText);
+   var selectedOptionText = $('#daterangeselect').find(":selected").text();
+  $("#from").val(selectedOptionText);
 });
+$(document).ready(function(){
+    var selectedOption = $('#daterangeselect').find(":selected").text();
+    if (selectedOption == 'Custom Dates') {
+      $('#date-range-fields').show();
+      $('#tdate').show();
+     // show the date fields if custom option is selected
+      displayResults();
+    } else {
+      $('#date-range-fields').hide();
+      $('#tdate').hide();// hide the date fields if another option is selected
+          displayOtherResults(selectedOption);
+    }
+});
+$(document).ready(function(){
+  $('#daterangeselect').change(function() {
+    var selectedOption = $(this).find(":selected").text();
+    if (selectedOption == 'Custom Dates') {
+      $('#date-range-fields').show();
+      $('#tdate').show();// show the date fields if custom option is selected
+      displayResults();
+    } else {
+      $('#date-range-fields').hide();
+      $('#tdate').hide();// hide the date fields if another option is selected
+          displayOtherResults(selectedOption);
+    }
+  });
+});
+function displayResults() {
+  var fromDate = $('#date-range-fields').val();
+  var toDate = $('#tdate').val();
+  // Use the selected dates to display results
+  // Code to display results...
+}
+
+function displayOtherResults(selectedOption) {
+  // Use the selected option to display results for other options
+  // Code to display results...
+}
 
  </script>
 {% endblock %}

@@ -27,13 +27,12 @@
                                			<!-- Search Filter -->
 						<form  id="myForm" method="POST" action="sales_admin_approvelist"  enctype="multipart/form-data">
 									{% csrf_token %}
-                          	<div  class="col-md-2  form-group has-feedback">
-
+                                        <div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
 
                                 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
-                            		                    <option value="{{ wh }}">{{ wh2 }}</option>
+                            		                    <option value="{{ warehouseid1 }}">{{ warehousename1 }}</option>
 												</select>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value="All">All</option>

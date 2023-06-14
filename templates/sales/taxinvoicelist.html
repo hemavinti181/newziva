@@ -50,6 +50,7 @@
 
                                      <th>S No</th>
                                     <th>Tax Invoice</th>
+                                    <th>Sale Invoice</th>
                                     <th>Sales From</th>
                                      <th>Sales To</th>
                                     <th>Item Count</th>
@@ -63,6 +64,7 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                            <td><a href = "tax-invoice/{{ all_data.invnumber }}/"  style="color:blue">{{ all_data.invnumber }}</a></td>
+                           <td>{{ all_data.sonumber }}</td>
                        <td style="color:black"><b>{{ all_data.fromname }}</b></td>
                            <td style="color:black"><b>{{ all_data.storename }}</b></td>
                        <td>{{  all_data.itemcount}}</td>
