@@ -113,21 +113,21 @@
                                             <td>
                                               {% for item in item_quantity.items %}
                                                 {% if item.itemcode == 'PHA0002' %}
-                                                  {{ item.quantity }}
+                                                  {{ item.total_qty }}
                                                 {% endif %}
                                               {% endfor %}
                                             </td>
                                             <td>
                                               {% for item in item_quantity.items %}
-                                                {% if item.itemname == '500ml' %}
-                                                  {{ item.quantity }}
+                                                {% if item.itemcode == 'PHA0001' %}
+                                                  {{ item.total_qty }}
                                                 {% endif %}
                                               {% endfor %}
                                             </td>
                                             <td>
                                               {% for item in item_quantity.items %}
                                                 {% if item.itemcode == 'PHA0004' %}
-                                                  {{ item.quantity }}
+                                                  {{ item.total_qty }}
                                                 {% endif %}
                                               {% endfor %}
                                             </td>

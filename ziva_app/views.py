@@ -8176,12 +8176,17 @@ def depot_stock1(request):
                        'selectrange': selectrange})
     else:
         current_date =  datetime.date.today()
-        item_codes = ['PHA0001', 'PHA0002', 'PHA0004']
-        query_result = DepoInventory.objects.filter(createdon__date__gte=current_date, itemcode__in=item_codes).values(
-            'itemname', 'itemcode', 'createdon', 'region_id', 'sale_qty').annotate(sum_quantity=Sum('original_qty'))
-        print(query_result)
+
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        warehouse_id = ['WDP0002','WDP0001']
+        item_sum_qty = WarehouseInventory.objects.using('auth').filter(
+            createdon__lte=current_date,itemcode__in=filtered_itemcodes,warehouse_id__in=warehouse_id,
+        ).values('itemcode','warehouse_id').annotate(total_qty=Sum('original_qty'))
+
+
+
         return render(request, 'Reports/depo_stockreport.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_quantities': query_result,
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist,
                        'selectrange': selectrange})
 
 
@@ -8208,6 +8213,7 @@ def warehouse_stock(request):
 
     data = response.json()
     selectrange = data['timingslist']
+
 
     if request.method == 'POST':
         warehouse_id = request.POST.get('warehouseid1')
@@ -8311,31 +8317,28 @@ def warehouse_stock(request):
 
         return render(request,'Reports/warehouse_stock.html',{"selectrange":selectrange,"menuname":menuname,'wh_masterlist':wh_masterlist,'item_quantities':merged_data1})
     else:
-        item_quantities = WarehouseInventory.objects.using('auth').order_by('-createdon__date').values('warehouse_id', 'createdon__date' ,'itemname','itemcode','sale_qty').exclude(
-            Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle'))
+        current_date = datetime.date.today()
 
-        item_quantities = item_quantities.values('warehouse_id', 'createdon__date' ,'itemname','itemcode').annotate(quantity=Sum('sale_qty'))
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        warehouse_id = ['WDP0002', 'WDP0001']
+        item_sum_qty = WarehouseInventory.objects.using('auth').filter(
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id__in=warehouse_id,
+        ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('original_qty'))
 
         warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename','warehouseid')
+        grouped_data = []
+        sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
 
-        grouped_data = groupby(item_quantities, key=lambda x: x['createdon__date'])
-        merged_data = []
-        for date, group in grouped_data:
-            merged_dict = {}
-            merged_dict['warehouse_id'] = ''
-            merged_dict['createdon__date'] = date
-            merged_dict['items'] = []
-            for item in group:
-                merged_dict['warehouse_id'] = item['warehouse_id']
-                merged_dict['items'].append({'itemname': item['itemname'], 'itemcode':item['itemcode'],'quantity': item['quantity']})
-            merged_data.append(merged_dict)
+
+        for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
+            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
+
         merged_data1 = []
-
-        for d in merged_data:
+        for d in grouped_data:
             warehouse_id = d['warehouse_id']
-            createdon__date = d['createdon__date']
+            createdon__date = current_date
             date_createdon = createdon__date.strftime("%d-%b-%Y")
-            #d['createdon__date'] = date_createdon
             items = d['items']
 
             for warehouse in warehouse_info:
@@ -8350,7 +8353,8 @@ def warehouse_stock(request):
                 'warehouse_id': warehouse_id,
                 'warehousename': warehousename,
                 'createdon__date': date_createdon,
-                'items': items
+                'items': items,
+
             }
 
 
