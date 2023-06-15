@@ -22,6 +22,16 @@
 						<form  method="POST" action="medeliver_challan_pending"  enctype="multipart/form-data">
 									{% csrf_token %}
                              {% if request.session.role == 'Admin' %}
+                             <!--<div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
+                              <label for="start-date">From Date</label>
+                              <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
+                            </div>-->
+                             <div class="col-md-12 col-sm-12 ">
+                              <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none">
+                                  <label  for="end-date">To Date</label>
+                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
+                            </div>
+                             </div>
                                <div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
@@ -36,14 +46,7 @@
                                   {% endfor %}
                               </select>
                             </div>
-                             <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
-                              <label for="start-date">From Date</label>
-                              <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
-                            </div>
-                              <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none">
-                                  <label  for="end-date">To Date</label>
-                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
-                            </div>
+
 
                             	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>

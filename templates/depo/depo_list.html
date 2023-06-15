@@ -25,7 +25,7 @@
             <div class="clearfix"></div>
 			  <div class="row">
                  <div class="col-md-12 col-sm-12 ">
-				      	<form  method="POST" action="store_master"   enctype="multipart/form-data">
+				      	<form  method="POST" action=" "   enctype="multipart/form-data">
 											{% csrf_token %}
 									<div  class="col-md-2 col-sm-2  form-group has-feedback">
 													<label>Select Warehouse</label>
@@ -54,16 +54,7 @@
 													<option value="All"> All</option>
 												</select>
 										</div>
-											<div  class="col-md-2 col-sm-2  form-group has-feedback">
-													<label> Depot</label>
-												<select class="form-control" name="depoid2" id="depoid2" hidden>
-                            		                    <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
-												</select>
-											 <input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
-													<option value="All"> All</option>
-												</select>
-											</div>
+
 							<div  class="col-md-2 col-sm-2  form-group has-feedback">
                   <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
 				</div>
@@ -373,28 +364,7 @@ $("#button1").click(function() {
              	}
         	});
     	});
-    	$("#depoid").change(function() {
-    		var warehousename = $('#warehouseid').find(":selected").text();
-        	var regionname = $('#regionid').val();
-        	var depo = $(this).val();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_storebus" %}',
-            	data: {
-                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value='All'>All</option>");
-                	$.each(obj, function (index, item) {
-                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-                	}
-             	}
-        	});
-    	});
+
 
 $(document).ready(function() {
     // Get the initial warehouse name
@@ -421,55 +391,8 @@ $(document).ready(function() {
         }
     });
   });
-  $(document).ready(function() {
-    // Get the initial warehouse name
-    var warehousename = $("#warehouseid2").find(":selected").text();
-    var regionname = $("#regionid2").val();
-    // Send an AJAX request to get the storeregion dropdown options
-    $.ajax({
-        type: "POST",
-        url: '{% url "get_storedepo" %}',
-      data: {
-                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-        success: function(data) {
-            var obj = data.data.dropdownlist
-            if (obj) {
-                $("#depoid").empty();
-                $("#depoid").append("<option  value='All'>All</option>");
-                $.each(obj, function(index, item) {
-                    $("#depoid").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                });
-                 var optionValue = $("#depoid2").val();
-                 $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
-            }
-        }
-      });
-    });
-	$(document).ready(function() {
-    		var warehousename = $('#warehouseid2').find(":selected").text();
-        	var regionname = $('#regionid2').val();
-        	var depo = $('#depoid2').val()
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_storebus" %}',
-            	data: {
-                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#busstationid").empty();
-                    $("#busstationid").append("<option  value='All'>All</option>");
-                	$.each(obj, function (index, item) {
-                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-					var optionValue = $("#busstationid2").val();
-                    $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
-                	}
-             	}
-            });
-     });
+
+
 
 </script>
 {% endblock %}

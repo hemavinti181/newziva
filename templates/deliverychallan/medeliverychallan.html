@@ -24,7 +24,7 @@
                         {% if request.session.role == 'Admin' %}
                              <div class="col-md-12 col-sm-12 ">
                             <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none">
-                                  <label  for="end-date">To Date</label>
+                                  <label  for="end-date">Select Date</label>
                               <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
                             </div>
                             </div>
@@ -275,13 +275,13 @@ $("#depoid").change(function() {
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
-			 		$("#busstationid1").empty();
-
+			 		$("#busstationid").empty();
+                    $("#busstationid").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
-                    $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
 					var optionValue = $("#busstationid2").val();
-                    $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                    $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
                 	}
              	}
         	});

@@ -1607,20 +1607,40 @@ def depo_list(request):
 
         data = response.json()
         wh_masterlist = data['warehouselist']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/depo-list-new.php"
 
-        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+            payload = json.dumps({"accesskey":accesskey,
+                                  "warehouseid":request.POST.get('warehouseid'),
+                                  "regionid":request.POST.get('regionid')})
 
-        payload = json.dumps({"accesskey":accesskey})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            depolist = data['depolist']
-            return render(request, 'depo/depo_list.html', {'all_data': depolist,'data':regionlist,'menuname':menuname,'wh_masterlist':wh_masterlist})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                depolist = data['depolist']
+                return render(request, 'depo/depo_list.html', {'all_data': depolist,'data':regionlist,'menuname':menuname,'wh_masterlist':wh_masterlist})
+            else:
+                return render(request, 'depo/depo_list.html',{'data':regionlist,'menuname':menuname,'wh_masterlist':wh_masterlist})
         else:
-            return render(request, 'depo/depo_list.html',{'data':regionlist,'menuname':menuname,'wh_masterlist':wh_masterlist})
+            url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                depolist = data['depolist']
+                return render(request, 'depo/depo_list.html',
+                              {'all_data': depolist, 'data': regionlist, 'menuname': menuname,
+                               'wh_masterlist': wh_masterlist})
+            else:
+                return render(request, 'depo/depo_list.html',
+                              {'data': regionlist, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
     except:
         messages.error(request, response.text)
     return render(request, 'depo/depo_list.html',{'menuname':menuname})
@@ -3485,7 +3505,8 @@ def medeliver_challan(request):
                 if date == 'Custom Dates':
                     payload = json.dumps({
                         "accesskey": accesskey,
-                        "date": request.POST.get('ldate'),
+                        "date":date,
+                        "fdate": request.POST.get('ldate'),
                         "depo": request.POST.get('depoid1'),
                         "busstation": request.POST.get('busstationname1'),
                         "regionid": request.POST.get('regionid1'),
@@ -3496,6 +3517,7 @@ def medeliver_challan(request):
                     payload = json.dumps({
                         "accesskey": accesskey,
                         "date":date,
+                        "fdate":date,
                         "depo": request.POST.get('depoid1'),
                         "busstation": request.POST.get('busstationname1'),
                         "regionid": request.POST.get('regionid1'),
@@ -3611,19 +3633,33 @@ def medeliver_challan_pending(request):
 
             url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list-region.php"
             if role == 'Admin':
-                payload = json.dumps({
-                    "accesskey": accesskey,
-                    "date ": request.POST.get('from'),
-                    "depo":request.POST.get('depoid1'),
-                    "busstation": request.POST.get('busstationname1'),
-                    "regionid":request.POST.get('regionid1'),
-                    "warehouseid":request.POST.get('warehouseid1'),
-                    "type": "Pending"
-                })
+                date = request.POST.get('from')
+                if date == 'Custom Dates':
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "date": request.POST.get('from'),
+                        "fdate": request.POST.get('ldate'),
+                        "depo":request.POST.get('depoid1'),
+                        "busstation": request.POST.get('busstationname1'),
+                        "regionid":request.POST.get('regionid1'),
+                        "warehouseid":request.POST.get('warehouseid1'),
+                        "type": "Pending"
+                    })
+                else:
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "date": request.POST.get('from'),
+                        "fdate": request.POST.get('from'),
+                        "depo": request.POST.get('depoid1'),
+                        "busstation": request.POST.get('busstationname1'),
+                        "regionid": request.POST.get('regionid1'),
+                        "warehouseid": request.POST.get('warehouseid1'),
+                        "type": "Pending"
+                    })
             else:
                 payload = json.dumps({
                     "accesskey": accesskey,
-                    "date ": request.POST.get('from'),
+                    "date": request.POST.get('date'),
                     "depo": request.POST.get('depoid'),
                     "busstation": request.POST.get('busstationname'),
                     "regionid": regionid,
@@ -3649,7 +3685,8 @@ def medeliver_challan_pending(request):
             payload = json.dumps({
                 "accesskey": accesskey,
                 "busstation": "All",
-                "fromdate ": "All",
+                "fdate": "Current Month",
+                "date":"Current Month",
                 "depo":"All",
                 "regionid":"All",
                 "warehouseid": "All",
@@ -6307,24 +6344,53 @@ def bus_list(request):
     data = response.json()
     depolist = data['depolist']
 
-    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
-    payload = json.dumps({
-        "accesskey": accesskey
-    })
+    payload = json.dumps({"accesskey": accesskey})
     headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/plain'
     }
-
     response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        bus = data['buslist']
-        return render(request,'busstation/bus_list.html',{'bus':bus,'data':depolist,'menuname':menuname})
-    else:
-        return render(request, 'busstation/bus_list.html',{'data':depolist,'menuname':menuname})
 
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+    if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/bus-list-new.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "warehouseid": request.POST.get("warehouseid"),
+                "regionid":request.POST.get("regionid"),
+                "depoid": request.POST.get("depoid")
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                bus = data['buslist']
+                return render(request,'busstation/bus_list.html',{'bus':bus,'data':depolist,'menuname':menuname,'wh_masterlist':wh_masterlist})
+            else:
+                return render(request, 'busstation/bus_list.html',{'data':depolist,'menuname':menuname,'wh_masterlist':wh_masterlist})
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            bus = data['buslist']
+            return render(request, 'busstation/bus_list.html',
+                          {'bus': bus, 'data': depolist, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
+        else:
+            return render(request, 'busstation/bus_list.html',
+                          {'data': depolist, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
 
 def bus_add(request):
     menuname = request.session['mylist']
@@ -8109,45 +8175,14 @@ def depot_stock1(request):
                       {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1,
                        'selectrange': selectrange})
     else:
-        item_quantities = DepoInventory.objects.using('auth').order_by('createdon__date').filter(
-            Q(itemcode='PHA0002') | Q(itemcode='PHA0001') | Q(itemcode='PHA0004')
-        ).values('region_id', 'createdon__date', 'itemname', 'itemcode', 'sale_qty').annotate(
-            quantity=Cast(Sum('sale_qty'), CharField())
-        )
-
-        depo = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
-        merged_data = []
-        for data2 in item_quantities:
-            for data1 in depo:
-                if data1['depoid'] == data2['region_id']:
-                    merged_data.append({
-                        'deponame': data1['deponame'],
-                        'depoid': data2['region_id'],
-                        'quantity': data2['quantity'],
-                        'itemname': data2['itemname'],
-                        'itemcode': data2['itemcode'],
-                        'createdon': data2['createdon__date'],
-                    })
-                    break
-        grouped_data = groupby(merged_data, key=lambda x: (x['createdon']))
-        merged_data1 = []
-        for (date), group in grouped_data:
-            date = date.strftime("%d-%b-%Y")
-            merged_dict = {}
-            merged_dict['deponame'] = ' '
-            merged_dict['depoid'] = ' '
-            merged_dict['createdon'] = date
-            merged_dict['items'] = []
-            for item in group:
-                merged_dict['deponame'] = item['deponame']
-                merged_dict['depoid'] = item['depoid']
-                merged_dict['items'].append(
-                    {'itemname': item['itemname'], 'itemcode': item['itemcode'], 'quantity': item['quantity']})
-            merged_data1.append(merged_dict)
+        current_date =  datetime.date.today()
+        item_codes = ['PHA0001', 'PHA0002', 'PHA0004']
+        query_result = DepoInventory.objects.filter(createdon__date__gte=current_date, itemcode__in=item_codes).values(
+            'itemname', 'itemcode', 'createdon', 'region_id', 'sale_qty').annotate(sum_quantity=Sum('original_qty'))
+        print(query_result)
         return render(request, 'Reports/depo_stockreport.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_quantities': merged_data1,
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_quantities': query_result,
                        'selectrange': selectrange})
-
 
 
 def warehouse_stock(request):

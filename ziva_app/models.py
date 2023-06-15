@@ -200,6 +200,7 @@ class DepoInventory(models.Model):
         db_table = 'depo_inventory'
 
 
+
 class DepoMaster(models.Model):
     sno = models.AutoField(primary_key=True)
     depoid = models.CharField(max_length=50)
