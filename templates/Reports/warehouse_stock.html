@@ -23,9 +23,9 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  method="POST" action="warehouse_stock"  enctype="multipart/form-data">
+						<form  method="POST" id="myForm" action="warehouse_stock"  enctype="multipart/form-data">
 									{% csrf_token %}
-                            <div class="col-md-2  form-group has-feedback">
+                            <!--<div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
@@ -46,10 +46,10 @@
                               <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none">
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
-                            </div>
+                            </div>-->
 
                             	<div  class="col-md-2  form-group has-feedback">
-													<label> Warehouse</label>
+
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
 												</select>
@@ -65,9 +65,9 @@
 												</select>
                                 </div>
 
-                               <div class="col-md-2 col-sm-2  form-group has-feedback">
+                               <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>
+                                       </div>-->
                         </form>
 
 
@@ -89,6 +89,7 @@
                                 <th class="row2">Date</th>
                                 <th class="row2">WareHouse</th>
                                 <th class="row2" colspan="3">Items</th>
+                                <th  class="row2" colspan="3">Average Consumption Per Day</th>
 
                             </tr>
 
@@ -99,8 +100,16 @@
                                        <td>1000ml</td>
                                         <td>500ml</td>
                                         <td>250ml</td>
+                                  <td>1000ml</td>
+                                        <td>500ml</td>
+                                        <td>250ml</td>
 
                                   </tr>
+
+
+
+
+
                                </thead>
                                   <tbody>
 
@@ -128,6 +137,27 @@
                                               {% for item in item_quantity.items %}
                                                 {% if item.itemcode == 'PHA0004' %}
                                                   {{ item.total_qty }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in item_quantity.items1 %}
+                                                {% if item.itemcode == 'PHA0002' %}
+                                                  {{ item.total_sum }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in item_quantity.items1 %}
+                                                {% if item.itemcode == 'PHA0001' %}
+                                                  {{ item.total_sum }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in item_quantity.items1 %}
+                                                {% if item.itemcode == 'PHA0004' %}
+                                                  {{ item.total_sum }}
                                                 {% endif %}
                                               {% endfor %}
                                             </td>
@@ -255,7 +285,17 @@ function displayOtherResults(selectedOption) {
   // Use the selected option to display results for other options
   // Code to display results...
 }
+    // Get the form element
+    const form = document.getElementById('myForm');
 
+    // Function to submit the form
+    function submitForm() {
+        form.submit();
+    }
+
+    // Call the submitForm function when needed
+    // For example, when clicking a different element
+    document.getElementById('warehouseid1').addEventListener('change', submitForm);
 
  </script>
 {% endblock %}

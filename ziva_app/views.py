@@ -7193,48 +7193,46 @@ def depot_stock(request):
         return render(request, 'Reports/depo_stockreport.html',
                       {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1,'selectrange':selectrange})
     else:
-        item_quantities = DepoInventory.objects.using('auth').order_by('createdon__date').values('region_id',
-                                                                                                       'createdon__date',
-                                                                                                       'itemname','itemcode',
-                                                                                                       'sale_qty').exclude(
-            Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle'))
+        current_date = datetime.date.today()
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        # warehouse_id = ['WDP0002', 'WDP0001']
+        item_sum_qty = DepoInventory.objects.using('auth').filter(
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+        ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
 
-        item_quantities = item_quantities.values('region_id','itemcode' ,'itemname','createdon__date').annotate(
-            quantity=Cast(Sum('sale_qty'), CharField()))
+        bus_info = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
+        grouped_data = []
+        sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
 
-        depo = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
-        merged_data = []
-        for data2 in item_quantities:
-            for data1 in depo:
-                if data1['depoid'] == data2['region_id']:
-                    merged_data.append({
-                        'deponame': data1['deponame'],
-                        'depoid': data2['region_id'],
-                        'quantity': data2['quantity'],
-                        'itemname': data2['itemname'],
-                        'itemcode': data2['itemcode'],
-                        'createdon': data2['createdon__date'],
-                    })
-                    break
-        grouped_data = groupby(merged_data, key=lambda x:(x['createdon'],x['depoid'],x['itemcode']))
+        for busatation_id, group in groupby(sorted_data, key=lambda x: x['region_id']):
+            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            grouped_data.append({'region_id': busatation_id, 'items': items})
+
         merged_data1 = []
-        for (date,depoid,itemcode),group in grouped_data:
-            date = date.strftime("%d-%b-%Y")
-            merged_dict = {}
-            merged_dict['deponame'] = ' '
-            merged_dict['depoid'] = ' '
-            merged_dict['createdon'] = date
-            merged_dict['items'] = []
-            for item in group:
-                merged_dict['deponame'] = item['deponame']
-                merged_dict['depoid'] = item['depoid']
-                merged_dict['items'].append(
-                    {'itemname': item['itemname'], 'itemcode': item['itemcode'], 'quantity': item['quantity']})
-            merged_data1.append(merged_dict)
+        for d in grouped_data:
+            depo_id = d['region_id']
+            createdon__date = current_date
+            date_createdon = createdon__date.strftime("%d-%b-%Y")
+            items = d['items']
 
-        # merged_data = sorted(merged_data, key=lambda x: x['createdon'], reverse=False)
+            for bus in bus_info:
+                if bus['depoid'] == depo_id:
+                    deponame = bus['deponame']
+                    break
+                else:
+                    deponame = None
+
+            merged_dict = {
+                'depoid': depo_id,
+                'deponame': deponame,
+                'createdon__date': date_createdon,
+                'items': items,
+
+            }
+
+            merged_data1.append(merged_dict)
         return render(request, 'Reports/depo_stockreport.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1,'selectrange':selectrange})
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
 
 
 
@@ -7921,127 +7919,96 @@ def busstation_stock(request):
     data = response.json()
     wh_masterlist = data['warehouselist']
 
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    selectrange = data['timingslist']
 
     if request.method == 'POST':
         busstation_id = request.POST.get('busstationid1')
-        option = request.POST.get('from')
-        if option == 'Today':
-            today = datetime.date.today()
-            item_quantities = BusstationInventory.objects.using('auth').filter(
-                createdon__date=today
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
-        elif option == 'Current Month':
-            today = datetime.date.today()
-            item_quantities = BusstationInventory.objects.using('auth').filter(
-               createdon__month=today.month
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
-        elif option == 'Yesterday':
-            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-            item_quantities = BusstationInventory.objects.using('auth').filter(
-               createdon__date=Previous_Date
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
-        elif option == 'Current Week':
-            today = datetime.date.today()
-            current_week = today.isocalendar().week
-            item_quantities = BusstationInventory.objects.using('auth').filter(
-                createdon__week=current_week
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
-        elif option == 'Last 7 days':
-            current_date = datetime.date.today()
-            start_date = current_date - timedelta(days=current_date.weekday() + 7)
-            end_date = current_date - timedelta(days=current_date.weekday() + 1)
-            item_quantities = BusstationInventory.objects.using('auth').filter(
-                createdon__range=[start_date,end_date]
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
-        elif option == 'Custom Dates':
-            fdate = request.POST.get('fdate')
-            ldate = request.POST.get('ldate')
-            item_quantities = BusstationInventory.objects.using('auth').filter(
-                 createdon__range=[fdate,ldate]
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('busstation_id', 'createdon__date', 'itemname').annotate(quantity=Sum('sale_qty'))
+        current_date = datetime.date.today()
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        # warehouse_id = ['WDP0002', 'WDP0001']
+        item_sum_qty = BusstationInventory.objects.using('auth').filter(
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,busstation_id=busstation_id
+        ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
 
-        warehouseid1 = request.POST.get('warehousename1')
-        regionname1 = request.POST.get('regionname1')
-        deponame1 = request.POST.get('deponame1')
-        busstationname1= request.POST.get('busstationname1')
-        if warehouseid1 != 'All':
-            busstation = BusstationMaster.objects.using('auth').filter(warehousename=warehouseid1).values('busstationname', 'busatation_id')
-        if regionname1 != 'All':
-            busstation = BusstationMaster.objects.using('auth').filter(regionname=regionname1).values('busstationname', 'busatation_id')
-        if deponame1 != 'All':
-            busstation = BusstationMaster.objects.using('auth').filter(deponame=deponame1).values('busstationname', 'busatation_id')
-        if busstationname1 != 'All':
-            busstation = BusstationMaster.objects.using('auth').filter(busstationname=busstationname1).values('busstationname', 'busatation_id')
-        merged_data = []
-        for data2 in item_quantities:
-            for data1 in busstation:
-                if data1['busatation_id'] == data2['busstation_id']:
-                    merged_data.append({
-                        'busstationname': data1['busstationname'],
-                        'busstation_id': data2['busstation_id'],
-                        'quantity': data2['quantity'],
-                        'itemname': data2['itemname'],
-                        'createdon': data2['createdon__date'],
-                    })
+        bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
+        grouped_data = []
+        sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
+
+        for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
+            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            grouped_data.append({'busstation_id': busatation_id, 'items': items})
+
+        merged_data1 = []
+        for d in grouped_data:
+            busstation_id = d['busstation_id']
+            createdon__date = current_date
+            date_createdon = createdon__date.strftime("%d-%b-%Y")
+            items = d['items']
+
+            for bus in bus_info:
+                if bus['busatation_id'] == busstation_id:
+                    busstationname = bus['busstationname']
                     break
-        for entry in merged_data:
-            createdon = entry['createdon']
-            date_createdon = createdon.strftime("%d-%b-%Y")
-            entry['createdon'] = date_createdon
-        #merged_data = sorted(merged_data, key=lambda x: x['createdon'])
+                else:
+                    busstationname = None
+
+            merged_dict = {
+                'busatation_id': busatation_id,
+                'busstationname': busstationname,
+                'createdon__date': date_createdon,
+                'items': items,
+
+            }
+
+            merged_data1.append(merged_dict)
         return render(request, 'Reports/busstation_stock.html',
-                      {"selectrange":selectrange,"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data})
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
     else:
-        item_quantities = BusstationInventory.objects.using('auth').order_by('-createdon__date').values('busstation_id', 'createdon', 'itemname',
-                                                                          'sale_qty').exclude(
-            Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle'))
+        current_date = datetime.date.today()
 
-        item_quantities = item_quantities.values('busstation_id', 'createdon__date', 'itemname').annotate(
-            quantity=Sum('sale_qty'))
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        #warehouse_id = ['WDP0002', 'WDP0001']
+        item_sum_qty = BusstationInventory.objects.using('auth').filter(
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+        ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
 
-        warehouse = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
-        merged_data = []
-        for data2 in item_quantities:
-            for data1 in warehouse:
-                if data2['busstation_id'] == data1['busatation_id']:
-                    merged_data.append({
-                        'busstationname': data1['busstationname'],
-                        'busstation_id': data2['busstation_id'],
-                        'quantity': data2['quantity'],
-                        'itemname': data2['itemname'],
-                        'createdon': data2['createdon__date'],
-                    })
+        bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
+        grouped_data = []
+        sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
+
+        for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
+            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            grouped_data.append({'busstation_id': busatation_id, 'items': items})
+
+        merged_data1 = []
+        for d in grouped_data:
+            busstation_id = d['busstation_id']
+            createdon__date = current_date
+            date_createdon = createdon__date.strftime("%d-%b-%Y")
+            items = d['items']
+
+            for bus in bus_info:
+                if bus['busatation_id'] == busstation_id:
+                    busstationname = bus['busstationname']
                     break
+                else:
+                    busstationname = None
 
-        for entry in merged_data:
-            createdon = entry['createdon']
-            date_createdon = createdon.strftime("%d-%b-%Y")
-            entry['createdon'] = date_createdon
-        #merged_data = sorted(merged_data, key=lambda x: x['createdon'])
+            merged_dict = {
+                'busatation_id': busatation_id,
+                'busstationname': busstationname,
+                'createdon__date': date_createdon,
+                'items': items,
+
+            }
+
+            merged_data1.append(merged_dict)
         return render(request, 'Reports/busstation_stock.html',
-                      {"selectrange":selectrange,"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data})
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
+
+
+
+
 
 def depot_stock1(request):
     menuname = request.session['mylist']
@@ -8067,127 +8034,138 @@ def depot_stock1(request):
     selectrange = data['timingslist']
 
     if request.method == 'POST':
-        option = request.POST.get('from')
-        if option == 'Today':
-            date = datetime.date.today()
-            item_quantities = DepoInventory.objects.using('auth').filter(
-                createdon__date=date
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname', 'itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'), CharField()))
-        elif option == 'Current Month':
-            today = datetime.date.today()
-            item_quantities = DepoInventory.objects.using('auth').filter(
-                createdon__month=today.month
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname', 'itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'), CharField()))
-        elif option == 'Yesterday':
-            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-            item_quantities = DepoInventory.objects.using('auth').filter(
-                createdon__date=Previous_Date
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname', 'itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'), CharField()))
-        elif option == 'Current Week':
-            today = datetime.date.today()
-            current_week = today.isocalendar().week
-            item_quantities = DepoInventory.objects.using('auth').filter(
-                createdon__week=current_week
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname', 'itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'), CharField()))
-        elif option == 'Last 7 days':
-            current_date = datetime.date.today()
-            start_date = current_date - timedelta(days=current_date.weekday() + 7)
-            end_date = current_date - timedelta(days=current_date.weekday() + 1)
-            item_quantities = DepoInventory.objects.using('auth').filter(
-                createdon__range=[start_date, end_date]
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname', 'itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'), CharField()))
-        elif option == 'Custom Dates':
-            fdate = request.POST.get('fdate')
-            ldate = request.POST.get('ldate')
-            item_quantities = DepoInventory.objects.using('auth').filter(
-                createdon__range=[fdate, ldate]
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname', 'itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'), CharField()))
-        elif option == 'All':
-            item_quantities = DepoInventory.objects.using('auth').exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('region_id', 'createdon__date', 'itemname', 'itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'), CharField()))
-        warehouseid1 = request.POST.get('warehousename1')
-        regionname1 = request.POST.get('regionname1')
-        deponame1 = request.POST.get('deponame1')
-
-        if warehouseid1 != 'All':
-            depo = DepoMaster.objects.using('auth').filter(warehouse=warehouseid1).values('deponame', 'depoid')
-        else:
-            depo = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
-        if regionname1 != 'All':
-            depo = DepoMaster.objects.using('auth').filter(regionname=regionname1).values('deponame', 'depoid')
-        else:
-            depo = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
-        if deponame1 != 'All':
-            depo = DepoMaster.objects.using('auth').filter(deponame=deponame1).values('deponame', 'depoid')
-        else:
-            depo = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
-        merged_data = []
-        for data2 in item_quantities:
-            for data1 in depo:
-
-                createdon__date = data2['createdon__date']
-                date_createdon = createdon__date.strftime("%d-%b-%Y")
-                if data1['depoid'] == data2['region_id']:
-                    merged_data.append({
-                        'deponame': data1['deponame'],
-                        'depoid': data2['region_id'],
-                        'quantity': data2['quantity'],
-                        'itemname': data2['itemname'],
-                        'itemcode': data2['itemcode'],
-                        'createdon': date_createdon,
-                    })
-                    break
-        grouped_data = groupby(merged_data, key=lambda x: (x['createdon'], x['deponame']))
-        merged_data1 = []
-        for (date, deponame), group in grouped_data:
-            merged_dict = {}
-            merged_dict['deponame'] = ' '
-            merged_dict['depoid'] = ' '
-            merged_dict['createdon'] = date
-            merged_dict['items'] = []
-            for item in group:
-                merged_dict['deponame'] = item['deponame']
-                merged_dict['depoid'] = item['depoid']
-                merged_dict['items'].append(
-                    {'itemname': item['itemname'], 'itemcode': item['itemcode'], 'quantity': item['quantity']})
-            merged_data1.append(merged_dict)
-        return render(request, 'Reports/depo_stockreport.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1,
-                       'selectrange': selectrange})
+      pass
     else:
-        current_date =  datetime.date.today()
+        current_date = datetime.date.today()
+        queryset = OutpassItem.objects.using('auth').extra(
+            tables=['outpass_item', 'outpass_generate','busstation_master'],
+            where=[
+                'outpass_item.outpass_number = outpass_generate.outpass_number',
+                "outpass_generate.status = 'Accepted'",
+                "(outpass_generate.warehouseid = busstation_master.busatation_id OR outpass_generate.regionid = busstation_master.busatation_id)"
+            ],
+
+            select={
+                'busstation_id': 'outpass_generate.regionid',
+                'outpass_generate_regionid': 'outpass_generate.warehouseid',
+                'item_code': 'outpass_item.item_code',
+                'quantity': 'outpass_item.qty',
+                'busstation_id1': 'busstation_master.busatation_id',
+                'busstationname': 'outpass_generate.region_name',
+            }
+
+            ).values(
+                'busstation_id', 'outpass_generate_regionid', 'item_code',
+                'quantity', 'busstationname','busstation_id1'
+            )
 
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        warehouse_id = ['WDP0002','WDP0001']
-        item_sum_qty = WarehouseInventory.objects.using('auth').filter(
-            createdon__lte=current_date,itemcode__in=filtered_itemcodes,warehouse_id__in=warehouse_id,
-        ).values('itemcode','warehouse_id').annotate(total_qty=Sum('original_qty'))
+        queryset1 = queryset.filter(
+            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+        ).values('outpass_generate_regionid',
+                 'item_code').annotate(total_qty=Sum('qty'))
+        queryset2 = queryset.filter(
+            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+        ).values('busstation_id', 'item_code').annotate(total_sum=Sum('qty'))
+        merged_list = []
+        for item2 in queryset2:
+            for item1 in queryset1:
+                if item1['outpass_generate_regionid'] == item2['busstation_id'] and item1['item_code'] == item2[
+                    'item_code']:
+                    total_qty = item1['total_qty']+item2['total_sum']
+                    merged_item = {
 
+                        'busstation_id': item2['busstation_id'],
+                        'item_code': item2['item_code'],
+                        'total_qty': total_qty,
+                    }
+                    merged_list.append(merged_item)
+                    break
+            else:
+                    merged_item = {
+                        'busstation_id': item2['busstation_id'],
+                        'item_code': item1['item_code'],
+                        'total_qty': item2['total_sum'],
+                    }
+                    merged_list.append(merged_item)
 
+        print(merged_list)
+        sorted_data = sorted(merged_list, key=lambda x: x['busstation_id'])
+        grouped_data1 = []
+        for (busstation_id, busstationname), group in groupby(sorted_data,
+                                                             key=lambda x: (x['busstation_id'], x['busstationname'])):
+            items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
+            grouped_data1.append({'busstation_id': busstation_id, 'busstationname': busstationname, 'items1': items1})
 
-        return render(request, 'Reports/depo_stockreport.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                       'selectrange': selectrange})
+        item_sum_qty = BusstationInventory.objects.using('auth').filter(
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+        ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
+
+        bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
+        grouped_data = []
+        sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
+
+        for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
+            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            grouped_data.append({'busstation_id': busatation_id, 'items': items})
+
+        merged_data1 = []
+        for d in grouped_data:
+            busstation_id = d['busstation_id']
+            createdon__date = current_date
+            date_createdon = createdon__date.strftime("%d-%b-%Y")
+            items = d['items']
+
+            for bus in bus_info:
+                if bus['busatation_id'] == busstation_id:
+                    busstationname = bus['busstationname']
+                    break
+                else:
+                    busstationname = None
+
+            merged_dict = {
+                'busatation_id': busatation_id,
+                'busstationname': busstationname,
+                'createdon__date': date_createdon,
+                'items': items,
+
+            }
+
+            merged_data1.append(merged_dict)
+
+        merged_data2 = []
+        for d in merged_data1:
+            busatation_id = d['busatation_id']
+            busstationname = d['busstationname']
+            createdon__date = d['createdon__date']
+            items = d['items']
+
+            for data in grouped_data1:
+                if data['busstation_id'] == busatation_id:
+                    items1 = data['items1']
+                    createdon__date = current_date
+                    date_createdon = createdon__date.strftime("%d-%b-%Y")
+                    merged_dict = {
+                        'warehouse_id': busatation_id,
+                        'warehousename': busstationname,
+                        'createdon__date': date_createdon,
+                        'items': items,
+                        'items1': items1
+                    }
+                    break
+                else:
+                    items1 = ''
+                    merged_dict = {
+                    'busstation_id': d['busstation_id'],
+                    'busstationname': d['busstationname'],
+                    'createdon__date': createdon__date,
+                    'items': items,
+                    'items1':items1
+                    }
+
+            merged_data2.append(merged_dict)
+        return render(request, 'Reports/busstation_stock.html',
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
 
 
 def warehouse_stock(request):
@@ -8216,119 +8194,56 @@ def warehouse_stock(request):
 
 
     if request.method == 'POST':
+
         warehouse_id = request.POST.get('warehouseid1')
-        option=request.POST.get('from')
-        tdate = datetime.date.today()
-        #tdate = tdate.strftime("%d-%m-%Y")
-        if option == 'Today':
-            item_quantities = WarehouseInventory.objects.using('auth').filter(
-                createdon__date=tdate,warehouse_id=warehouse_id
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') |  Q(itemname='bottle')
-            ).order_by('-createdon__date').values('warehouse_id','createdon__date', 'itemname','itemcode').annotate(quantity=Cast(Sum('sale_qty'),CharField()))
-        elif option == 'Current Month':
-            today = datetime.date.today()
-            item_quantities = WarehouseInventory.objects.using('auth').filter(
-                 createdon__month=today.month,warehouse_id=warehouse_id
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).values('warehouse_id', 'createdon__date', 'itemname','itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'), CharField())
-            ).order_by('-createdon__date')
-        elif option == 'Yesterday':
-            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-            item_quantities = WarehouseInventory.objects.using('auth').filter(
-                createdon__date=Previous_Date,warehouse_id=warehouse_id
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname','itemcode').annotate(quantity=Cast(Sum('sale_qty'),CharField()))
-        elif option == 'Current Week':
-            today = datetime.date.today()
-            current_week = today.isocalendar().week
-            item_quantities = WarehouseInventory.objects.using('auth').filter(
-                 createdon__week=current_week,warehouse_id=warehouse_id
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname','itemcode').annotate(quantity=Cast(Sum('sale_qty'),CharField()))
-        elif option == 'Last 7 days':
-            current_date = datetime.date.today()
-            start_date = current_date - timedelta(days=current_date.weekday() + 7)
-            end_date = current_date - timedelta(days=current_date.weekday() + 1)
-            item_quantities = WarehouseInventory.objects.using('auth').filter(
-                 createdon__range=[start_date, end_date],warehouse_id=warehouse_id
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname','itemcode').annotate(quantity=Cast(Sum('sale_qty'),CharField()))
-        elif option == 'Custom Dates':
-            fdate = request.POST.get('fdate')
-            ldate = request.POST.get('ldate')
-            item_quantities = WarehouseInventory.objects.using('auth').filter(
-                 createdon__range=[fdate, ldate],warehouse_id=warehouse_id
-            ).exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle')
-            ).order_by('-createdon__date').values('warehouse_id', 'createdon__date', 'itemname','itemcode').annotate(quantity=Cast(Sum('sale_qty'),CharField()))
-        elif option == 'All':
-            item_quantities = WarehouseInventory.objects.using('auth').order_by('-createdon__date').filter(warehouse_id=warehouse_id).values(
-                'warehouse_id', 'createdon__date', 'itemname', 'sale_qty').exclude(
-                Q(itemname='Bottle') | Q(itemname='Bottles 500ml') | Q(itemname='bottle'))
 
-            item_quantities = item_quantities.values('warehouse_id', 'createdon__date', 'itemname','itemcode').annotate(
-                quantity=Cast(Sum('sale_qty'),CharField()))
-        if warehouse_id == 'All':
-            warehouse_info =  WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
-        else:
-            warehouse_info = WarehouseMaster.objects.using('auth').filter(warehouseid=warehouse_id).values('warehousename', 'warehouseid')
-        grouped_data = groupby(item_quantities, key=lambda x: x['createdon__date'])
-        merged_data = []
-        for date, group in grouped_data:
-            merged_dict = {}
-            merged_dict['warehouse_id'] = ''
-            merged_dict['createdon__date'] = date
-            merged_dict['items'] = []
-            for item in group:
-                merged_dict['warehouse_id'] = item['warehouse_id']
-                merged_dict['items'].append(
-                    {'itemname': item['itemname'], 'itemcode': item['itemcode'], 'quantity': item['quantity']})
-            merged_data.append(merged_dict)
-        merged_data1 = []
-
-        for d in merged_data:
-            warehouse_id = d['warehouse_id']
-            createdon__date = d['createdon__date']
-            date_createdon = createdon__date.strftime("%d-%b-%Y")
-            # d['createdon__date'] = date_createdon
-            items = d['items']
-
-            for warehouse in warehouse_info:
-                if warehouse['warehouseid'] == warehouse_id:
-                    warehousename = warehouse['warehousename']
-                    break
-                else:
-                    warehousename = None
-
-            merged_dict = {
-                'warehouse_id': warehouse_id,
-                'warehousename': warehousename,
-                'createdon__date': date_createdon,
-                'items': items
+        current_date = datetime.date.today()
+        queryset = OutpassItem.objects.using('auth').extra(
+            tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
+            where=[
+                'outpass_item.outpass_number = outpass_generate.outpass_number',
+                'outpass_generate.warehouseid = warehouse_master.warehouseid',
+                f"outpass_generate.warehouseid = '{warehouse_id}'",
+                "outpass_generate.status = 'Accepted'"
+            ],
+            select={
+                'warehouse_id': 'outpass_generate.warehouseid',
+                'outpass_generate_regionid': 'outpass_generate.regionid',
+                'warehouse_id1': 'warehouse_master.warehouseid',
+                'created_on': "DATE_FORMAT(outpass_generate.modified_on, '%%d-%%b-%%Y')",
+                'outpass_item_item_code': 'outpass_item.item_code',
+                'grn_item_quantity': 'outpass_item.qty',
+                'warehouse_name': 'outpass_generate.warehouse_name',
             }
 
-            merged_data1.append(merged_dict)
+        ).values(
+            'warehouse_id1', 'outpass_generate_regionid', 'warehouse_id', 'created_on', 'item_code',
+            'grn_item_quantity', 'warehouse_name'
+        )
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        queryset1 = queryset.filter(
+            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+        ).values('outpass_generate_regionid',
+                 'item_code').annotate(total_qty=Sum('qty'))
+        queryset2 = queryset.filter(
+            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+        ).values('warehouse_id', 'warehouse_name', 'item_code').annotate(total_sum=Sum('qty'))
+        sorted_data = sorted(queryset2, key=lambda x: x['warehouse_id'])
+        grouped_data1 = []
+        for (warehouse_id, warehouse_name), group in groupby(sorted_data,
+                                                             key=lambda x: (x['warehouse_id'], x['warehouse_name'])):
+            items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
+            grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
 
-        return render(request,'Reports/warehouse_stock.html',{"selectrange":selectrange,"menuname":menuname,'wh_masterlist':wh_masterlist,'item_quantities':merged_data1})
-    else:
-        current_date = datetime.date.today()
 
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        warehouse_id = ['WDP0002', 'WDP0001']
         item_sum_qty = WarehouseInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id__in=warehouse_id,
-        ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('original_qty'))
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id=warehouse_id,
+        ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
 
-        warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename','warehouseid')
+        warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
         grouped_data = []
         sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
-
 
         for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
             items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
@@ -8348,7 +8263,6 @@ def warehouse_stock(request):
                 else:
                     warehousename = None
 
-
             merged_dict = {
                 'warehouse_id': warehouse_id,
                 'warehousename': warehousename,
@@ -8357,11 +8271,148 @@ def warehouse_stock(request):
 
             }
 
+            merged_data1.append(merged_dict)
+            merged_data2 = []
+            for d in merged_data1:
+                warehouse_id = d['warehouse_id']
+                warehousename = d['warehousename']
+                createdon__date = d['createdon__date']
+                items = d['items']
+
+                for data in grouped_data1:
+                    if data['warehouse_id'] == warehouse_id:
+                        items1 = data['items1']
+                        createdon__date = current_date
+                        date_createdon = createdon__date.strftime("%d-%b-%Y")
+                        merged_dict = {
+                            'warehouse_id': warehouse_id,
+                            'warehousename': warehousename,
+                            'createdon__date': date_createdon,
+                            'items': items,
+                            'items1': items1
+                        }
+                        break
+                    else:
+                        items1 = ''
+                        merged_dict = {
+                            'warehouse_id': d['warehouse_id'],
+                            'warehousename': d['warehousename'],
+                            'createdon__date': createdon__date,
+                            'items': items,
+                            'items1': items1
+                        }
+
+                merged_data2.append(merged_dict)
+        return render(request,'Reports/warehouse_stock.html',{"selectrange":selectrange,"menuname":menuname,'wh_masterlist':wh_masterlist,'item_quantities':merged_data2})
+    else:
+        current_date = datetime.date.today()
+        queryset = OutpassItem.objects.using('auth').extra(
+            tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
+            where=[
+                'outpass_item.outpass_number = outpass_generate.outpass_number',
+                'outpass_generate.warehouseid = warehouse_master.warehouseid',
+                "outpass_generate.status = 'Accepted'"
+            ],
+            select={
+                'warehouse_id': 'outpass_generate.warehouseid',
+                'outpass_generate_regionid': 'outpass_generate.regionid',
+                'warehouse_id1': 'warehouse_master.warehouseid',
+                'created_on': "DATE_FORMAT(outpass_generate.modified_on, '%%d-%%b-%%Y')",
+                'outpass_item_item_code': 'outpass_item.item_code',
+                'grn_item_quantity': 'outpass_item.qty',
+                'warehouse_name': 'outpass_generate.warehouse_name',
+            }
+
+        ).values(
+            'warehouse_id1', 'outpass_generate_regionid', 'warehouse_id', 'created_on', 'item_code',
+            'grn_item_quantity', 'warehouse_name'
+        )
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        queryset1 = queryset.filter(
+            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+        ).values('outpass_generate_regionid',
+                 'item_code').annotate(total_qty=Sum('qty'))
+        queryset2 = queryset.filter(
+            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+        ).values('warehouse_id', 'warehouse_name', 'item_code').annotate(total_sum=Sum('qty'))
+        sorted_data = sorted(queryset2, key=lambda x: x['warehouse_id'])
+        grouped_data1 = []
+        for (warehouse_id, warehouse_name), group in groupby(sorted_data,
+                                                             key=lambda x: (x['warehouse_id'], x['warehouse_name'])):
+            items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
+            grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
+
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        warehouse_id = ['WDP0002', 'WDP0001']
+        item_sum_qty = WarehouseInventory.objects.using('auth').filter(
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id__in=warehouse_id,
+        ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
+
+        warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
+        grouped_data = []
+        sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
+
+        for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
+            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
+
+        merged_data1 = []
+        for d in grouped_data:
+            warehouse_id = d['warehouse_id']
+            createdon__date = current_date
+            date_createdon = createdon__date.strftime("%d-%b-%Y")
+            items = d['items']
+
+            for warehouse in warehouse_info:
+                if warehouse['warehouseid'] == warehouse_id:
+                    warehousename = warehouse['warehousename']
+                    break
+                else:
+                    warehousename = None
+
+            merged_dict = {
+                'warehouse_id': warehouse_id,
+                'warehousename': warehousename,
+                'createdon__date': date_createdon,
+                'items': items,
+            }
 
             merged_data1.append(merged_dict)
+        merged_data2 = []
+        for d in merged_data1:
+            warehouse_id = d['warehouse_id']
+            warehousename = d['warehousename']
+            createdon__date = d['createdon__date']
+            items = d['items']
 
-        #merged_data = sorted(merged_data, key=lambda x: x['createdon'], reverse=False)
-        return render(request, 'Reports/warehouse_stock.html', {"selectrange":selectrange,"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_quantities':merged_data1})
+            for data in grouped_data1:
+                if data['warehouse_id'] == warehouse_id:
+                    items1 = data['items1']
+                    createdon__date = current_date
+                    date_createdon = createdon__date.strftime("%d-%b-%Y")
+                    merged_dict = {
+                        'warehouse_id': warehouse_id,
+                        'warehousename': warehousename,
+                        'createdon__date': date_createdon,
+                        'items': items,
+                        'items1': items1
+                    }
+                    break
+                else:
+                    items1 = ''
+                    merged_dict = {
+                        'warehouse_id': d['warehouse_id'],
+                        'warehousename': d['warehousename'],
+                        'createdon__date': createdon__date,
+                        'items': items,
+                        'items1': items1
+                    }
+
+            merged_data2.append(merged_dict)
+        return render(request, 'Reports/warehouse_stock.html',
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'merged_data2': merged_data2,
+                       'item_quantities': merged_data2
+                       })
 
 def __id_generator__(size=6, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase):
     return ''.join(random.choice(chars) for _ in range(size))

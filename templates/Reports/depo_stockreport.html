@@ -25,7 +25,7 @@
                                			<!-- Search Filter -->
 						<form  method="POST" action="depot_stock"  enctype="multipart/form-data">
 									{% csrf_token %}
-                               <div class="col-md-12 col-sm-12 ">
+                               <!--<div class="col-md-12 col-sm-12 ">
                              <div class="col-md-3 col-sm-3 form-group has-feedback" id="date-range-fields" style="display:none">
                               <label for="start-date">From Date</label>
                               <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
@@ -47,7 +47,7 @@
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
                                   {% endfor %}
                               </select>
-                            </div>
+                            </div>-->
 
 
 
@@ -143,26 +143,26 @@
                         {% for entry in item_quantities %}
     <tr>
       <td>{{ forloop.counter }}</td>
-      <td>{{ entry.createdon }}</td>
+      <td>{{ entry.createdon__date }}</td>
         <td>{{ entry.deponame }}</td>
      <td>
                                               {% for item in entry.items %}
                                                 {% if item.itemcode == 'PHA0002' %}
-                                                  {{ item.quantity }}
+                                                  {{ item.total_qty }}
                                                 {% endif %}
                                               {% endfor %}
                                             </td>
                                             <td>
                                               {% for item in entry.items %}
                                                 {% if item.itemcode == 'PHA0001' %}
-                                                  {{ item.quantity }}
+                                                  {{ item.total_qty }}
                                                 {% endif %}
                                               {% endfor %}
                                             </td>
                                             <td>
                                               {% for item in entry.items %}
                                                 {% if item.itemcode == 'PHA0004' %}
-                                                  {{ item.quantity }}
+                                                  {{ item.total_qty }}
                                                 {% endif %}
                                               {% endfor %}
                                             </td>
