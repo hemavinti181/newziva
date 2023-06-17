@@ -4851,6 +4851,7 @@ def pending_indent_pending(request):
         else:
             return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname})
 
+
 def pending_indent_pending1(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
@@ -7749,11 +7750,37 @@ def Vendor_itemsply(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
     selectrange = data['timingslist']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data1 = response.json()
+    vendor_masterlist = data1['vendormasterlist']
+
     if request.method == 'POST':
         option = request.POST.get('from')
+        warehouseid1= request.POST.get('warehouseid1')
+        vendorid =  request.POST.get('vendorname')
         where = [
             'grn.grn = grn_item.grn',
             'grn.warehouse_id = warehouse_master.warehouseid',
+            f"grn.warehouse_id = '{warehouseid1}'",
+            f"grn.vendorname = '{vendorid}'",
             "grn.status = 'Verified'"
         ]
         if option == 'Today':
@@ -7822,7 +7849,7 @@ def Vendor_itemsply(request):
             merged_data = sorted(merged_data,
                                  key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
                                  reverse=True)
-        return render(request, 'Reports/vendor_itemsupply.html', {"entry": merged_data,'menuname':menuname,'selectrange':selectrange})
+        return render(request, 'Reports/vendor_itemsupply.html', {"vendor_masterlist":vendor_masterlist,"wh_masterlist":wh_masterlist,"entry": merged_data,'menuname':menuname,'selectrange':selectrange})
 
     else:
         queryset = GrnItem.objects.using('auth').extra(
@@ -7872,7 +7899,7 @@ def Vendor_itemsply(request):
             merged_data = sorted(merged_data,
                                  key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
                                  reverse=True)
-        return render(request,'Reports/vendor_itemsupply.html',{"entry":merged_data,'menuname':menuname,'selectrange':selectrange})
+        return render(request,'Reports/vendor_itemsupply.html',{"vendor_masterlist":vendor_masterlist,"wh_masterlist":wh_masterlist,"entry":merged_data,'menuname':menuname,'selectrange':selectrange})
 
 
 def busstation_stalls(request):
@@ -8033,6 +8060,9 @@ def depot_stock1(request):
     data = response.json()
     selectrange = data['timingslist']
 
+
+
+
     if request.method == 'POST':
       pass
     else:
@@ -8066,7 +8096,7 @@ def depot_stock1(request):
                  'item_code').annotate(total_qty=Sum('qty'))
         queryset2 = queryset.filter(
             modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-        ).values('busstation_id', 'item_code').annotate(total_sum=Sum('qty'))
+        ).values('busstation_id', 'busstationname','item_code').annotate(total_sum=Sum('qty'))
         merged_list = []
         for item2 in queryset2:
             for item1 in queryset1:
@@ -8078,14 +8108,17 @@ def depot_stock1(request):
                         'busstation_id': item2['busstation_id'],
                         'item_code': item2['item_code'],
                         'total_qty': total_qty,
+                        'busstationname':item2['busstationname']
                     }
                     merged_list.append(merged_item)
                     break
             else:
                     merged_item = {
                         'busstation_id': item2['busstation_id'],
-                        'item_code': item1['item_code'],
+                        'item_code': item2['item_code'],
                         'total_qty': item2['total_sum'],
+                        'busstationname': item2['busstationname']
+
                     }
                     merged_list.append(merged_item)
 
@@ -8094,7 +8127,7 @@ def depot_stock1(request):
         grouped_data1 = []
         for (busstation_id, busstationname), group in groupby(sorted_data,
                                                              key=lambda x: (x['busstation_id'], x['busstationname'])):
-            items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
+            items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_qty']} for item in group]
             grouped_data1.append({'busstation_id': busstation_id, 'busstationname': busstationname, 'items1': items1})
 
         item_sum_qty = BusstationInventory.objects.using('auth').filter(
@@ -8103,9 +8136,9 @@ def depot_stock1(request):
 
         bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
         grouped_data = []
-        sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
+        sorted_data1 = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
-        for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
+        for busatation_id, group in groupby(sorted_data1, key=lambda x: x['busstation_id']):
             items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
             grouped_data.append({'busstation_id': busatation_id, 'items': items})
 
@@ -8124,7 +8157,7 @@ def depot_stock1(request):
                     busstationname = None
 
             merged_dict = {
-                'busatation_id': busatation_id,
+                'busatation_id': busstation_id,
                 'busstationname': busstationname,
                 'createdon__date': date_createdon,
                 'items': items,
@@ -8134,38 +8167,31 @@ def depot_stock1(request):
             merged_data1.append(merged_dict)
 
         merged_data2 = []
-        for d in merged_data1:
-            busatation_id = d['busatation_id']
-            busstationname = d['busstationname']
-            createdon__date = d['createdon__date']
-            items = d['items']
-
-            for data in grouped_data1:
-                if data['busstation_id'] == busatation_id:
-                    items1 = data['items1']
-                    createdon__date = current_date
-                    date_createdon = createdon__date.strftime("%d-%b-%Y")
-                    merged_dict = {
-                        'warehouse_id': busatation_id,
-                        'warehousename': busstationname,
-                        'createdon__date': date_createdon,
-                        'items': items,
-                        'items1': items1
-                    }
+        for item1 in grouped_data1:
+            match_found = False
+            for item2 in merged_data1:
+                if item1['busstation_id'] == item2['busatation_id'] and item1['busstationname'] == item2[
+                    'busstationname']:
+                    item2['items'].extend(item1['items1'])
+                    merged_data2.append(item2)
+                    match_found = True
                     break
-                else:
-                    items1 = ''
-                    merged_dict = {
-                    'busstation_id': d['busstation_id'],
-                    'busstationname': d['busstationname'],
-                    'createdon__date': createdon__date,
-                    'items': items,
-                    'items1':items1
-                    }
+            if not match_found:
+                merged_data2.append(item1)
 
-            merged_data2.append(merged_dict)
+        # Add remaining items from list2 (if any) to the combined list
+        for item2 in merged_data1:
+            match_found = False
+            for item1 in merged_data2:
+                if item2['busatation_id'] == item1['busatation_id'] and item2['busstationname'] == item1['busstationname']:
+                    match_found = True
+                    break
+            if not match_found:
+                merged_data2.append(item2)
+
+        print(merged_data2)
         return render(request, 'Reports/busstation_stock.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
+                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data2})
 
 
 def warehouse_stock(request):
@@ -8504,3 +8530,146 @@ def response(request,id):
     }
     return render(request,'ex.html',context)
 
+
+def pending_indent_admin(request):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    depolist = data['depolist']
+
+    if request.method == 'POST':
+        tdate = request.POST.get('ldate')
+        ldate = request.POST.get('ldate')
+        if tdate:
+            tdate=tdate
+        else:
+            tdate='All'
+        if ldate:
+            ldate=ldate
+        else:
+            ldate ='All'
+
+
+        url="http://13.235.112.1/ziva/mobile-api/indent-pendinglist-admin.php"
+        payload = json.dumps({
+            "depoid":request.POST.get('depoid'),
+            "tdate": ldate,
+            "accesskey": accesskey,
+            "warehouseid": request.POST.get('warehouseid1'),
+            "status": "Pending",
+            "fdate": tdate,
+        })
+
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            list = data['indentlist']
+            return render(request,'create_indent/pending_indent_admin.html',{"depolist":depolist,'menuname':menuname,'wh_masterlist':wh_masterlist,'list':list})
+        else:
+            return render(request, 'create_indent/pending_indent_admin.html',
+                          {'menuname': menuname, 'wh_masterlist': wh_masterlist,"depolist":depolist})
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/indent-pendinglist-admin.php"
+        payload = json.dumps({
+            "depoid": "All",
+            "tdate": "All",
+            "accesskey": accesskey,
+            "warehouseid": "All",
+            "status": "Pending",
+            "fdate": "All"
+        })
+
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            list = data['indentlist']
+            return render(request, 'create_indent/pending_indent_admin.html',
+                          {'menuname': menuname, 'wh_masterlist': wh_masterlist,'list':list,"depolist":depolist})
+        else:
+                return render(request, 'create_indent/pending_indent_admin.html',
+                              {'menuname': menuname, 'wh_masterlist': wh_masterlist,"depolist":depolist})
+
+def taxinvoice_list_admin(request):
+
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    selectrange = data['timingslist']
+    if request.method == 'POST':
+        url ="http://13.235.112.1/ziva/mobile-api/tax-invoicelist.php"
+        payload = json.dumps({"depoid":"DEPO0059","tdate":"2023-06-16",
+                              "accesskey":accesskey,
+                              "warehouseid":"WDP0002",
+                              "regionid":"RDP0009","fdate":"2023-06-09",
+                              "busstationid":"All"})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            return render(request, 'sales/taxinvoice_list_admin.html',
+                          {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange})
+        else:
+            return render(request, 'sales/taxinvoice_list_admin.html',
+                          {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange})
+
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/tax-invoicelist.php"
+        payload = json.dumps({"depoid": "DEPO0059", "tdate": "2023-06-16",
+                              "accesskey": accesskey,
+                              "warehouseid": "WDP0002",
+                              "regionid": "RDP0009", "fdate": "2023-06-09",
+                              "busstationid": "All"})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            return render(request, 'sales/taxinvoice_list_admin.html',
+                          {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange})
+        else:
+            return render(request, 'sales/taxinvoice_list_admin.html',
+              {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange})

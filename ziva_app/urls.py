@@ -210,5 +210,8 @@ urlpatterns = [
     path('warehouse_stock',views.warehouse_stock,name='warehouse_stock'),
     path('payment', views.payment, name='payment'),
     path('response/<str:id>/', views.response, name='response'),
-    path('out_passlist1',views.out_passlist1,name='out_passlist1')
+    path('out_passlist1',views.out_passlist1,name='out_passlist1'),
+    path('pending_indent_admin',views.pending_indent_admin,name='pending_indent_admin'),
+    path('taxinvoice_list_admin',views.taxinvoice_list_admin,name='taxinvoice_list_admin')
+
 ]
