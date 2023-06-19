@@ -11,7 +11,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba">Warehouse Wise Stock On Hand Report</h3>
+      <h3 style="color:#1372ba">Region Wise Stock On Hand Report</h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -51,7 +51,7 @@
                               <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none">
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
-                            </div>-->
+                            </div>
 
                             	<div  class="col-md-3  form-group has-feedback">
                                                     <label>Warehhouse   </label>
@@ -70,10 +70,10 @@
 												</select>
                                 </div>
 
-                               <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
+                             <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>-->
-                        </form>
+                                       </div>
+                        </form>-->
 
 
                     <p class="text-muted font-13 m-b-30">
@@ -85,7 +85,7 @@
                             <tr>
                                   <th class="row2">S NO</th>
                                 <th class="row2">Date</th>
-                                <th class="row2">WareHouse</th>
+                                <th class="row2">Region</th>
                                 <th class="row2" colspan="3">Items</th>
                                 <th  class="row2" colspan="3">Average Consumption Per Day</th>
 
@@ -115,7 +115,7 @@
                                         <tr>
                                           <td>{{ forloop.counter }}</td>
                                           <td>{{ item_quantity.createdon__date }}</td>
-                                          <td><a href="region_stock/{{ item_quantity.warehousename }}" style="color:#075ab3;">{{ item_quantity.warehousename }}</a></td>
+                                          <td><a href="/depot_stock/{{ item_quantity.regionname }}" style="color:#075ab3;">{{ item_quantity.regionname }}</a></td>
 
                                             <td>
                                               {% for item in item_quantity.items %}

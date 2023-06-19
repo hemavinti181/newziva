@@ -13,19 +13,15 @@
               <div class="title_left">
                 <h3 style="color:#1372ba">Depot Wise Stock On Hand Report</h3>
               </div>
-              <div class="title_right">
-                <div class="col-md-6 col-sm-7 offset-md-9">
-                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
-                </div>
             </div>
-              </div>
-            <div class="clearfix"></div>
+
+            <!--<div class="clearfix"></div>
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
-                               			<!-- Search Filter -->
+
 						<form  method="POST" action="depot_stock"  enctype="multipart/form-data">
 									{% csrf_token %}
-                               <!--<div class="col-md-12 col-sm-12 ">
+                               <div class="col-md-12 col-sm-12 ">
                              <div class="col-md-3 col-sm-3 form-group has-feedback" id="date-range-fields" style="display:none">
                               <label for="start-date">From Date</label>
                               <input type="date" id="start-date" name="fdate" class="form-control" value="{{ request.POST.fdate }}">
@@ -47,7 +43,7 @@
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
                                   {% endfor %}
                               </select>
-                            </div>-->
+                            </div>
 
 
 
@@ -55,11 +51,11 @@
 													<label> Warehouse</label>
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
-												</select>
+												</select>-->
                                     <!--<select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ warehouseid }}">{{ warehouse }}</option>
 												</select>-->
-											 <input type="hidden" name="warehousename1" id="warehousename1" />
+											 <!--<input type="hidden" name="warehousename1" id="warehousename1" />
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value="">All</option>
 													{% for data1 in wh_masterlist %}
@@ -91,7 +87,7 @@
 													<option value="">All</option>
 												</select>
 
-                            </div>
+                            </div>-->
 
 										<!--<div  class="col-md-2  form-group has-feedback">
                                              <input type="hidden" name="busstationid2" id="busstationid2" value="{{ request.POST.busstationid1 }}" />
@@ -100,14 +96,16 @@
 												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value=""> bus station</option>
 												</select>
-										</div>-->
+										</div>
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
-                        </form>
+
+                        </form>-->
 
 
-						</div>
+
+
                 <div class="x_panel">
                     <div class="clearfix"></div>
                   <div class="x_content">

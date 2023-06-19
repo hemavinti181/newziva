@@ -199,7 +199,7 @@ urlpatterns = [
     path('get_pricelist', views.get_pricelist, name='get_pricelist'),
     path('edit_price', views.edit_price, name='edit_price'),
     path('payment_report',views.payment_report,name='payment_report'),
-    path('depot_stock',views.depot_stock,name='depot_stock'),
+    path('depot_stock/<str:id>/',views.depot_stock,name='depot_stock'),
     path('depot_stock1',views.depot_stock1,name='depot_stock1'),
     path('Vendor_itemsply',views.Vendor_itemsply,name='Vendor_itemsply'),
     path('depot_indent_report',views.depot_indent_report,name='depot_indent_report'),
@@ -212,6 +212,8 @@ urlpatterns = [
     path('response/<str:id>/', views.response, name='response'),
     path('out_passlist1',views.out_passlist1,name='out_passlist1'),
     path('pending_indent_admin',views.pending_indent_admin,name='pending_indent_admin'),
-    path('taxinvoice_list_admin',views.taxinvoice_list_admin,name='taxinvoice_list_admin')
+    path('taxinvoice_list_admin',views.taxinvoice_list_admin,name='taxinvoice_list_admin'),
+    path('depot_qtyissued1',views.depot_qtyissued1,name='depot_qtyissued1'),
+    path('region_stock/<str:id>/',views.region_stock,name='region_stock')
 
 ]
