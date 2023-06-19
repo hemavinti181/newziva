@@ -382,7 +382,7 @@ function editstore(id1,id2){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#regionid1").empty();
-			 		$("#regionid1").append("<option  value=''>Choose Region</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -403,7 +403,7 @@ function editstore(id1,id2){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value=''>Choose Depo</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -425,7 +425,7 @@ function editstore(id1,id2){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value=''>Choose Bus station</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -444,7 +444,7 @@ function editstore(id1,id2){
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
 			 		$("#regionid1").empty();
-			 		$("#regionid1").append("<option value= ''>Choose region</option>");
+
                 	$.each(obj, function (index, item) {
                      $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
                 	});
@@ -462,7 +462,7 @@ function editstore(id1,id2){
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option value= ''>Choose depo</option>");
+
                 	$.each(obj, function (index, item) {
                      $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
                 	});
@@ -481,7 +481,7 @@ function editstore(id1,id2){
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option value= ''>Choose bus station</option>");
+
                 	$.each(obj, function (index, item) {
                      $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
                 	});
@@ -553,7 +553,7 @@ $("#button1").click(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#regionid").empty();
-			 		$("#regionid").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#regionid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -574,7 +574,7 @@ $("#button1").click(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid").empty();
-			 		$("#depoid").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -596,7 +596,7 @@ $("#button1").click(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -620,7 +620,7 @@ $(document).ready(function() {
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid").empty();
-                $("#regionid").append("<option value='All'>All</option>");
+
                 $.each(obj, function(index, item) {
                 $("#regionid").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -645,7 +645,7 @@ $(document).ready(function() {
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid").empty();
-                $("#depoid").append("<option  value='All'>All</option>");
+
                 $.each(obj, function(index, item) {
                     $("#depoid").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -669,7 +669,7 @@ $(document).ready(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-                    $("#busstationid").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});

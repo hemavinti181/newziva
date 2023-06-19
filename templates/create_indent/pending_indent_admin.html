@@ -30,7 +30,7 @@
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{  request.POST.warehousename1  }}</option>
 												</select>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-                                                    <option value="">All</option>
+                                                    <option value="All">All</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -56,7 +56,7 @@
 											 <input type="hidden" name="deponame1" id="deponame1" />
 
 												<select class="form-control" name="depoid1" id="depoid1">
-                                                    <option value="">All</option>
+                                                    <option value="All">All</option>
 													{% for data1 in depolist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.depoid }}">{{ data1.deponame }}</option>

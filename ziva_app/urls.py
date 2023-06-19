@@ -214,6 +214,8 @@ urlpatterns = [
     path('pending_indent_admin',views.pending_indent_admin,name='pending_indent_admin'),
     path('taxinvoice_list_admin',views.taxinvoice_list_admin,name='taxinvoice_list_admin'),
     path('depot_qtyissued1',views.depot_qtyissued1,name='depot_qtyissued1'),
-    path('region_stock/<str:id>/',views.region_stock,name='region_stock')
+    path('region_stock/<str:id>/',views.region_stock,name='region_stock'),
+    path('ready_toship_admin',views.ready_toship_admin,name='ready_toship_admin'),
+    path('outpass_list_admin',views.outpass_list_admin,name='outpass_list_admin')
 
 ]
