@@ -206,7 +206,7 @@ urlpatterns = [
     path('busstation_stalls',views.busstation_stalls,name='busstation_stalls'),
     path('depot_qtyissued',views.depot_qtyissued,name='depot_qtyissued'),
     path('get_price1',views.get_price1,name='get_price1'),
-    path('busstation_stock',views.busstation_stock,name='busstation_stock'),
+    path('busstation_stock/<str:id>/',views.busstation_stock,name='busstation_stock'),
     path('warehouse_stock',views.warehouse_stock,name='warehouse_stock'),
     path('payment', views.payment, name='payment'),
     path('response/<str:id>/', views.response, name='response'),
@@ -219,6 +219,7 @@ urlpatterns = [
     path('ready_toship_admin',views.ready_toship_admin,name='ready_toship_admin'),
     path('outpass_list_admin',views.outpass_list_admin,name='outpass_list_admin'),
     path('approve_list_admin', views.approve_list_admin, name='approve_list_admin'),
-    path('depot_stock_new/<str:id>/',views.depot_stock_new,name='depot_stock_new')
+    path('depot_stock_new/<str:id>/',views.depot_stock_new,name='depot_stock_new'),
+    path('busstation_stock1/<str:id>/',views.busstation_stock1,name='busstation_stock1')
 
 ]

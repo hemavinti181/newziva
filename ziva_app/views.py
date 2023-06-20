@@ -7092,6 +7092,53 @@ def payment_report(request):
 
 
 def depot_stock(request,id):
+        accesskey = request.session['accesskey']
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        data = response.json()
+        regionlist = data['regionlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "warehouseid": request.POST.get('warehouseid'),
+                              "regionid": request.POST.get('regionid')})
+
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        depolist = data['depolist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        bus = data['buslist']
+
         menuname = request.session['mylist']
         current_date = datetime.date.today()
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
@@ -7129,12 +7176,58 @@ def depot_stock(request,id):
                     break
 
         return render(request, 'Reports/depo_stockreport.html',
-                      {"menuname": menuname,'item_quantities': merged_data1})
+                      {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantities': merged_data1})
 
 
 def depot_stock_new(request, id):
-
+    accesskey = request.session['accesskey']
     menuname = request.session['mylist']
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    data = response.json()
+    regionlist = data['regionlist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+    payload = json.dumps({"accesskey": accesskey,
+                          "warehouseid": request.POST.get('warehouseid'),
+                          "regionid": request.POST.get('regionid')})
+
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    depolist = data['depolist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+    payload = json.dumps({
+        "accesskey": accesskey
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    bus = data['buslist']
+
     current_date = datetime.date.today()
     filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
     # warehouse_id = ['WDP0002', 'WDP0001']
@@ -7173,7 +7266,7 @@ def depot_stock_new(request, id):
                 break
 
     return render(request, 'Reports/depo_stockreport.html',
-                  {"menuname": menuname, 'item_quantities': merged_data1})
+                  {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': merged_data1})
 
 
 def depot_indent_report(request):
@@ -8090,33 +8183,65 @@ def busstation_stalls(request):
 
     return HttpResponse({'data':data})
 
+def busstation_stock(request,id):
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
 
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
 
+        data = response.json()
+        regionlist = data['regionlist']
 
-def busstation_stock(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    wh_masterlist = data['warehouselist']
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
 
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
+        payload = json.dumps({"accesskey": accesskey,
+                              "warehouseid": request.POST.get('warehouseid'),
+                              "regionid": request.POST.get('regionid')})
 
-    if request.method == 'POST':
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        depolist = data['depolist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        buslist = data['buslist']
+
         busstation_id = request.POST.get('busstationid1')
         current_date = datetime.date.today()
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
         # warehouse_id = ['WDP0002', 'WDP0001']
         item_sum_qty = BusstationInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,busstation_id=busstation_id
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
         ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
 
-        bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
+        bus_info = BusstationMaster.objects.using('auth').filter(deponame=id).values('busstationname', 'busatation_id')
         grouped_data = []
         sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
@@ -8148,8 +8273,59 @@ def busstation_stock(request):
 
             merged_data1.append(merged_dict)
         return render(request, 'Reports/busstation_stock.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
-    else:
+                      {"regionlist": regionlist, 'bus': buslist, 'depolist': depolist, "menuname": menuname,
+                       'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
+
+
+def busstation_stock1(request,id):
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        data = response.json()
+        regionlist = data['regionlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "warehouseid": request.POST.get('warehouseid'),
+                              "regionid": request.POST.get('regionid')})
+
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        depolist = data['depolist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        buslist = data['buslist']
         current_date = datetime.date.today()
 
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
@@ -8157,8 +8333,10 @@ def busstation_stock(request):
         item_sum_qty = BusstationInventory.objects.using('auth').filter(
             createdon__lte=current_date, itemcode__in=filtered_itemcodes,
         ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
-
-        bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
+        if id == 'All':
+            bus_info = BusstationMaster.objects.using('auth').all().filter(busatation_id=id).values('busstationname','busatation_id')
+        else:
+            bus_info = BusstationMaster.objects.using('auth').filter(busatation_id=id).values('busstationname', 'busatation_id')
         grouped_data = []
         sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
@@ -8180,17 +8358,17 @@ def busstation_stock(request):
                 else:
                     busstationname = None
 
-            merged_dict = {
-                'busatation_id': busatation_id,
-                'busstationname': busstationname,
-                'createdon__date': date_createdon,
-                'items': items,
+                merged_dict = {
+                    'busatation_id': busatation_id,
+                    'busstationname': busstationname,
+                    'createdon__date': date_createdon,
+                    'items': items,
 
-            }
+                }
 
-            merged_data1.append(merged_dict)
+                merged_data1.append(merged_dict)
         return render(request, 'Reports/busstation_stock.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
+                      {"regionlist":regionlist,'bus':buslist,'depolist':depolist,"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
 
 
 
@@ -8638,7 +8816,54 @@ def warehouse_stock(request):
                        })
 
 def region_stock1(request,id):
+    accesskey = request.session['accesskey']
     menuname = request.session['mylist']
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    data = response.json()
+    regionlist = data['regionlist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+    payload = json.dumps({"accesskey": accesskey,
+                          "warehouseid": request.POST.get('warehouseid'),
+                          "regionid": request.POST.get('regionid')})
+
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    depolist = data['depolist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+    payload = json.dumps({
+        "accesskey": accesskey
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    bus = data['buslist']
+
     regionname1 = id
 
     current_date = datetime.date.today()
@@ -8707,11 +8932,58 @@ def region_stock1(request,id):
             grouped_data1.append(
                 {'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
     return render(request, 'Reports/region_stockreport.html',
-                  {"menuname": menuname, 'item_quantities': grouped_data1})
+                  {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
 
 
 def region_stock(request,id):
+    accesskey = request.session['accesskey']
     menuname = request.session['mylist']
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    data = response.json()
+    regionlist = data['regionlist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+    payload = json.dumps({"accesskey": accesskey,
+                          "warehouseid": request.POST.get('warehouseid'),
+                          "regionid": request.POST.get('regionid')})
+
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    depolist = data['depolist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+    payload = json.dumps({
+        "accesskey": accesskey
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    bus = data['buslist']
+
     regionname1=id
     current_date = datetime.date.today()
     filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
@@ -8777,7 +9049,7 @@ def region_stock(request,id):
             items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
             grouped_data1.append({'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
     return render(request, 'Reports/region_stockreport.html',
-                  {"menuname": menuname, 'item_quantities': grouped_data1})
+                  {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
 
 def __id_generator__(size=6, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase):
     return ''.join(random.choice(chars) for _ in range(size))

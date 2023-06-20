@@ -15,13 +15,13 @@
               </div>
 
 <div class="title_right">
-  <div class="col-md-6 col-sm-6 offset-md-6">
-    <div class="btn-group" style="display: flex;">
-      <div>
-        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+  <div class="col-md-6 col-sm-6 offset-md-4">
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary  dropdown-toggle" style="background-color:white; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
           Region
         </button>
         <div class="dropdown-menu"  id="myDropdown" style="max-height: 400px; overflow-y: auto;">
+
       <input type="search" placeholder="search" id="myInput" class="form-control"  onkeyup="filterFunction()">
           <a class="dropdown-item" href="/region_stock1/All">All</a>
           {% for data in regionlist %}
@@ -30,8 +30,8 @@
         </div>
       </div>
 
-      <div>
-        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle" style="background-color:white; color:#06911A;" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
           Depot
         </button>
         <div class="dropdown-menu"  id="myDropdown1" style="max-height: 400px; overflow-y: auto;">
@@ -43,21 +43,21 @@
         </div>
       </div>
 
-      <div>
-        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle" style="background-color:white; color:#06911A;" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
           Bus Station
         </button>
         <div class="dropdown-menu"  id="myDropdown2" style="max-height: 400px; overflow-y: auto;">
         <input type="search" id="myInput2" class="form-control" placeholder="search" onkeyup="filterFunction2()">
-              <a class="dropdown-item" href="/depot_stock_new/All">All</a>
+              <a class="dropdown-item" href="/busstation_stock1/All">All</a>
           {% for data in bus %}
-            <a class="dropdown-item" href="#">{{ data.busstationname }}</a>
+            <a class="dropdown-item" href="/busstation_stock1/{{ data.busstationname }}/">{{ data.busstationname }}</a>
           {% endfor %}
         </div>
       </div>
     </div>
   </div>
-</div>
+
             <div class="clearfix"></div>
            <div class="x_panel">
                     <div class="clearfix"></div>

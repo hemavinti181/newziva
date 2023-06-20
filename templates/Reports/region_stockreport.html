@@ -14,11 +14,65 @@
       <h3 style="color:#1372ba">Region Wise Stock On Hand Report</h3>
               </div>
               <div class="title_right">
-                <div class="col-md-6 col-sm-7 offset-md-9">
-                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
-                </div>
-            </div>
-              </div>
+  <div class="col-md-5 col-sm-5 offset-md-3">
+    <div class="btn-group" style="display: flex;">
+              <div>
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" style="background-color:white; color:#06911A;"  aria-haspopup="true" aria-expanded="false">
+          warehouse
+        </button>
+        <div class="dropdown-menu"  id="myDropdown3" style="max-height: 400px; overflow-y: auto;">
+
+      <input type="search" placeholder="search" id="myInpu3" class="form-control"  onkeyup="filterFunction3()">
+          <a class="dropdown-item" href="/region_stock1/All">All</a>
+          {% for data in wh_masterlist %}
+            <a class="dropdown-item" href="/warehouse_stock/{{ data.warehousename }}">{{ data.warehousename }}</a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <button type="button" class="btn btn-secondary dropdown-toggle" style="background-color:white; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+          Region
+        </button>
+        <div class="dropdown-menu"  id="myDropdown" style="max-height: 400px; overflow-y: auto;">
+
+      <input type="search" placeholder="search" id="myInput" class="form-control"  onkeyup="filterFunction()">
+          <a class="dropdown-item" href="/region_stock1/All">All</a>
+          {% for data in regionlist %}
+            <a class="dropdown-item" href="/region_stock1/{{ data.regionname }}">{{ data.regionname }}</a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <button type="button" class="btn btn-secondary dropdown-toggle"  style="background-color:white; color:#06911A;" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+          Depot
+        </button>
+        <div class="dropdown-menu"  id="myDropdown1" style="max-height: 400px; overflow-y: auto;">
+          <input type="search" class="form-control" id="myInput1" placeholder="search" onkeyup="filterFunction1()">
+          <a class="dropdown-item" href="/depot_stock_new/All">All</a>
+          {% for data in depolist %}
+            <a class="dropdown-item depo" href="/depot_stock_new/{{ data.deponame }}">{{ data.deponame }}</a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <button type="button" class="btn btn-secondary dropdown-toggle"  style="background-color:white; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+          Bus Station
+        </button>
+        <div class="dropdown-menu"  id="myDropdown2" style="max-height: 400px; overflow-y: auto;">
+        <input type="search" id="myInput2" class="form-control" placeholder="search" onkeyup="filterFunction2()">
+              <a class="dropdown-item" href="/depot_stock_new/All">All</a>
+          {% for data in bus %}
+            <a class="dropdown-item" href="#">{{ data.busstationname }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
             <div class="clearfix"></div>
            <div class="x_panel">
                     <div class="clearfix"></div>
@@ -294,7 +348,82 @@ function displayOtherResults(selectedOption) {
     // Call the submitForm function when needed
     // For example, when clicking a different element
     document.getElementById('warehouseid1').addEventListener('change', submitForm);
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
 
+function filterFunction() {
+  var input, filter, ul, li, a, i;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  div = document.getElementById("myDropdown");
+  a = div.getElementsByTagName("a");
+  for (i = 0; i < a.length; i++) {
+    txtValue = a[i].textContent || a[i].innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      a[i].style.display = "";
+    } else {
+      a[i].style.display = "none";
+    }
+  }
+}
+function myFunction1() {
+  document.getElementById("myDropdown1").classList.toggle("show");
+}
+
+function filterFunction1() {
+  var input, filter, ul, li, a, i;
+  input = document.getElementById("myInput1");
+  filter = input.value.toUpperCase();
+  div = document.getElementById("myDropdown1");
+  a = div.getElementsByTagName("a");
+  for (i = 0; i < a.length; i++) {
+    txtValue = a[i].textContent || a[i].innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      a[i].style.display = "";
+    } else {
+      a[i].style.display = "none";
+    }
+  }
+}
+function myFunction2() {
+  document.getElementById("myDropdown2").classList.toggle("show");
+}
+
+function filterFunction2() {
+  var input, filter, ul, li, a, i;
+  input = document.getElementById("myInput2");
+  filter = input.value.toUpperCase();
+  div = document.getElementById("myDropdown2");
+  a = div.getElementsByTagName("a");
+  for (i = 0; i < a.length; i++) {
+    txtValue = a[i].textContent || a[i].innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      a[i].style.display = "";
+    } else {
+      a[i].style.display = "none";
+    }
+  }
+}
+function myFunctio3() {
+  document.getElementById("myDropdown3").classList.toggle("show");
+}
+
+function filterFunction3() {
+  var input, filter, ul, li, a, i;
+  input = document.getElementById("myInput3");
+  filter = input.value.toUpperCase();
+  div = document.getElementById("myDropdown3");
+  a = div.getElementsByTagName("a");
+  for (i = 0; i < a.length; i++) {
+    txtValue = a[i].textContent || a[i].innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      a[i].style.display = "";
+    } else {
+      a[i].style.display = "none";
+    }
+  }
+}
  </script>
 {% endblock %}
 
