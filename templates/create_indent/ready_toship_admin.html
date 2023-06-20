@@ -55,7 +55,7 @@
                                                      {% endfor %}
 												</select>
 										</div>
-											<div  class="col-md-2  form-group has-feedback">
+											<!--<div  class="col-md-2  form-group has-feedback">
                                                   <select class="form-control" name="regionid2" id="regionid2" hidden>
                             		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
 												</select>
@@ -64,7 +64,7 @@
 												<select class="form-control" name="regionid1" id="regionid1">
 													<option value="All">All</option>
 												</select>
-										</div>
+										</div>-->
 											<div  class="col-md-2  form-group has-feedback">
                                                 <select class="form-control" name="depoid2" id="depoid2" hidden>
                             		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
@@ -148,40 +148,42 @@
                       <thead>
                         <tr>
                             <th></th>
-                                   <th>S No</th>
-                                    <th>Tax Invoice</th>
-                                    <th>Sale Invoice</th>
-                                    <th>Sales From</th>
-                                     <th>Sales To</th>
-                                    <th>Item Count</th>
-                                    <th>Total</th>
-                                    <th>Created By </th>
-                                    <th>Date</th>
+
+                                    <th>S No</th>
+                                    <th>Indent number</th>
+                                    <th>DC Number</th>
+                                    <th>Indent From</th>
+                                    <th>Indent To</th>
+                                    <th>Created By</th>
+                                    <th>Created On</th>
+                            <th>Type</th>
+                                    <th>Action</th>
                         </tr>
                       </thead>
 
-                            {% for all_data in deliverypendinglist %}
-                                    <tr>
-<td></td>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{ all_data.invnumber }}</td>
-                                    <td>{{ all_data.sonumber }}</td>
-                                    <td> {{ all_data.fromname }} </td>
-                                        <td>{{ all_data.storename }}</td>
-                                   <td>{{ all_data.itemcount }}</td>
-                                        <td>{{ all_data.total }}</td>
-
-                                        <td>{{ all_data.createdon }}</td>
-                                          <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
-
-                                         <!--<td>
-                                            <a href="/sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
-                                         </td>-->
-
-                                    </tr>
-
-
-                        {% endfor %}
+                             {% for all_data in indentlist %}
+                       <tr>
+                           <td></td>
+                           <td>{{ forloop.counter }}</td>
+                          <td> {{ all_data.indentno }}</td>
+                         <td>{{ all_data.dc_number }}</td>
+                      <td> {{ all_data.region_name }} </td>
+                           <td>{{ all_data.warehouse_name }}</td>
+                       <td>{{  all_data.created_by}}</td>
+                           <td>{{ all_data.created_on }}</td>
+                           <td>{{ all_data.type }}</td>
+                            <!--{% if all_data.status == 'Ready to Ship' %}-->
+                                <td>
+                                  <!--<a href="indent_item_list1/{{ all_data.dc_number }}/"><i class="fa fa-edit"></i></a>-->
+                                    <span data-target=".custom-modal"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}')" class="badge badge-info" >{{ all_data.status }} </span></a>
+                                </td>
+                           <!--{% else %}
+                           <td>
+                                  <a href="indent_item_list1/{{ all_data.dc_number }}/"><i class="fa fa-edit"></i></a>
+                           </td>
+                           {% endif %}-->
+                      </tr>
+                      {% endfor %}
 
                       <tbody>
                       </tbody>
@@ -228,7 +230,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -249,7 +251,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -280,7 +282,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-                 $("#regionid1").append("<option value='All'>All</option>");
+
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -303,7 +305,7 @@ $(document).ready(function(){
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value='All'>All</option>");
+
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -314,7 +316,7 @@ $(document).ready(function(){
  });
  $(document).ready(function() {
     // Get the initial warehouse name
-    var warehousename = $("#warehouseid1").find(":selected").text();
+    var warehousename = $("#warehouseid2").find(":selected").text();
     var regionname = $("#regionid1").val();
     // Send an AJAX request to get the storeregion dropdown options
     $.ajax({
@@ -327,7 +329,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
-                $("#depoid1").append("<option  value='All'>All</option>");
+
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -349,7 +351,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -360,9 +362,9 @@ $(document).ready(function(){
     	});
  });
     $(document).ready(function() {
-    		var warehousename = $('#warehouseid1').find(":selected").text();
-        	var regionname = $('#regionid1').val();
-        	var depo = $('#depoid1').val()
+    		var warehousename = $('#warehouseid2').find(":selected").text();
+        	var regionname = $('#regionid2').val();
+        	var depo = $('#depoid2').val()
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storebus" %}',
@@ -373,7 +375,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-                    $("#busstationid1").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -397,7 +399,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value='All'>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -439,7 +441,7 @@ $(document).ready(function(){
     // Listen for changes in the form elements
     form.addEventListener("change", function() {
       var warehouseValue = document.getElementById("warehouseid1").value;
-      var regionValue = document.getElementById("regionid1").value;
+      //var regionValue = document.getElementById("regionid1").value;
       var depotValue = document.getElementById("depoid1").value;
       var busstationValue = document.getElementById("busstationid1").value;
       var startDateValue = document.getElementById("start-date").value;
@@ -448,9 +450,13 @@ $(document).ready(function(){
       // Check if any of the fields have a non-"All" value
       if (
         warehouseValue !== "All" ||
-        regionValue !== "All" ||
+         warehouseValue == "All" ||
+        //regionValue !== "All" ||
         depotValue !== "All" ||
-        busstationValue !== "All"
+          depotValue == "All" ||
+        busstationValue !== "All" ||
+         busstationValue == "All"
+
       ) {
         // Submit the form programmatically
         form.submit();
@@ -463,11 +469,9 @@ $(document).ready(function(){
     form.addEventListener("change", function() {
       // Set the hidden input values before submitting the form
       var selectedOptionText = $('#warehouseid1').find(":selected").text();
-
-
       $("#warehousename1").val(selectedOptionText);
-      selectedOptionText = $('#regionid1').find(":selected").text();
-      $("#regionname1").val(selectedOptionText);
+      //selectedOptionText = $('#regionid1').find(":selected").text();
+      //$("#regionname1").val(selectedOptionText);
       selectedOptionText = $('#depoid1').find(":selected").text();
       $("#deponame1").val(selectedOptionText);
       selectedOptionText = $('#busstationid1').find(":selected").text();

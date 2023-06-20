@@ -215,7 +215,10 @@ urlpatterns = [
     path('taxinvoice_list_admin',views.taxinvoice_list_admin,name='taxinvoice_list_admin'),
     path('depot_qtyissued1',views.depot_qtyissued1,name='depot_qtyissued1'),
     path('region_stock/<str:id>/',views.region_stock,name='region_stock'),
+    path('region_stock1/<str:id>/',views.region_stock1,name='region_stock1'),
     path('ready_toship_admin',views.ready_toship_admin,name='ready_toship_admin'),
-    path('outpass_list_admin',views.outpass_list_admin,name='outpass_list_admin')
+    path('outpass_list_admin',views.outpass_list_admin,name='outpass_list_admin'),
+    path('approve_list_admin', views.approve_list_admin, name='approve_list_admin'),
+    path('depot_stock_new/<str:id>/',views.depot_stock_new,name='depot_stock_new')
 
 ]

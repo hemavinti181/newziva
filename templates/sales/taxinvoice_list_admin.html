@@ -42,7 +42,7 @@
 
                             	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
-											 <input type="hidden" name="warehousename1" id="warehousename1" />
+											 <input type="hidden" name="warehousename1" id="warehousename1"  value="{{ request.POST.warehousename1 }}"/>
                                                  <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{  request.POST.warehousename1  }}</option>
 												</select>
@@ -267,7 +267,7 @@ $(document).ready(function(){
 
 	$(document).ready(function() {
     // Get the initial warehouse name
-  var warehousename = $("#warehouseid1").find(":selected").text();
+  var warehousename = $("#warehouseid2").find(":selected").text();
     console.log(warehousename);
     $.ajax({
         type: "POST",
@@ -280,7 +280,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-                 $("#regionid1").append("<option value='All'>All</option>");
+                 //$("#regionid1").append("<option value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -303,7 +303,7 @@ $(document).ready(function(){
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value='All'>All</option>");
+                    //$("#regionid1").append("<option value='All'>All</option>");
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -314,8 +314,9 @@ $(document).ready(function(){
  });
  $(document).ready(function() {
     // Get the initial warehouse name
-    var warehousename = $("#warehouseid1").find(":selected").text();
-    var regionname = $("#regionid1").val();
+    var warehousename = $("#warehouseid2").find(":selected").text();
+    var regionname = $("#regionid2").val();
+
     // Send an AJAX request to get the storeregion dropdown options
     $.ajax({
         type: "POST",
@@ -327,7 +328,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
-                $("#depoid1").append("<option  value='All'>All</option>");
+                //$("#depoid1").append("<option  value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -349,7 +350,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value='All'>All</option>");
+			 		//$("#depoid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -360,9 +361,9 @@ $(document).ready(function(){
     	});
  });
     $(document).ready(function() {
-    		var warehousename = $('#warehouseid1').find(":selected").text();
-        	var regionname = $('#regionid1').val();
-        	var depo = $('#depoid1').val()
+    		var warehousename = $('#warehouseid2').find(":selected").text();
+        	var regionname = $('#regionid2').val();
+        	var depo = $('#depoid2').val()
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storebus" %}',
@@ -373,7 +374,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-                    $("#busstationid1").append("<option  value='All'>All</option>");
+                    //$("#busstationid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -397,7 +398,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value='All'>All</option>");
+			 		//$("#busstationid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -446,11 +447,15 @@ $(document).ready(function(){
       var endDateValue = document.getElementById("end-date").value;
 
       // Check if any of the fields have a non-"All" value
-      if (
+     if (
         warehouseValue !== "All" ||
-        regionValue !== "All" ||
+         warehouseValue == "All" ||
+        //regionValue !== "All" ||
         depotValue !== "All" ||
-        busstationValue !== "All"
+          depotValue == "All" ||
+        busstationValue !== "All" ||
+         busstationValue == "All"
+
       ) {
         // Submit the form programmatically
         form.submit();
