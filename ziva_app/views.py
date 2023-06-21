@@ -3204,6 +3204,30 @@ def delete_sale_item(request,id):
                 messages.error(request,response.text)
             return redirect('sale_item_list')
 
+def deletetax_admin(request,id):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/delete-taxinvoice.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sonumber": id
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('taxinvoice_list_admin')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+        except:
+            messages.error(request, response.text)
+        return redirect('taxinvoice_list_admin')
+
 def get_sale_item(request):
     accesskey = request.session['accesskey']
 

@@ -157,6 +157,7 @@
                                     <th>Total</th>
                                     <th>Created By </th>
                                     <th>Date</th>
+                                    <th>Action</th>
                         </tr>
                       </thead>
 
@@ -174,9 +175,9 @@
                                         <td>{{ all_data.createdon }}</td>
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
 
-                                         <!--<td>
-                                            <a href="/sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
-                                         </td>-->
+                                        <td>
+                                            <a href="/deletetax_admin/{{ list.sonumber }}/"><i class="fa fa-trash"></i></a>
+                                         </td>
 
                                     </tr>
 

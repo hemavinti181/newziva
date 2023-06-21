@@ -221,6 +221,7 @@ urlpatterns = [
     path('approve_list_admin', views.approve_list_admin, name='approve_list_admin'),
     path('depot_stock_new/<str:id>/',views.depot_stock_new,name='depot_stock_new'),
     path('busstation_stock1/<str:id>/',views.busstation_stock1,name='busstation_stock1'),
-    path('warehouse_stock1/<str:id>/',views.warehouse_stock1,name='warehouse_stock1')
+    path('warehouse_stock1/<str:id>/',views.warehouse_stock1,name='warehouse_stock1'),
+    path('deletetax_admin/<str:id>/',views.deletetax_admin,name='deletetax_admin')
 
 ]

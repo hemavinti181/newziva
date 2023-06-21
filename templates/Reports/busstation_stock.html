@@ -15,7 +15,6 @@
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-6 offset-md-4">
-                <div class="title_right">
   <div class="col-md-5 col-sm-5 offset-md-3">
     <div class="btn-group" style="display: flex;">
               <div>
@@ -31,7 +30,6 @@
           {% endfor %}
         </div>
       </div>
-
       <div>
         <button type="button" class="btn btn-secondary dropdown-toggle" style="background-color:white; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
           Region
@@ -177,9 +175,9 @@
                         <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                             <thead>
                                  <tr>
-                                  <th>S NO</th>
-                                <th>Date</th>
-                                <th>Bus Station</th>
+                                  <th rowspan="2">S NO</th>
+                                <th rowspan="2">Date</th>
+                                <th rowspan="2">Bus Station</th>
                                 <th colspan="3">Items</th>
                                       <th colspan="3">Average Consumption Per Day</th>
 
@@ -187,15 +185,13 @@
                             </tr>
 
                              <tr>
-                                      <td></td>
-                                       <td></td>
-                                       <td></td>
-                                       <td>1000ml</td>
-                                        <td>500ml</td>
-                                        <td>250ml</td>
-                                       <td>1000ml</td>
-                                        <td>500ml</td>
-                                        <td>250ml</td>
+
+                                       <th>1000ml</th>
+                                        <th>500ml</th>
+                                        <th>250ml</th>
+                                       <th>1000ml</th>
+                                        <th>500ml</th>
+                                        <th>250ml</th>
 
                                   </tr>
                             </thead>
