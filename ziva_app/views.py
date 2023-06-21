@@ -2326,6 +2326,7 @@ def get_storedepo(request):
         warehouse = warehouse
      else:
         warehouse = 'All'
+
      url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster-all.php"
 
      payload = json.dumps({"accesskey": accesskey, "type": "Depo",
@@ -3655,6 +3656,7 @@ def medeliver_challan_pending(request):
 
         if request.method == 'POST':
             date = request.POST.get('date')
+
             accesskey = request.session['accesskey']
             busstation = request.POST.get('busstationname1')
             depo = request.POST.get('deponame1')
@@ -8259,19 +8261,15 @@ def busstation_stock(request,id):
             for bus in bus_info:
                 if bus['busatation_id'] == busstation_id:
                     busstationname = bus['busstationname']
-                    break
-                else:
-                    busstationname = None
+                    merged_dict = {
+                        'busatation_id': busatation_id,
+                        'busstationname': busstationname,
+                        'createdon__date': date_createdon,
+                        'items': items,
 
-            merged_dict = {
-                'busatation_id': busatation_id,
-                'busstationname': busstationname,
-                'createdon__date': date_createdon,
-                'items': items,
+                    }
 
-            }
-
-            merged_data1.append(merged_dict)
+                    merged_data1.append(merged_dict)
         return render(request, 'Reports/busstation_stock.html',
                       {"regionlist": regionlist, 'bus': buslist, 'depolist': depolist, "menuname": menuname,
                        'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
@@ -8334,9 +8332,9 @@ def busstation_stock1(request,id):
             createdon__lte=current_date, itemcode__in=filtered_itemcodes,
         ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
         if id == 'All':
-            bus_info = BusstationMaster.objects.using('auth').all().filter(busatation_id=id).values('busstationname','busatation_id')
+            bus_info = BusstationMaster.objects.using('auth').all().values('busstationname','busatation_id')
         else:
-            bus_info = BusstationMaster.objects.using('auth').filter(busatation_id=id).values('busstationname', 'busatation_id')
+            bus_info = BusstationMaster.objects.using('auth').filter(busstationname=id).values('busstationname', 'busatation_id')
         grouped_data = []
         sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
@@ -8354,19 +8352,16 @@ def busstation_stock1(request,id):
             for bus in bus_info:
                 if bus['busatation_id'] == busstation_id:
                     busstationname = bus['busstationname']
-                    break
-                else:
-                    busstationname = None
+                    merged_dict = {
+                        'busatation_id': busatation_id,
+                        'busstationname': busstationname,
+                        'createdon__date': date_createdon,
+                        'items': items,
 
-                merged_dict = {
-                    'busatation_id': busatation_id,
-                    'busstationname': busstationname,
-                    'createdon__date': date_createdon,
-                    'items': items,
+                    }
+                    merged_data1.append(merged_dict)
 
-                }
 
-                merged_data1.append(merged_dict)
         return render(request, 'Reports/busstation_stock.html',
                       {"regionlist":regionlist,'bus':buslist,'depolist':depolist,"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
 
@@ -8531,70 +8526,58 @@ def depot_stock1(request):
                       {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data2})
 
 
-def warehouse_stock(request):
+def warehouse_stock1(request,id):
 
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-    response = requests.request("POST", url, headers=headers, data=payload)
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
 
-    data = response.json()
-    regionlist = data['regionlist']
+        data = response.json()
+        regionlist = data['regionlist']
 
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    wh_masterlist = data['warehouselist']
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
 
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-    payload = json.dumps({"accesskey": accesskey,
-                          "warehouseid": request.POST.get('warehouseid'),
-                          "regionid": request.POST.get('regionid')})
+        payload = json.dumps({"accesskey": accesskey,
+                              "warehouseid": request.POST.get('warehouseid'),
+                              "regionid": request.POST.get('regionid')})
 
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    data = response.json()
-    depolist = data['depolist']
+        data = response.json()
+        depolist = data['depolist']
 
-    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
-    payload = json.dumps({
-        "accesskey": accesskey
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    data = response.json()
-    bus = data['buslist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
-
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    selectrange = data['timingslist']
+        data = response.json()
+        bus = data['buslist']
 
 
-    if request.method == 'POST':
 
         warehouse_id = request.POST.get('warehouseid1')
 
@@ -8604,7 +8587,6 @@ def warehouse_stock(request):
             where=[
                 'outpass_item.outpass_number = outpass_generate.outpass_number',
                 'outpass_generate.warehouseid = warehouse_master.warehouseid',
-                f"outpass_generate.warehouseid = '{warehouse_id}'",
                 "outpass_generate.status = 'Accepted'"
             ],
             select={
@@ -8636,13 +8618,12 @@ def warehouse_stock(request):
             items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
             grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
 
-
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
         item_sum_qty = WarehouseInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id=warehouse_id,
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id=id,
         ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
 
-        warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
+        warehouse_info = WarehouseMaster.objects.using('auth').filter(warehouseid=id).values('warehousename', 'warehouseid')
         grouped_data = []
         sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
 
@@ -8673,8 +8654,8 @@ def warehouse_stock(request):
             }
 
             merged_data1.append(merged_dict)
-            merged_data2 = []
-            for d in merged_data1:
+        merged_data2 = []
+        for d in merged_data1:
                 warehouse_id = d['warehouse_id']
                 warehousename = d['warehousename']
                 createdon__date = d['createdon__date']
@@ -8704,8 +8685,55 @@ def warehouse_stock(request):
                         }
 
                 merged_data2.append(merged_dict)
-        return render(request,'Reports/warehouse_stock.html',{"bus":bus,"depolist":depolist,"regionlist":regionlist,"selectrange":selectrange,"menuname":menuname,'wh_masterlist':wh_masterlist,'item_quantities':merged_data2})
-    else:
+        return render(request,'Reports/warehouse_stock.html',{"bus":bus,"depolist":depolist,"regionlist":regionlist,"menuname":menuname,'wh_masterlist':wh_masterlist,'item_quantities':merged_data2})
+def warehouse_stock(request):
+        accesskey = request.session['accesskey']
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        data = response.json()
+        regionlist = data['regionlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "warehouseid": request.POST.get('warehouseid'),
+                              "regionid": request.POST.get('regionid')})
+
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        depolist = data['depolist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        bus = data['buslist']
+        menuname = request.session['mylist']
         current_date = datetime.date.today()
         queryset = OutpassItem.objects.using('auth').extra(
             tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
@@ -8811,7 +8839,7 @@ def warehouse_stock(request):
 
             merged_data2.append(merged_dict)
         return render(request, 'Reports/warehouse_stock.html',
-                      {"bus":bus,"depolist":depolist,'regionlist':regionlist,"menuname": menuname, 'wh_masterlist': wh_masterlist, 'merged_data2': merged_data2,
+                      {"bus":bus,"depolist":depolist,"regionlist":regionlist,"menuname": menuname,'merged_data2': merged_data2,
                        'item_quantities': merged_data2
                        })
 
