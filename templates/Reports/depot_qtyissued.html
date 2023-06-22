@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block htmlbody %}
@@ -42,13 +43,13 @@
                               <label for="start-date">From Date</label>
                               <input type="date" id="start-date" class="form-control">
                             </div>-->
-                               <!--<div class="col-md-2  form-group has-feedback" id="tdate">
+                               <div class="col-md-2  form-group has-feedback" id="tdate">
                                   <label  for="end-date">Select Date</label>
                               <input type="date" id="end-date" name="date" class="form-control" value="{{ request.POST.date }}">
-                            </div>-->
+                            </div>
 
 
-                            	<div  class="col-md-8  form-group has-feedback">
+                            	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
@@ -66,7 +67,7 @@
                                                      {% endfor %}
 												</select>
                                 </div>
-											<!--<div  class="col-md-2  form-group has-feedback">
+											<div  class="col-md-2  form-group has-feedback">
 													<label> Region</label>
                                                    <select class="form-control" name="regionid2" id="regionid2" hidden>
                             		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
@@ -91,7 +92,7 @@
 
                             </div>
 
-										<div  class="col-md-2  form-group has-feedback">
+										<!--<div  class="col-md-2  form-group has-feedback">
                                              <input type="hidden" name="busstationid2" id="busstationid2" value="{{ request.POST.busstationid1 }}" />
 													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
@@ -100,13 +101,16 @@
 												</select>
 										</div>-->
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Submit</button>
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
 
 
-
-
+						</div>
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
                           <div class="col-sm-12">
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">

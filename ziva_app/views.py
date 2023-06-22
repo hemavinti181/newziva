@@ -7295,6 +7295,7 @@ def depot_stock_new(request, id):
                   {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': merged_data1})
 
 
+
 def depot_indent_report(request):
 
     menuname = request.session['mylist']
@@ -7322,7 +7323,6 @@ def depot_indent_report(request):
     data = response.json()
     selectrange = data['timingslist']
     if request.method == 'POST':
-
         warehouseid1 = request.POST.get('warehousename1')
         regionname1 = request.POST.get('regionname1')
         deponame1 = request.POST.get('deponame1')
@@ -7363,13 +7363,13 @@ def depot_indent_report(request):
             fdate = request.POST.get('fdate')
             ldate = request.POST.get('ldate')
             where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
-        elif option == 'All':
+        elif option == '':
             where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
-        if warehouseid1 != 'All':
+        if warehouseid1 != '' and warehouseid1 != 'All':
             where.append(f"depo_master.warehouse = '{warehouseid1}'")
-        if deponame1 != 'All':
+        if deponame1 != '' and deponame1 != 'All':
             where.append(f"depo_master.deponame = '{deponame1}'")
-        if regionname1 != 'All':
+        if regionname1 != '' and regionname1 != 'All' :
             where.append(f"depo_master.regionname = '{regionname1}'")
         queryset = IndentItem.objects.using('auth').extra(
             tables=['outpass_item', 'indent_item', 'generate_indent', 'depo_master'],
@@ -7436,21 +7436,18 @@ def depot_indent_report(request):
                 start_date = current_date - timedelta(days=current_date.weekday() + 7)
                 end_date = current_date - timedelta(days=current_date.weekday() + 1)
                 where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
-            elif deponame1 != 'All':
-                where.append(f"depo_master.deponame = '{deponame1}'")
-            elif regionname1 != 'All':
-                where.append(f"depo_master.regionname = '{regionname1}'")
+
             elif option == 'Custom Dates':
                 fdate = request.POST.get('fdate')
                 ldate = request.POST.get('ldate')
                 where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
-            elif option == 'All':
+            elif option == '':
                 where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
-            if warehouseid1 != 'All':
+            if warehouseid1 != '' and  warehouseid1 != 'All':
                 where.append(f"depo_master.warehouse = '{warehouseid1}'")
-            if deponame1 != 'All':
+            if deponame1 != '' and deponame1 != 'All':
                 where.append(f"depo_master.deponame = '{deponame1}'")
-            if regionname1 != 'All':
+            if regionname1 != '' and regionname1 != 'All':
                 where.append(f"depo_master.regionname = '{regionname1}'")
             queryset2 = OutpassItem.objects.using('auth').extra(
                 tables=['indent_item','depo_master','generate_indent'],

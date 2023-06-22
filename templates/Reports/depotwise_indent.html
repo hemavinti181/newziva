@@ -8,11 +8,12 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba">Depot Wise Qty Accepted Against Indent Report</h3>
+                <h3 style="color:#1372ba">Depot Wise Qty Accepted Against Indent</h3>
               </div>
-            <div class="title_right">
+            </div>
+            <!--<div class="title_right">
                 <div class="col-md-4 col-sm-4 offset-md-4">
-  <div class="col-md-5 col-sm-5 offset-md-3">
+
     <div class="btn-group" style="display: flex;">
               <div>
         <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="background-color:white; color:#06911A;"  aria-haspopup="true" aria-expanded="false">
@@ -58,33 +59,26 @@
         <button type="button" class="btn btn-info dropdown-toggle"  style="background-color:white; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
           Bus Station
         </button>
-        <div class="dropdown-menu"  id="myDropdown2" style="max-height: 400px; overflow-y: auto;">
+        <div class="dropdown-menu"  id="myDropdown2" style="max-height: 400px;  max-width: 200px; overflow-y: auto;">
         <input type="search" id="myInput2" class="form-control" placeholder="search" onkeyup="filterFunction2()">
-              <a class="dropdown-item" href="/busstation_stock1/All">All</a>
-          {% for data in bus %}
-            <a class="dropdown-item" href="/busstation_stock1/{{ data.busstationname }}/">{{ data.busstationname }}</a>
-          {% endfor %}
+            <a class="dropdown-item" id="myLink" href="#"></a>
         </div>
       </div>
     </div>
-  </div>
-</div>
-                </div>
-            </div>
-              </div>
-            <div class="clearfix"></div>
+  </div>-->
+</div><div class="clearfix"></div>
                  <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  method="POST" action="depot_indent_report"  enctype="multipart/form-data">
+						<form id="myform" method="POST" action="depot_indent_report"  enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
 												</select>
-                                <input type="hidden" name="from" id="from" />
+                                <input type="hidden" name="from" id="from" value="{{ request.POST.from }}">
                               <select id="daterangeselect" class="form-control" name="range">
-                                   <option value="">All</option>
+                                     <option value=" " >All</option>
                                   {% for selectrange in selectrange %}
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
                                   {% endfor %}
@@ -103,7 +97,7 @@
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
                                          </select>
-											 <input type="hidden" name="warehousename1" id="warehousename1" />
+											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value="">All</option>
 													{% for data1 in wh_masterlist %}
@@ -142,14 +136,11 @@
 												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value=""> bus station</option>
 												</select>
-										</div>-->
+										</div>
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>
+                                       </div>-->
                         </form>
-
-
-                 <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
 
@@ -195,9 +186,7 @@
             </div>
                 </div>
               </div>
-            </div>
-          </div>
-</div>
+
   <!--<div class="inner-fabs">
 
                                   <div class="fab bg-green round" id="fab3"><a href="medeliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
@@ -356,7 +345,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-                $("#regionid1").append("<option  value=''>All</option>");
+
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -379,7 +368,7 @@ $(document).ready(function(){
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value=''>All</option>");
+
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -403,7 +392,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
-                $("#depoid1").append("<option  value=''>All</option>");
+
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -425,7 +414,6 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -435,7 +423,7 @@ $(document).ready(function(){
     	});
  });
     $(document).ready(function() {
-    		var warehousename = $('#warehouseid2').find(":selected").text();
+    		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid2').val();
         	var depo = $('#depoid2').val()
         	$.ajax({
@@ -448,7 +436,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-                    $("#busstationid1").append("<option  value=''>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -472,7 +460,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value=''>All</option>");
+
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -506,7 +494,6 @@ $(document).ready(function(){
   })
 
 $(document).ready(function(){
- $('#date-range-fields').hide();
   $('#daterangeselect').change(function() {
     var selectedOption = $(this).find(":selected").text();
     if (selectedOption == 'Custom Dates') {
@@ -520,45 +507,88 @@ $(document).ready(function(){
     }
   });
 });
+$(document).ready(function(){
+    var selectedOption = $('#daterangeselect').find(":selected").text();
+    if (selectedOption == 'Custom Dates') {
+      $('#date-range-fields').show();
+      $('#tdate').show();
+     // show the date fields if custom option is selected
+      displayResults();
+    } else {
+      $('#date-range-fields').hide();
+      $('#tdate').hide();// hide the date fields if another option is selected
+          displayOtherResults(selectedOption);
+    }
+});
 function displayResults() {
   var fromDate = $('#date-range-fields').val();
   var toDate = $('#tdate').val();
 
 }
-
 function displayOtherResults(selectedOption) {
-
 }
-$(document).ready(function() {
-  var data1 = '<span>Data 1</span>';
-  var data2 = '<strong>Data 2</strong>';
 
-  var newData = data1 + '<br>' + data2;
- $('.dropdown-item').empty();
-  $('.dropdown-item').html(newData);
-});
 $(document).ready(function() {
-    		var warehousename = $('#warehouseid2').find(":selected").text();
-        	var depo = $('#depoid2').val()
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storebus" %}',
             	data: {
-                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+                	'depo':'All','warehouse':'All','region':'All','csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data.dropdownlist
+			 		var obj = data.data.dropdownlist;
 					if(obj) {
-			 		$("#busstationid1").empty();
 
-                	$.each(obj, function (index, item) {
-                    $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-					var optionValue = $("#busstationid2").val();
-                    $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
-                	}
+                        var dropdownMenu = $('#myLink');
+                        dropdownMenu.empty();
+                        $.each(obj, function(index, item) {
+                            var anchorTag = $('<a>').addClass('dropdown-item').attr('href', '/busstation_stock1/' + item.name + '/').text(item.name);
+                            dropdownMenu.append(anchorTag);
+                        });
+             	    }
              	}
         	});
+});
+
+$(document).ready(function() {
+  var form = document.getElementById("myform");
+  var daterangeSelect = document.getElementById("daterangeselect");
+  var startDateInput = document.getElementById("start-date");
+  var endDateInput = document.getElementById("end-date");
+
+ $("#warehouseid1, #regionid1, #depoid1, #daterangeselect").change(function() {
+  var validOptions = ["1", "2", "3","4","5"]; // Valid options for submission
+  if (validOptions.includes(daterangeSelect.value)) {
+    form.submit(); // Submit the form
+  }
+  if (daterangeSelect.value === "6") { // "6" is the value for "Custom Dates" option
+    $("#date-range-fields").show();
+    $("#tdate").show();
+    if (startDateInput.value && endDateInput.value) {
+      form.submit(); // Submit the form
+    }
+  } else {
+    $("#date-range-fields").hide();
+    $("#tdate").hide();
+    form.removeEventListener("submit", validateCustomDates); // Remove event listener for custom dates
+  }
+});
+
+form.addEventListener("submit", function(event) {
+  if (daterangeSelect.value === "6" && (!startDateInput.value || !endDateInput.value)) {
+    event.preventDefault();
+    console.log("Please select both start date and end date.");
+  }
+  var selectedOptionText = $('#warehouseid1').find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+  selectedOptionText = $('#regionid1').find(":selected").text();
+  $("#regionname1").val(selectedOptionText);
+  selectedOptionText = $('#depoid1').find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
+  var selectedOptionText = $('#daterangeselect').find(":selected").text();
+  $("#from").val(selectedOptionText);
+});
+});
 
  </script>
 {% endblock %}
