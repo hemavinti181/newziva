@@ -49,11 +49,11 @@
                               </select>
                             </div>
                              <div class="col-md-2  form-group has-feedback" id="fdate" style="display:none">
-                              <label for="start-date">From Date</label>
+                              <!--<label for="start-date">From Date</label>-->
                               <input type="date" id="start-date"  name="fdate" class="form-control" value="{{ request.POST.fdate }}" />
                             </div>
                               <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
-                                  <label  for="end-date">To Date</label>
+                                  <!--<label  for="end-date">To Date</label>-->
                               <input type="date" id="end-date" name="tdate" class="form-control" value="{{ request.POST.tdate }}">
                             </div>
 
@@ -217,8 +217,7 @@
               </div>
             </div>
                 </div>
-              </div>
-            </div>
+
                     <div class="x_panel region"  style="display:none">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -578,6 +577,33 @@ function displayOtherResults(selectedOption) {
                 row.append($('<td>').text(item.total));  // Amount Collected
                 tableBody.append(row);
             }
+            $("#datatable-buttons1").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
         },
         error: function(xhr, status, error) {
             console.log("AJAX Error:", error);
@@ -614,6 +640,33 @@ $(".items_list").on('click', function () {
                  row.append($('<td>').text(item.total));
                 tableBody.append(row);
             }
+            $("#items_warehouse").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
         },
         error: function(xhr, status, error) {
             console.log("AJAX Error:", error);

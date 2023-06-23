@@ -7049,16 +7049,16 @@ def payment_report(request):
         range = request.POST.get('from')
         url = "http://13.235.112.1/ziva/mobile-api/warehousewise-total-report.php"
         if range == 'Custom Dates':
-            fdate1 = request.POST.get('fdate')
-            tdate1 = request.POST.get('tdate')
+            frdate = request.POST.get('fdate')
+            trdate = request.POST.get('tdate')
         else:
-            fdate =  request.POST.get('from')
-            tdate =  request.POST.get('from')
+            frdate =  request.POST.get('from')
+            trdate =  request.POST.get('from')
         payload = json.dumps(
                 {
                     "accesskey": accesskey,
-                    "fromdate": fdate1,
-                    "todate": tdate1
+                    "fromdate": frdate,
+                    "todate": trdate
 
                 })
 
@@ -7075,19 +7075,18 @@ def payment_report(request):
         url = "http://13.235.112.1/ziva/mobile-api/warehousewise-sales-report.php"
 
         if range == 'Custom Dates':
-            if range == 'Custom Dates':
                 fdate = request.POST.get('fdate')
                 tdate = request.POST.get('tdate')
-            else:
+        else:
                 fdate = request.POST.get('from')
                 tdate = request.POST.get('from')
-            payload = json.dumps(
-                {
-                    "accesskey": accesskey,
-                    "fromdate": fdate,
-                    "todate": fdate
+        payload = json.dumps(
+            {
+                "accesskey": accesskey,
+                "fromdate": fdate,
+                "todate": tdate
 
-                })
+            })
 
         headers = {
             'Content-Type': 'text/plain'
@@ -7102,7 +7101,7 @@ def payment_report(request):
         else:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request,'Reports/payments.html',{'menuname':menuname,"wh_masterlist":wh_masterlist,'selectrange':selectrange,'fdate':fdate,'tdate':tdate,})
+            return render(request,'Reports/payments.html',{'item':item[0],'menuname':menuname,"wh_masterlist":wh_masterlist,'selectrange':selectrange,'fdate':fdate,'tdate':tdate,})
     else:
         url = "http://13.235.112.1/ziva/mobile-api/warehousewise-total-report.php"
 
