@@ -9595,3 +9595,7 @@ def approve_list_admin(request):
         else:
             return render(request, 'create_indent/approved_list_admin.html',
                           {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange})
+
+def dashboard(request):
+    menuname = request.session['mylist']
+    return render(request,'index4.html',{"menuname":menuname})

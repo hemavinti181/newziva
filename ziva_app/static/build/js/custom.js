@@ -1,8 +1,8 @@
 /**
  * Resize function without multiple trigger
- * 
+ *
  * Usage:
- * $(window).smartresize(function(){  
+ * $(window).smartresize(function(){
  *     // code here
  * });
  */
@@ -16,8 +16,8 @@
             var obj = this, args = arguments;
             function delayed () {
                 if (!execAsap)
-                    func.apply(obj, args); 
-                timeout = null; 
+                    func.apply(obj, args);
+                timeout = null;
             }
 
             if (timeout)
@@ -25,11 +25,11 @@
             else if (execAsap)
                 func.apply(obj, args);
 
-            timeout = setTimeout(delayed, threshold || 100); 
+            timeout = setTimeout(delayed, threshold || 100);
         };
     };
 
-    // smartresize 
+    // smartresize
     jQuery.fn[sr] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
 
 })(jQuery,'smartresize');
@@ -611,7 +611,7 @@ function init_starrr() {
 
 function init_JQVmap() {
 
-    //console.log('check init_JQVmap [' + typeof (VectorCanvas) + '][' + typeof (jQuery.fn.vectorMap) + ']' );	
+    //console.log('check init_JQVmap [' + typeof (VectorCanvas) + '][' + typeof (jQuery.fn.vectorMap) + ']' );
 
     if (typeof (jQuery.fn.vectorMap) === 'undefined') { return; }
 
@@ -690,14 +690,12 @@ function init_chart_doughnut() {
             tooltipFillColor: "rgba(51, 51, 51, 0.55)",
             data: {
                 labels: [
-                    "Symbian",
-                    "Blackberry",
-                    "Other",
-                    "Android",
-                    "IOS"
+                    "1000ml",
+                    "500ml",
+                    "250ml"
                 ],
                 datasets: [{
-                    data: [15, 20, 30, 10, 30],
+                    data: [7159, 18772, 502],
                     backgroundColor: [
                         "#BDC3C7",
                         "#9B59B6",
@@ -2574,20 +2572,64 @@ function init_morris_charts() {
         Morris.Bar({
             element: 'graph_bar',
             data: [
-                { device: 'iPhone 4', geekbench: 380 },
-                { device: 'iPhone 4S', geekbench: 655 },
-                { device: 'iPhone 3GS', geekbench: 275 },
-                { device: 'iPhone 5', geekbench: 1571 },
-                { device: 'iPhone 5S', geekbench: 655 },
-                { device: 'iPhone 6', geekbench: 2154 },
-                { device: 'iPhone 6 Plus', geekbench: 1144 },
-                { device: 'iPhone 6S', geekbench: 2371 },
-                { device: 'iPhone 6S Plus', geekbench: 1471 },
-                { device: 'Other', geekbench: 1371 }
+                { device: 'Aquafeena 1000ml', geekbench: 200 },
+                { device: 'Aquafeena 500ml', geekbench: 9113 },
+                { device: 'Aquafeena 250ml', geekbench: 250 },
+                { device: 'Sippy Beverages 1000ml', geekbench: 6959 },
+                { device: 'Sippy Beverages 500ml', geekbench: 9659 },
+                { device: 'Sippy Beverages 250ml', geekbench: 252 },
             ],
             xkey: 'device',
             ykeys: ['geekbench'],
-            labels: ['Geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar2').length) {
+
+        Morris.Bar({
+            element: 'graph_bar2',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar3').length) {
+
+        Morris.Bar({
+            element: 'graph_bar3',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
             barRatio: 0.4,
             barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
             xLabelAngle: 35,
@@ -5036,4 +5078,4 @@ $(document).ready(function () {
     init_autosize();
     init_autocomplete();
 
-});	
+});

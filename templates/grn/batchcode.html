@@ -30,7 +30,9 @@
                       <thead>
                         <tr>
                                     <th>S NO</th>
-                                   <th>Item Name</th>
+                                    <th>Item Name</th>
+                                        <th>Qty(In Cases)</th>
+                                    <th>No.Of Bottles</th>
                                     <th>Batch Code</th>
                                     <th>Expiry Date</th>
 
@@ -43,7 +45,9 @@
 
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{ all_data.itemname }}</td>
+                                        <td>{{ all_data.itemname }}</td>{>
+                                        <td>{{ all_data.Qty }}</td>
+                                        <td>{{ all_data.noofbottles }}</td>
                                         <td>{{ all_data.batchcode }}</a></td>
                                         <td> {{ all_data.expirydate }} </td>
                                     </tr>
