@@ -223,7 +223,9 @@ urlpatterns = [
     path('busstation_stock1/<str:id>/',views.busstation_stock1,name='busstation_stock1'),
     path('warehouse_stock1/<str:id>/',views.warehouse_stock1,name='warehouse_stock1'),
     path('deletetax_admin/<str:id>/',views.deletetax_admin,name='deletetax_admin'),
-    path('dashboard',views.dashboard,name='dashboard')
+    path('dashboard',views.dashboard,name='dashboard'),
+    path('region_payment',views.region_payment,name='region_payment'),
+    path('warehouse_items',views.warehouse_items,name='warehouse_items')
 
 
 
