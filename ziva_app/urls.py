@@ -225,7 +225,12 @@ urlpatterns = [
     path('deletetax_admin/<str:id>/',views.deletetax_admin,name='deletetax_admin'),
     path('dashboard',views.dashboard,name='dashboard'),
     path('region_payment',views.region_payment,name='region_payment'),
-    path('warehouse_items',views.warehouse_items,name='warehouse_items')
+    path('warehouse_items',views.warehouse_items,name='warehouse_items'),
+    path('depo_payment',views.depo_payment,name='depo_payment'),
+    path('bus_payment',views.bus_payment,name='bus_payment'),
+    path('region_items',views.region_items,name='region_items'),
+    path('depo_items',views.depo_items,name='depo_items'),
+    path('bus_items',views.bus_items,name='bus_items')
 
 
 

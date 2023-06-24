@@ -158,13 +158,6 @@
                                     <tr>
                                       <th>S No</th>
                                         <th>Warehouse</th>
-
-                                      <!--<th>Depot</th>
-                                      <th>Bus Station</th>
-                                      <th>Stall Name</th>
-                                        <th>Item</th>
-                                      <th>Invoice Number</th>
-                                      <th>Itemcount</th>-->
                                         <th>Quantity</th>
                                       <th>Amount Collected</th>
                                         <th>Action</th>
@@ -217,6 +210,150 @@
               </div>
             </div>
                 </div>
+                  <div class="x_panel items" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="items_bus" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                      <th>S No</th>
+                                        <th>Date</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Payment mode</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+                  <div class="x_panel itemsreg" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="items_region" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                      <th>S No</th>
+                                        <th>Date</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Payment mode</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+                  <div class="x_panel items" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="items_depot" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                      <th>S No</th>
+                                        <th>Date</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Payment mode</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+                  <div class="x_panel depo" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="depo_listtable" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                        <th>S No</th>
+                                        <th>Depo name</th>
+                                        <th>Quantity</th>
+                                      <th>Amount Collected</th>
+                                        <th>Action</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+<div class="x_panel bus" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="bus_listtable" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                        <th>S No</th>
+                                        <th>Bus Station  name</th>
+                                        <th>Quantity</th>
+                                      <th>Amount Collected</th>
+                                        <th>Action</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+
 
                     <div class="x_panel region"  style="display:none">
                     <div class="clearfix"></div>
@@ -235,6 +372,7 @@
                                         <th>Region</th>
                                         <th>Quantity</th>
                                       <th>Amount Collected</th>
+                                        <th>Action</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -572,12 +710,168 @@ function displayOtherResults(selectedOption) {
                 var item = responseData[i];
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));  // S No
-                row.append($('<td>').text(item.region));  // Region
+                //row.append($('<td>').text(item.region));
+                console.log(id, fdate, tdate)
+                 var regionTd = $('<td>').append(
+                        $('<a>')
+                            .attr('href', '#')
+                            .addClass('depo_list')
+                            .css('color', 'rgb(6, 145, 26)')
+                            .text(item.region)
+                            .attr('data-id', item.region_id)
+                            .attr('data-fdate', fdate)
+                            .attr('data-tdate', tdate)
+                    )
+                row.append(regionTd);
                 row.append($('<td>').text(item.qty));  // Quantity
-                row.append($('<td>').text(item.total));  // Amount Collected
+                row.append($('<td>').text(item.total));
+                row.append(code);
+                var code = '<td class="text-center"><a href="#" class="items_regionlist" data-id="' + item.region_id + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                 row.append(code);
                 tableBody.append(row);
             }
             $("#datatable-buttons1").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+    });
+});
+$(document).on('click', '.depo_list', function () {
+    let id = $(this).data('id');
+    let fdate = $(this).data('fdate');
+    let tdate = $(this).data('tdate');
+    alert('hai')
+    $.ajax({
+        url: '{% url "depo_payment" %}',
+        data: {
+            'id': id,
+            'fdate': fdate,
+            'tdate': tdate,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            var responseData = response.response.daywisesalesdepolist;
+            $('.region').show();
+            $('.depo').show();
+            $('.items').hide();
+            var tableBody = $('#depo_listtable tbody');
+            // Iterate through the data and append rows to the table
+            for (var i = 0; i < responseData.length; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                //row.append($('<td>').text(item.region));
+                console.log(id, fdate, tdate)
+                 var regionTd = $('<td>').append(
+                        $('<a>')
+                            .attr('href', '#')
+                            .addClass('bus_list')
+                            .css('color', 'rgb(6, 145, 26)')
+                            .text(item.depo)
+                            .attr('data-id', item.depoid)
+                            .attr('data-fdate', fdate)
+                            .attr('data-tdate', tdate)
+                    )
+                row.append(regionTd);
+                row.append($('<td>').text(item.qty));  // Quantity
+                row.append($('<td>').text(item.total));
+                  var code = '<td class="text-center"><a href="#" class="items_list" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                row.append(code);// Amount Collected
+                tableBody.append(row);
+            }
+            $("#depo_listtable").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+    });
+});
+$(document).on('click', '.bus_list', function () {
+    let id = $(this).data('id');
+    let fdate = $(this).data('fdate');
+    let tdate = $(this).data('tdate');
+    alert('hai')
+    $.ajax({
+        url: '{% url "bus_payment" %}',
+        data: {
+            'id': id,
+            'fdate': fdate,
+            'tdate': tdate,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            var responseData = response.response.daywisesalesbusstationlist;
+            $('.region').show();
+            $('.depo').show();
+            $('.bus').show();
+            $('.items').hide();
+            var tableBody = $('#bus_listtable tbody');
+            // Iterate through the data and append rows to the table
+            for (var i = 0; i < responseData.length; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.bus_station));
+                row.append($('<td>').text(item.qty));  // Quantity
+                row.append($('<td>').text(item.total));
+                  var code = '<td class="text-center"><a href="#" class="items_list" data-id="' + item.busstation_id + '"  data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                row.append(code);// Amount Collected
+                tableBody.append(row);
+            }
+            $("#bus_listtable").DataTable({
                 dom: "Blfrtip",
                 "bDestroy": true,
                 buttons: [
@@ -614,7 +908,6 @@ $(".items_list").on('click', function () {
     let id = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
-
     $.ajax({
         url: '{% url "warehouse_items" %}',
         data: {
@@ -641,6 +934,71 @@ $(".items_list").on('click', function () {
                 tableBody.append(row);
             }
             $("#items_warehouse").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+    });
+});
+$(document).on('click', '.items_regionlist', function () {
+    let id = $(this).data('id');
+    let fdate = $(this).data('fdate');
+    let tdate = $(this).data('tdate');
+    $.ajax({
+        url: '{% url "region_items" %}',
+        data: {
+            'id': id,
+            'fdate': fdate,
+            'tdate': tdate,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            var responseData = response.response.daywisesalesdepolist;
+            $('.itemsreg').show();
+            $('.items').hide();
+             $('.region').show();
+             $('.bus').hide();
+             $('.depo').hide();
+            var tableBody = $('#items_region tbody');
+            // Iterate through the data and append rows to the table
+            for (var i = 0; i < responseData.length; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.delivery_date));  // Region
+                row.append($('<td>').text(item.item_name));  // Quantity
+                row.append($('<td>').text(item.qty));
+                row.append($('<td>').text(item.paymentmode));
+                 row.append($('<td>').text(item.total));
+                tableBody.append(row);
+            }
+            $("#items_region").DataTable({
                 dom: "Blfrtip",
                 "bDestroy": true,
                 buttons: [

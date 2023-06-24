@@ -7164,6 +7164,74 @@ def warehouse_items(request):
         response = response.json()
         # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
+def bus_items(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/busstation-itemwise-report.php"
+
+    payload = json.dumps(
+        {
+            "accesskey": accesskey,
+            "fromdate": request.GET.get('fdate'),
+            "todate": request.GET.get('tdate'),
+            "busstationid": request.GET.get('id'),
+
+        })
+
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        response = response.json()
+        # daywisesaleslist = data['daywisesaleswarehouselist']
+        return JsonResponse({'response': response})
+
+def region_items(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/region-itemwise-report.php"
+
+    payload = json.dumps(
+        {
+            "accesskey": accesskey,
+            "fromdate": request.GET.get('fdate'),
+            "todate": request.GET.get('tdate'),
+            "regionid": request.GET.get('id'),
+
+        })
+
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        response = response.json()
+        # daywisesaleslist = data['daywisesaleswarehouselist']
+        return JsonResponse({'response': response})
+def depo_items(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/depo-itemwise-report.php"
+
+    payload = json.dumps(
+        {
+            "accesskey": accesskey,
+            "fromdate": request.GET.get('fdate'),
+            "todate": request.GET.get('tdate'),
+            "depoid": request.GET.get('id'),
+
+        })
+
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        response = response.json()
+        # daywisesaleslist = data['daywisesaleswarehouselist']
+        return JsonResponse({'response': response})
+
 def region_payment(request):
 
     accesskey = request.session['accesskey']
@@ -7177,6 +7245,54 @@ def region_payment(request):
                         "fromdate": request.GET.get('fdate'),
                         "todate": request.GET.get('tdate'),
                         "warehouseid": request.GET.get('id'),
+
+    })
+
+
+    headers = {
+                'Content-Type': 'text/plain'
+        }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+            response = response.json()
+            #daywisesaleslist = data['daywisesaleswarehouselist']
+            return JsonResponse({'response':response})
+
+def bus_payment(request):
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/busstationwise-total-report.php"
+
+    payload = json.dumps(
+        {
+            "accesskey": accesskey,
+            "fromdate": request.GET.get('fdate'),
+            "todate": request.GET.get('tdate'),
+            "depoid": request.GET.get('id'),
+
+        })
+
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        response = response.json()
+        # daywisesaleslist = data['daywisesaleswarehouselist']
+        return JsonResponse({'response': response})
+def depo_payment(request):
+
+    accesskey = request.session['accesskey']
+
+
+    url = "http://13.235.112.1/ziva/mobile-api/depowise-total-report.php"
+
+    payload = json.dumps(
+                    {
+                        "accesskey": accesskey,
+                        "fromdate": request.GET.get('fdate'),
+                        "todate": request.GET.get('tdate'),
+                        "regionid": request.GET.get('id'),
 
     })
 
