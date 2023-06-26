@@ -1,5 +1,6 @@
 import base64
 import json
+import math
 import random
 import string
 from collections import defaultdict
@@ -8,6 +9,7 @@ from django.contrib.auth import logout as auth_logout
 from datetime import datetime,timedelta
 from itertools import groupby
 import paytmchecksum
+from django.forms import IntegerField, DecimalField
 from django.views.decorators.cache import cache_control
 from django.db.models import DateTimeField, Sum, F, CharField, Value, OuterRef, Subquery, Case, When, Q, Count, Func
 import datetime
@@ -15,7 +17,7 @@ import geocoder as geocoder
 
 from django.shortcuts import render, HttpResponse, redirect
 from django.urls import reverse
-from django.db.models.functions import Cast
+from django.db.models.functions import Cast, Round
 import requests
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -8287,9 +8289,7 @@ def busstation_stock(request,id):
         current_date = datetime.date.today()
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
         # warehouse_id = ['WDP0002', 'WDP0001']
-        item_sum_qty = BusstationInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
-        ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
+        item_sum_qty = BusstationInventory.objects.using('auth').values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
 
         bus_info = BusstationMaster.objects.using('auth').filter(deponame=id).values('busstationname', 'busatation_id')
         grouped_data = []
@@ -8374,11 +8374,9 @@ def busstation_stock1(request,id):
         buslist = data['buslist']
         current_date = datetime.date.today()
 
-        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        #warehouse_id = ['WDP0002', 'WDP0001']
-        item_sum_qty = BusstationInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
-        ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
+        item_sum_qty = BusstationInventory.objects.using('auth').values('itemcode', 'busstation_id').annotate(
+    total_qty=Func(Sum('sale_qty'), function='ROUND', expression=F('sale_qty'), template='%(function)s(%(expressions)s)')
+)
         if id == 'All':
             bus_info = BusstationMaster.objects.using('auth').all().values('busstationname','busatation_id')
         else:

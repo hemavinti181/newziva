@@ -27,7 +27,6 @@
 											  <input type="hidden" class="form-control" name="vname" id="vname"  >
 											<label>Select Vendor *</label>
 										    	<select class=" form-control" name="vid" id="vid">
-													<option>select vendor</option>
 												{% for data in all_data %}
 													<option  value="{{ data.vendorcode}}">{{ data.vendorname }}</option>
 												{% endfor %}
@@ -43,9 +42,8 @@
 											</select>
 										</div>-->
 											<div class="col-md-3 col-sm-6  form-group has-feedback">
-
 											<label>Warehouse Name  *</label>
-										    <input type="text" class="form-control" value="{{ whname }}" name="whname">
+										    <input type="text" class="form-control" value="{{ whname }}" name="whname" readonly>
 										</div>
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
 
@@ -107,6 +105,18 @@ $("#vid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#vname").val(selectedOptionText);
 });
+$(document).ready(function() {
+	var selectedOptionText = $('#vid').find(":selected").text();
+    $("#vname").val(selectedOptionText);
+});
+
+
+// Get the current date
+var today = new Date().toISOString().split('T')[0];
+
+// Set the min attribute of the input element to the current date
+document.getElementById('tdate').setAttribute('max', today);
+
 
 </script>
 {% endblock %}
