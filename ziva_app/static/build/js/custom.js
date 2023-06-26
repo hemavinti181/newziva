@@ -729,6 +729,8 @@ function init_chart_doughnut() {
 
 }
 
+
+
 function init_gauge() {
 
     if (typeof (Gauge) === 'undefined') { return; }
@@ -5079,3 +5081,7 @@ $(document).ready(function () {
     init_autocomplete();
 
 });
+
+
+
+

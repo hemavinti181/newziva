@@ -230,7 +230,8 @@ urlpatterns = [
     path('bus_payment',views.bus_payment,name='bus_payment'),
     path('region_items',views.region_items,name='region_items'),
     path('depo_items',views.depo_items,name='depo_items'),
-    path('bus_items',views.bus_items,name='bus_items')
+    path('bus_items',views.bus_items,name='bus_items'),
+    path('sales_dashboard',views.sales_dashboard,name='sales_dashboard')
 
 
 

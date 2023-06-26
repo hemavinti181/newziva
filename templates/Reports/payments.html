@@ -33,7 +33,7 @@
 
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-					<form  method="POST" action="payment_report"  enctype="multipart/form-data">
+					<form id="myForm" method="POST" action=" "  enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-md-2  form-group has-feedback">
                               <!--<label for="daterangeselect">Frequency</label>-->
@@ -59,7 +59,7 @@
 
 
                             	<!--<div  class="col-md-2  form-group has-feedback">
-													<label> Warehouse</label>
+											<label> Warehouse</label>
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
 												</select>
@@ -74,7 +74,7 @@
 												</select>
                                 </div>
 											<div  class="col-md-2  form-group has-feedback">
-													<label> Region</label>
+
                                                     <select class="form-control" name="regionid2" id="regionid2" hidden>
                             		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
 												</select>
@@ -87,7 +87,7 @@
                                                  <select class="form-control" name="depoid2" id="depoid2" hidden>
                             		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
 												</select>
-													<label> Depot</label>
+
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
 													<option value="All">All</option>
@@ -100,7 +100,7 @@
                             		                    <option value="{{ request.POST.busstationid1 }}">{{ request.POST.busstationname1 }}</option>
 												</select>
 
-													<label> Bus Station</label>
+
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value="All">All</option>
@@ -196,6 +196,7 @@
                                     <tr>
                                       <th>S No</th>
                                         <th>Date</th>
+                                        <th>Warehouse</th>
                                         <th>Item Name</th>
                                         <th>Quantity</th>
                                         <th>Payment mode</th>
@@ -210,7 +211,7 @@
               </div>
             </div>
                 </div>
-                  <div class="x_panel items" style="display:none">
+                  <div class="x_panel itemsbus" style="display:none">
                     <div class="clearfix"></div>
                   <div class="x_content">
                       <div class="row">
@@ -225,6 +226,7 @@
                                     <tr>
                                       <th>S No</th>
                                         <th>Date</th>
+                                        <th>Bus Station</th>
                                         <th>Item Name</th>
                                         <th>Quantity</th>
                                         <th>Payment mode</th>
@@ -254,6 +256,7 @@
                                     <tr>
                                       <th>S No</th>
                                         <th>Date</th>
+                                        <th>Region</th>
                                         <th>Item Name</th>
                                         <th>Quantity</th>
                                         <th>Payment mode</th>
@@ -268,7 +271,7 @@
               </div>
             </div>
                 </div>
-                  <div class="x_panel items" style="display:none">
+                  <div class="x_panel itemsdepot" style="display:none">
                     <div class="clearfix"></div>
                   <div class="x_content">
                       <div class="row">
@@ -283,6 +286,7 @@
                                     <tr>
                                       <th>S No</th>
                                         <th>Date</th>
+                                        <th>Depot</th>
                                         <th>Item Name</th>
                                         <th>Quantity</th>
                                         <th>Payment mode</th>
@@ -441,7 +445,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-                    $("#busstationid1").append("<option  value=''>All</option>");
+                    //$("#busstationid1").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -463,7 +467,7 @@ $("#depoid").change(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value=''>All</option>");
+			 		//$("#busstationid").append("<option  value=''>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -499,7 +503,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-                 $("#regionid1").append("<option value='All'>All</option>");
+                 //$("#regionid1").append("<option value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -522,7 +526,7 @@ $(document).ready(function(){
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value='All'>All</option>");
+                    //$("#regionid1").append("<option value='All'>All</option>");
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -533,7 +537,7 @@ $(document).ready(function(){
  });
    $(document).ready(function() {
     // Get the initial warehouse name
-    var warehousename = $("#warehouseid2").find(":selected").text();
+    var warehousename = $("#warehouseid1").find(":selected").text();
     var regionname = $("#regionid2").val();
     // Send an AJAX request to get the storeregion dropdown options
     $.ajax({
@@ -546,7 +550,7 @@ $(document).ready(function(){
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
-                  $("#depoid1").append("<option value='All'>All</option>");
+                //$("#depoid1").append("<option value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -566,9 +570,10 @@ $(document).ready(function(){
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
+
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value='All'>All</option>");
+			 		//$("#depoid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -591,7 +596,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-                    $("#busstationid1").append("<option value='All'>All</option>");
+                    //$("#busstationid1").append("<option value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -615,7 +620,7 @@ $(document).ready(function(){
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value='All'>All</option>");
+			 		//$("#busstationid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -627,6 +632,7 @@ $(document).ready(function(){
  $("#warehouseid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename1").val(selectedOptionText);
+  $('#myForm').attr('action', '{% url "payment_report" %}');
 });
 $("#regionid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -703,7 +709,12 @@ function displayOtherResults(selectedOption) {
         success: function(response) {
             var responseData = response.response.daywisesalesdepolist;
             $('.region').show();
+             $('.depo').hide();
+              $('.bus').hide();
             $('.items').hide();
+             $('.itemsdepot').hide();
+              $('.itemsbus').hide();
+
             var tableBody = $('#datatable-buttons1 tbody');
             // Iterate through the data and append rows to the table
             for (var i = 0; i < responseData.length; i++) {
@@ -767,7 +778,7 @@ $(document).on('click', '.depo_list', function () {
     let id = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
-    alert('hai')
+
     $.ajax({
         url: '{% url "depo_payment" %}',
         data: {
@@ -781,6 +792,9 @@ $(document).on('click', '.depo_list', function () {
             $('.region').show();
             $('.depo').show();
             $('.items').hide();
+            $('.itemsreg').hide();
+             $('.itemsbus').hide();
+              $('.itemdepot').hide();
             var tableBody = $('#depo_listtable tbody');
             // Iterate through the data and append rows to the table
             for (var i = 0; i < responseData.length; i++) {
@@ -802,7 +816,7 @@ $(document).on('click', '.depo_list', function () {
                 row.append(regionTd);
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
-                  var code = '<td class="text-center"><a href="#" class="items_list" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                  var code = '<td class="text-center"><a href="#" class="items_depolist" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
                 row.append(code);// Amount Collected
                 tableBody.append(row);
             }
@@ -843,7 +857,7 @@ $(document).on('click', '.bus_list', function () {
     let id = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
-    alert('hai')
+
     $.ajax({
         url: '{% url "bus_payment" %}',
         data: {
@@ -858,6 +872,9 @@ $(document).on('click', '.bus_list', function () {
             $('.depo').show();
             $('.bus').show();
             $('.items').hide();
+            $('.itemsregion').hide();
+            $('.itemsdepot').hide();
+            $('.itemsbus').hide();
             var tableBody = $('#bus_listtable tbody');
             // Iterate through the data and append rows to the table
             for (var i = 0; i < responseData.length; i++) {
@@ -867,7 +884,7 @@ $(document).on('click', '.bus_list', function () {
                 row.append($('<td>').text(item.bus_station));
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
-                  var code = '<td class="text-center"><a href="#" class="items_list" data-id="' + item.busstation_id + '"  data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                  var code = '<td class="text-center"><a href="#" class="items_buslist" data-id="' + item.busstation_id + '"  data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
                 row.append(code);// Amount Collected
                 tableBody.append(row);
             }
@@ -920,12 +937,19 @@ $(".items_list").on('click', function () {
             var responseData = response.response.daywisesaleswarehouselist;
             $('.items').show();
              $('.region').hide();
+             $('.depo').hide();
+             $('.bus').hide();
+             $('.itemsbus').hide();
+             $('.itemsdepot').hide();
+             $('.itemsreg').hide();
+
             var tableBody = $('#items_warehouse tbody');
             // Iterate through the data and append rows to the table
             for (var i = 0; i < responseData.length; i++) {
                 var item = responseData[i];
                 var row = $('<tr>');
-                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(i + 1));
+                  row.append($('<td>').text(item.warehouse));// S No
                 row.append($('<td>').text(item.date));  // Region
                 row.append($('<td>').text(item.item_name));  // Quantity
                 row.append($('<td>').text(item.qty));
@@ -984,14 +1008,18 @@ $(document).on('click', '.items_regionlist', function () {
             $('.items').hide();
              $('.region').show();
              $('.bus').hide();
+             $('.itemsbus').hide();
+             $('.itemsdepot').hide();
              $('.depo').hide();
             var tableBody = $('#items_region tbody');
             // Iterate through the data and append rows to the table
             for (var i = 0; i < responseData.length; i++) {
                 var item = responseData[i];
                 var row = $('<tr>');
-                row.append($('<td>').text(i + 1));  // S No
-                row.append($('<td>').text(item.delivery_date));  // Region
+                row.append($('<td>').text(i + 1));
+                  // S No
+                row.append($('<td>').text(item.delivery_date));
+                  row.append($('<td>').text(item.region));// Region
                 row.append($('<td>').text(item.item_name));  // Quantity
                 row.append($('<td>').text(item.qty));
                 row.append($('<td>').text(item.paymentmode));
@@ -1031,6 +1059,146 @@ $(document).on('click', '.items_regionlist', function () {
         }
     });
 });
+
+$(document).on('click', '.items_depolist', function () {
+    let id = $(this).data('id');
+    let fdate = $(this).data('fdate');
+    let tdate = $(this).data('tdate');
+    $.ajax({
+        url: '{% url "depo_items" %}',
+        data: {
+            'id': id,
+            'fdate': fdate,
+            'tdate': tdate,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            var responseData = response.response.daywisesalesdepolist;
+            $('.itemsreg').hide();
+             $('.itemsdepot').show();
+            $('.itemsbus').hide();
+            $('.items').hide();
+             $('.region').hide();
+             $('.bus').hide();
+             $('.depo').show();
+            var tableBody = $('#items_depot  tbody');
+            // Iterate through the data and append rows to the table
+            for (var i = 0; i < responseData.length; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.date));
+                row.append($('<td>').text(item.depo));
+                row.append($('<td>').text(item.item_name));  // Quantity
+                row.append($('<td>').text(item.qty));
+                row.append($('<td>').text(item.paymentmode));
+                 row.append($('<td>').text(item.total));
+                tableBody.append(row);
+            }
+            $("#items_depot").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+    });
+});
+
+
+$(document).on('click', '.items_buslist', function () {
+    let id = $(this).data('id');
+    let fdate = $(this).data('fdate');
+    let tdate = $(this).data('tdate');
+    $.ajax({
+        url: '{% url "bus_items" %}',
+        data: {
+            'id': id,
+            'fdate': fdate,
+            'tdate': tdate,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            var responseData = response.response.daywisesalesbusstationlist;
+            $('.itemsreg').hide();
+             $('.itemsdepot').hide();
+            $('.itemsbus').show();
+            $('.items').hide();
+             $('.region').hide();
+             $('.bus').show();
+             $('.depo').hide();
+            var tableBody = $('#items_bus tbody');
+            // Iterate through the data and append rows to the table
+            for (var i = 0; i < responseData.length; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.delivery_date));
+                   row.append($('<td>').text(item.bus_station));// Region
+                row.append($('<td>').text(item.item_name));  // Quantity
+                row.append($('<td>').text(item.qty));
+                row.append($('<td>').text(item.paymentmode));
+                 row.append($('<td>').text(item.total));
+                tableBody.append(row);
+            }
+            $("#items_bus").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+    });
+});
+
 
  </script>
 {% endblock %}

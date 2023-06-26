@@ -50,9 +50,9 @@
         </button>
         <div class="dropdown-menu"  id="myDropdown1" style="max-height: 400px; overflow-y: auto;">
           <input type="search" class="form-control" id="myInput1" placeholder="search" onkeyup="filterFunction1()">
-          <a class="dropdown-item" href="/busstation_stock/All">All</a>
+          <a class="dropdown-item" href="/depot_stock_new/All">All</a>
           {% for data in depolist %}
-            <a class="dropdown-item depo" href="/busstation_stock1/{{ data.deponame }}">{{ data.deponame }}</a>
+            <a class="dropdown-item depo" href="/depot_stock_new/{{ data.deponame }}">{{ data.deponame }}</a>
           {% endfor %}
         </div>
       </div>
@@ -178,7 +178,6 @@
                             <tr>
                                <th rowspan="2">S NO</th>
                                 <th rowspan="2">Date</th>
-                                <!--<th>Region Name</th>-->
                                 <th rowspan="2">Depot Name</th>
                                 <th colspan="3">Items</th>
                              <th  colspan="3">Average Consumption Per Day</th>
@@ -201,7 +200,7 @@
       <td>{{ forloop.counter }}</td>
       <td>{{ entry.createdon__date }}</td>
         <td><a href="/busstation_stock/{{ entry.deponame }}/" style="color:#075ab3;">{{ entry.deponame }}</a></td>
-     <td>
+                                            <td>
                                               {% for item in entry.items %}
                                                 {% if item.itemcode == 'PHA0002' %}
                                                   {{ item.total_qty }}
@@ -222,11 +221,32 @@
                                                 {% endif %}
                                               {% endfor %}
                                             </td>
+                                        <td>
+                                              {% for item in item_quantity.items1 %}
+                                                {% if item.itemcode == 'PHA0002' %}
+                                                  {{ item.total_sum }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in item_quantity.items1 %}
+                                                {% if item.itemcode == 'PHA0001' %}
+                                                  {{ item.total_sum }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
+                                            <td>
+                                              {% for item in item_quantity.items1 %}
+                                                {% if item.itemcode == 'PHA0004' %}
+                                                  {{ item.total_sum }}
+                                                {% endif %}
+                                              {% endfor %}
+                                            </td>
 
 
-    </tr>
+                            </tr>
     {% endfor %}
-                                    </tr>
+
 
                                   </tbody>
 

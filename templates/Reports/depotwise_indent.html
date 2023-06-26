@@ -78,7 +78,7 @@
 												</select>
                                 <input type="hidden" name="from" id="from" value="{{ request.POST.from }}">
                               <select id="daterangeselect" class="form-control" name="range">
-                                     <option value=" " >All</option>
+                                        <option value="All">All</option>
                                   {% for selectrange in selectrange %}
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
                                   {% endfor %}
@@ -557,7 +557,7 @@ $(document).ready(function() {
   var endDateInput = document.getElementById("end-date");
 
  $("#warehouseid1, #regionid1, #depoid1, #daterangeselect").change(function() {
-  var validOptions = ["1", "2", "3","4","5"]; // Valid options for submission
+  var validOptions = ["1", "2", "3","4","5","All"]; // Valid options for submission
   if (validOptions.includes(daterangeSelect.value)) {
     form.submit(); // Submit the form
   }

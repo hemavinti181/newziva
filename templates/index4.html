@@ -1,7 +1,24 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
+<style>
+     .row3{
+        color: white;
+        background-color:#ff7f50!important;
+}
+.total{
+ color: black;
+        background-color: #e39010  !important;
+}
+.row4{
+        color: white;
+        background-color:#08aca2 !important;
+}
+.row5{
+ color: white;
+        background-color:#767CDE !important;
+}
+</style>
   <!-- page content -->
             <div class="right_col" role="main">
                 <div class="row" style="display: inline-block;">
@@ -9,18 +26,17 @@
                     <div class="col-md-12 col-sm-12">
                         <div class="x_panel">
                             <div class="x_content">
-                                <div class="col-md-6 col-sm-6">
+                                <div class="col-md-4 col-sm-4">
                                     <table class="table" border="1">
                                         <thead>
                                             <tr>
-                                                <td>Total Supply from the </td>
-                                                <td colspan="3">Product</td>
+                                                <th class="row3" rowspan="2">Total Supply from theManufacturer </th>
+                                                <th class="row3"  colspan="3">Product</th>
                                             </tr>
                                             <tr>
-                                                <td>Manufacturer</td>
-                                                <td>1000ml</td>
-                                                <td>500ml</td>
-                                                <td>250ml</td>
+                                                <th class="row3">1000ml</th>
+                                                <th class="row3">500ml</th>
+                                                <th class="row3">250ml</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -42,13 +58,15 @@
                                                 <th colspan="4" style="padding: 1px !important;"></th>
                                             </tr>
                                             <tr>
-                                                <td>Grand Total</td>
+                                                <th class="total">Grand Total</th>
                                                 <td>7159</td>
                                                 <td>18772</td>
                                                 <td>502</td>
                                             </tr>
                                         </tfoot>
                                     </table>
+                                </div>
+                                   <div class="col-md-1 col-sm-1">
                                 </div>
                                 <div class="col-md-3 col-sm-3">
                                     <canvas class="canvasDoughnut" height="200" width="200" style="margin: 15px 10px 10px 0"></canvas>
@@ -63,18 +81,18 @@
                     <div class="col-md-12 col-sm-12">
                         <div class="x_panel">
                             <div class="x_content">
-                                <div class="col-md-6 col-sm-6">
+                                <div class="col-md-4 col-sm-4">
                                     <table class="table" border="1">
                                         <thead>
                                             <tr>
-                                                <td>Utilised Stock </td>
-                                                <td colspan="3">Product</td>
+                                                <th class="row4" rowspan="2">Utilised Stock Warehouse </th>
+                                                <th class="row4" colspan="3">Product</th>
                                             </tr>
                                             <tr>
-                                                <td>Warehouse</td>
-                                                <td>1000ml</td>
-                                                <td>500ml</td>
-                                                <td>250ml</td>
+
+                                                <th class="row4">1000ml</th>
+                                                <th class="row4">500ml</th>
+                                                <th class="row4">250ml</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -96,13 +114,16 @@
                                                 <th colspan="4" style="padding: 1px !important;"></th>
                                             </tr>
                                             <tr>
-                                                <td>Grand Total</td>
+                                                <td class="total">Grand Total</td>
                                                 <td>7159</td>
                                                 <td>18772</td>
                                                 <td>502</td>
                                             </tr>
                                         </tfoot>
                                     </table>
+                                </div>
+                                 <div class="col-md-1 col-sm-1">
+
                                 </div>
                                 <div class="col-md-3 col-sm-3">
                                     <canvas class="canvasDoughnut" height="200" width="200" style="margin: 15px 10px 10px 0"></canvas>
@@ -117,11 +138,11 @@
                     <div class="col-md-12 col-sm-12">
                         <div class="x_panel">
                             <div class="x_content">
-                                <div class="col-md-6 col-sm-6">
+                                <div class="col-md-4 col-sm-4">
                                     <table class="table" border="1">
                                         <thead>
                                             <tr>
-                                                <td colspan="4">Requirement of 1000ml, 500ml & 250ml per day </td>
+                                                <th class="row5" colspan="4">Days of Stock Available</th>
                                             </tr>
                                             <tr>
                                                 <td>Warehouse</td>
@@ -149,13 +170,16 @@
                                                 <th colspan="4" style="padding: 1px !important;"></th>
                                             </tr>
                                             <tr>
-                                                <td>Grand Total</td>
+                                                <td class="total">Grand Total</td>
                                                 <td>7159</td>
                                                 <td>18772</td>
                                                 <td>502</td>
                                             </tr>
                                         </tfoot>
                                     </table>
+                                </div>
+                                 <div class="col-md-1 col-sm-1">
+
                                 </div>
                                 <div class="col-md-3 col-sm-3">
                                     <canvas class="canvasDoughnut" height="200" width="200" style="margin: 15px 10px 10px 0"></canvas>
