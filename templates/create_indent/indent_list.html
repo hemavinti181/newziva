@@ -7,20 +7,52 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"> <b>Indent List<b></h3>
+                <h3 style="color:#1372ba"> <b>Indent Details</b></h3>
               </div>
-
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                    <a href="/create_indent"><button type="submit" class="btn btn-primary">Add Indent Item</button></a>
+                    <a href="/create_indent"><button type="submit" class="btn btn-primary">Create Indent</button></a>
                 </div>
             </div>
-              </div>
-            <div class="clearfix"></div>
+            </div>
 
-            <div class="row">
+                 <div style="display: inline-block;">
+                       <div class="row" style="display: inline-block;">
+    <div class="top_tiles" style="width: 900px;">
+    <div class="animated flipInY  col-md-4 col-sm-4">
+        <div class="tile-stats">
+            <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
+                <h1 class="text-info" style="margin-left: 30px; font-size: 25px;">{{ request.session.name }}</h1>
+             <!--<p class="text-info" style="font-size: 12px;">Indent from</p>-->
+           </div>
+
+        </div>
+
+ <div>
+    <span class="glyphicon glyphicon-arrow-right" aria-hidden="true" style="margin-top: 23px;color:#06911A;right:10px;font-size: 20px;"></span>
+ </div>
+        <div class="animated flipInY  col-md-4 col-sm-4" style="margin-top: -50px;right:-1px;">
+        <div class="tile-stats">
+            <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
+            {% if request.session.role  == 'Depo' %}
+                <h1 class="text-info" style="margin-left: 100px; font-size: 25px;">{{ request.session.warehousename }}</h1>
+            {% endif %}
+             {% if request.session.role  == 'Bus Station' %}
+                <h1 class="text-info" style="margin-left: 100px; font-size: 25px;">{{ request.session.deponame }}</h1>
+            {% endif %}
+                <!--<p class="text-info" style="font-size: 12px;">500ml</p>-->
+           </div>
+        </div>
+
+
+              </div>
+
+</div>
+                 </div>
+            <div class="row" style="display: block;">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
+                    <div class="clearfix"></div>
                   <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
@@ -31,24 +63,34 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
-                                    <th>Indent No</th>
-                                    <th>Indent From</th>
-                                    <th>Indent To</th>
-                                    <th>Created By</th>
                                     <th>Date</th>
+                                    <th>Indent No</th>
+                                    <!--<th>Indent From</th>
+                                    <th>Indent To</th>
+                                    <th>Created By</th>-->
                                     <th>Indent Items</th>
-
+                                    <th>Status</th>
                         </tr>
                       </thead>
                             {% for all_data in all_data %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ all_data.indent_no }}</td>
-                                    <td>{{ all_data.region_name }}</td>
+                                     <td>{{all_data.createdon}}</td>
+                                    <td><a href = "indent_item_list/{{ all_data.indent_no  }}"  style='color:#11468F'>{{ all_data.indent_no }}</a></td>
+                                    <!--<td>{{ all_data.region_name }}</td>
                                     <td>{{ all_data.warehouse_name }}</td>
-                                    <td>{{ all_data.createdby }}</td>
-                                    <td>{{all_data.createdon}}</td>
-                                    <td class="text-center"><a href = "indent_item_list/{{ all_data.indent_no  }}"><i class="fa fa-list-ul"  style='font-size:20px;color:blue'></i></a></td>
+                                    <td>{{ all_data.createdby }}</td>-->
+
+                                    <td class="text-center"><a href = "indent_item_list/{{ all_data.indent_no  }}"><i class="fa fa-list-ul"  style='font-size:20px;color:#11468F'></i></a></td>
+                                     <td  class="text-center">
+                               {%if all_data.status == "Pending" %}
+                                <span class="badge badge-warning">{{ all_data.status }} </span></a>
+
+                               {% else %}
+                                    <span class="badge bg-green">Accepted</span>
+                                <!-- /modals -->
+                                {% endif %}
+                           </td>
                                 </tr>
                              {% endfor %}
                       <tbody>
@@ -64,5 +106,11 @@
           </div>
 </div>
 
+                             <div class="inner-fabs">
+                                  <div class="fab bg-green round" id="fab3"><a href="indent_list_approve"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Accepted</span></div>
+                                  <div class="fab bg-yellow round" id="fab2"><a href="indent_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+                            </div>
 {% endblock %}
 

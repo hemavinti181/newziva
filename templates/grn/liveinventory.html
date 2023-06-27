@@ -6,7 +6,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Live Inventory</h3>
+                <h3>Live Inventory-{{ request.session.name }}</h3>
               </div>
 
               <div class="title_right">
@@ -32,6 +32,8 @@
                                     <th>S NO</th>
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
+                                    <th>Qty(In Bottles)</th>
+                                    <th>MRP</th>
 
 
                         </tr>
@@ -44,6 +46,8 @@
                                         <td>{{ forloop.counter }}</td>
                                         <td><a href = " batch_codeexpry/{{ all_data.itemcode }}/" style="color:#075ab3;">{{ all_data.itemname }}</a></td>
                                         <td> {{ all_data.Qty }} </td>
+                                        <td>{{ all_data.noofbottles }}</td>
+                                        <td>{{ all_data.mrp }}</td>
                                     </tr>
 
                             {% endfor %}

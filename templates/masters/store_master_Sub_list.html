@@ -18,8 +18,12 @@
               <div class="title_left">
                 <h3  style="color:#1372ba"><b>Stall List</b></h3>
               </div>
-        </div>
-
+       <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                   <a href="add_store"><button   width="10%" type="submit" class="btn btn-primary">Add New Stall</button></a>
+                    <!--<a href="add_store"><button style="padding: 0px 16px !important;"  width="10%" type="submit" class="btn btn-primary">Add Store</button></a>-->
+                </div>
+            </div>
               </div>
             <div class="clearfix"></div>
 <div class="row">
@@ -102,7 +106,7 @@
                                     <th>Mobile Number</th>
                                     <th>Store Location</th>
                                     <th>Created By</th>
-                                    <th>Action</th>
+                                    <th>Actions</th>
                            </tr>
                       </thead>
                       <tbody>
@@ -119,15 +123,16 @@
                         <td>{{ list.contact_person}}</a></td>
                         <td>{{ list.mobile_no }}</a></td>
 
-                        <td><u>{{ list.storelocation }}</u></td>
+                         <td class="text-center"><a href = "{{ list.storelocation }}" target="_blank"><i class="fa fa-map-marker"  style='font-size:28px;color:#FF6666; text-align: center;'></i></a></td>
                             <td>{{ list.userid }}</td>
                                 <td>
                                       {% if list.status == "Active" %}
 
-                                         <a class="editstore" href="#"  onclick="editstore('{{list.storecode}}','{{list.depoid}}')"  data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
+                                         <a class="editstore" href="#"  onclick="editstore('{{list.storecode}}','{{list.depoid}}')"  data-id="{{ list.storecode }}">
+                                        <i class="fa fa-edit"></i></a>
 
-                                          <a href="#" onclick="VerifyClick('{{ list.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#store-status">
-                                          Active</span></a>
+                                          <a href="#" onclick="VerifyClick('{{ list.sno }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                          InActive</span></a>
                                      {% else %}
 
                                         <a href="#" onclick="VerifyClick('{{ list.sno }}')" ><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">

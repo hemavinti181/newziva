@@ -28,9 +28,9 @@
                                     <th>S No</th>
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
+                                    <th>Qty(In Bottles)</th>
                                     <th>Expiry Date</th>
-                                    <th>HSN</th>
-                                    <th>UOM</th>
+                                    <th>Batch Code</th>
                                     <th>MRP</th>
 
 
@@ -41,9 +41,9 @@
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
+                           <td>{{ all_data.noofbottles }}</td>
                        <td>{{  all_data.expiry_date}}</td>
-                        <td>{{ all_data.hsn }}</td>
-                       <td>{{ all_data.uom }}</td>
+                       <td>{{ all_data.batch_no }}</td>
                        <td>{{ all_data.mrp }}</td>
                       </tr>
                       {% endfor %}

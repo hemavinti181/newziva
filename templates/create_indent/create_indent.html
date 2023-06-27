@@ -25,7 +25,7 @@
                 <div class="x_panel">
                  <div class="x_content">
 									<br />
-									<form class="form-label-left input_mask"  method="POST" action="create_indent"   enctype="multipart/form-data">
+									<form class="form-label-left input_mask"  method="POST" action="/create_indent"   enctype="multipart/form-data">
 										{% csrf_token %}
                                         {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
                                         	<div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -69,8 +69,8 @@
 										    <input type="text" class="form-control" placeholder="quantity in bottles" name="nob" id="nob" readonly>
 										</div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
-											<label>MRP *</label>
-										    <input type="text" class="form-control" placeholder="mrp" id="mrp" name="price" readonly>
+											<label>Total Price *</label>
+										    <input type="text" class="form-control" placeholder="total price" id="mrp" name="price" readonly>
 										</div>
 
 										<div class="col-md-2 col-sm-2 form-group has-feedback">
@@ -105,17 +105,17 @@ $("#itemcode").change(function() {
         	var itemname = $('#itemcode').val();
         	$.ajax({
             	type: "POST",
-            	url: '{% url "get_price1" %}',
+            	url: '{% url "get_indentitem"  %}',
             	data: {
                 	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 
 			 	success: function(data){
-			 		 var obj = data.data.pricemasterlist
+			 		 var obj = data.data.itemmasterlist
                         console.log(obj[0].mrp);
                         if(obj.length>0){
                             $("#mrp1").val(obj[0].mrp);
-                            $("#cases1").val(obj[0].uom1);
+                            $("#cases1").val(obj[0].uom);
                             $("#quantity").val(" ");
                             $("#nob").val(" ");
                              $("#mrp").val(obj[0].mrp);

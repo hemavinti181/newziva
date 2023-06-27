@@ -7,37 +7,101 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"> <b>Indent Item List<b></h3>
+                <h3 style="color:#1372ba"> <b>Indent Item List</b></h3>
               </div>
-
               <div class="title_right">
-                <!--<div class="col-md-6 col-sm-7 offset-md-9">
-                    <a href="/create_indent"><button type="submit" class="btn btn-primary">Add Indent Item</button></a>
-                </div>-->
-            </div>
+                  <div class="col-md-4 col-sm-4 offset-md-6">
+                      <div style="display: inline-block;">
+                            <div class="row" style="display: inline-block;">
+                                <div class="top_tiles" style="width: 700px;">
+                                    <div class="animated flipInY  col-md-3 col-sm-3">
+                                        <div class="tile-stats">
+                                            <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
+                                                <h1 class="text-info" style="margin-left: 17px; font-size: 18px;">{{ id }}</h1>
+                                 <!--<p class="text-info" style="font-size: 12px;">Indent from</p>-->
+                                        </div>
+                                    <div>
+                                </div>
+                            </div></div>
+                              <button type="button" id="add_indentitem" style="margin-top:10px;right:20px;" class="btn btn-primary">Add Indent Item</button>
+                      </div>
+
+                  </div>
               </div>
+            </div>
+            </div>
+               <div class="clearfix"></div>
+
+            <div class="row" id="itemrow" style="display: none;">
+              <div class="col-md-12 col-sm-12">
+                <div class="x_panel">
+                 <div class="x_content">
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action=""   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Select Items *</label>
+										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+													<option value="">Items</option>
+                                                    {% for data in item_masterlist %}
+                                                        {% if data.status == "Active" %}
+                                                            <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+										</div>
+
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Quantity(In Cases) *</label>
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" required>
+										</div>
+                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Quantity(In Bottles) *</label>
+										    <input type="text" class="form-control" placeholder="quantity in bottles" name="nob" id="nob" readonly>
+										</div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Total Price *</label>
+										    <input type="text" class="form-control" placeholder="total price" id="mrp" name="price" readonly>
+										</div>
+
+										<div class="col-md-2 col-sm-2 form-group has-feedback">
+												<button type="submit"  style="margin-top: 25px;"  class="btn btn-primary">Submit</button>
+											</div>
+
+										  <input type="hidden" class="form-control"  name="itemname" id="itemname">
+                                        <input type="hidden" class="form-control"  name="whname" id="whname">
+                                        <input type="hidden" class="form-control"  name="cases1" id="cases1">
+                                        <input type="hidden" class="form-control"  name="mrp1" id="mrp1">
+
+                                 </div>
+                  </div>
+              </div>
+            </div>
             <div class="clearfix"></div>
-  <div class="row">
+  <div class="row" style="display: block;">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
+                    <div class="clearfix"></div>
                   <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-                        <table id="datatable-buttons" class="display table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
-                                    <th>Item code</th>
+                                    <th>Item Code</th>
                                     <th>Item Name</th>
-                                    <th>QTY</th>
+                                    <th>Qty(In Cases)</th>
+                                    <th>Qty(In Bottles)</th>
                                     <th>MRP</th>
                                     <th>Dispatch Qty</th>
                                     <th>Batch Code</th>
-                                    <th>ExpDate date</th>
-                                    <th>Indent no</th>
+                                    <th>Expiry Date</th>
+                                    <!--<th>Indent No</th>-->
 
                         </tr>
                       </thead>
@@ -47,11 +111,12 @@
                                     <td>{{ all_data.item_code_org }}</td>
                                     <td>{{ all_data.item_name }}</td>
                                      <td> {{ all_data.qty }} </td>
+                                     <td> {{ all_data.noofbottles }} </td>
                                     <td>{{ all_data.mrp }}</td>
                                     <td>{{all_data.dispatch_qty}}</td>
                                     <td>{{ all_data.batch_code }}</td>
                                     <td>{{  all_data.expirydate }}</td>
-                                    <td>{{all_data.indent_no}}</td>
+                                    <!--<td>{{all_data.indent_no}}</td>-->
                                 </tr>
                              {% endfor %}
                       <tbody>
@@ -66,6 +131,59 @@
             </div>
           </div>
 </div>
+<script>
 
+
+    $(document).ready(function() {
+        $('#add_indentitem').on('click', function() {
+            $('#itemrow').show();
+        });
+    });
+$("#itemcode").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#itemname").val(selectedOptionText);
+});
+
+$("#itemcode").change(function() {
+        	var itemname = $('#itemcode').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_indentitem"  %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].mrp);
+                        if(obj.length>0){
+                            $("#mrp1").val(obj[0].mrp);
+                            $("#cases1").val(obj[0].uom);
+                            $("#quantity").val(" ");
+                            $("#nob").val(" ");
+                             $("#mrp").val(obj[0].mrp);
+
+					}
+             	}
+        	});
+    	});
+    	$('#quantity').on('input', function()  {
+    	    val  = $("#quantity").val();
+            val1 = $("#cases1").val();
+            mrp2 = $("#mrp1").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp2)
+            $("#nob").val(val2);
+            $("#mrp").val(val3);
+         });
+         $('#getdate').val(new Date().toJSON().slice(0,10));
+$('.items').change(function() {
+    console.log('Dropdown value changed');
+    if($(this).val() === '') {
+      alert('Please select an option');
+    }
+  });
+
+</script>
 {% endblock %}
 
