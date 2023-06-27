@@ -10,7 +10,7 @@
                 <h3 style="color:#1372ba"> <b>Indent Item List</b></h3>
               </div>
               <div class="title_right">
-                  <div class="col-md-4 col-sm-4 offset-md-6">
+                  <div class="col-md-4 col-sm-4 offset-md-7">
                       <div style="display: inline-block;">
                             <div class="row" style="display: inline-block;">
                                 <div class="top_tiles" style="width: 700px;">
@@ -23,8 +23,10 @@
                                     <div>
                                 </div>
                             </div></div>
-                              <button type="button" id="add_indentitem" style="margin-top:10px;right:20px;" class="btn btn-primary">Add Indent Item</button>
-                      </div>
+                                {% if data.status == 'Pending' %}
+                                        <button type="button" id="add_indentitem" style="margin-top:10px;margin-right:20px;" class="btn btn-primary">Add Indent Item</button>
+                                {% endif %}
+                            </div>
 
                   </div>
               </div>

@@ -131,8 +131,8 @@
                                          <a class="editstore" href="#"  onclick="editstore('{{list.storecode}}','{{list.depoid}}')"  data-id="{{ list.storecode }}">
                                         <i class="fa fa-edit"></i></a>
 
-                                          <a href="#" onclick="VerifyClick('{{ list.sno }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
-                                          InActive</span></a>
+                                          <a href="#" onclick="VerifyClick('{{ list.sno }}')"><span class="badge badge-info" data-toggle="modal" data-target="#store-status">
+                                         <i class="fa fa-trash"></i></span></a>
                                      {% else %}
 
                                         <a href="#" onclick="VerifyClick('{{ list.sno }}')" ><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">

@@ -683,7 +683,7 @@ function init_chart_doughnut() {
 
     console.log('init_chart_doughnut');
 
-    if ($('.canvasDoughnut').length) {
+    if ($('.canvasDoughnut1').length) {
 
         var chart_doughnut_settings = {
             type: 'doughnut',
@@ -718,7 +718,7 @@ function init_chart_doughnut() {
             }
         }
 
-        $('.canvasDoughnut').each(function () {
+        $('.canvasDoughnut1').each(function () {
 
             var chart_element = $(this);
             var chart_doughnut = new Chart(chart_element, chart_doughnut_settings);
@@ -726,7 +726,92 @@ function init_chart_doughnut() {
         });
 
     }
+if ($('.canvasDoughnut2').length) {
 
+        var chart_doughnut_settings = {
+            type: 'doughnut',
+            tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+            data: {
+                labels: [
+                    "1000ml",
+                    "500ml",
+                    "250ml"
+                ],
+                datasets: [{
+                    data: [7159, 18772, 502],
+                    backgroundColor: [
+                        "#BDC3C7",
+                        "#9B59B6",
+                        "#E74C3C",
+                        "#26B99A",
+                        "#3498DB"
+                    ],
+                    hoverBackgroundColor: [
+                        "#CFD4D8",
+                        "#B370CF",
+                        "#E95E4F",
+                        "#36CAAB",
+                        "#49A9EA"
+                    ]
+                }]
+            },
+            options: {
+                legend: false,
+                responsive: false
+            }
+        }
+
+        $('.canvasDoughnut2').each(function () {
+
+            var chart_element = $(this);
+            var chart_doughnut = new Chart(chart_element, chart_doughnut_settings);
+
+        });
+
+    }
+    if ($('.canvasDoughnut3').length) {
+
+        var chart_doughnut_settings = {
+            type: 'doughnut',
+            tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+            data: {
+                labels: [
+                    "1000ml",
+                    "500ml",
+                    "250ml"
+                ],
+                datasets: [{
+                    data: [7159, 18772, 502],
+                    backgroundColor: [
+                        "#BDC3C7",
+                        "#9B59B6",
+                        "#E74C3C",
+                        "#26B99A",
+                        "#3498DB"
+                    ],
+                    hoverBackgroundColor: [
+                        "#CFD4D8",
+                        "#B370CF",
+                        "#E95E4F",
+                        "#36CAAB",
+                        "#49A9EA"
+                    ]
+                }]
+            },
+            options: {
+                legend: false,
+                responsive: false
+            }
+        }
+
+        $('.canvasDoughnut3').each(function () {
+
+            var chart_element = $(this);
+            var chart_doughnut = new Chart(chart_element, chart_doughnut_settings);
+
+        });
+
+    }
 }
 
 

@@ -4323,7 +4323,7 @@ def indent_item_list(request,id):
         data = response.json()
         ind_item_list = data['indentitemlist']
 
-        return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list,'id':id,'menuname':menuname,'item_masterlist':item_masterlist})
+        return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list,'data':ind_item_list[0],'id':id,'menuname':menuname,'item_masterlist':item_masterlist})
     else:
         return render(request, 'create_indent/indent_item_list.html',{'menuname':menuname})
 def indent_item_list_ack(request, id):

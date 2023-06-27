@@ -683,7 +683,7 @@ function init_chart_doughnut() {
 
     console.log('init_chart_doughnut');
 
-    if ($('.canvasDoughnut').length) {
+    if (true) {
 
         var chart_doughnut_settings = {
             type: 'doughnut',
@@ -720,13 +720,93 @@ function init_chart_doughnut() {
             }
         }
 
-        $('.canvasDoughnut').each(function () {
+        $('.canvasDoughnut1').each(function () {
 
             var chart_element = $(this);
             var chart_doughnut = new Chart(chart_element, chart_doughnut_settings);
 
         });
+   var chart_doughnut_settings = {
+            type: 'doughnut',
+            tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+            data: {
+                labels: [
+                    "Symbian",
+                    "Blackberry",
+                    "Other",
+                    "Android",
+                    "IOS"
+                ],
+                datasets: [{
+                    data: [15, 20, 30, 10, 30],
+                    backgroundColor: [
+                        "#BDC3C7",
+                        "#9B59B6",
+                        "#E74C3C",
+                        "#26B99A",
+                        "#3498DB"
+                    ],
+                    hoverBackgroundColor: [
+                        "#CFD4D8",
+                        "#B370CF",
+                        "#E95E4F",
+                        "#36CAAB",
+                        "#49A9EA"
+                    ]
+                }]
+            },
+            options: {
+                legend: false,
+                responsive: false
+            }
+        }
 
+        $('.canvasDoughnut2').each(function () {
+
+            var chart_element = $(this);
+            var chart_doughnut = new Chart(chart_element, chart_doughnut_settings);
+
+        });   var chart_doughnut_settings = {
+            type: 'doughnut',
+            tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+            data: {
+                labels: [
+                    "Symbian",
+                    "Blackberry",
+                    "Other",
+                    "Android",
+                    "IOS"
+                ],
+                datasets: [{
+                    data: [15, 20, 30, 10, 30],
+                    backgroundColor: [
+                        "#BDC3C7",
+                        "#9B59B6",
+                        "#E74C3C",
+                        "#26B99A",
+                        "#3498DB"
+                    ],
+                    hoverBackgroundColor: [
+                        "#CFD4D8",
+                        "#B370CF",
+                        "#E95E4F",
+                        "#36CAAB",
+                        "#49A9EA"
+                    ]
+                }]
+            },
+            options: {
+                legend: false,
+                responsive: false
+            }
+        }
+
+        $('.canvasDoughnut3').each(function () {
+
+            var chart_element = $(this);
+            var chart_doughnut = new Chart(chart_element, chart_doughnut_settings);
+
+        });
     }
 
 }
@@ -2209,7 +2289,7 @@ function init_charts() {
 
     if ($('#canvasDoughnut').length) {
 
-        var ctx = document.getElementById("canvasDoughnut");
+        var ctx = document.getElementById("canvasDoughnut1");
         var data = {
             labels: [
                 "Dark Grey",
@@ -4101,7 +4181,7 @@ function init_echarts() {
 
     //echart Donut
 
-    if ($('#echart_donut').length) {
+   if ($('#echart_donut').length) {
 
         var echartDonut = echarts.init(document.getElementById('echart_donut'), theme);
 
@@ -4114,7 +4194,7 @@ function init_echarts() {
             legend: {
                 x: 'center',
                 y: 'bottom',
-                data: ['Direct Access', 'E-mail Marketing', 'Union Ad', 'Video Ads', 'Search Engine']
+                data: ['Low Stock Items', 'All Item Group', 'All Items', 'Unconfirmed Items']
             },
             toolbox: {
                 show: true,
@@ -4131,14 +4211,14 @@ function init_echarts() {
                             }
                         }
                     },
-                    restore: {
-                        show: true,
-                        title: "Restore"
-                    },
-                    saveAsImage: {
-                        show: true,
-                        title: "Save Image"
-                    }
+                    //restore: {
+                    //    show: true,
+                    //    title: "Restore"
+                    //},
+                    //saveAsImage: {
+                    //    show: true,
+                    //    title: "Save Image"
+                    //}
                 }
             },
             series: [{
@@ -4167,20 +4247,22 @@ function init_echarts() {
                 },
                 data: [{
                     value: 335,
-                    name: 'Direct Access'
+                    name: 'Low Stock Items'
                 }, {
                     value: 310,
-                    name: 'E-mail Marketing'
+                    name: 'All Item Group'
                 }, {
                     value: 234,
-                    name: 'Union Ad'
+                    name: 'All Items'
                 }, {
                     value: 135,
-                    name: 'Video Ads'
-                }, {
-                    value: 1548,
-                    name: 'Search Engine'
-                }]
+                    name: 'Unconfirmed Items'
+                },
+                //{
+                //    value: 1548,
+                //    name: 'Search Engine'
+                //}
+                ]
             }]
         });
 
