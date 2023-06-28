@@ -312,18 +312,18 @@
 										</div>
                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                  <label>Payment mode</label><br>
-                                                 <label class="btn btn-round btn-warning">
+                                                 <label class="btn btn-round btn-warning" id="btn_cash">
                                                  <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn"  /> CASH
                                                 </label>
 
-                                                   <label class="btn btn-round btn-warning">
-                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onchange="toggleButtonVisibility()" /> UPI
+                                                   <label class="btn btn-round btn-warning" id="btn_upi">
+                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()" /> UPI
                                                 </label>
-                                                   <label class="btn btn-round btn-warning">
-                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" onchange="getQRCode()" /> SCANNER
+                                                   <label class="btn btn-round btn-warning" id="btn_scanner">
+                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" onclick="displayQRCode()" /> SCANNER
                                                 </label>
 
-                                                  <label class="btn btn-round btn-warning">
+                                                  <label class="btn btn-round btn-warning" id="btn_due">
                                                  <input type="radio" name="paymenttype" id="due" value="Due" class="join-btn" /> DUE
                                                 </label>
 
@@ -340,7 +340,7 @@
 
                                                     <div class="col-md-6 col-sm-6   offset-md-3">
 											            <button class="btn btn-primary submit-btn" id="completebtn">Complete</button>
-                                                         <a href="/payment" class="btn  btn-primary submit-btn" id="paytmWithPaytm" style="display:none;" onchange="displayQRCode()">Proceed to pay</a>
+                                                         <a href="/payment" class="btn  btn-primary submit-btn" id="paytmWithPaytm" style="display:none;">Proceed to pay</a>
                                                     </div>
 
 									</div>
@@ -409,7 +409,18 @@
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
 <script>
+window.onload=function()
+{
+$(".join-btn").on('change', function(e){
+console.log(e.currentTarget);
+   var id=e.currentTarget.id;
+   $(".btn-round").removeClass("btn-primary");
+   $(".btn-round").addClass("btn-warning");
+   $("#btn_"+e.currentTarget.id+"").removeClass("btn-warning");
+   $("#btn_"+e.currentTarget.id+"").addClass("btn-primary");
 
+});
+}
 function ItemChange1(e){
 	   $("#txtItemName2").val($(e).find(":selected").text());
 	}
@@ -754,14 +765,13 @@ function getQRCode() {
       },
       success: function (data) {
         // Retrieve the image URL from the response
-        //var imageURL = data.data.qrData;
+        var imageURL = data.data.qrData;
          var qrText = data.data.qrData;
         // Create a new QRCode instance
         var qrCode = new QRCode(document.getElementById("qrcode-container"), {
           text: imageURL,
           width: 150,
           height: 150,
-          text: imageURL,
         });
 
         // Display the QR code container

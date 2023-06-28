@@ -26,11 +26,12 @@
                     <div class="col-md-12 col-sm-12">
                         <div class="x_panel">
                             <div class="x_content">
+<h3>Total Supply from theManufacturer</h3>
                                 <div class="col-md-4 col-sm-4">
                                     <table class="table" border="1">
                                         <thead>
                                             <tr>
-                                                <th class="row3" rowspan="2">Total Supply from theManufacturer </th>
+                                                <th class="row3" rowspan="2">Manufacurer </th>
                                                 <th class="row3"  colspan="3">Product</th>
                                             </tr>
                                             <tr>
@@ -69,7 +70,7 @@
                                    <div class="col-md-1 col-sm-1">
                                 </div>
                                 <div class="col-md-3 col-sm-3">
-                                    <canvas class="canvasDoughnut1" height="200" width="200" style="margin: 15px 10px 10px 0"></canvas>
+                                    <div id="echart_pies1" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
                                 </div>
                                 <div class="col-md-3 col-sm-3">
                                     <div id="graph_bar" style="width:100%; height:200px;"></div>
@@ -81,11 +82,12 @@
                     <div class="col-md-12 col-sm-12">
                         <div class="x_panel">
                             <div class="x_content">
+                                <h3>Utilised Stock Warehouse</h3>
                                 <div class="col-md-4 col-sm-4">
                                     <table class="table" border="1">
                                         <thead>
                                             <tr>
-                                                <th class="row4" rowspan="2">Utilised Stock Warehouse </th>
+                                                <th class="row4" rowspan="2"> Warehouse </th>
                                                 <th class="row4" colspan="3">Product</th>
                                             </tr>
                                             <tr>
@@ -126,7 +128,7 @@
 
                                 </div>
                                 <div class="col-md-3 col-sm-3">
-                                    <canvas class="canvasDoughnut2" height="200" width="200" style="margin: 15px 10px 10px 0"></canvas>
+                                    <div id="echart_pies2" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
                                 </div>
                                 <div class="col-md-3 col-sm-3">
                                     <div id="graph_bar2" style="width:100%; height:200px;"></div>
@@ -138,14 +140,16 @@
                     <div class="col-md-12 col-sm-12">
                         <div class="x_panel">
                             <div class="x_content">
+                                 <h3>Days of Stock Available</h3>
                                 <div class="col-md-4 col-sm-4">
                                     <table class="table" border="1">
                                         <thead>
                                             <tr>
-                                                <th class="row5" colspan="4">Days of Stock Available</th>
+                                                <th class="row5" colspan="2">Warehouse</th>
+                                                <th class="row4" colspan="3">Product</th>
                                             </tr>
                                             <tr>
-                                                <td>Warehouse</td>
+
                                                 <td>1000ml</td>
                                                 <td>500ml</td>
                                                 <td>250ml</td>
@@ -182,7 +186,7 @@
 
                                 </div>
                                 <div class="col-md-3 col-sm-3">
-                                    <canvas class="canvasDoughnut3" height="200" width="200" style="margin: 15px 10px 10px 0"></canvas>
+                                    <div id="echart_pies3" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
                                 </div>
                                 <div class="col-md-3 col-sm-3">
                                     <div id="graph_bar3" style="width:100%; height:200px;"></div>
@@ -196,5 +200,317 @@
             </div>
         </div>
         <!-- /page content -->
+<script>
+    window.onload=function(){
 
+
+     if (true) {
+
+        var echartPie = echarts.init(document.getElementById('echart_pies1'), "");
+
+        echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['1000ml', '500ml', '250ml']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: [{
+                    value: 335,
+                    name: '1000ml'
+                }, {
+                    value: 310,
+                    name: '500ml'
+                }, {
+                    value: 234,
+                    name: '250ml'
+                }]
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+ if (true) {
+
+        var echartPie = echarts.init(document.getElementById('echart_pies2'), "");
+
+        echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['1000ml', '500ml', '250ml']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: [{
+                    value: 335,
+                    name: '1000ml'
+                }, {
+                    value: 310,
+                    name: '500ml'
+                }, {
+                    value: 234,
+                    name: '250ml'
+                }]
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+ if (true) {
+
+        var echartPie = echarts.init(document.getElementById('echart_pies3'), "");
+
+        echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['1000ml', '500ml', '250ml']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: [{
+                    value: 335,
+                    name: '1000ml'
+                }, {
+                    value: 310,
+                    name: '500ml'
+                }, {
+                    value: 234,
+                    name: '250ml'
+                }]
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+     if ($('#graph_bar').length) {
+
+        Morris.Bar({
+            element: 'graph_bar',
+            data: [
+                { device: 'Aquafeena 1000ml', geekbench: 200 },
+                { device: 'Aquafeena 500ml', geekbench: 9113 },
+                { device: 'Aquafeena 250ml', geekbench: 250 },
+                { device: 'Sippy Beverages 1000ml', geekbench: 6959 },
+                { device: 'Sippy Beverages 500ml', geekbench: 9659 },
+                { device: 'Sippy Beverages 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar2').length) {
+
+        Morris.Bar({
+            element: 'graph_bar2',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#452754', '#452754', '#452755', '#452754'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar3').length) {
+
+        Morris.Bar({
+            element: 'graph_bar3',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+
+    }
+</script>
 {% endblock %}
