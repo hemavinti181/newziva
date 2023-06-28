@@ -15,6 +15,21 @@
 	.submit-btn{
 	width: 50% !important;
 	}
+	#qrcode-container {
+  width: 70%; /* Set the maximum width of the QR code image */
+  height: 40%; /* Maintain the aspect ratio of the image */
+}
+.btn-warning{
+        color: black;
+        background-color: white !important;
+}
+
+.join-btn:checked + label {
+    /* Apply your highlighted style here */
+    /* For example, change the background color and add a border */
+    background-color: #06911A !important;
+    border: 5px solid #ccc !important;
+  }
 </style>
  <div class="right_col" role="main">
         <div class="">
@@ -271,7 +286,7 @@
                                        <div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content style">
                                 <div class="modal-header">
-                             <h5 class="modal-title">Complete Sale</h5>
+                             <h3 class="modal-title">Complete Sale</h3>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -280,33 +295,11 @@
                                              <form method="POST" action="complete_sale">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
-
-
-                                               <!--<label class="btn btn-round btn-success">
-                                                 <input type="radio" name="paymenttype" id="card" value="CARD" class="join-btn" /> CARD
-                                                </label>-->
-                                                 <div class="col-md-4 col-sm-4  form-group has-feedback">
-                                                <label class="btn btn-round btn-danger">
-                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH"  /> CASH
-                                                </label>
-                                                 </div>
-                                                     <div class="col-md-4 col-sm-4  form-group has-feedback">
-                                                   <label class="btn btn-round btn-primary">
-                                                 <input type="radio" name="paymenttype" id="upi"  value="UPI"  /> UPI
-                                                </label>
-                                                     </div>
-
-                                                 <div class="col-md-4 col-sm-4  form-group has-feedback">
-                                                   <label class="btn btn-round btn-success">
-                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" /> Scanner
-                                                </label>
-                                                 </div>
-
-                                                 	  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
 										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" >
 										    </div>
-                                                 	<div  class="col-md-12 col-sm-12  form-group has-feedback">
+                                                 	<div  class="col-md-6 col-sm-6  form-group has-feedback">
 													<label>Spell Of The Day</label>
 											 <input type="hidden" name="spell" id="spell" />
 
@@ -317,18 +310,38 @@
                                                     {% endfor %}
 												</select>
 										</div>
+                                                <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                 <label>Payment mode</label><br>
+                                                 <label class="btn btn-round btn-warning">
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn"  /> CASH
+                                                </label>
+
+                                                   <label class="btn btn-round btn-warning">
+                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onchange="toggleButtonVisibility()" /> UPI
+                                                </label>
+                                                   <label class="btn btn-round btn-warning">
+                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" onchange="getQRCode()" /> SCANNER
+                                                </label>
+
+                                                  <label class="btn btn-round btn-warning">
+                                                 <input type="radio" name="paymenttype" id="due" value="Due" class="join-btn" /> DUE
+                                                </label>
+
+                                                </div>
+                                                 <div id="qrcode-container" style="display:none;">
+                                                       <img id="qr-image" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
+                                                 </div>
+                                                <p></p>
+
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
-										        <input type="text" class="form-control" name="remarks" id="remarks"  placeholder="remarks" >
+										       <textarea class="form-control" placeholder="remarks" rows="2"  name="remarks" id="remarks"></textarea>
 										    </div>
-                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<button class="btn btn-primary submit-btn">complete</button>
-                                                    </div>
-                                               <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                    <!--<button class="btn btn-info submit-btn" id="paytmWithPaytm">Pay now</button>-->
-                                                   <a href="payment" class="btn btn-info submit-btn" id="paytmWithPaytm">Pay now</a>
 
-        </div>
+                                                    <div class="col-md-6 col-sm-6   offset-md-3">
+											            <button class="btn btn-primary submit-btn" id="completebtn">Complete</button>
+                                                         <a href="/payment" class="btn  btn-primary submit-btn" id="paytmWithPaytm" style="display:none;" onchange="displayQRCode()">Proceed to pay</a>
+                                                    </div>
 
 									</div>
                                         </div>
@@ -393,6 +406,7 @@
                                         </div>
                                     </div>
                                 </div>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
 <script>
 
@@ -667,10 +681,101 @@ $(document).ready(function(){
             console.log("something went wrong");
           }
       }
-document.getElementById("paytmWithPaytm").addEventListener("click", function() {
-    // Redirect to the payment URL
-    window.location.href = "payment";
-});
+function displayQRCode() {
+  // Check if the radio button is checked
+  var scannerRadioButton = document.getElementById("scanner");
+  if (scannerRadioButton.checked) {
+    // Make an AJAX request to the server
+    $.ajax({
+      url: "/qr_code",
+      type: "POST",
+      dataType: "json",
+      data: {
+        'csrfmiddlewaretoken': '{{ csrf_token }}' // Your request parameters
+      },
+      success: function (data) {
+        // Retrieve the image URL from the response
+        var imageURL = data.data.image;
+
+        // Create an image element
+        var qrImage = new Image();
+
+        // Set the source of the image to the retrieved URL
+         var qrcodeContainer = document.getElementById("qrcode-container");
+        qrImage.src = 'data:image/png;base64,' + imageURL;
+        qrImage.style.maxWidth = '150px'; // Adjust the width as desired
+        qrImage.style.maxHeight = '150px';
+        qrImage.style.marginLeft = '119px';
+        // Display the QR code container
+        document.getElementById("qrcode-container").style.display = 'block';
+
+        // Get the reference to the qrcode-container div
+       // var qrcodeContainer = document.getElementById("qrcode-container");
+
+        // Clear any existing contents in the div
+        qrcodeContainer.innerHTML = '';
+
+        // Append the image to the container
+        qrcodeContainer.appendChild(qrImage);
+      },
+      error: function (xhr, status, error) {
+        // Handle error response
+        console.error('Error: ' + xhr.status);
+      }
+    });
+  }
+}
+
+function toggleButtonVisibility() {
+    alert('hai')
+  var upiRadioButton = document.getElementById("upi");
+  var myButton = document.getElementById("paytmWithPaytm");
+  var completebtn = document.getElementById("completebtn");
+
+  if (upiRadioButton.checked) {
+    myButton.style.display = "block";
+    completebtn.style.display = "none";
+  } else {
+    myButton.style.display = "none";
+  }
+}
+
+function getQRCode() {
+  // Check if the radio button is checked
+  var scannerRadioButton = document.getElementById("scanner");
+  if (scannerRadioButton.checked) {
+    // Make an AJAX request to the server
+    $.ajax({
+      url: "/qr_code",
+      type: "POST",
+      dataType: "json",
+      data: {
+        'csrfmiddlewaretoken': '{{ csrf_token }}' // Your request parameters
+      },
+      success: function (data) {
+        // Retrieve the image URL from the response
+        //var imageURL = data.data.qrData;
+         var qrText = data.data.qrData;
+        // Create a new QRCode instance
+        var qrCode = new QRCode(document.getElementById("qrcode-container"), {
+          text: imageURL,
+          width: 150,
+          height: 150,
+          text: imageURL,
+        });
+
+        // Display the QR code container
+        document.getElementById("qrcode-container").style.display = 'block';
+      },
+      error: function (xhr, status, error) {
+        // Handle error response
+        console.error('Error: ' + xhr.status);
+      }
+    });
+  }
+}
+
+
 </script>
 
 {% endblock %}

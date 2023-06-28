@@ -2609,9 +2609,10 @@ def add_grn(request):
             if r.status_code == 200:
                 data2 = r.json()
                 grn = data2['grnnumber']
-                request.session['grnnumber'] = grn
                 messages.success(request, data2['message'])
-                return redirect('add_grnitem')
+                url = reverse('add_grnitem', args=[id])
+                return redirect(url)
+
             else:
                 data2 = r.json()
                 messages.error(request, data2['message'])
@@ -2623,12 +2624,10 @@ def add_grn(request):
     return render(request, 'grn/add_grn.html',{'menuname':menuname})
 
 
-def add_grnitem(request):
+def add_grnitem(request,id):
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
-
-        id = request.session['grnnumber']
         url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
 
         payload = json.dumps({"accesskey":accesskey})
@@ -2650,10 +2649,10 @@ def add_grnitem(request):
                 "hsncode":"",
                 "qty": request.POST.get('quantity'),
                 "batchno": request.POST.get('batchno'),
-                "expdate": request.POST.get('expdate'),
+                "expdate": request.POST.get('result'),
                 "purchaseprice": request.POST.get('latestpurchase'),
-                "mrp":" ",
-                "freeqty": request.POST.get('freequantity'),
+                "mrp":request.POST.get('mrp'),
+                "freeqty": "",
                 "gst": " ",
                 "uom": request.POST.get('uom'),
                 "manufacturer": request.POST.get('manufacture'),
@@ -2681,17 +2680,17 @@ def add_grnitem(request):
                 response = requests.request("GET", url, headers=headers, data=payload)
                 data = response.json()
                 grn_item_list = data['grnitemlist']
-                return render(request, 'grn/add_grnitem.html', {'all_data': grn_item_list,'data': item_masterlist,'menuname':menuname})
+                return render(request, 'grn/add_grnitem.html', {'all_data': grn_item_list,'data': item_masterlist,'menuname':menuname,'id':id})
             else:
                 r1 = r.json()
                 messages.error(request, r1['message'])
-                return redirect('add_grnitem')
-
+                url = reverse('add_grnitem', args=[id])
+                return redirect(url)
         else:
-            return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname})
+            return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname,'id':id})
     except:
         messages.error(request,response.text)
-    return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname})
+    return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname,'id':id})
 
 def add_grnitem_list(request,id):
     menuname = request.session['mylist']
@@ -2712,9 +2711,9 @@ def add_grnitem_list(request,id):
     if response.status_code == 200:
         data = response.json()
         grn_item_list = data['grnitemlist']
-        return render(request, 'grn/add_grnitem_list.html', {'all_data': grn_item_list,'menuname':menuname})
+        return render(request, 'grn/add_grnitem_list.html', {'all_data': grn_item_list,'menuname':menuname,'id':id})
     else:
-        return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname})
+        return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname,'id':id})
 
 def add_grnitem_list1(request,id):
     menuname = request.session['mylist']
@@ -2733,11 +2732,34 @@ def add_grnitem_list1(request,id):
     if response.status_code == 200:
         data = response.json()
         grn_item_list = data['grnitemlist']
-        return render(request, 'grn/add_grnitem_list1.html', {'all_data': grn_item_list,'menuname':menuname})
+        return render(request, 'grn/add_grnitem_list1.html', {'all_data': grn_item_list,'menuname':menuname,'id':id})
     else:
-        return render(request, 'grn/add_grnitem_list1.html',{'menuname':menuname})
+        return render(request, 'grn/add_grnitem_list1.html',{'menuname':menuname,'id':id})
 
+def grn_reject(request):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/grn-reject.php"
+    #sno=request.POST.get('txtHdnId1')
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "grn_no": request.POST.get('txtHdnId1'),
+        "comments":""
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
 
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        #url = reverse('add_grnitem_list', args=[sno])
+        return redirect('/grn_pending_status')
+    else:
+        data = response.json()
+        messages.error(request, data['message'])
+        #url = reverse('add_grnitem_list', args=[sno])
+        return redirect('/grn_pending_status')
 
 def add_grn_inventory(request):
     accesskey = request.session['accesskey']
@@ -3166,7 +3188,11 @@ def complete_sale(request):
                     "paymentmode": request.POST.get('paymenttype'),
                     "remarks": request.POST.get('remarks'),
                     "date": request.POST.get('date'),
-                    "spelloftheday":request.POST.get('spell1')
+                    "spelloftheday":request.POST.get('spell1'),
+                    "transaction_status":"",
+                    "transaction_id":"",
+                    "transaction_status":"",
+                    "transaction_id":"",
 
                 })
                 headers = {
@@ -4326,6 +4352,30 @@ def indent_item_list(request,id):
         return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list,'data':ind_item_list[0],'id':id,'menuname':menuname,'item_masterlist':item_masterlist})
     else:
         return render(request, 'create_indent/indent_item_list.html',{'menuname':menuname})
+def pending_indent_item_list(request,id):
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "indentno": id
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        ind_item_list = data['indentitemlist']
+
+        return render(request, 'create_indent/pending_indent_item_list.html',
+                      {"all_data": ind_item_list, 'id': id, 'menuname': menuname,
+                       })
+    else:
+        return render(request, 'create_indent/pending_indent_item_list.html', {'menuname': menuname,"id":id})
+
 def indent_item_list_ack(request, id):
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -4351,9 +4401,9 @@ def indent_item_list_ack(request, id):
             request.session['fromid'] = fromid
             request.session['toname'] = toname
             request.session['toid'] = toid
-            return render(request, 'create_indent/indent_list_ack.html', {'menuname':menuname,"all_data": ind_item_list})
+            return render(request, 'create_indent/indent_list_ack.html', {'menuname':menuname,"all_data": ind_item_list,'id':id})
         else:
-            return render(request, 'create_indent/indent_list_ack.html',{'menuname':menuname})
+            return render(request, 'create_indent/indent_list_ack.html',{'menuname':menuname,'id':id})
 
 
 def out_passlist(request):
@@ -4718,25 +4768,38 @@ def approved_indlist_accept(request):
                           {"all_data": approved_list, 'menuname': menuname})
         else:
             return render(request, 'create_indent/approved_indlist.html', {'menuname': menuname})
-@csrf_exempt
+
 def get_grn_item_data(request):
     accesskey = request.session['accesskey']
     itemname = request.POST.get('itemname')
 
-    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-search.php"
+    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-search-new.php"
 
     payload = json.dumps({
         "accesskey": accesskey,
-        "itemcode": itemname
     })
 
     headers = {
         'Content-Type': 'application/json'
     }
 
-    data = requests.request("POST", url, headers=headers, data=payload)
-    data2 = data.json()
-    return JsonResponse({'data': data2})
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    if response.status_code == 200:
+        data = response.json()
+        itemmasterlist = data['itemmasterlist']
+        for i in itemmasterlist:
+            if str(i['itemcode']) == itemname:
+                data = {"mrp": i["mrp"], "uom": i["uom"], "itemname": i["itemname"],"sno":i['sno']}
+        return JsonResponse({'data': data})
+
+    else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+            except:
+                messages.error(request, response.text)
+            return redirect('/add_grnitem')
 
 def get_price1(request):
     region = request.session['regionid']
@@ -9269,14 +9332,52 @@ def region_stock(request,id):
 def __id_generator__(size=6, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase):
     return ''.join(random.choice(chars) for _ in range(size))
 
+def qr_code(request):
+
+    # import checksum generation utility
+    # You can get this utility from https://developer.paytm.com/docs/checksum/
+
+    paytmParams = dict()
+    order_id = __id_generator__()
+    paytmParams["body"] = {
+        "mid": "TSRTCP03244016260030",
+        "orderId": order_id,
+        "amount": "1303.00",
+        "businessType": "UPI_QR_CODE",
+        "posId": "S12_123"
+    }
+
+    # Generate checksum by parameters we have in body
+    # Find your Merchant Key in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+    checksum = paytmchecksum.generateSignature(json.dumps(paytmParams["body"]), "jXXQfmzmqD3PpchQ")
+
+    paytmParams["head"] = {
+        "clientId"	: "C11",
+        "version"	        : "v1",
+        "signature"         : checksum
+    }
+
+    post_data = json.dumps(paytmParams)
+
+    # for Staging
+    url = "https://securegw-stage.paytm.in/paymentservices/qr/create"
+
+    # for Production
+    # url = "https://securegw.paytm.in/paymentservices/qr/create"
+    response = requests.post(url, data = post_data, headers = {"Content-type": "application/json"}).json()
+    result=response['body']
+    image=result['image']
+    return JsonResponse({'data':result})
+    #return render(request,'sales/sales_new.html',{'image':image,'result':result})
 
 
+@csrf_exempt
 def payment(request):
 
     paytmParams = dict()
     order_id =__id_generator__()
-    #url = reverse('http://localhost:8000/response', args=[order_id])
-    url = "https://tsrtcziva.com/response/{}/".format(order_id)
+    url = reverse('response', args=[order_id])
+    #url = "https://tsrtcziva.com/response/{}/".format(order_id)
     paytmParams['body'] = {
         "requestType": "Payment",
         "mid": "TSRTCP03244016260030",
@@ -9317,9 +9418,9 @@ def payment(request):
     }
     return render(request, 'payment.html',context)
 
-
 @csrf_exempt
 def response(request,id):
+    accesskey = request.session['accesskey']
     paytmParams = dict()
     paytmParams['body'] = {
         "mid": "TSRTCP03244016260030",
@@ -9346,15 +9447,42 @@ def response(request,id):
     response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
     print(response)
     data = response['body']
-
+    resultInfo = data['resultInfo']
+    txn_id = data['txnId']
     data1 = paytmParams['body']
     context = {
         'data_dict': data1,
         'data':data,
-
-
     }
-    return render(request,'ex.html',context)
+    if response.status_code == 200:
+        url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sonumber": request.POST.get('txtHdnId'),
+            "paymentmode": request.POST.get('paymenttype'),
+            "remarks": request.POST.get('remarks'),
+            "date": request.POST.get('date'),
+            "spelloftheday": request.POST.get('spell1'),
+            "transaction_status": "",
+            "transaction_id": "",
+            "transaction_status": "",
+            "transaction_id": "",
+
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        if response.status_code == 200:
+            messages.success(request, data['message'])
+            return redirect('proformainvoice')
+        else:
+            messages.error(request, data['message'])
+            return redirect('proformainvoice')
+    else:
+        return redirect('proformainvoice')
 
 
 def pending_indent_admin(request):

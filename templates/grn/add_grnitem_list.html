@@ -11,10 +11,27 @@
               </div>
 
               <div class="title_right">
-                <div class="col-md-6 col-sm-7 offset-md-9">
-                    <a href="/add_grnitem"><button type="submit" class="btn btn-primary">Add GRN Item</button></a>
-                </div>
+
+                     <div class="col-md-5 col-sm-5 offset-md-7">
+                      <div style="display: inline-block;">
+                            <div class="row" style="display: inline-block;">
+                                <div class="top_tiles" style="width: 700px;">
+                                    <div class="animated flipInY  col-md-3 col-sm-3">
+                                        <div class="tile-stats">
+                                            <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
+                                                <h1 class="text-info" style="margin-top:13px; margin-left: 10px; font-size: 18px;">{{ id }}</h1>
+                             <!--<p class="text-info" style="font-size: 12px;">Indent from</p>-->
+                                        </div>
+                                    <div>
+                                </div>
+                            </div></div>
+                                 <!--<div class="col-md-4 col-sm-4 offset-md-4">-->
+                    <a href="{% url 'add_grnitem' id=id %}"><button type="submit" style="margin-top:11px;margin-right:20px;" class="btn btn-primary">Add GRN Item</button></a>
+                                 <!--</div>-->
+                                 </div>
             </div>
+              </div>
+                </div>
               </div>
              <div class="clearfix"></div>
             <div class="row" style="display: block;">

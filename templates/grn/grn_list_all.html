@@ -179,13 +179,16 @@
                        <!--<td>{{ all_data.totalprice }}</td>
                        <td>{{ all_data.totalitems }}</td>-->
                            <td  class="text-center">
-                               {%if all_data.status == "pending" %}
-                               <a href="/add_grnitem_list/{{ all_data.grn }}"><span class="badge badge-warning">{{ all_data.status }} </span></a>
-
-                               {% else %}
-                                     <a href="/add_grnitem_list/{{ all_data.grn }}"><span class="badge bg-green">Verified</span>
-                                <!-- /modals -->
-                                {% endif %}
+                               {% if all_data.status == "pending" %}
+                                        <!--<span class="badge badge-success"  data-toggle="modal"  onclick="VerifyClick('{{all_data.grn}}')" data-target="#bs-example-modal-sm">
+                                        Verify</span>
+                                        <span class="badge badge-danger" data-toggle="modal"  onclick="VerifyClick1('{{all_data.grn}}')" data-target="#bs-example-modal-sm1">Reject</span>-->
+                                            <a href="/add_grnitem_list/{{ all_data.grn }}"><span class="badge bg-warning">Pending</span>
+                              {% elif all_data.status == "Verified" %}
+                                     <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge bg-green">Verified</span>
+                              {% else %}
+                                     <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge badge-danger">Rejected</span>
+                              {% endif %}
                            </td>
                       </tr>
                       {% endfor %}
@@ -216,7 +219,7 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
                                                   <div class="modal-header">
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Payment</h4>
+                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -242,11 +245,46 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+<div class="modal custom-modal fade" id="bs-example-modal-sm1" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="grn_reject">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Reject</h3>
+									<p>Are you sure want to Reject?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="txtHdnId1" name="txtHdnId1"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 <script>
 
 function VerifyClick(id){
 $("#comment").val("");
 $("#txtHdnId").val(id);
+}
+function VerifyClick1(id){
+$("#txtHdnId1").val(id);
 }
 </script>
 

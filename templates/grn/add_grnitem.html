@@ -7,10 +7,31 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3> Item Add</h3>
+                <h3> GRN Item Add</h3>
+              </div>
+                 <div class="title_right">
+                  <div class="col-md-4 col-sm-4 offset-md-7">
+                      <div style="display: inline-block;">
+                            <div class="row" style="display: inline-block;">
+                                <div class="top_tiles" style="width: 700px;">
+                                    <div class="animated flipInY  col-md-3 col-sm-3">
+                                        <div class="tile-stats">
+                                            <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
+                                                <h1 class="text-info" style="margin-left: 17px; font-size: 18px;">{{ id }}</h1>
+                                 <!--<p class="text-info" style="font-size: 12px;">Indent from</p>-->
+                                        </div>
+                                    <div>
+                                </div>
+                            </div></div>
+                                {% if data.status == 'Pending' %}
+                                        <button type="button" id="add_indentitem" style="margin-top:10px;margin-right:20px;" class="btn btn-primary">Add Indent Item</button>
+                                {% endif %}
+                            </div>
+
+                  </div>
               </div>
             </div>
-              </div>
+            </div>
             <div class="clearfix"></div>
 
             <div class="row">
@@ -21,78 +42,82 @@
 
                  <div class="x_content">
 									<br />
-									<form class="form-label-left input_mask"  method="POST" action="add_grnitem"   enctype="multipart/form-data">
+									<form class="form-label-left input_mask"  method="POST" action=""   enctype="multipart/form-data">
 										{% csrf_token %}
 
 
-											<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<div class="col-md-2 col-sm-2  form-group has-feedback">
                                                  <input type="hidden" id="wh_id" name="wh_id" />
                                                        <label>Select Items *</label>
-                                                <select class="form-control" name="itemname" id="itemname">
-													<option value=" ">Items</option>
+                                                <select class="form-control items" name="itemname" id="itemname" required>
+                                                    <option value="">item name</option>
                                                     {% for data in data %}
                                                         <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
                                                     {% endfor %}
                                                 </select>
                                             <input type="hidden" id="txtItemName" name="txtItemName" />
                                             </div>
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
                                              <label>Batch Number *</label>
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
 										</div>
-                                        <div class="col-md-2 col-sm-3  form-group has-feedback">
-                                             <label>Qty(In Cases) *</label>
+                                        <div class="col-md-1 col-sm-2  form-group has-feedback">
+                                             <label>Qty(In Cases)*</label>
 										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
 										</div>
-                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
-                                              <label>Number Of Bottles *</label>
-										    <input type="text" class="form-control" placeholder="number of bottles" name="nob" id="nob" readoly>
+                                         <div class="col-md-1 col-sm-1  form-group has-feedback">
+                                              <label>No Of Bottles*</label>
+										    <input type="text" class="form-control" placeholder="bottles" name="nob" id="nob" readonly>
 										</div>
-                                        <div class="col-md-2 col-sm-3  form-group has-feedback">
-                                              <label>Price Per Bottle *</label>
+                                        <div class="col-md-2 col-sm-  form-group has-feedback">
+                                              <label>Price Per Bottle*</label>
 										    <input type="text" class="form-control" id="latestpurchase" placeholder="price per bottle" name="latestpurchase" value="{{ data.item_code }}"required>
 										</div>
-										<div class="col-md-2 col-sm-3  form-group has-feedback">
-                                             <label>Expiry Date *</label>
-										    <input type="date" class="form-control"  name="expdate" id="expdate">
+										<div class="col-md-2 col-sm-1  form-group has-feedback">
+                                             <label>Manufacture Date *</label>
+										    <input type="date" class="form-control"  name="expdate" id="expdate" required>
 										</div>
-										<!--<div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="text" class="form-control" placeholder="MRP" id="mrp" name="mrp" value="{{ data.mrp }}" required>
-										</div>
-										<div class="col-md-2 col-sm-3  form-group has-feedback">
+
+										    <input type="hidden" class="form-control" placeholder="MRP" id="mrp" name="mrp" >
+
+											<!--<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="GST" id="gst" name="gst" value="{{ data.gst }}"required>
 										</div>
                                         <div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="HSN" id="hsn" name="hsn" value="{{ data.hsn }}"equired >
-										</div>-->
+										</div>
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
                                             <label>Free Quantity</label>
 										    <input type="text" class="form-control" placeholder="free quantity" id="freequantity" name="freequantity">
-										</div>
+										</div>-->
 
-											<div class="col-md-2 col-sm-3 form-group has-feedback">
-												<button type="submit" style="margin-top: 25px;" class="btn btn-primary">Add</button>
+											<div class="col-md-2 col-sm-2 form-group has-feedback">
+												<button type="submit" style="margin-top: 25px;margin-left:30px;" class="btn btn-primary">Add</button>
 											</div>
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control"  id="uom" name="uom">
+                                                 <input type="hidden" class="form-control"  id="result" name="result">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" id="manufacture" name="manufacture" required>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" id="itemsno" name="itemsno" value="{{ data.sno }}"required>
+										    <input type="hidden" class="form-control" id="itemsno" name="itemsno">
 										</div>
 									</form>
 				 </div>
 				</div>
-				<div class="x_panel">
-				   <div class="x_content">
+			<div class="row" style="display: block;">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-                        <table id="datatable-buttons" class="display  tabe-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
 
@@ -148,13 +173,13 @@
                 	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		 var obj = data.data.itemmasterlist
-                        console.log(obj[0].gst);
-                        if(obj.length>0){
-                            $("#uom").val(obj[0].uom);
-                            $("#mrp").val(obj[0].mrp);
-
-					}
+			 	 var obj = data.data
+                        console.log(obj.uom);
+                        if(obj){
+                            $("#uom").val(obj.uom);
+                            $("#itemsno").val(obj.sno);
+                             $("#mrp").val(obj.mrp);
+					    }
              	}
         	});
     	});
@@ -164,6 +189,30 @@ $('#quantity').on('input', function()  {
             val2 =    (val * val1)
             $("#nob").val(val2);
             });
+$('.items').change(function() {
+    console.log('Dropdown value changed');
+    if($(this).val() === '1') {
+      alert('Please select an option');
+    }
+  });
+  document.getElementById("expdate").addEventListener("input", calculateDate);
+
+function calculateDate() {
+  var inputDate = document.getElementById("expdate").value; // Get the selected date from the input field
+  var date = new Date(inputDate); // Convert the input value to a Date object
+  date.setMonth(date.getMonth() + 6); // Add 6 months to the selected date
+
+  var result = formatDate(date); // Format the result using a helper function formatDate()
+
+  document.getElementById("result").value = result; // Set the result value in the output field
+}
+
+function formatDate(date) {
+  var year = date.getFullYear();
+  var month = ("0" + (date.getMonth() + 1)).slice(-2); // Adding 1 to the month since it's zero-based index
+  var day = ("0" + date.getDate()).slice(-2);
+  return year + "-" + month + "-" + day; // Format the date as "YYYY-MM-DD"
+}
 
 </script>
 {% endblock %}

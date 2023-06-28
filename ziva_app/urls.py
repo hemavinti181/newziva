@@ -67,8 +67,9 @@ urlpatterns = [
     path('user_status_active',views.user_status_active,name='vendor_status_active'),
     path('user_status_inactive',views.user_status_inactive,name='vendor_status_inactive'),
     path('add_grn',views.add_grn,name='add_grn'),
-    path('add_grnitem', views.add_grnitem,name='add_grnitem'),
+    path('add_grnitem/<str:id>/', views.add_grnitem,name='add_grnitem'),
     path('add_grnitem_list/<str:id>/', views.add_grnitem_list,name='add_grnitem_list'),
+    path("grn_reject",views.grn_reject,name='grn_reject'),
     path('add_grn_inventory',views.add_grn_inventory,name='add_grn_inventory'),
     path('grn_list',views.grn_list,name='grn_list'),
     path('sales_item_add',views.sales_item_add,name='sales_item_add'),
@@ -234,7 +235,9 @@ urlpatterns = [
     path('sales_dashboard',views.sales_dashboard,name='sales_dashboard'),
     path('indent_list_approve',views.indent_list_approve,name='indent_list_approve'),
     path('add_indentitem/<str:id>/',views.add_indentitem,name='add_indentitem'),
-    path('get_indentitem',views.get_indentitem,name='get_indentitem')
+    path('get_indentitem',views.get_indentitem,name='get_indentitem'),
+    path('pending_indent_item_list/<str:id>/',views.pending_indent_item_list,name='pending_indent_item_list'),
+    path('qr_code',views.qr_code,name='qr_code')
 
 
 
