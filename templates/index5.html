@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
+<style>
+    .design{
+     color: white;
+        background-color:#08aca2 !important;
+    }
+</style>
 
 <!-- page content -->
             <div class="right_col" role="main">
@@ -21,7 +26,7 @@
                                 <div class="tile-stats">
                                     <div class="count" style="color:red;margin-left: 42%;">6</div>
                                     <span style="margin-left: 40%;">Pkgs</span>
-                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span> TO BE SHIPED</p>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span> TO BE SHIPPED</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 ">
@@ -45,15 +50,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="clearfix"></div>
+
 
                 <div class="row">
                     <div class="col-md-6 col-sm-6  ">
                         <div class="x_panel">
-                            <div class="x_title">
-                                <h2>Product Details</h2>
-                                <div class="clearfix"></div>
-                            </div>
+
+                                <h3>Product Details</h3>
+
                             <div class="x_content">
                                 <div id="echart_donut2" style="height:250px;"></div>
                             </div>
@@ -62,49 +66,45 @@
                     <div class="col-md-6 col-sm-6  ">
                         <div class="x_panel">
                             <div class="x_title" style="border-bottom:none !important;">
-                                <h2>Sales Order</h2>
+                                <h3>Sales Order</h3>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Username</th>
+                                            <th class="design">Sno</th>`
+                                            <th class="design">Product</th>
+                                             <th class="design">Pending</th>
+                                            <th class="design">Confirmed</th>
+                                            <th class="design">Challan</th>
+                                            <th class="design">Invoiced</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <th scope="row">1</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>@fat</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>the Bird</td>
-                                            <td>@twitter</td>
+                                            <td>1</td>
+                                            <td>1000ml</td>
+                                            <td>50</td>
+                                            <td>10</td>
+                                            <td>60</td>
+                                            <td>10</td>
                                         </tr>
                                      <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>the Bird</td>
-                                            <td>@twitter</td>
+                                            <td>2</td>
+                                            <td>500ml</td>
+                                            <td>10</td>
+                                            <td>80</td>
+                                            <td>0</td>
+                                            <td>30</td>
                                         </tr>
                                      <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>the Bird</td>
-                                            <td>@twitter</td>
+                                            <td>3</td>
+                                            <td>250ml</td>
+                                            <td>30</td>
+                                            <td>10</td>
+                                            <td>70</td>
+                                            <td>10</td>
                                         </tr>
                                     </tbody>
                                 </table>

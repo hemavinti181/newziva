@@ -74,7 +74,7 @@ urlpatterns = [
     path('grn_list',views.grn_list,name='grn_list'),
     path('sales_item_add',views.sales_item_add,name='sales_item_add'),
     path('sale_item_list',views.sale_item_list,name='sale_item_list'),
-    path('complete_sale',views.complete_sale,name='complete_sale'),
+    path('complete_sale/<str:context>/',views.complete_sale,name='complete_sale'),
     path('deliver_challan',views.deliver_challan,name='deliver_challan'),
     path('create_indent',views.create_indent,name='create_indent'),
     path('indent_item_list/<str:id>/',views.indent_item_list,name='indent_item_list'),
@@ -237,7 +237,8 @@ urlpatterns = [
     path('add_indentitem/<str:id>/',views.add_indentitem,name='add_indentitem'),
     path('get_indentitem',views.get_indentitem,name='get_indentitem'),
     path('pending_indent_item_list/<str:id>/',views.pending_indent_item_list,name='pending_indent_item_list'),
-    path('qr_code',views.qr_code,name='qr_code')
+    path('qr_code',views.qr_code,name='qr_code'),
+    path('location_map/<str:id>/',views.location_map,name='location_map')
 
 
 

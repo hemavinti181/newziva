@@ -16,7 +16,7 @@
       <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3  style="color:#1372ba"><b>Stall List</b></h3>
+                <h3  style="color:#1372ba">Stall List</h3>
               </div>
        <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -82,8 +82,8 @@
                   <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
 				</div>
 						</form>
-			  </div>
-            <div class="row">
+
+
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_content">
@@ -92,7 +92,8 @@
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-                        <table id="datatable-buttons" class="display table-bordered" style="width:100%">
+                        <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">-->
+							<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
                           <thead>
                            <tr style="text-color:white">
 							   		<th>S No</th>
@@ -123,7 +124,7 @@
                         <td>{{ list.contact_person}}</a></td>
                         <td>{{ list.mobile_no }}</a></td>
 
-                         <td class="text-center"><a href = "{{ list.storelocation }}" target="_blank"><i class="fa fa-map-marker"  style='font-size:28px;color:#FF6666; text-align: center;'></i></a></td>
+                         <td class="text-center"><a href = "/location_map/{{ list.storelocation }}" target="_blank"><i class="fa fa-map-marker"  style='font-size:28px;color:#FF6666; text-align: center;'></i></a></td>
                             <td>{{ list.userid }}</td>
                                 <td>
                                       {% if list.status == "Active" %}

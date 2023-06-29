@@ -262,6 +262,7 @@
                                 </div>
                                <div class="col-sm-4 invoice-col">
                              <h6 style="color:black"><b> Net Value : </b><b style="color:#06911A">{{ netvalue }}</b></h6>
+
                                </div>
                          <div class="col-sm-2 invoice-col">
 
@@ -292,13 +293,14 @@
 								</button>
                                 </div>
 							<div class="modal-body">
-                                             <form method="POST" action="complete_sale">
+                                             <form method="POST" action="complete_sale" id="saleform">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
 										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" >
 										    </div>
+                                                   <input type="hidden" name="netvalue" id="netvalue" value="{{ netvalue }}" />
                                                  	<div  class="col-md-6 col-sm-6  form-group has-feedback">
 													<label>Spell Of The Day</label>
 											 <input type="hidden" name="spell" id="spell" />
@@ -317,7 +319,7 @@
                                                 </label>
 
                                                    <label class="btn btn-round btn-warning" id="btn_upi">
-                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()" /> UPI
+                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()"  /> UPI
                                                 </label>
                                                    <label class="btn btn-round btn-warning" id="btn_scanner">
                                                  <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" onclick="displayQRCode()" /> SCANNER
@@ -339,8 +341,8 @@
 										    </div>
 
                                                     <div class="col-md-6 col-sm-6   offset-md-3">
-											            <button class="btn btn-primary submit-btn" id="completebtn">Complete</button>
-                                                         <a href="/payment" class="btn  btn-primary submit-btn" id="paytmWithPaytm" style="display:none;">Proceed to pay</a>
+											            <!--<button class="btn btn-primary submit-btn" id="completebtn">Complete</button>-->
+                                                         <a href="/payment" class="btn  btn-primary submit-btn" id="paytmWithPaytm">Proceed to pay</a>
                                                     </div>
 
 									</div>
@@ -784,7 +786,6 @@ function getQRCode() {
     });
   }
 }
-
 
 </script>
 

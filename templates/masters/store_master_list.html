@@ -41,7 +41,6 @@
                                     <th>GST No</th>
                                     <th>PAN Card</th>
                                     <th>Trade License</th>
-
 							        <th>Stall Type</th>
                                     <th>Actions</th>
                            </tr>
@@ -68,11 +67,11 @@
                                          <a class="editstore"  onclick="editStore('{{ list.storecode}}')" href="#"  data-id="{{ list.storecode }}"><i class="fa fa-edit"></i></a>
 
                                           <a href="#" onclick="VerifyClick('{{ list.sno }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
-                                          In Active</span></a>
+                                           <i class="fa fa-trash"></i></span></a>
                                      {% else %}
 
                                         <a href="#" onclick="VerifyClick('{{ list.sno }}')" ><span class="badge badge-success" data-toggle="modal" data-target="#store-status">
-                                          Active</span></a>
+                                           <i class="fa fa-trash"></i></span></a>
                                      {% endif %}
                                 </td>
 
@@ -448,6 +447,11 @@ function VerifyClick(id){
 $("#id").val(id);
 console.log(val(id))
 }
+
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
 </script>
 {% endblock %}
 
