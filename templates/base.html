@@ -8,6 +8,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+
 <!--<link rel="icon" href="images/favicon.ico" type="image/ico" />-->
     <title>ZIVA</title>
 
@@ -67,19 +68,20 @@ border: 1px solid;
 margin-top: -18px;
 }
 h3 {
-  color: #06911A !important;
+  color:#06911A  !important;
 }
 
 </style>
 
-
     <style>
-        th{
-        color: white;
-        background-color: #06911A !important;
+         th{
+        color: #06911A;
+        background-color: white !important;
+         border: 1px solid white;
 }
 .btn-primary {
-    background-color : #06911A !important;
+    background-color :#40C66A   !important;
+    border: 1px solid #6BE090 ;
 }
 .modal {
 	-webkit-overflow-scrolling: touch;
@@ -579,6 +581,10 @@ $(document).ready(function() {
         order: [[ 1, 'asc' ]]
     } );
 } );
+
+ if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
 </script>
 
 
