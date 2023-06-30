@@ -356,7 +356,7 @@ $("#button1").click(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid").empty();
-			 		$("#depoid").append("<option  value='All'>All</option>");
+			 		//$("#depoid").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -381,7 +381,7 @@ $(document).ready(function() {
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid").empty();
-                $("#regionid").append("<option value='All'>All</option>");
+                //$("#regionid").append("<option value='All'>All</option>");
                 $.each(obj, function(index, item) {
                 $("#regionid").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });

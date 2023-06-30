@@ -35,7 +35,7 @@
         <div class="">
           <div class="page-title">
             <div class="title_left">
-              <h3 style="color:#1372ba"><b>Proforma Invoice</b></h3>
+              <h3 style="color:#1372ba">Proforma Invoice</h3>
 
 
             </div>
@@ -315,7 +315,7 @@
                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                  <label>Payment mode</label><br>
                                                  <label class="btn btn-round btn-warning" id="btn_cash">
-                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn"  /> CASH
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
                                                 </label>
 
                                                    <label class="btn btn-round btn-warning" id="btn_upi">
@@ -326,23 +326,24 @@
                                                 </label>
 
                                                   <label class="btn btn-round btn-warning" id="btn_due">
-                                                 <input type="radio" name="paymenttype" id="due" value="Due" class="join-btn" /> DUE
+                                                 <input type="radio" name="paymenttype" id="due" value="Due" class="join-btn" onclick="toggleButtonVisibility()"/> DUE
                                                 </label>
 
                                                 </div>
                                                  <div id="qrcode-container" style="display:none;">
                                                        <img id="qr-image" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
+                                                       <h4 id="status"></h4>
                                                  </div>
                                                 <p></p>
 
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
-										       <textarea class="form-control" placeholder="remarks" rows="2"  name="remarks" id="remarks"></textarea>
+										       <textarea class="form-control" placeholder="remarks" rows="2"  name="remarks" id="remarks" required></textarea>
 										    </div>
 
                                                     <div class="col-md-6 col-sm-6   offset-md-3">
-											            <!--<button class="btn btn-primary submit-btn" id="completebtn">Complete</button>-->
-                                                         <a href="/payment" class="btn  btn-primary submit-btn" id="paytmWithPaytm">Proceed to pay</a>
+											            <button class="btn btn-primary submit-btn" id="completebtn" onclick="submitToPayment()">Complete</button>
+                                                        <button class="btn  btn-primary submit-btn" id="paytmWithPaytm" onclick="submitFormToPayment()"  style="display:none;">Proceed to pay</button>
                                                     </div>
 
 									</div>
@@ -697,8 +698,11 @@ $(document).ready(function(){
 function displayQRCode() {
   // Check if the radio button is checked
   var scannerRadioButton = document.getElementById("scanner");
+  var paytmButton = document.getElementById("paytmWithPaytm");
+  var completeButton = document.getElementById("completebtn");
   if (scannerRadioButton.checked) {
-    // Make an AJAX request to the server
+        paytmButton.style.display = "none";
+        completeButton.style.display = "block";// Make an AJAX request to the server
     $.ajax({
       url: "/qr_code",
       type: "POST",
@@ -730,6 +734,13 @@ function displayQRCode() {
 
         // Append the image to the container
         qrcodeContainer.appendChild(qrImage);
+        //var successMessage = document.createElement('p');
+        //successMessage.textContent = 'Transaction success!';
+        //successMessage.style.marginTop = '136px';
+        //successMessage.style.marginTop = '10px';
+
+// Append the success message below the QR code
+qrcodeContainer.appendChild(successMessage);
       },
       error: function (xhr, status, error) {
         // Handle error response
@@ -737,27 +748,56 @@ function displayQRCode() {
       }
     });
   }
-}
-
-function toggleButtonVisibility() {
-    alert('hai')
-  var upiRadioButton = document.getElementById("upi");
-  var myButton = document.getElementById("paytmWithPaytm");
-  var completebtn = document.getElementById("completebtn");
-
-  if (upiRadioButton.checked) {
-    myButton.style.display = "block";
-    completebtn.style.display = "none";
-  } else {
-    myButton.style.display = "none";
+  else{
+    var qrcodeContainer = document.getElementById("qrcode-container");
+    qrcodeContainer.style.display = "none";
   }
 }
 
+ function toggleButtonVisibility() {
+        var upiRadioButton = document.getElementById("upi");
+         var cashRadioButton = document.getElementById("cash");
+         var dueRadioButton = document.getElementById("due");
+         var paytmButton = document.getElementById("paytmWithPaytm");
+         var completeButton = document.getElementById("completebtn");
+          var scannerButton = document.getElementById("scanner");
+         var qrCode = document.getElementById("qrcode-container");
+
+        if (upiRadioButton.checked) {
+            paytmButton.style.display = "block";
+            completeButton.style.display = "none";
+            qrCode.style.display = "none";
+        }
+        if (cashRadioButton.checked) {
+            paytmButton.style.display = "none";
+            completeButton.style.display = "block";
+            qrCode.style.display = "none";
+        }
+        if (dueRadioButton.checked) {
+            paytmButton.style.display = "none";
+            completeButton.style.display = "block";
+            qrCode.style.display = "none";
+        }
+        if (scannerButton.checked){
+            paytmButton.style.display = "none";
+            completeButton.style.display = "block";
+        }
+    }
+    function submitFormToPayment() {
+        document.getElementById("saleform").action = "payment";
+    }
+     function submitToPayment() {
+        document.getElementById("saleform").action = "complete_sale";
+    }
 function getQRCode() {
   // Check if the radio button is checked
   var scannerRadioButton = document.getElementById("scanner");
+   var completeButton = document.getElementById("completebtn");
+   var paytmButton = document.getElementById("paytmWithPaytm");
   if (scannerRadioButton.checked) {
-    // Make an AJAX request to the server
+
+    paytmButton.style.display = "none";
+    completeButton.style.display = "block";
     $.ajax({
       url: "/qr_code",
       type: "POST",

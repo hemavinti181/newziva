@@ -115,7 +115,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="datatable" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
@@ -177,7 +177,7 @@
 										{% csrf_token %}
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
                                                    <input type="hidden" id="txtdeposearch1" name="txtdeposearch1"  value="{{ txtDepoId }}"/>
-                                                               <select class="form-control" name="txtDepoId" id="txtDepoId">
+                                                               <select class="form-control" name="txtDepoId" id="txtDepoId" required>
                                                     <option value="">Depot</option>
 													{% for data1 in depolist %}
                             							<option value="{{ data1.id }}">{{ data1.name }}</option>

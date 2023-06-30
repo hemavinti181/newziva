@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
+
+<style>
+
+    .tile-stats .icon1 {
+    width: 20px;
+    height: 20px;
+    color:  #06911A;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    font-size: 20px;
+    z-index: 1
+}
+    </style>
+
 <div class="right_col" role="main">
           <div class="">
             <div class="clearfix"></div>
@@ -12,10 +27,9 @@
     {% for data in data %}
     <div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
         <div class="tile-stats">
-            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
-
+          <div class="icon1"><i class="fa fa-bank"></i></div>
             <h2 class="text-warning" style="margin-left: 10px;">{{ data.Qty }}</h2>
-              <p class="text-info" style="font-size: 12px;">{{ data.itemname }} Qauntity</p>
+              <p class="text-info" style="font-size: 12px;">{{ data.itemname }} Quantity</p>
         </div>
     </div>
     {% endfor %}

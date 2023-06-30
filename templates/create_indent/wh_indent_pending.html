@@ -9,8 +9,6 @@
   padding: 0px;
 }
 
-
-
 .round {
   border-radius: 50%;
 }
@@ -133,24 +131,28 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Pending Indent</b></h3>
+                  {% if data1.status == 'Pending' %}
+                <h3 >Pending Indent</h3>
+                  {% else %}
+                   <h3 >Verified  Indent</h3>
+                  {% endif %}
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                    <div style="display: inline-block;">
+                    <!--<div style="display: inline-block;">
                             <div class="row" style="display: inline-block;">
                                 <div class="top_tiles" style="width: 700px;">
                                     <div class="animated flipInY  col-md-3 col-sm-3">
                                         <div class="tile-stats">
-                                            <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
+                                            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
                                                 <h1 class="text-info" style="margin-left: 17px; font-size: 18px;">{{ id }}</h1>
-                                 <!--<p class="text-info" style="font-size: 12px;">Indent from</p>-->
+                                <p class="text-info" style="font-size: 12px;">Indent from</p>
                                         </div>
                                     <div>
                                 </div>
                             </div></div>
                             </div>
-                    </div>
+                    </div>-->
                 </div>
               </div>
             </div>
@@ -211,11 +213,11 @@
                                     <td>
                                         {% if all_data.status == "Pending" %}
                                         <a href="pending_indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-warning">{{ all_data.status }}</span></a>
-                                         <span class="badge badge-info" data-toggle="modal"  onclick="VerifyClick('{{all_data.indent_no}}','{{ all_data.region_name }}','{{ all_data.warehouse_name }}','{{ all_data.warehouse_id }}','{{ all_data.region_id }}')" data-target=".bs-example-modal-sm">
+                                         <span class="badge bg-green" data-toggle="modal"  onclick="VerifyClick('{{all_data.indent_no}}','{{ all_data.region_name }}','{{ all_data.warehouse_name }}','{{ all_data.warehouse_id }}','{{ all_data.region_id }}')" data-target=".bs-example-modal-sm">
                                              Acknowledgement</span>
                                     </td>
                                         {% else %}
-                                         <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-info">Approved</span></a>
+                                         <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-success">{{ all_data.status }}</span></a>
                                     </tr>
                                 {% endif %}
                             {% endfor %}
@@ -252,7 +254,7 @@
 									<span aria-hidden="true">&times;</span>
 								</button>
 
-                                            <h4 class="modal-title text-success" id="myModalLabel2" style="text-align:center;">Acknowledgement</h4>
+                                            <h3 class="modal-title" style="text-align:center;" id="myModalLabel2" >Acknowledgement</h3>
 
                                             <label for="comment">Remarks *</label>
                                             <input type="hidden" id="txtHdnId" name="txtHdnId" />

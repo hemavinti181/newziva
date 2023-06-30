@@ -47,6 +47,7 @@ def index(request):
 
 @csrf_exempt
 def login(request):
+
     if request.method == 'POST':
         url = "http://13.235.112.1/ziva/mobile-api/login.php"
         payload = json.dumps({
@@ -103,12 +104,16 @@ def login(request):
             context = {'menuname':menuname}
             #sidebar_items = {'submenu':submenu,'weblinks':weblinks}
             messages.success(request,data['message'])
-            return redirect('store_master')
+        if role == 'Admin':
+            return redirect('/dashboard')
+        elif displayrole == 'BUS STATION CONTROLLER' or "DEPOT STORE EXECUTIVE" or "UPPAL ZONAL STORES":
+            return redirect('/live_inventory')
+        elif displayrole == "MARKETING EXECUTIVE":
+            return redirect('/store_master')
         else:
             try:
                 data = response.json()
                 messages.error(request, data['message'])
-
             except:
                 messages.error(request,response.text)
             return redirect('/login')
@@ -3011,7 +3016,7 @@ def sale_item_list(request):
     if response.status_code == 200:
         data = response.json()
         netvalue = data['netvalue']
-        netvalue = "{:.1f}".format(float(netvalue))
+        #netvalue = "{:.1f}".format(float(netvalue))
         taxinvoice = data['taxinvoice']
 
     url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
@@ -3056,11 +3061,38 @@ def sales_item_list_pending(request,id):
     if response.status_code == 200:
         data = response.json()
         sale_item_list = data['saleitemlist']
-        return render(request, 'sales/sale_item_list.html',{"all_data": sale_item_list,'menuname':menuname})
+        return render(request, 'sales/sale_item_list.html',{'approve':'pending',"all_data": sale_item_list,'menuname':menuname,"id":id})
     else:
         data = response.json()
         messages.error(request,data['message'])
-        return render(request, 'sales/sale_item_list.html',{'menuname':menuname})
+        return render(request, 'sales/sale_item_list.html',{'menuname':menuname,"id":id})
+
+
+def sale_item_list_approve(request, id):
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+
+        url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sonumber": id
+        })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            sale_item_list = data['saleitemlist']
+            return render(request, 'sales/sale_item_list_approve.html',
+                          {'approve': 'pending', "all_data": sale_item_list, 'menuname': menuname, "id": id})
+        else:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'sales/sale_item_list_approve.html', {'menuname': menuname, "id": id})
 
 def proformainvoice(request):
 
@@ -3212,26 +3244,35 @@ def sales_item_add(request):
                 messages.error(request,r.text)
             return redirect('sale_item_list')
     return render(request, 'sales/sales_new.html', {'menuname':menuname,'depolist':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
-def complete_sale(request,context):
+def complete_sale(request):
 
         accesskey = request.session['accesskey']
 
-        if  request.method == 'GET':
+        if  request.method == 'POST':
                 url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
-
-                payload = json.dumps({
-                    "accesskey": accesskey,
-                    "sonumber": request.GET.get('txtHdnId'),
-                    "paymentmode": request.POST.get('paymenttype'),
-                    "remarks": request.POST.get('remarks'),
-                    "date": request.POST.get('date'),
-                    "spelloftheday":request.POST.get('spell1'),
-                    "transaction_status":"",
-                    "transaction_id":"",
-                    "transaction_status":"",
-                    "transaction_id":"",
-
-                })
+                paymentmode = request.POST.get('paymenttype')
+                if paymentmode == 'CASH':
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "sonumber": request.POST.get('txtHdnId'),
+                        "paymentmode": request.POST.get('paymenttype'),
+                        "remarks": request.POST.get('remarks'),
+                        "date": request.POST.get('date'),
+                        "spelloftheday":request.POST.get('spell1'),
+                        "transaction_status":"success",
+                        "transaction_id":"",
+                    })
+                if paymentmode == 'Due':
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "sonumber": request.POST.get('txtHdnId'),
+                        "paymentmode": request.POST.get('paymenttype'),
+                        "remarks": request.POST.get('remarks'),
+                        "date": request.POST.get('date'),
+                        "spelloftheday": request.POST.get('spell1'),
+                        "transaction_status": "due",
+                        "transaction_id": "",
+                    })
                 headers = {
                     'Content-Type': 'application/json'
                 }
@@ -3449,7 +3490,7 @@ def deliver_challan(request):
                 if response.status_code == 200:
                     data = response.json()
                     deliv_challan = data['deliverypendinglist']
-                    return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1,'vehicals':vehicals,'date':date,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
+                    return render(request, 'deliverychallan/deliverychallan.html', {'approve':'pending',"all_data": deliv_challan,'data1':data1,'vehicals':vehicals,'date':date,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
                 else:
                     return render(request, 'deliverychallan/deliverychallan.html', {'data1': data1,'date':date,'vehicals':vehicals,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
             else:
@@ -3470,11 +3511,13 @@ def deliver_challan(request):
                         data = response.json()
                         deliv_challan = data['deliverypendinglist']
                         return render(request, 'deliverychallan/deliverychallan.html',
-                                      {"all_data": deliv_challan, 'data1': data1,'date':tdate,'vehicals':vehicals,'busstation':'All','menuname':menuname})
+                                      {'approve':'pending',"all_data": deliv_challan, 'data1': data1,'date':tdate,'vehicals':vehicals,'busstation':'All','menuname':menuname})
                     else:
                         return render(request, 'deliverychallan/deliverychallan.html',{'data1':data1,'vehicals':vehicals,'date':tdate,'busstation':'All','menuname':menuname})
         except:
-                messages.error(request,response.text)
+                if response.status_code == 400:
+                    messages.error(request,data['message'])
+                    return render(request,'login1.html')
         return render(request, 'deliverychallan/deliverychallan.html',{'menuname':menuname})
     else:
 
@@ -3522,9 +3565,9 @@ def deliver_challan(request):
                 if response.status_code == 200:
                     data = response.json()
                     deliv_challan = data['deliverypendinglist']
-                    return render(request, 'deliverychallan/deliverychallan.html', {"all_data": deliv_challan,'data1':data1,'date':date,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
+                    return render(request, 'deliverychallan/deliverychallan.html', {'approve':'pending',"all_data": deliv_challan,'data1':data1,'date':date,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
                 else:
-                    return render(request, 'deliverychallan/deliverychallan.html', {'data1': data1,'date':date,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
+                    return render(request, 'deliverychallan/deliverychallan.html', {'approve':'pending','data1': data1,'date':date,'status':'Delivery Pending','busstation':busstation,'busstationid1':busstationid1,'menuname':menuname})
             else:
 
                     url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
@@ -3543,11 +3586,13 @@ def deliver_challan(request):
                         data = response.json()
                         deliv_challan = data['deliverypendinglist']
                         return render(request, 'deliverychallan/deliverychallan.html',
-                                      {"all_data": deliv_challan, 'data1': data1,'date':tdate,'busstation':'All','menuname':menuname})
+                                      {'approve':'pending',"all_data": deliv_challan, 'data1': data1,'date':tdate,'busstation':'All','menuname':menuname})
                     else:
-                        return render(request, 'deliverychallan/deliverychallan.html',{'data1':data1,'date':tdate,'busstation':'All','menuname':menuname})
+                        return render(request, 'deliverychallan/deliverychallan.html',{'approve':'pending','data1':data1,'date':tdate,'busstation':'All','menuname':menuname})
         except:
-                messages.error(request,response.text)
+                if response.status_code == 400:
+                    messages.error(request,data['message'])
+                    return render(request,'login1.html')
         return render(request, 'deliverychallan/deliverychallan.html',{'menuname':menuname})
 
 def get_salebus(request):
@@ -3832,10 +3877,11 @@ def medeliver_challan_pending(request):
             return render(request,'login1.html')
     return render(request, 'deliverychallan/medeliverychallan_pending.html',{'menuname':menuname})
 def deliver_challan_approve(request):
-    menuname = request.session['mylist']
-    tdate = datetime.date.today()
-    tdate = tdate.strftime("%Y-%m-%d")
+
     try:
+        menuname = request.session['mylist']
+        tdate = datetime.date.today()
+        tdate = tdate.strftime("%Y-%m-%d")
         accesskey = request.session['accesskey']
         regionid = request.session['regionid']
         deponame = request.session['depoid']
@@ -3873,11 +3919,13 @@ def deliver_challan_approve(request):
             if response.status_code == 200:
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
-                return render(request, 'deliverychallan/deliver_challan_approve.html',
-                              {"all_data": deliv_challan,'data1': data1, 'date':date,'menuname':menuname})
+                return render(request, 'deliverychallan/deliverychallan_approve.html',
+                              {"all_data": deliv_challan, 'data1': data1, 'date': tdate, 'menuname': menuname,
+                               'approve': 'approve'})
             else:
-                return render(request, 'deliverychallan/deliver_challan_approve.html',
-                              {'data1': data1,  'date': date,'menuname':menuname})
+                return render(request, 'deliverychallan/deliverychallan_approve.html',
+                              { 'data1': data1, 'date': tdate, 'menuname': menuname,
+                               'approve': 'approve'})
         else:
 
             url = "http://13.235.112.1/ziva/mobile-api/delivery-pending-list.php"
@@ -3896,12 +3944,14 @@ def deliver_challan_approve(request):
                 data = response.json()
                 deliv_challan = data['deliverypendinglist']
                 return render(request, 'deliverychallan/deliverychallan_approve.html',
-                              {"all_data": deliv_challan, 'data1': data1,'date':tdate,'menuname':menuname})
+                              {"all_data": deliv_challan, 'data1': data1,'date':tdate,'menuname':menuname,'approve':'approve'})
             else:
                 return render(request, 'deliverychallan/deliverychallan_approve.html', {'menuname':menuname,'data1': data1,'date':tdate})
 
     except:
-        messages.error(request, response.text)
+        if response.status_code == 400:
+            messages.error(request, data['message'])
+            return render(request,'login1.html')
     return render(request, 'deliverychallan/deliverychallan_approve.html',{'menuname':menuname})
 def deliver_challan_status(request):
 
@@ -3928,8 +3978,11 @@ def deliver_challan_status(request):
         data = response.json()
         messages.success(request, data['message'])
         return redirect('deliver_challan')
-    else:
+    if response.status_code == 400:
         data = response.json()
+        messages.error(request, data['message'])
+        return render(request,'login1.html')
+    else:
         messages.error(request,"Please select any checkbox")
         return redirect('deliver_challan')
 
@@ -4904,6 +4957,8 @@ def get_item_data(request):
     return JsonResponse({'data': data2})
 
 
+
+
 @csrf_exempt
 def get_sale_item_data(request):
 
@@ -5147,7 +5202,7 @@ def pending_indent_pending(request):
         if response.status_code == 200:
             data = response.json()
             data = data['indentlist']
-            return render(request, 'create_indent/wh_indent_pending.html', {'data': data, 'menuname': menuname})
+            return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'data1':data[0] ,'menuname': menuname})
         else:
             return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname})
 
@@ -5173,7 +5228,7 @@ def pending_indent_pending1(request):
         if response.status_code == 200:
             data = response.json()
             data = data['indentlist']
-            return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+            return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'data1':data[0],'menuname':menuname,'fdate':fdate,'tdate':tdate})
         else:
             return render(request, 'create_indent/wh_indent_pending.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
@@ -6864,7 +6919,9 @@ def live_inventory(request):
                 messages.error(request, data['message'])
                 return render(request,'grn/inventory.html',{'menuname':menuname,'wh_masterlist':wh_masterlist})
     except:
-        messages.error(request, data['message'])
+        if response.status_code == 400:
+            messages.error(request, data['message'])
+            return render(request,'login1.html')
     return render(request, 'grn/inventory.html',{'menuname':menuname})
 
 def batch_codeexpry(request,id):
@@ -9472,61 +9529,76 @@ def qr_code(request):
 
 @csrf_exempt
 def payment(request):
-    #amount = request.POST.get('netvalue')
-    paytmParams = dict()
-    order_id =__id_generator__()
-    url = reverse('response', args=[order_id])
-    #url = "https://tsrtcziva.com/response/{}/".format(order_id)
-    paytmParams['body'] = {
-        "requestType": "Payment",
-        "mid": "TSRTCP03244016260030",
-        "websiteName": "WEBSTAGING",
-        "orderId": order_id,
-        "callbackUrl":url,
-        "txnAmount": "1.0",
-        "currency": "INR",
-        "userInfo": {
-            "custId": "CUST_001",
-        },
-    }
+    if request.method == 'POST':
+            amount = request.POST.get('netvalue')
+            sonumber =  request.POST.get('txtHdnId')
+            paymentmode =request.POST.get('paymenttype')
+            remarks = request.POST.get('remarks')
+            date = request.POST.get('date')
+            spelloftheday =request.POST.get('spell1')
+            order_id = __id_generator__()
+            context = {
+                'order_id':order_id,'sonumber':sonumber,'paymentmode':paymentmode,'remarks':remarks,'date':date,'spelloftheday':spelloftheday
 
-    # Generate checksum by parameters we have in body
-    # Find your Merchant Key in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
-    checksum = paytmchecksum.generateSignature(json.dumps(paytmParams["body"]), "jXXQfmzmqD3PpchQ")
-    #checksum = paytmchecksum.generateSignature(json.dumps(paytmParams, "jXXQfmzmqD3PpchQ"))
-    paytmParams["head"] = {
-        "signature": checksum
-    }
+            }
+            paytmParams = dict()
+            url = reverse('response',  kwargs=context)
+            #url = "https://tsrtcziva.com/response/{}/".format(order_id)
+            paytmParams['body'] = {
+                "requestType": "Payment",
+                "mid": "TSRTCP03244016260030",
+                "websiteName": "WEBSTAGING",
+                "orderId": order_id,
+                "callbackUrl":url,
+                "txnAmount": amount,
+                "currency": "INR",
+                "userInfo": {
+                    "custId": "CUST_001",
+                },
+            }
 
-    post_data = json.dumps(paytmParams)
+            # Generate checksum by parameters we have in body
+            # Find your Merchant Key in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+            checksum = paytmchecksum.generateSignature(json.dumps(paytmParams["body"]), "jXXQfmzmqD3PpchQ")
+            #checksum = paytmchecksum.generateSignature(json.dumps(paytmParams, "jXXQfmzmqD3PpchQ"))
+            paytmParams["head"] = {
+                "signature": checksum
+            }
 
-    # for Staging
-    url = "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=TSRTCP03244016260030&orderId={}".format(order_id)
+            post_data = json.dumps(paytmParams)
 
-    # for Production
-    #url = "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=TSRTCP03244016260030&orderId={}".format(order_id)
-    response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
-    print(response)
-    data = response['body']
-    data1=paytmParams['body']
-    result = data['resultInfo']
-    status = result['resultMsg']
-    if status == 'Success':
-        txnToken = data['txnToken']
-        context = {
-            'data_dict': data1,
-            'txnToken':txnToken,
-        }
-        return render(request, 'payment.html', context)
+            # for Staging
+            url = "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=TSRTCP03244016260030&orderId={}".format(order_id)
+
+            # for Production
+            #url = "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=TSRTCP03244016260030&orderId={}".format(order_id)
+            response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
+            print(response)
+            data = response['body']
+            data1=paytmParams['body']
+            result = data['resultInfo']
+            status = result['resultMsg']
+            if status == 'Success':
+                txnToken = data['txnToken']
+                context = {
+                    'data_dict': data1,
+                    'txnToken':txnToken,
+                    'sonumber':sonumber
+                }
+                return render(request, 'payment.html', context)
+            else:
+                return redirect(proformainvoice)
     else:
-        return redirect(proformainvoice)
+        return redirect('/sale_item_list')
 @csrf_exempt
-def response(request,id):
+def response(request, order_id, paymentmode, sonumber,date,spelloftheday,remarks):
     accesskey = request.session['accesskey']
+    #status = request.POST.get('STATUS')
+    txn_id =  request.POST.get('TXNID')
     paytmParams = dict()
     paytmParams['body'] = {
         "mid": "TSRTCP03244016260030",
-        "orderId": id,
+        "orderId": order_id,
     }
     checksum = paytmchecksum.generateSignature(json.dumps(paytmParams["body"]), "jXXQfmzmqD3PpchQ")
 
@@ -9558,7 +9630,32 @@ def response(request,id):
     }
     if resultInfo['resultCode'] == '01':
         #url = reverse('complete_sale', args=[json.dumps(context)])
-        return JsonResponse({"data":context})
+        url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sonumber": sonumber,
+            "paymentmode":paymentmode,
+            "remarks": remarks,
+            "date":date,
+            "spelloftheday": spelloftheday,
+            "transaction_status":"success",
+            "transaction_id": txn_id,
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        if response.status_code == 200:
+            messages.success(request, data['message'])
+            return redirect('proformainvoice')
+        if response.status_code == 400:
+            messages.success(request, data['message'])
+            return render(request,'login1.html')
+        else:
+            messages.error(request, data['message'])
+            return redirect('proformainvoice')
     else:
         messages.error(request, data['message'])
         return redirect('proformainvoice')

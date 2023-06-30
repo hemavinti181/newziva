@@ -73,7 +73,7 @@ urlpatterns = [
     path('grn_list',views.grn_list,name='grn_list'),
     path('sales_item_add',views.sales_item_add,name='sales_item_add'),
     path('sale_item_list',views.sale_item_list,name='sale_item_list'),
-    path('complete_sale/<str:context>/',views.complete_sale,name='complete_sale'),
+    path('complete_sale',views.complete_sale,name='complete_sale'),
     path('deliver_challan',views.deliver_challan,name='deliver_challan'),
     path('create_indent',views.create_indent,name='create_indent'),
     path('indent_item_list/<str:id>/',views.indent_item_list,name='indent_item_list'),
@@ -209,7 +209,7 @@ urlpatterns = [
     path('busstation_stock/<str:id>/',views.busstation_stock,name='busstation_stock'),
     path('warehouse_stock',views.warehouse_stock,name='warehouse_stock'),
     path('payment', views.payment, name='payment'),
-    path('response/<str:id>/', views.response, name='response'),
+    path('response/<str:order_id>/<str:paymentmode>/<str:sonumber>/<str:date>/<str:spelloftheday>/<str:remarks>/', views.response, name='response'),
     path('out_passlist1',views.out_passlist1,name='out_passlist1'),
     path('pending_indent_admin',views.pending_indent_admin,name='pending_indent_admin'),
     path('taxinvoice_list_admin',views.taxinvoice_list_admin,name='taxinvoice_list_admin'),
@@ -237,7 +237,10 @@ urlpatterns = [
     path('get_indentitem',views.get_indentitem,name='get_indentitem'),
     path('pending_indent_item_list/<str:id>/',views.pending_indent_item_list,name='pending_indent_item_list'),
     path('qr_code',views.qr_code,name='qr_code'),
-    path('location_map/<str:id>/',views.location_map,name='location_map')
+    path('location_map/<str:id>/',views.location_map,name='location_map'),
+    path('sale_item_list_approve/<str:id>/',views.sale_item_list_approve,name='sale_item_list_approve')
+
+
 
 
 

@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Sales Approve  List</b></h3>
+                <h3 style="color:#1372ba">Sales Approve  List</h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -24,9 +24,12 @@
 					<div class="row filter-row">
                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Bus Station</label>
-								     <input type="hidden" name="busstationname1" id="busstationname1" />
-                                         <input type="hidden" name="busstation1" id="busstation1" value="{{ busstationid1 }}" />
-												<select class="form-control" name="busstationid" id="busstationid1" >
+                                 <input type="hidden" name="busstationname1" id="busstationname1" />
+
+                                <select class="form-control" name="busstation1" id="busstation1" hidden>
+                            		                    <option value="{{ request.POST.busstationid1 }}">{{ request.POST.busstationname1 }}</option>
+												</select>
+												<select class="form-control" name="busstationid1" id="busstationid1" >
                                                      <option value=" ">All</option>
                                                     {% for data1 in data1 %}
 													    <option value="{{data1.id }}">{{ data1.name }}</option>
@@ -37,7 +40,7 @@
 
 						<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Select Date</label>
-									<input class="form-control" type="date" name="date" id="getdate" value="{{ date }}" required>
+									<input class="form-control" type="date" name="date" id="getdate" value="{{ request.POST.date }}" required>
 							</div>
 
                                <div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -72,7 +75,9 @@
                                     <th>Delivery Date</th>
                                     <th>Itemcount</th>
                                      <th>Total</th>
-                                    <th>Actions</th>
+                                    <th>Payment Status</th>
+                                    <th>Action</th>
+
                         </tr>
                       </thead>
 
@@ -86,15 +91,20 @@
                                         <td>{{ all_data.date }}</td>
                                     <!--<td>{{  all_data.dcnumber}}</td>-->
                                     <td>{{ all_data.delivery_date }}</td>
-                                        <td>{{ all_data.itemcount }}</td>
+                                        <td style="text-align:center;">{{ all_data.itemcount }}</td>
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
-                                        {% if all_data.status == "Delivery Pending" %}
+                                          {% if all_data.transaction_status == 'success' %}
+                                        <td class="text-success">{{ all_data.transaction_status }}</td>
+                                        {% else %}
+                                            <td class="text-danger">{{ all_data.transaction_status }}</td>
+                                        {% endif %}
+                                        {% if all_data.status == "success" %}
                                         <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
+                                            <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
                                          </td>
                                         {% else %}
                                          <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
+                                            <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-check-square-o"></i></span></a>
                                          </td>
                                         {% endif %}
                                     </tr>
@@ -180,8 +190,14 @@ $("#busstationid1").change(function() {
 
 $(document).ready(function(){
   var optionValue = $("#busstation1").val();
+  alert(optionValue)
   $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
 })
+
+$("#button1").click(function() {
+  var selectedOptionText = $('#busstationid1').find(":selected").text();
+  $("#busstationname1").val(selectedOptionText);
+});
  </script>
 {% endblock %}
 

@@ -54,11 +54,6 @@
                                     <th>Batch</th>
                                     <th>Total</th>
                                     <th>Manufacture</th>
-                            {% if approve == 'pending' %}
-                                {% if request.session.displayrole ==  'BUS STATION CONTROLLER' or  request.session.displayrole ==  'DEPOT STORE EXECUTIVE' or  request.session.displayrole == 'Admin' %}
-                                        <th>Action</th>
-                                {% endif %}
-                            {% endif %}
                         </tr>
                       </thead>
                             {% for all_data in all_data %}
@@ -72,17 +67,9 @@
                        <td>{{ all_data.batch_no }}</td>
                        <td class="text-success">₹ {{ all_data.total }}</td>
                            <td>{{all_data.manufacturer}}</td>
-                           {% if approve == 'pending' %}
-                                 {% if request.session.displayrole == 'BUS STATION CONTROLLER' or  request.session.displayrole == 'DEPOT STORE EXECUTIVE' or request.session.displayrole == 'Admin' %}
-                              <td>
-                                  <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}',{{ all_data.noofbottles }},{{ all_data.id }})"  data-target="#bs-example-modal-sm">Quantity Update</span>
-                               </td>
-                                   {% endif %}
-                              </tr>
-                            {% endif %}
+
                       {% endfor %}
                       <tbody>
-                      </tbody>
                       </table>
                   </div>
                   </div>

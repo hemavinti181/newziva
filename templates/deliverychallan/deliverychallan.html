@@ -11,7 +11,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Sales Pending  List</b></h3>
+                <h3 style="color:#1372ba">Sales Pending  List</h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -81,13 +81,14 @@
                                     <th>S NO</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
-                                    <th>Store Invoice Number </th>
+                                    <th>Invoice Number </th>
                                     <th>Created Date</th>
                                     <!--<th>DC Number</th>-->
                                     <th>Delivery Date</th>
                                     <th>Itemcount</th>
                                      <th>Total</th>
-                                    <th>Actions</th>
+                                    <th>Payment Status</th>
+                                    <th>Action</th>
                         </tr>
                       </thead>
 
@@ -102,21 +103,24 @@
                                         <td>{{ all_data.date }}</td>
                                     <!--<td>{{  all_data.dcnumber}}</td>-->
                                     <td>{{ all_data.delivery_date }}</td>
-                                        <td>{{ all_data.itemcount }}</td>
-                                          <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
-                                        {% if all_data.status == "Delivery Pending" %}
+                                        <td style="text-align:center;">{{ all_data.itemcount }}</td>
+                                          <td class="text-info"><b>₹ &nbsp{{ all_data.total }}</b></td>
+                                        {% if all_data.transaction_status == 'success' %}
+                                        <td class="text-success">{{ all_data.transaction_status }}</td>
+                                        {% else %}
+                                            <td class="text-danger">{{ all_data.transaction_status }}</td>
+                                        {% endif %}
+                                        {% if all_data.transaction_status == "success" %}
                                         <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
+                                            <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
                                          </td>
                                         {% else %}
                                          <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                          </td>
                                         {% endif %}
                                     </tr>
-
-
-                        {% endfor %}
+                            {% endfor %}
 
                       <tbody>
                       </tbody>
@@ -185,7 +189,7 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
                                                   <div class="modal-header">
-                              <h4 class="modal-title text-info"  style="text-align:center;">Delivery Challan</h4>
+                              <h3   style="text-align:center;">Delivery Challan</h3>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -199,7 +203,7 @@
                                                    <textarea class="form-control" name="remarks" rows="2" placeholder="Remarks" id="remarks1"></textarea>
 										    </div>
                                             <p></p>
-                                            <div class="col-md-6 col-sm-8  offset-md-5">
+                                            <div class="col-md-6 col-sm-6  offset-md-5">
                                                   <button type="submit" class="btn btn-info">Approve</button>
                                             </div>
                                              </form>
