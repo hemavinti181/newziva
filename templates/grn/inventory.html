@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+<div class="right_col" role="main">
+          <div class="">
+            <div class="clearfix"></div>
+              <div class="col-md-12 col-sm-12 ">
+   <h3> {{ request.session.name }}  Inventory </h3>
+
+                           <div style="display: inline-block;">
+        <div class="top_tiles" style="width: 900px;">
+    {% for data in data %}
+    <div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
+        <div class="tile-stats">
+            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
+
+            <h2 class="text-warning" style="margin-left: 10px;">{{ data.Qty }}</h2>
+              <p class="text-info" style="font-size: 12px;">{{ data.itemname }} Qauntity</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+                          <!-- <div class="animated flipInY  col-md-4 col-sm-4">
+        <div class="tile-stats">
+            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
+                <h1 class="text-warning" style="margin-left: 10px;">{{ item.500mlcount }}</h1>
+                <p class="text-info" style="font-size: 12px;">500ml</p>
+           </div>
+        </div>
+        <div class="animated flipInY  col-md-4 col-sm-4">
+        <div class="tile-stats">
+            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
+                <h1 class="text-warning" style="margin-left: 10px;">{{ item.250mlcount}}</h1>
+                <p class="text-info" style="font-size: 12px;">250ml</p>
+           </div>-->
+        </div>
+ </div>
+                       </div>
+                   </div>
+              </div>
+          </div>
+ {% if request.session.role  == 'Depo' %}
+ <div class="">
+            <div class="clearfix"></div>
+              <div class="col-md-12 col-sm-12 ">
+   <h3>  {{ request.session.warehousename }}   Inventory </h3>
+                   <div style="display: inline-block;">
+                       <div class="row" style="display: inline-block;">
+    <div class="top_tiles" style="width: 900px;">
+    <div class="animated flipInY  col-md-4 col-sm-4">
+        <div class="tile-stats">
+            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
+                <h1 class="text-warning" style="margin-left: 10px;">{{ item.1000mlcount }}</h1>
+                <p class="text-info" style="font-size: 12px;">1000ml</p>
+           </div>
+        </div>
+
+                           <div class="animated flipInY  col-md-4 col-sm-4">
+        <div class="tile-stats">
+            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
+                <h1 class="text-warning" style="margin-left: 10px;">{{ item.500mlcount }}</h1>
+                <p class="text-info" style="font-size: 12px;">500ml</p>
+           </div>
+        </div>
+        <div class="animated flipInY  col-md-4 col-sm-4">
+        <div class="tile-stats">
+            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
+                <h1 class="text-warning" style="margin-left: 10px;">{{ item.250mlcount}}</h1>
+                <p class="text-info" style="font-size: 12px;">250ml</p>
+           </div>
+        </div>
+
+              </div>
+          </div>
+</div>
+              </div>
+ </div>
+    </div>
+{% endif %}
+                       </div>
+                   </div>
+              </div>
+          </div>
+</div>
+<script>
+
+</script>
+{% endblock %}
