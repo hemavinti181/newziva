@@ -730,60 +730,66 @@ def item_status_inactive(request):
 
 
 def des_add(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-    response = requests.request("POST", url, headers=headers, data=payload)
-    if response.status_code == 200:
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
+        #if response.status_code == 200:
         data = response.json()
         regionlist = data['regionlist']
 
-    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
+        url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
         data = response.json()
         item_masterlist = data['itemmasterlist']
 
-    if request.method == 'POST':
+        if request.method == 'POST':
 
-        url = "http://13.235.112.1/ziva/mobile-api/addpricemaster.php"
+            url = "http://13.235.112.1/ziva/mobile-api/addpricemaster.php"
 
-        payload = {
-            "accesskey":accesskey,
-            "regionname":  request.POST.get('regionnmae'),
-            "regioncode":  request.POST.get('regionid'),
-            "itemcode":  request.POST.get('itemid'),
-            "itemname":  request.POST.get('itemname'),
-            "mrp":  request.POST.get('amount'),
-        }
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        payload = json.dumps(payload, cls=BytesEncoder)
-        response = requests.request("POST", url, data=payload, headers=headers)
-        if response.status_code == 200:
-            r = response.json()
-            messages.success(request, r['message'])
-            return redirect('des_list')
-        else:
-            try:
+            payload = {
+                "accesskey":accesskey,
+                "regionname":  request.POST.get('regionnmae'),
+                "regioncode":  request.POST.get('regionid'),
+                "itemcode":  request.POST.get('itemid'),
+                "itemname":  request.POST.get('itemname'),
+                "mrp":  request.POST.get('amount'),
+            }
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            payload = json.dumps(payload, cls=BytesEncoder)
+            response = requests.request("POST", url, data=payload, headers=headers)
+            if response.status_code == 200:
                 r = response.json()
-                messages.error(request, r['message'])
-            except:
-                messages.error(request, response.text)
+                messages.success(request, r['message'])
+                return redirect('des_list')
+            else:
+                try:
+                    r = response.json()
+                    messages.error(request, r['message'])
+                except:
+                    messages.error(request, response.text)
+            return render(request, 'masters/pricemaster.html',{'regionlist':regionlist,'item_masterlist':item_masterlist,'menuname':menuname})
         return render(request, 'masters/pricemaster.html',{'regionlist':regionlist,'item_masterlist':item_masterlist,'menuname':menuname})
-    return render(request, 'masters/pricemaster.html',{'regionlist':regionlist,'item_masterlist':item_masterlist,'menuname':menuname})
-
+    except:
+        if response.status_code == 400:
+            messages.error(request,data['message'])
+            return render(request,'login1.html')
+    messages.error(request,response.text)
+    return render(request,'masters/pricemaster.html',{'menuname':menuname})
 
 def role(request):
     menuname = request.session['mylist']
@@ -2196,6 +2202,10 @@ def vendor_list(request):
             data = response.json()
             vendor_masterlist = data['vendormasterlist']
             return render(request, 'vendor/vendor_list.html', {'all_data': vendor_masterlist,'menuname':menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request,data['message'])
+            return render(request,'login1.html')
         else:
             try:
                 data = response.json()

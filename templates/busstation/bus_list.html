@@ -6,7 +6,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Bus Station List</b></h3>
+                <h3 style="color:#1372ba">Bus Station List</h3>
               </div>
 
               <div class="title_right">
@@ -88,8 +88,8 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.busatationid }}</td>
-                           <td style="color:black"><b>{{ all_data.deponame }}</b></td>
-                           <td style="color:black"><b>  {{ all_data.busstationname }}</b></td>
+                           <td>{{ all_data.deponame }}</td>
+                           <td>{{ all_data.busstationname }}</td>
                         {% if all_data.status == "Active" %}
                                 <td>
                                    <a class="bus_edit" href="#" onclick="editBus('{{  all_data.busatationid }}')"  data-id="{{ all_data.busatationid }}"><i class="fa fa-edit"></i></a>
@@ -303,7 +303,7 @@ $("#button1").click(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#regionid").empty();
-			 		$("#regionid").append("<option  value='All'>All</option>");
+			 		//$("#regionid").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#regionid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -324,7 +324,7 @@ $("#button1").click(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid").empty();
-			 		$("#depoid").append("<option  value='All'>All</option>");
+			 		//$("#depoid").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -346,7 +346,7 @@ $("#button1").click(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value='All'>All</option>");
+			 		//$("#busstationid").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -370,7 +370,7 @@ $(document).ready(function() {
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid").empty();
-                $("#regionid").append("<option value='All'>All</option>");
+                //$("#regionid").append("<option value='All'>All</option>");
                 $.each(obj, function(index, item) {
                 $("#regionid").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -395,7 +395,7 @@ $(document).ready(function() {
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid").empty();
-                $("#depoid").append("<option  value='All'>All</option>");
+                //$("#depoid").append("<option  value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#depoid").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
