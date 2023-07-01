@@ -47,7 +47,7 @@
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
-
+              </div>
 						</div>
                  <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
@@ -70,12 +70,12 @@
                                     <th>S NO</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
-                                    <th>Store Invoice Number </th>
-                                    <th>Created Date</th>
-                                    <!--<th>DC Number</th>-->
+                                    <th> Invoice Number </th>
+                                    <th>Created on </th>
                                     <th>Delivery Date</th>
                                     <th>Itemcount</th>
                                      <th>Total</th>
+                                    <th>Payment Mode</th>
                                     <th>Payment Status</th>
                                     <th>Action</th>
 
@@ -90,9 +90,9 @@
                                     <td>{{ all_data.storename }}</td>
                                     <td> {{ all_data.sonumber }} </td>
                                         <td>{{ all_data.date }}</td>
-                                    <!--<td>{{  all_data.dcnumber}}</td>-->
                                     <td>{{ all_data.delivery_date }}</td>
                                         <td style="text-align:center;">{{ all_data.itemcount }}</td>
+                                        <td>{{ all_data.paymentmode }} </td>
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                           {% if all_data.transaction_status == 'success' %}
                                         <td class="text-success">{{ all_data.transaction_status }}</td>
@@ -191,7 +191,6 @@ $("#busstationid1").change(function() {
 
 $(document).ready(function(){
   var optionValue = $("#busstation1").val();
-  alert(optionValue)
   $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
 })
 

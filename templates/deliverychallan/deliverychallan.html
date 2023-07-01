@@ -4,7 +4,8 @@
 <style>
 	.style{
 	position: absolute !important;
-	width: 100% !important;
+	width: 80% !important;
+	margin-left:50px !important;
 	}
 </style>
 <div class="right_col" role="main">
@@ -48,7 +49,9 @@
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
-                            {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
+
+
+                  {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
 
                          <div class="col-md-2 col-sm-2 form-group has-feedback">
                  <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick()" data-toggle="modal" data-target="#bs-example-modal-hm">  Delivery Challan </span>
@@ -58,8 +61,8 @@
                  <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick1()" data-toggle="modal" data-target="#bs-example-modal-sm">  Delivery Challan </span>
                 </div>
                   {% endif %}
-
-						</div>
+                 </div>
+            </div>
                  <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                     <div class="clearfix"></div>
@@ -79,15 +82,16 @@
                         <tr>
                                    <th></th>
                                     <th><input type="checkbox" class="btnSelectAll" /></th>
-                                    <th>S NO</th>
+                                    <th>S No</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
                                     <th>Invoice Number </th>
-                                    <th>Created Date</th>
+                                    <th>Created on</th>
                                     <!--<th>DC Number</th>-->
                                     <th>Delivery Date</th>
                                     <th>Itemcount</th>
                                      <th>Total</th>
+                                     <th>Payment Mode</th>
                                     <th>Payment Status</th>
                                     <th>Action</th>
                         </tr>
@@ -105,6 +109,7 @@
                                     <!--<td>{{  all_data.dcnumber}}</td>-->
                                     <td>{{ all_data.delivery_date }}</td>
                                         <td style="text-align:center;">{{ all_data.itemcount }}</td>
+                                        <td>{{ all_data.paymentmode }}</td>
                                           <td class="text-info"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                         {% if all_data.transaction_status == 'success' %}
                                         <td class="text-success">{{ all_data.transaction_status }}</td>
@@ -189,28 +194,27 @@
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
-                                                  <div class="modal-header">
-                              <h3   style="text-align:center;">Delivery Challan</h3>
+                                               <div class="modal-body">
+
+                                             <form method="POST" action="deliver_challan_status">
+                                                    {% csrf_token %}
+                              <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-                                </div>
-                                        <div class="modal-body">
-                                             <form method="POST" action="deliver_challan_status">
-                                                    {% csrf_token %}
+
+                                    <h3  id="myModalLabel3" style="text-align:center;">Delivery Challan</h3>
+
+
                                                  <input type="hidden" id="txtHdnId2" name="txtHdnId[]"  />
+                                                      <label for="remarks1">Remarks *</label>
+                                                  <textarea class="form-control" name="remarks" rows="2" placeholder="remarks" id="remarks1"></textarea>
 
-                                               <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                   <textarea class="form-control" name="remarks" rows="2" placeholder="Remarks" id="remarks1"></textarea>
-										    </div>
                                             <p></p>
-                                            <div class="col-md-6 col-sm-6  offset-md-5">
-                                                  <button type="submit" class="btn btn-info">Approve</button>
+                                            <div class="col-md-6 col-sm-6  offset-md-4">
+                                                  <button type="submit" class="btn btn-primary">APPROVE</button>
                                             </div>
-                                             </form>
                                         </div>
-
-
                                         </div>
                                     </div>
                                 </div>

@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>TaxInvoice List</b></h3>
+                <h3 style="color:#1372ba">TaxInvoice List</h3>
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -155,9 +155,11 @@
                                      <th>Sales To</th>
                                     <th>Item Count</th>
                                     <th>Total</th>
-                                    <th>Created By </th>
+                                    <th>Payment mode</th>
+                                    <th>Payment Status</th>
+                                    <th>Created on</th>
                                     <th>Date</th>
-                                    <th>Action</th>
+                                   <!-- <th>Action</th>-->
                         </tr>
                       </thead>
 
@@ -165,19 +167,20 @@
                                     <tr>
 <td></td>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{ all_data.invnumber }}</td>
+                                        <td><a href = "/taxinvoice/{{ all_data.invnumber }}/"  style="color:#14c38e">{{ all_data.invnumber }}</a></td>
                                     <td>{{ all_data.sonumber }}</td>
                                     <td> {{ all_data.fromname }} </td>
                                         <td>{{ all_data.storename }}</td>
-                                   <td>{{ all_data.itemcount }}</td>
+                                   <td style="text-align:center;">{{ all_data.itemcount }}</td>
                                         <td>{{ all_data.total }}</td>
-
+                                            <td>{{ all_data.paymentmode }}</td>
+                                        <td>{{ all_data.transactionstatus }}</td>
                                         <td>{{ all_data.createdon }}</td>
                                           <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
 
-                                        <td>
+                                       <!-- <td>
                                             <a href="/deletetax_admin/{{ list.sonumber }}/"><i class="fa fa-trash"></i></a>
-                                         </td>
+                                         </td>-->
 
                                     </tr>
 

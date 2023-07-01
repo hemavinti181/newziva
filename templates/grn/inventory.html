@@ -25,15 +25,15 @@
                            <div style="display: inline-block;">
         <div class="top_tiles" style="width: 900px;">
     {% for data in data %}
-    <div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
+     <a href="/batch_codeexpry/{{ data.itemcode }}/"><div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
         <div class="tile-stats">
           <div class="icon1"><i class="fa fa-bank"></i></div>
             <h2 class="text-warning" style="margin-left: 10px;">{{ data.Qty }}</h2>
-              <p class="text-info" style="font-size: 12px;">{{ data.itemname }} Quantity</p>
+             <p class="text-info" style="font-size: 12px;">{{ data.itemname }} Quantity</p></a>
         </div>
     </div>
     {% endfor %}
-</div>
+</div></a>
 
                           <!-- <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">

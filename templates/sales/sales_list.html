@@ -12,7 +12,11 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Delivery Challan</b></h3>
+                  {% if status  == 'Approved' %}
+                    <h3 style="color:#1372ba">Delivery Challan Pending </h3>
+                  {% else %}
+                     <h3 style="color:#1372ba">Delivery Challan Approve  </h3>
+                  {% endif %}
               </div>
 
               <div class="title_right">
@@ -25,7 +29,7 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  method="POST" action="sales_list"  enctype="multipart/form-data">
+						<form  method="POST" action=""  enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">Select Delivery Date</label>
@@ -35,9 +39,7 @@
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
-              </div>
-            </div>
-            <div class="row">
+
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                     <div class="clearfix"></div>
@@ -54,41 +56,44 @@
                                      <th>S No</th>
                                      <th>Bus station</th>
                                     <th>Store Name</th>
-                                    <!--<th>Agent Name</th>
-                                    <th>Agent Mobile</th>
-                                 <th>Store Invoice Number </th>
-                                    <th>DC Number</th>-->
+                                    <th>Invoice Number </th>
                                     <th>Delivery Date</th>
-                                    <th>Itemcount</th>
+                                    <th>Items count</th>
                                     <th>Total</th>
+                                    <th>Payment mode</th>
+                                    <th>Payment status</th>
                                     <th>Action</th>
                         </tr>
                       </thead>
                             {% for all_data in data %}
-                       <tr>
+                       <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><tr>
                            <td>{{ forloop.counter }}</td>
                            <td>{{ all_data.bus_station }}</td>
                              <td>{{ all_data.storename }}</td>
-                            <!-- <td>{{ all_data.del_agent_name  }}</td>
-                           <td>{{ all_data.contactno }}</td>
                         <td> {{ all_data.sonumber }} </td>
-                       <td>{{  all_data.dcnumber}}</td>-->
                         <td>{{ all_data.delivery_date }}</td>
-                       <td>{{ all_data.itemcount }}</td>
+                       <td style="text-align:center;">{{ all_data.itemcount }}</td>
                              <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
-                           {% if all_data.status == "Approved" %}
+                           <td> {{all_data.paymentmode }}</td>
+                            {% if  all_data.transaction_status == 'success'  %}
+                                <td class="text-success">{{ all_data.transaction_status }}</td>
+                           {% else %}
+                                <td class="text-danger">{{ all_data.transaction_status }}</td>
+                           {% endif %}
+                           {% if  all_data.transaction_status == 'success'  %}
                                 <td>
-                                   <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
-                                      <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
-
+                                   <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
                                 </td>
                            {% else %}
                             <td>
-                                 <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
+                                 <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                    {% if all_data.status == 'Approved' %}
+                                <span class="badge badge-danger" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
+                                {% endif %}
                             </td>
                            {% endif %}
 
-                      </tr>
+                       </tr></a>
                       {% endfor %}
                       <tbody>
                       </tbody>

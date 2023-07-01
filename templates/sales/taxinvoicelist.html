@@ -63,7 +63,7 @@
                             {% for all_data in list %}
                        <tr>
                            <td>{{ forloop.counter }}</td>
-                           <td><a href = "tax-invoice/{{ all_data.invnumber }}/"  style="color:blue">{{ all_data.invnumber }}</a></td>
+                           <td><a href = "/taxinvoice/{{ all_data.invnumber }}/"  style="color:blue">{{ all_data.invnumber }}</a></td>
                            <td>{{ all_data.sonumber }}</td>
                        <td style="color:black"><b>{{ all_data.fromname }}</b></td>
                            <td style="color:black"><b>{{ all_data.storename }}</b></td>

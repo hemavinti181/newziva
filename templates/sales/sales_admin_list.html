@@ -12,7 +12,11 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Delivery Challan </b></h3>
+                   {% if status  == 'Approved' %}
+                        <h3 style="color:#1372ba">Delivery Challan Pending </h3>
+                  {% else %}
+                     <h3 style="color:#1372ba">Delivery Challan Approve</h3>
+                  {% endif %}
               </div>
 
               <div class="title_right">
@@ -25,14 +29,14 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  id="myForm" method="POST" action="sales_admin_approvelist"  enctype="multipart/form-data">
+						<form  id="myForm" method="POST" action=""  enctype="multipart/form-data">
 									{% csrf_token %}
                                         <div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
-											 <input type="hidden" name="warehousename1" id="warehousename1" />
+											 <input type="hidden" name="warehousename1" id="warehousename1" value=" {{ request.POST.warehousename1 }} " />
 
                                 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
-                            		                    <option value="{{ warehouseid1 }}">{{ warehousename1 }}</option>
+                            		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
 												</select>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value="All">All</option>
@@ -84,9 +88,7 @@
                                            <button type="submit"  id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
-              </div>
-            </div>
-            <div class="row">
+
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                     <div class="clearfix"></div>
@@ -104,13 +106,11 @@
                                      <th>Bus station</th>
                                     <th>Store Name</th>
                                     <th>Invoice Number</th>
-                                   <!-- <th>Agent Name</th>
-                                    <th>Agent Mobile</th>
-                                    <th>Store Invoice Number </th>
-                                    <th>DC Number</th>-->
                                     <th>Delivery Date</th>
                                     <th>Itemcount</th>
                                     <th>Total</th>
+                                      <th>Payment mode</th>
+                                    <th>Payment Status</th>
                                     <th>Action</th>
                         </tr>
                       </thead>
@@ -120,20 +120,25 @@
                            <td>{{ all_data.bus_station }}</td>
                              <td>{{ all_data.storename }}</td>
                            <td>{{ all_data.sonumber }}</td>
-                            <!--  <td>{{ all_data.del_agent_name  }}</td>
-                           <td>{{ all_data.contactno }}</td>
-                       <td> {{ all_data.sonumber }} </td>
-                       <td>{{  all_data.dcnumber}}</td>-->
                         <td>{{ all_data.delivery_date }}</td>
-                       <td>{{ all_data.itemcount }}</td>
+                       <td style="text-align:center;">{{ all_data.itemcount }}</td>
                              <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
-                           {% if all_data.status == "Approved" %}
+                           <td>{{ all_data.paymentmode }}</td>
+                            {% if  all_data.transaction_status == 'success'  %}
+                                <td class="text-success">{{ all_data.transaction_status }}</td>
+                           {% else %}
+                                <td class="text-danger">{{ all_data.transaction_status }}</td>
+                           {% endif %}
+                            {% if  all_data.transaction_status == 'success'  or all_data.paymentmode == 'CASH' %}
                                 <td>
-                                   <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
+                                   <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
                                 </td>
                            {% else %}
                             <td>
-                                 <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><i class="fa fa-edit"></i></a>
+                                 <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                    {% if all_data.status == 'Approved' %}
+                                <span class="badge badge-danger" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
+                                {% endif %}
                             </td>
                            {% endif %}
 
@@ -224,7 +229,7 @@
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#regionid1").empty();
-                 $("#regionid1").append("<option value='All'>All</option>");
+                 //$("#regionid1").append("<option value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -247,7 +252,7 @@
                 var obj = data.data.dropdownlist
                 if (obj) {
                     $("#regionid1").empty();
-                    $("#regionid1").append("<option value='All'>All</option>");
+                   // $("#regionid1").append("<option value='All'>All</option>");
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
@@ -271,7 +276,7 @@
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
-                $("#depoid1").append("<option  value='All'>All</option>");
+                //$("#depoid1").append("<option  value='All'>All</option>");
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
@@ -293,7 +298,7 @@
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value='All'>All</option>");
+			 		//$("#depoid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -316,7 +321,7 @@
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-                    $("#busstationid1").append("<option  value='All'>All</option>");
+                    //$("#busstationid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -341,7 +346,7 @@
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#busstationid1").empty();
-			 		$("#busstationid1").append("<option  value='All'>All</option>");
+			 		//$("#busstationid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
