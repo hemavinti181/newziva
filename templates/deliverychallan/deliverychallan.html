@@ -73,7 +73,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="tblChallan" class="display  table-bordered" style="width:100%">
                             <colgroup>
 
     <col span="1" style="visibility: collapse">
@@ -224,7 +224,36 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
-
+window.onload=function()
+{
+      $("#tblChallan").DataTable({
+                dom: "Blfrtip",
+                aaSorting: [[2, 'desc']],
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+}
 $("#busstationid1").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#busstationname1").val(selectedOptionText);

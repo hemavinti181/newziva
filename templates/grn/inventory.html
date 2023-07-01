@@ -14,8 +14,12 @@
     font-size: 20px;
     z-index: 1
 }
+.fa-bottle-water{
+font-size:43px;
+color: #14c38e !important;
+}
     </style>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <div class="right_col" role="main">
           <div class="">
             <div class="clearfix"></div>
@@ -27,7 +31,7 @@
     {% for data in data %}
      <a href="/batch_codeexpry/{{ data.itemcode }}/"><div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
         <div class="tile-stats">
-          <div class="icon1"><i class="fa fa-bank"></i></div>
+          <div class="icon1"><i class="fa fa-bottle-water"></i></div>
             <h2 class="text-warning" style="margin-left: 10px;">{{ data.Qty }}</h2>
              <p class="text-info" style="font-size: 12px;">{{ data.itemname }} Quantity</p></a>
         </div>

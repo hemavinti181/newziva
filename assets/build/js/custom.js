@@ -2566,6 +2566,7 @@ function init_DataTables() {
 
     var handleDataTableButtons = function () {
         if ($("#datatable-buttons").length) {
+        alert("D")
             $("#datatable-buttons").DataTable({
                 dom: "Blfrtip",
                 buttons: [

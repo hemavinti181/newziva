@@ -155,6 +155,13 @@ form .signup-link a:hover{
 </html>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script>
+function preventBack() {
+    window.history.forward();
+}
+ window.onunload = function() {
+    null;
+};
+setTimeout("preventBack()", 0);
   {% for data in messages %}
 		var a = 'alert-success';
 		var b ='{{ data.tags }}';

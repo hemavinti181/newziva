@@ -123,12 +123,9 @@ def login(request):
 
 @never_cache
 def signout(request):
+    del request.session['accesskey']
     request.session.flush()
-    response = redirect('/login')
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
+    return redirect('/login')
 
 
 def location_map(request,id):
@@ -6909,6 +6906,8 @@ def bus_edit(request):
     return redirect('/bus_list')
 
 def live_inventory(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     try:
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']

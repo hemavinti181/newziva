@@ -327,6 +327,19 @@ body{
     transition: opacity 1s;
     font-size: 15px;
 }
+a.user-profile {
+    color: #fff !important;
+}
+.nav_menu{
+background:#14c38e !important;
+color:#fff !important;
+}
+.left_col {
+    background: #161515 !important;
+}
+.current-page>a{
+color:#14c38e !important;
+}
 </style>
 <meta name="robots" content="noindex, nofollow">
 
@@ -377,10 +390,11 @@ body{
 </div>
 <nav class="nav navbar-nav">
 <ul class=" navbar-right">
-<li class="nav-item dropdown open" style="padding-left: 15px;">
-<a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+<li class="nav-item dropdown open" >
+<a href="javascript:;" class="user-profile" aria-haspopup="true" aria-expanded="false">
 <img src="{% static 'build/images/user.png' %}" alt=""> Hello  {{ request.session.username }}
 </a>
+    <a class="user-profile" href="/signout"><i class="fa fa-sign-out pull-right" style="font-size: 2em;"></i></a>
 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
 <a class="dropdown-item" href="javascript:;"> Profile</a>
 <a class="dropdown-item" href="/signout"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
@@ -472,7 +486,13 @@ ZIVA <a href="#"></a>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
 <script>
-
+(function () {
+	window.onpageshow = function(event) {
+		if (event.persisted) {
+			window.location.reload();
+		}
+	};
+})();
             $(document).ready(function () {
                 //Select2
                 $(".country").select2({

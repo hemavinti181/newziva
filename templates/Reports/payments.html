@@ -112,13 +112,19 @@
                         </form>
 
 
-                   <div style="display: inline-block;">
-                       <div class="row" style="display: inline-block;">
-    <div class="top_tiles" style="width: 900px;">
+                   <div style="display: block;">
+                       <div class="row" style="display: block;">
+    <div class="top_tiles" style="width: auto;">
     <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">
             <div class="icon1"><i class="fa fa-bar-chart"></i></div>
-                <h1 class="text-warning" style="margin-left: 10px;">{{ item.1000mlcount }}</h1>
+                <h1 class="text-warning" style="margin-left: 10px;">
+                    {% if not item.1000mlcount  %}
+                    <span>0</span>
+                    {% else %}
+                    <span>{{item.1000mlcount}}</span>
+                   {% endif %}
+                </h1>
                 <p class="text-info" style="font-size: 12px;">1000ml</p>
            </div>
         </div>
@@ -126,14 +132,25 @@
                            <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">
             <div class="icon1"><i class="fa fa-bar-chart"></i></div>
-                <h1 class="text-warning" style="margin-left: 10px;">{{ item.500mlcount }}</h1>
+                <h1 class="text-warning" style="margin-left: 10px;">
+                    {% if not item.500mlcount  %}
+                    <span>0</span>
+                    {% else %}
+                    <span>{{item.500mlcount}}</span>
+                   {% endif %}
                 <p class="text-info" style="font-size: 12px;">500ml</p>
            </div>
         </div>
         <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">
             <div class="icon1"><i class="fa fa-bar-chart"></i></div>
-                <h1 class="text-warning" style="margin-left: 10px;">{{ item.250mlcount}}</h1>
+                <h1 class="text-warning" style="margin-left: 10px;">
+                   {% if not item.250mlcount  %}
+                    <span>0</span>
+                    {% else %}
+                    <span>{{item.250mlcount}}</span>
+                   {% endif %}
+                </h1>
                 <p class="text-info" style="font-size: 12px;">250ml</p>
            </div>
         </div>
@@ -167,10 +184,10 @@
                                     {% for all_data in data %}
                                     <tr>
                                       <td>{{ forloop.counter }}</td>
-                                         <td><a href="#"  style="color: #06911A" class="region_list"  data-id="{{ all_data.warehouseid }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" >{{ all_data.warehouse }}</a></td>
+                                         <td><a href="#" onclick="pageScroll()" style="color: #06911A" class="region_list"  data-id="{{ all_data.warehouseid }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" >{{ all_data.warehouse }}</a></td>
                                         <td> {{ all_data.qty }}</td>
                                       <td>{{ all_data.total }}</td>
-                                        <td class="text-center"><a href = "#" class="items_list"  data-id="{{ all_data.warehouseid }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o"  style='font-size:20px;color:blue'></i></a></td>
+                                        <td class="text-center"><a href = "#" onclick="pageScroll()" class="items_list"  data-id="{{ all_data.warehouseid }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o"  style='font-size:20px;color:blue'></i></a></td>
                                     </tr>
                                     {% endfor %}
                                   </tbody>
@@ -241,6 +258,37 @@
               </div>
             </div>
                 </div>
+
+
+                   <div class="x_panel region"  style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="datatable-buttons1" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                      <th>S No</th>
+                                        <th>Region</th>
+                                        <th>Quantity</th>
+                                      <th>Amount Collected</th>
+                                        <th>Action</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
                   <div class="x_panel itemsreg" style="display:none">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -257,36 +305,6 @@
                                       <th>S No</th>
                                         <th>Date</th>
                                         <th>Region</th>
-                                        <th>Item Name</th>
-                                        <th>Quantity</th>
-                                        <th>Payment mode</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                  </tbody>
-                      </table>
-                  </div>
-                  </div>
-              </div>
-            </div>
-                </div>
-                  <div class="x_panel itemsdepot" style="display:none">
-                    <div class="clearfix"></div>
-                  <div class="x_content">
-                      <div class="row">
-                          <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
-                    </p>
-
-                        <table id="items_depot" class="display  table-bordered" style="width:100%">
-
-                     <thead>
-                                    <tr>
-                                      <th>S No</th>
-                                        <th>Date</th>
-                                        <th>Depot</th>
                                         <th>Item Name</th>
                                         <th>Quantity</th>
                                         <th>Payment mode</th>
@@ -329,6 +347,36 @@
               </div>
             </div>
                 </div>
+                    <div class="x_panel itemsdepot" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="items_depot" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                      <th>S No</th>
+                                        <th>Date</th>
+                                        <th>Depot</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Payment mode</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
 <div class="x_panel bus" style="display:none">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -359,35 +407,7 @@
                 </div>
 
 
-                    <div class="x_panel region"  style="display:none">
-                    <div class="clearfix"></div>
-                  <div class="x_content">
-                      <div class="row">
-                          <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
-                    </p>
 
-                        <table id="datatable-buttons1" class="display  table-bordered" style="width:100%">
-
-                     <thead>
-                                    <tr>
-                                      <th>S No</th>
-                                        <th>Region</th>
-                                        <th>Quantity</th>
-                                      <th>Amount Collected</th>
-                                        <th>Action</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-
-                                  </tbody>
-                      </table>
-                  </div>
-                  </div>
-              </div>
-            </div>
-                </div>
               </div>
             </div>
           </div>
@@ -400,6 +420,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
+function pageScroll() {
+   $('body,html').animate({scrollTop: 500}, 1000);
+    //window.scrollBy(0,1);
+   // scrolldelay = setTimeout(pageScroll,10);
+}
 $("#button1").click(function() {
   var selectedOptionText = $('#daterangeselect').find(":selected").text();
   $("#from").val(selectedOptionText);
@@ -732,12 +757,13 @@ function displayOtherResults(selectedOption) {
                             .attr('data-id', item.region_id)
                             .attr('data-fdate', fdate)
                             .attr('data-tdate', tdate)
+                            .attr('onclick','pageScroll()')
                     )
                 row.append(regionTd);
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
                 row.append(code);
-                var code = '<td class="text-center"><a href="#" class="items_regionlist" data-id="' + item.region_id + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_regionlist" data-id="' + item.region_id + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
                  row.append(code);
                 tableBody.append(row);
             }
@@ -812,11 +838,12 @@ $(document).on('click', '.depo_list', function () {
                             .attr('data-id', item.depoid)
                             .attr('data-fdate', fdate)
                             .attr('data-tdate', tdate)
+                            .attr('onclick','pageScroll()')
                     )
                 row.append(regionTd);
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
-                  var code = '<td class="text-center"><a href="#" class="items_depolist" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                  var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_depolist" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
                 row.append(code);// Amount Collected
                 tableBody.append(row);
             }
