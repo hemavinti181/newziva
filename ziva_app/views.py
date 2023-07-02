@@ -104,12 +104,12 @@ def login(request):
             context = {'menuname':menuname}
             #sidebar_items = {'submenu':submenu,'weblinks':weblinks}
             messages.success(request,data['message'])
-        if role == 'Admin':
-            return redirect('/dashboard')
-        elif displayrole == 'BUS STATION CONTROLLER' or "DEPOT STORE EXECUTIVE" or "UPPAL ZONAL STORES":
-            return redirect('/live_inventory')
-        elif displayrole == "MARKETING EXECUTIVE":
-            return redirect('/store_master')
+            if role == 'Admin':
+                return redirect('/dashboard')
+            elif displayrole == 'BUS STATION CONTROLLER' or "DEPOT STORE EXECUTIVE" or "UPPAL ZONAL STORES":
+                return redirect('/live_inventory')
+            elif displayrole == "MARKETING EXECUTIVE":
+                return redirect('/store_master')
         else:
             try:
                 data = response.json()
@@ -134,6 +134,8 @@ def location_map(request,id):
 
 
 def store_master(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         role = request.session['role']
@@ -257,6 +259,8 @@ def store_master(request):
         return render(request,'login1.html')
 
 def get_store(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
     id = request.POST.get('id')
     url = "http://13.235.112.1/ziva/mobile-api/store-master-list.php"
@@ -292,6 +296,8 @@ def get_store(request):
         return redirect('/add_store')
 
 def add_store(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     try:
 
         menuname = request.session['mylist']
@@ -416,10 +422,11 @@ def add_store(request):
         else:
             return render(request, 'masters/store_master_add.html', {'warehouse': wh_masterlist,'data':storetype_list,'menuname':menuname})
     except:
-        return render(request,'login.html')
+        return render(request,'login1.html')
 
 def store_edit(request):
-
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == "POST":
                 url = "http://13.235.112.1/ziva/mobile-api/edit-storemaster.php"
@@ -469,6 +476,8 @@ def store_edit(request):
     return redirect('/store_master')
 
 def store_status_active(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -499,7 +508,8 @@ def store_status_active(request):
 
 
 def store_status_inactive(request, id):
-
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -524,78 +534,88 @@ def store_status_inactive(request, id):
 
 
 def item_add(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
-    payload=json.dumps({
-        "accesskey":accesskey,
-        "name":"UOM"
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    response = response.json()
-    uom = response['itemmasterlist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "name": "CATEGORY"
-    })
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-
-    response1 = requests.request("GET", url, headers=headers, data=payload)
-    response1 = response1.json()
-    category = response1['itemmasterlist']
-
-
-    if request.method == "POST":
-        image = request.FILES.get("imagefile")
-        if image:
-            image_data = base64.b64encode(image.read())
-        else:
-            image_data = None
-
-        url = "http://13.235.112.1/ziva/mobile-api/add-item-master.php"
-        payload = {
-
-            "accesskey":accesskey ,
-            "itemname": request.POST.get('name'),
-            "hsncode": request.POST.get('hsncode'),
-            "lpp": request.POST.get('latestpurchase'),
-            "gst": request.POST.get("gst"),
-            "category": request.POST.get('category'),
-            "mrp": request.POST.get('mrp'),
-            "manufacturername": request.POST.get('manufacture'),
-            "uom": request.POST.get('uom'),
-            "item_code":request.POST.get('code'),
-            "image": image_data,
-        }
-        payload = json.dumps(payload, cls=BytesEncoder)
+    if 'accesskey' not in request.session:
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
+        payload=json.dumps({
+            "accesskey":accesskey,
+            "name":"UOM"
+        })
         headers = {
             'Content-Type': 'application/json'
         }
-        r = requests.post(url, payload, headers=headers)
-        if r.status_code == 200:
-            data = r.json()
-            messages.success(request, data['message'])
-            return redirect('item_master')
-        else:
-            try:
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        response = response.json()
+        uom = response['itemmasterlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "name": "CATEGORY"
+        })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+
+        response1 = requests.request("GET", url, headers=headers, data=payload)
+        response1 = response1.json()
+        category = response1['itemmasterlist']
+
+
+        if request.method == "POST":
+            image = request.FILES.get("imagefile")
+            if image:
+                image_data = base64.b64encode(image.read())
+            else:
+                image_data = None
+
+            url = "http://13.235.112.1/ziva/mobile-api/add-item-master.php"
+            payload = {
+
+                "accesskey":accesskey ,
+                "itemname": request.POST.get('name'),
+                "hsncode": request.POST.get('hsncode'),
+                "lpp": request.POST.get('latestpurchase'),
+                "gst": request.POST.get("gst"),
+                "category": request.POST.get('category'),
+                "mrp": request.POST.get('mrp'),
+                "manufacturername": request.POST.get('manufacture'),
+                "uom": request.POST.get('uom'),
+                "item_code":request.POST.get('code'),
+                "image": image_data,
+            }
+            payload = json.dumps(payload, cls=BytesEncoder)
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            r = requests.post(url, payload, headers=headers)
+            if r.status_code == 200:
                 data = r.json()
-                messages.error(request, data['message'])
-            except:
-                messages.error(request,response.text)
-            return redirect('item_master')
+                messages.success(request, data['message'])
+                return redirect('item_master')
+            else:
+                try:
+                    data = r.json()
+                    messages.error(request, data['message'])
+                except:
+                    messages.error(request,response.text)
+                return redirect('item_master')
 
-    else:
+        else:
 
-        return render(request, 'Item_master/item_add.html', {'uom_data': uom, 'cat_data': category,'menuname':menuname})
+            return render(request, 'Item_master/item_add.html', {'uom_data': uom, 'cat_data': category,'menuname':menuname})
+    except:
+        if response.status_code == 400:
+            messages.error(request,data['message'])
+            return redirect('/login')
+    return render(request, 'Item_master/item_add.html')
 def storetype_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -618,6 +638,8 @@ def storetype_list(request):
             messages.error(request, response.text)
         return render(request, 'category_master/storetype_list.html',{'menuname':menuname})
 def item_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -632,8 +654,8 @@ def item_list(request):
         }
 
         response = requests.request("GET", url, headers=headers, data=payload)
-        response = response.json()
-        uom = response['itemmasterlist']
+        data = response.json()
+        uom = data['itemmasterlist']
 
         url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
         payload = json.dumps({
@@ -662,40 +684,53 @@ def item_list(request):
         else:
             return render(request, 'Item_master/item_list.html',{'menuname':menuname})
     except:
-        messages.error(request,response['message'])
-    return render(request,'login1.html')
+        if response.status_code == 400:
+            messages.error(request,data['message'])
+            return render(request,'login1.html')
+    return render(request, 'Item_master/item_list.html',{'menuname':menuname})
 
 def item_status_active(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
+    try:
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sno":request.POST.get('id'),
+            "type": "Itemmaster",
+            "status": "Inactive"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "sno":request.POST.get('id'),
-        "type": "Itemmaster",
-        "status": "Inactive"
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        response = requests.request("POST", url, headers=headers, data=payload)
 
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    if response.status_code == 200:
-        data = response.json()
-        messages.success(request, data['message'])
-        return redirect('item_master')
-    else:
-        try:
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('item_master')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('item_master')
+            except:
+                messages.error(request,response.text)
+            return redirect('item_master')
+    except:
+        if response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
-            return redirect('item_master')
-        except:
-            messages.error(request,response.text)
-        return redirect('item_master')
+            return redirect('/login')
+    return redirect('item_master')
+
 
 def item_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -714,6 +749,10 @@ def item_status_inactive(request):
         data = response.json()
         messages.success(request, data['message'])
         return redirect('item_master')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return redirect('/login')
     else:
         try:
             data = response.json()
@@ -727,6 +766,8 @@ def item_status_inactive(request):
 
 
 def des_add(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -789,6 +830,8 @@ def des_add(request):
     return render(request,'masters/pricemaster.html',{'menuname':menuname})
 
 def role(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -821,6 +864,8 @@ def role(request):
 
 
 def level(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     if request.method == 'POST':
 
@@ -850,6 +895,8 @@ def level(request):
 
 
 def city(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -881,6 +928,8 @@ def city(request):
     return render(request, 'category_master/df.html', {"city": "active","menuname":menuname})
 
 def state(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     if request.method == 'POST':
 
@@ -913,6 +962,8 @@ def state(request):
 
 
 def uom(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -945,6 +996,8 @@ def uom(request):
 
 
 def storetype(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -978,6 +1031,8 @@ def storetype(request):
 
 
 def gst(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -1009,6 +1064,8 @@ def gst(request):
 
 
 def category(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -1039,6 +1096,8 @@ def category(request):
 
 
 def role_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -1067,6 +1126,8 @@ def role_list(request):
 
 
 def level_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -1090,6 +1151,8 @@ def level_list(request):
         return render(request, 'category_master/level_list.html',{'menuname':menuname})
 
 def city_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -1114,6 +1177,8 @@ def city_list(request):
 
 
 def state_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -1137,6 +1202,8 @@ def state_list(request):
         return render(request, 'category_master/state_list.html',{'menuname':menuname})
 
 def uom_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -1161,6 +1228,8 @@ def uom_list(request):
 
 
 def gst_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -1186,6 +1255,8 @@ def gst_list(request):
 
 
 def category_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -1210,6 +1281,8 @@ def category_list(request):
 
 
 def des_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/price-list.php"
@@ -1238,6 +1311,8 @@ def des_list(request):
 
 
 def store_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1266,6 +1341,8 @@ def store_status_inactive(request):
             messages.error(request, response.text)
         return redirect('/storetype_list')
 def des_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1295,6 +1372,8 @@ def des_status_inactive(request):
         return redirect('/des_list')
 
 def gst_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
         accesskey = request.session['accesskey']
 
         url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1325,6 +1404,8 @@ def gst_status_inactive(request):
 
 
 def uom_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1354,7 +1435,8 @@ def uom_status_inactive(request):
         return redirect('/uom_list')
 
 def get_price(request):
-
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/price-list.php"
@@ -1372,6 +1454,8 @@ def get_price(request):
     return JsonResponse({'data':data})
 
 def role_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1401,6 +1485,8 @@ def role_status_inactive(request):
         return redirect('/role_list')
 
 def level_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1430,6 +1516,8 @@ def level_status_inactive(request):
         return redirect('/level_list')
 
 def state_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1459,6 +1547,8 @@ def state_status_inactive(request):
         return redirect('/state_list')
 
 def category_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1487,6 +1577,8 @@ def category_status_inactive(request):
             messages.error(request, response.text)
         return redirect('/category_list')
 def city_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
         accesskey = request.session['accesskey']
 
         url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -1516,6 +1608,8 @@ def city_status_inactive(request):
             return redirect('/city_list')
 
 def depo_add(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     menuname = request.session['mylist']
     g = geocoder.ip('me', user_agent='http')
     latlng = g.latlng
@@ -1617,6 +1711,8 @@ def depo_add(request):
 
 
 def depo_list(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
@@ -1683,6 +1779,8 @@ def depo_list(request):
 
 
 def depo_status_active(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -1711,6 +1809,8 @@ def depo_status_active(request):
         return redirect('depo_list')
 
 def depo_status_inactive(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -1739,6 +1839,8 @@ def depo_status_inactive(request):
             messages.error(request, response.text)
         return redirect('/depo_list')
 def bus_status_active(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -1767,7 +1869,9 @@ def bus_status_active(request):
         return redirect('bus_list')
 
 def bus_status_inactive(request):
-    accesskey = request.session['accesskey']
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
     payload = json.dumps({
@@ -1795,6 +1899,10 @@ def bus_status_inactive(request):
             messages.error(request,response.text)
         return redirect('bus_list')
 def region_list(request):
+  if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+
   try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -1830,6 +1938,9 @@ def region_list(request):
   return render(request, 'region/region-list.html', {'menuname': menuname})
 
 def region_add(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
@@ -1868,6 +1979,9 @@ def region_add(request):
 
 
 def get_region(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/region-search.php"
 
@@ -1885,6 +1999,9 @@ def get_region(request):
 
 
 def region_edit(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         url = "http://13.235.112.1/ziva/mobile-api/edit-regionmaster.php"
@@ -1916,6 +2033,9 @@ def region_edit(request):
 
 
 def warehouse_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -1937,6 +2057,9 @@ def warehouse_list(request):
     return render(request, 'category_master/storetype_list.html', {'menuname': menuname})
 
 def warehouse_add(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
@@ -2031,6 +2154,9 @@ def warehouse_add(request):
     return render(request, 'warehouse/warehouse_add.html', {'data': region,'menuname':menuname})
 
 def warehouse_status_active(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -2061,6 +2187,9 @@ def warehouse_status_active(request):
 
 
 def warehouse_status_inactive(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -2090,7 +2219,9 @@ def warehouse_status_inactive(request):
 
 
 def vendor_add(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
@@ -2184,6 +2315,9 @@ def vendor_add(request):
 
 
 def vendor_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -2215,6 +2349,9 @@ def vendor_list(request):
     return render(request,'login1.html')
 
 def vendor_status_active(request, id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -2242,6 +2379,9 @@ def vendor_status_active(request, id):
 
 
 def vendor_status_inactive(request, id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -2264,6 +2404,9 @@ def vendor_status_inactive(request, id):
         messages.error(request, data['message'])
         return redirect('vendor_list')
 def get_storeregion(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     warehouse = request.POST.get('warehouse')
@@ -2293,6 +2436,9 @@ def get_storeregion(request):
         return render(request,'masters/store_master_add.html',{'menuname':menuname})
 
 def get_storebus(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     warehouse = request.POST.get('warehouse')
     region = request.POST.get('region')
@@ -2323,6 +2469,9 @@ def get_storebus(request):
     return JsonResponse({'data': data})
 
 def get_proformabus(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     regionid = request.session['regionid']
     warehousename = request.session['warehousename']
@@ -2341,6 +2490,9 @@ def get_proformabus(request):
 
 
 def get_proformastore(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     regionid = request.session['regionid']
     warehouseid =  request.session['warehouseid']
@@ -2362,6 +2514,9 @@ def get_proformastore(request):
     data = response.json()
     return JsonResponse({'data': data})
 def get_storedepo(request):
+     if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
      accesskey = request.session['accesskey']
      warehouse = request.POST.get('warehouse')
      region = request.POST.get('region')
@@ -2388,6 +2543,9 @@ def get_storedepo(request):
      data = response.json()
      return JsonResponse({'data': data})
 def get_depregion(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     warehouse = request.POST.get('warehouse')
     url = "http://13.235.112.1/ziva/mobile-api/dependent-region-list.php"
@@ -2401,6 +2559,9 @@ def get_depregion(request):
     return JsonResponse({'data': data})
 
 def get_dependent_depo(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdownlist.php"
 
@@ -2419,6 +2580,9 @@ def get_dependent_depo(request):
     return JsonResponse({'data': data})
 
 def get_dependent_bus(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdownlist.php"
 
@@ -2437,6 +2601,9 @@ def get_dependent_bus(request):
     return JsonResponse({'data': data})
 
 def user_add(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
@@ -2541,30 +2708,36 @@ def user_add(request):
 
 
 def user_list(request):
-        menuname = request.session['mylist']
-        accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/user-list.php"
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/user-list.php"
 
-        payload = json.dumps({
+    payload = json.dumps({
             "accesskey": accesskey
         })
-        headers = {
+    headers = {
             'Content-Type': 'application/json'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
             data = response.json()
             user_list = data['userlist']
             return render(request, 'user/user_list.html', {"list": user_list,'menuname':menuname})
-        if response.status_code == 400:
+    if response.status_code == 400:
             data = response.json()
             messages.error(request,data['message'])
             return render(request,'login1.html')
-        else:
+    else:
             return render(request, 'user/user_list.html',{'menuname':menuname})
 
 def user_status_active(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
@@ -2594,6 +2767,9 @@ def user_status_active(request):
 
 
 def user_status_inactive(request, id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
     payload = json.dumps({
@@ -2620,6 +2796,9 @@ def user_status_inactive(request, id):
 
 
 def add_grn(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         accesskey = request.session['accesskey']
         whname = request.session['warehousename']
@@ -2672,6 +2851,9 @@ def add_grn(request):
 
 
 def add_grnitem(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
@@ -2740,6 +2922,9 @@ def add_grnitem(request,id):
     return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname,'id':id})
 
 def add_grnitem_list(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
@@ -2763,6 +2948,9 @@ def add_grnitem_list(request,id):
         return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname,'id':id})
 
 def add_grnitem_list1(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
@@ -2784,6 +2972,9 @@ def add_grnitem_list1(request,id):
         return render(request, 'grn/add_grnitem_list1.html',{'menuname':menuname,'id':id})
 
 def grn_reject(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/grn-reject.php"
     #sno=request.POST.get('txtHdnId1')
@@ -2809,6 +3000,9 @@ def grn_reject(request):
         return redirect('/grn_pending_status')
 
 def add_grn_inventory(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     sno = request.POST.get('sno')
     url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventoryitem.php"
@@ -2834,6 +3028,9 @@ def add_grn_inventory(request):
         url = reverse('add_grnitem_list', args=[sno])
         return redirect(url)
 def add_pending_grn_inventory(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventory.php"
 
@@ -2858,6 +3055,9 @@ def add_pending_grn_inventory(request):
         return redirect('grn_pending_status')
 
 def add_apending_grn_inventory1(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventory.php"
 
@@ -2885,6 +3085,9 @@ def add_apending_grn_inventory1(request):
 
 
 def grn_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
@@ -2904,6 +3107,10 @@ def grn_list(request):
         return render(request, 'grn/grn_list_all.html',{'menuname':menuname})
 
 def grn_list1(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
@@ -2919,12 +3126,19 @@ def grn_list1(request):
         data = response.json()
         grn_list = data['grnlist']
         return render(request, 'grn/grn_list1.html', {'all_data': grn_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request,data['message'])
+        return render(request,'login1.html')
     else:
         return render(request, 'grn/grn_list1.html',{'menuname':menuname})
 
 
 
 def grn_verified_status(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
@@ -2938,11 +3152,18 @@ def grn_verified_status(request):
         data = response.json()
         grn_list = data['grnlist']
         return render(request, 'grn/grn_list_verified.html', {'all_data': grn_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request,data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'grn/grn_list_pending.html',{'menuname':menuname})
 
 
 def grn_pending_status(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
@@ -2958,11 +3179,17 @@ def grn_pending_status(request):
         data = response.json()
         grn_list = data['grnlist']
         return render(request, 'grn/grn_list_pending.html', {'all_data': grn_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'grn/grn_list_pending.html',{'menuname':menuname})
 
 def sale_item_list(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     data1 = request.session['daat1']
     busdeponame = request.session['deponame']
     busdepoid = request.session['depoid']
@@ -3044,11 +3271,18 @@ def sale_item_list(request):
         return render(request, 'sales/sales_new.html',
                       {'depolist':data1,'busdeponame':busdeponame,'busdepoid':busdepoid,"all_data": sale_item_list, 'deponame': medepoid,'bustation':bustation, 'data': sale_item_list[0],
                       'stname':stname,'stid':stid,'data2':data2,'data3':data2[0],'spell':spell,'netvalue':netvalue,'taxinvoice':taxinvoice,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'sales/sales_new.html',
                       {'depolist':data1,'busdeponame':busdeponame,'busdepoid':busdepoid,'deponame': medepoid,'bustation':bustation,'stname':stname,'data2':data2,'data3':data2[0],'spell':spell,'menuname':menuname})
 
 def sales_item_list_pending(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
@@ -3069,6 +3303,10 @@ def sales_item_list_pending(request,id):
         data = response.json()
         sale_item_list = data['saleitemlist']
         return render(request, 'sales/sale_item_list.html',{'approve':'pending',"all_data": sale_item_list,'menuname':menuname,"id":id})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         data = response.json()
         messages.error(request,data['message'])
@@ -3076,6 +3314,9 @@ def sales_item_list_pending(request,id):
 
 
 def sale_item_list_approve(request, id):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
 
@@ -3096,13 +3337,19 @@ def sale_item_list_approve(request, id):
             sale_item_list = data['saleitemlist']
             return render(request, 'sales/sale_item_list_approve.html',
                           {'approve': 'pending', "all_data": sale_item_list, 'menuname': menuname, "id": id})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
             return render(request, 'sales/sale_item_list_approve.html', {'menuname': menuname, "id": id})
 
 def proformainvoice(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -3187,72 +3434,88 @@ def proformainvoice(request):
                     return render(request, 'sales/sales_new.html', {'busdeponame':busdeponame,'menuname':menuname,'depolist':data1,'stname':stname,'deponame': medepoid,'bustation':bustname})
         return render(request, 'sales/sales_new.html', {'depolist':data1,'menuname':menuname,'busdepoid':busdepoid,'busdeponame':busdeponame})
     except:
-        messages.error(request,response.text)
+        if response.status_code == 400:
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
     return render(request,'sales/sales_new.html')
 def sales_item_add(request):
-    menuname = request.session['mylist']
-    tdate = datetime.date.today()
-    tdate = tdate.strftime("%d-%m-%Y")
-    accesskey = request.session['accesskey']
-    regionid = request.session['regionid']
-    warehousename = request.session['warehousename']
-    stid = request.session['stid']
-    stname = request.session['storename']
-    deponame = request.session['deponame']
-    bustation = request.session['bustname']
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
+        tdate = datetime.date.today()
+        tdate = tdate.strftime("%d-%m-%Y")
+        accesskey = request.session['accesskey']
+        regionid = request.session['regionid']
+        warehousename = request.session['warehousename']
+        stid = request.session['stid']
+        stname = request.session['storename']
+        deponame = request.session['deponame']
+        bustation = request.session['bustname']
 
 
-    url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "type": "Depo",
-        "warehousename": warehousename,
-        "regionid": regionid,
-        "depoid": ""
-
-    })
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        data1 = data['dropdownlist']
-    if request.method == 'POST':
-
-        tax_inv = request.session['taxinvoice']
-        cus_name = request.session['customer_name']
-        cus_mobile = request.session['customer_mobile']
-
-
-        url = "http://13.235.112.1/ziva/mobile-api/add-saleitem.php"
+        url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster.php"
         payload = json.dumps({
+            "accesskey": accesskey,
+            "type": "Depo",
+            "warehousename": warehousename,
+            "regionid": regionid,
+            "depoid": ""
 
-                "accesskey": accesskey,
-                "quantity": request.POST.get('quantity'),
-                "taxinvoice": tax_inv,
-                "item_code": request.POST.get('itemname'),
-                "date": request.POST.get('date'),
         })
-
         headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain'
         }
-        r = requests.post(url, data=payload, headers=headers)
-        if r.status_code == 200:
-            data = r.json()
-            messages.success(request,data['message'])
-            return redirect('sale_item_list')
-        else:
-            try:
-                data = r.json()
-                messages.error(request, data['message'])
-            except:
-                messages.error(request,r.text)
-            return redirect('sale_item_list')
-    return render(request, 'sales/sales_new.html', {'menuname':menuname,'depolist':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
-def complete_sale(request):
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            data1 = data['dropdownlist']
+        if request.method == 'POST':
 
+            tax_inv = request.session['taxinvoice']
+            cus_name = request.session['customer_name']
+            cus_mobile = request.session['customer_mobile']
+
+
+            url = "http://13.235.112.1/ziva/mobile-api/add-saleitem.php"
+            payload = json.dumps({
+
+                    "accesskey": accesskey,
+                    "quantity": request.POST.get('quantity'),
+                    "taxinvoice": tax_inv,
+                    "item_code": request.POST.get('itemname'),
+                    "date": request.POST.get('date'),
+            })
+
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            r = requests.post(url, data=payload, headers=headers)
+            if r.status_code == 200:
+                data = r.json()
+                messages.success(request,data['message'])
+                return redirect('sale_item_list')
+            else:
+                try:
+                    data = r.json()
+                    messages.error(request, data['message'])
+                except:
+                    messages.error(request,r.text)
+                return redirect('sale_item_list')
+        return render(request, 'sales/sales_new.html', {'menuname':menuname,'depolist':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'sales/sales_new.html', {'menuname': menuname})
+
+
+def complete_sale(request):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
         accesskey = request.session['accesskey']
 
         if  request.method == 'POST':
@@ -3284,14 +3547,28 @@ def complete_sale(request):
                     'Content-Type': 'application/json'
                 }
                 response = requests.request("GET", url, headers=headers, data=payload)
-                data = response.json()
+
                 if response.status_code == 200:
+                    data = response.json()
                     messages.success(request, data['message'])
                     return redirect('proformainvoice')
-                else:
+                elif response.status_code == 400:
+                    data = response.json()
                     messages.error(request, data['message'])
                     return redirect('proformainvoice')
+
+                else:
+                    try:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        return redirect('proformainvoice')
+                    except:
+                        messages.error(request,response.text)
+                        return redirect('proformainvoice')
 def delete_sale_item(request,id):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
         tax_inv = request.session['taxinvoice']
         accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/delete-saleitem.php"
@@ -3309,6 +3586,10 @@ def delete_sale_item(request,id):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('sale_item_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
         else:
             try:
                 data = response.json()
@@ -3318,6 +3599,9 @@ def delete_sale_item(request,id):
             return redirect('sale_item_list')
 
 def deletetax_admin(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/delete-taxinvoice.php"
 
@@ -3333,6 +3617,10 @@ def deletetax_admin(request,id):
         data = response.json()
         messages.success(request, data['message'])
         return redirect('taxinvoice_list_admin')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return redirect('/login')
     else:
         try:
             data = response.json()
@@ -3342,6 +3630,10 @@ def deletetax_admin(request,id):
         return redirect('taxinvoice_list_admin')
 
 def get_sale_item(request):
+
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
@@ -3354,9 +3646,18 @@ def get_sale_item(request):
         'Content-Type': 'application/json'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return  JsonResponse({'data':data})
+    if response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return redirect('/login')
+    elif response.status_code == 200:
+        data = response.json()
+        messages.error(request, data['message'])
+        return  JsonResponse({'data':data})
 def edit_sale_item(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     tax_inv = request.session['taxinvoice']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/edit-saleitem.php"
@@ -3375,6 +3676,10 @@ def edit_sale_item(request):
         data = response.json()
         messages.success(request, data['message'])
         return redirect('sale_item_list')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return redirect('/login')
     else:
         try:
             data = response.json()
@@ -3384,62 +3689,74 @@ def edit_sale_item(request):
         return redirect('sale_item_list')
 
 def grn(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
 
-    payload = json.dumps({"accesskey":accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    vendor_masterlist = data['vendormasterlist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-
-    payload = json.dumps({"accesskey":accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data1 = response.json()
-    wh_masterlist = data1['warehouselist']
-
-    if request.method == "POST":
-        url = "http://13.235.112.1/ziva/mobile-api/create-grn.php"
-        payload = {
-            "accesskey": "MDExNjczMjAyMi0xMi0xNyAwNjoxNzo1Nw==",
-            "vendorname": request.POST.get('vname'),
-            "invoiceno": request.POST.get('invno'),
-            "invoicedate": request.POST.get('invoicedate'),
-            "invoiceamount": request.POST.get('invoiceamount'),
-            "vendorid": request.POST.get('vname'),
-            "whcode": request.POST.get('whname')
-        }
-        payload = json.dumps(payload, cls=BytesEncoder)
+        payload = json.dumps({"accesskey":accesskey})
         headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain'
         }
-        r = requests.post(url, payload, headers=headers)
 
-        if r.status_code == 200:
-            data2 = r.json()
-            grn = data2['grnnumber']
-            request.session['grnnumber'] = grn
-            messages.success(request, data2['message'])
-            return redirect('add_grnitem')
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        vendor_masterlist = data['vendormasterlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+        payload = json.dumps({"accesskey":accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data1 = response.json()
+        wh_masterlist = data1['warehouselist']
+
+        if request.method == "POST":
+            url = "http://13.235.112.1/ziva/mobile-api/create-grn.php"
+            payload = {
+                "accesskey": "MDExNjczMjAyMi0xMi0xNyAwNjoxNzo1Nw==",
+                "vendorname": request.POST.get('vname'),
+                "invoiceno": request.POST.get('invno'),
+                "invoicedate": request.POST.get('invoicedate'),
+                "invoiceamount": request.POST.get('invoiceamount'),
+                "vendorid": request.POST.get('vname'),
+                "whcode": request.POST.get('whname')
+            }
+            payload = json.dumps(payload, cls=BytesEncoder)
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            r = requests.post(url, payload, headers=headers)
+
+            if r.status_code == 200:
+                data2 = r.json()
+                grn = data2['grnnumber']
+                request.session['grnnumber'] = grn
+                messages.success(request, data2['message'])
+                return redirect('add_grnitem')
+            else:
+                data2 = r.json()
+                messages.error(request, data2['message'])
+                return redirect('add_grn')
         else:
-            data2 = r.json()
-            messages.error(request, data2['message'])
-            return redirect('add_grn')
-    else:
-        return render(request, 'grn/grn_new.html', {'menuname':menuname,'all_data': vendor_masterlist, 'all_data1': wh_masterlist})
+            return render(request, 'grn/grn_new.html', {'menuname':menuname,'all_data': vendor_masterlist, 'all_data1': wh_masterlist})
+    except:
+        if response.status_code == 400:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    return render(request, 'grn/grn_new.html', {'menuname': menuname})
 
 def deliver_challan(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     displayrole = request.session['displayrole']
     if  displayrole == "DEPOT STORE EXECUTIVE":
         menuname = request.session['mylist']
@@ -3603,6 +3920,9 @@ def deliver_challan(request):
         return render(request, 'deliverychallan/deliverychallan.html',{'menuname':menuname})
 
 def get_salebus(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     regionid = request.session['regionid']
     warehousename = request.session['warehousename']
@@ -3616,11 +3936,19 @@ def get_salebus(request):
         'Content-Type': 'text/plain'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        return redirect('/login')
+
 
 
 def medeliver_challan(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
@@ -3747,7 +4075,9 @@ def medeliver_challan(request):
     return render(request, 'deliverychallan/medeliverychallan.html',{'menuname':menuname})
 
 def medeliver_challan_pending(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
 
     try:
         menuname = request.session['mylist']
@@ -3884,7 +4214,9 @@ def medeliver_challan_pending(request):
             return render(request,'login1.html')
     return render(request, 'deliverychallan/medeliverychallan_pending.html',{'menuname':menuname})
 def deliver_challan_approve(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         tdate = datetime.date.today()
@@ -3961,7 +4293,9 @@ def deliver_challan_approve(request):
             return render(request,'login1.html')
     return render(request, 'deliverychallan/deliverychallan_approve.html',{'menuname':menuname})
 def deliver_challan_status(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     id = request.POST.getlist('txtHdnId[]')
     id = str(id).replace('[', '').replace(']', '').replace("'", '')
@@ -3998,6 +4332,9 @@ def deliver_challan_status(request):
         return redirect('deliver_challan')
 
 def deliver_challan_update(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-qtyupdate.php"
     payload = json.dumps({
@@ -4014,13 +4351,19 @@ def deliver_challan_update(request):
         data = response.json()
         messages.success(request, data['message'])
         return redirect('sales_list')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         data = response.json()
         messages.error(request, data['message'])
         return redirect('sales_list')
 
 def deliver_challan_item_update(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     id=request.POST.get('txtHdnId')
     url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-itemqtyupdate.php"
@@ -4041,6 +4384,10 @@ def deliver_challan_item_update(request):
         messages.success(request, data['message'])
         url = reverse('sales_item_list_pending', args=[id])
         return redirect(url)
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         data = response.json()
         messages.error(request, data['message'])
@@ -4049,128 +4396,140 @@ def deliver_challan_item_update(request):
 
 
 def create_indent(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     displayrole = request.session['displayrole']
-    if displayrole == 'DEPOT STORE EXECUTIVE':
-        menuname = request.session['mylist']
-        accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
+    try:
+        if displayrole == 'DEPOT STORE EXECUTIVE':
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
 
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
             data = response.json()
             item_masterlist = data['itemmasterlist']
-        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            wh_masterlist = data['warehouselist']
-
-        if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
-
-            payload =json.dumps( {
-                "accesskey": accesskey,
-                "indentno":"",
-                "itemname": request.POST.get('itemname'),
-                "itemcode":request.POST.get('itemcode'),
-                "warehouseid":request.POST.get('whcode'),
-                "warehousename": request.POST.get('whname'),
-                "date ": request.POST.get('date'),
-                "qty": request.POST.get('quantity'),
-                "mrp": request.POST.get('price'),
-
-            })
+            payload = json.dumps({"accesskey": accesskey})
             headers = {
                 'Content-Type': 'text/plain'
             }
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                id=data['indentno']
-                messages.success(request, data['message'])
-                url = reverse('indent_item_list', args=[id])
-                return redirect(url)
-            else:
-                try:
+                wh_masterlist = data['warehouselist']
+
+            if request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                payload =json.dumps( {
+                    "accesskey": accesskey,
+                    "indentno":"",
+                    "itemname": request.POST.get('itemname'),
+                    "itemcode":request.POST.get('itemcode'),
+                    "warehouseid":request.POST.get('whcode'),
+                    "warehousename": request.POST.get('whname'),
+                    "date ": request.POST.get('date'),
+                    "qty": request.POST.get('quantity'),
+                    "mrp": request.POST.get('price'),
+
+                })
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
                     data = response.json()
-                    messages.error(request, data['message'])
-                    return redirect('/indent_list')
-                except:
-                    messages.error(request,response.text)
-                return redirect('indent_list')
-        return render(request, 'create_indent/create_indent.html',{'menuname':menuname,'item_masterlist':item_masterlist,'item_masterlist1':item_masterlist[0],'wh_masterlist':wh_masterlist})
-    else:
-        deponame = request.session['deponame']
-        depoid = request.session['depoid']
-        menuname = request.session['mylist']
-        accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
-
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            item_masterlist = data['itemmasterlist']
-        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            wh_masterlist = data['warehouselist']
-
-        if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
-
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "indentno": "",
-                "itemname": request.POST.get('itemname'),
-                "itemcode": request.POST.get('itemcode'),
-                "warehouseid": deponame,
-                "warehousename": depoid,
-                "date ": request.POST.get('date'),
-                "qty": request.POST.get('quantity'),
-                "mrp": request.POST.get('price'),
-
-            })
-            headers = {
-                'Content-Type': 'text/plain'
-            }
-            response = requests.request("GET", url, headers=headers, data=payload)
-            if response.status_code == 200:
-                data = response.json()
-                messages.success(request, data['message'])
-                return redirect('indent_list')
-            else:
-                try:
-                    data = response.json()
-                    messages.error(request, data['message'])
+                    id=data['indentno']
+                    messages.success(request, data['message'])
+                    url = reverse('indent_item_list', args=[id])
+                    return redirect(url)
+                else:
+                    try:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        return redirect('/indent_list')
+                    except:
+                        messages.error(request,response.text)
                     return redirect('indent_list')
-                except:
-                    messages.error(request, response.text)
-                return redirect('indent_list')
-        return render(request, 'create_indent/create_indent.html',
-                      {'menuname': menuname, 'item_masterlist': item_masterlist, 'item_masterlist1': item_masterlist[0],
-                       'wh_masterlist': wh_masterlist,"deponame":deponame})
+            return render(request, 'create_indent/create_indent.html',{'menuname':menuname,'item_masterlist':item_masterlist,'item_masterlist1':item_masterlist[0],'wh_masterlist':wh_masterlist})
+        else:
+            deponame = request.session['deponame']
+            depoid = request.session['depoid']
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
+
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                item_masterlist = data['itemmasterlist']
+            url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                wh_masterlist = data['warehouselist']
+
+            if request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "indentno": "",
+                    "itemname": request.POST.get('itemname'),
+                    "itemcode": request.POST.get('itemcode'),
+                    "warehouseid": deponame,
+                    "warehousename": depoid,
+                    "date ": request.POST.get('date'),
+                    "qty": request.POST.get('quantity'),
+                    "mrp": request.POST.get('price'),
+
+                })
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    messages.success(request, data['message'])
+                    return redirect('indent_list')
+                else:
+                    try:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        return redirect('indent_list')
+                    except:
+                        messages.error(request, response.text)
+                    return redirect('indent_list')
+            return render(request, 'create_indent/create_indent.html',
+                          {'menuname': menuname, 'item_masterlist': item_masterlist, 'item_masterlist1': item_masterlist[0],
+                           'wh_masterlist': wh_masterlist,"deponame":deponame})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request,'create_indent/create_indent.html')
 
 
 def indent_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     displayrole = request.session['displayrole']
@@ -4197,11 +4556,18 @@ def indent_list(request):
         data = response.json()
         ind_list = data['indentlist']
         return render(request, 'create_indent/indent_list.html', {"all_data": ind_list,'all_data1':ind_list[0],'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'create_indent/indent_list.html',{'menuname':menuname})
 
 
 def indent_list_approve(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     displayrole = request.session['displayrole']
@@ -4228,10 +4594,17 @@ def indent_list_approve(request):
         data = response.json()
         ind_list = data['indentlist']
         return render(request, 'create_indent/indent_list.html', {"all_data": ind_list,'all_data1':ind_list[0],'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'create_indent/indent_list.html',{'menuname':menuname})
 
 def indent_item_list1(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/indent-itemqtyupdated-list.php"
@@ -4249,10 +4622,44 @@ def indent_item_list1(request,id):
         data = response.json()
         ind_item_list = data['indentitemlist']
         return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list,'menuname':menuname,'id':id})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'create_indent/indent_item_list1.html',{'menuname':menuname,'id':id})
+def indent_item_list_approve(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/indent-itemqtyupdated-list.php"
+
+    payload = json.dumps({
+         "accesskey":accesskey,
+            "dcnumber":id,
+            "type":"Ready to Ship"})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        ind_item_list = data['indentitemlist']
+        return render(request, 'create_indent/indent_item_list_approve.html', {"all_data": ind_item_list,'menuname':menuname,'id':id})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
+    else:
+        return render(request, 'create_indent/indent_item_list_approve.html',{'menuname':menuname,'id':id})
 
 def indent_item_list2(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/indent-itemqtyupdated-list.php"
@@ -4270,10 +4677,17 @@ def indent_item_list2(request,id):
         data = response.json()
         ind_item_list = data['indentitemlist']
         return render(request, 'create_indent/indent_item_list1.html', {"all_data": ind_item_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'create_indent/indent_item_list1.html',{'menuname':menuname})
 
 def qtyupdate_readytoship(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     id = request.POST.get('txtHdnId')
     dcid = request.POST.get('dcid')
     accesskey = request.session['accesskey']
@@ -4291,10 +4705,13 @@ def qtyupdate_readytoship(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = response.json()
-
         messages.success(request, data['message'])
         url = reverse('indent_item_list1', args=[dcid])
         return redirect(url)
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response.json()
@@ -4306,7 +4723,9 @@ def qtyupdate_readytoship(request):
         url = reverse('indent_item_list1', args=[id])
         return redirect(url)
 def update_ack(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     id1 = request.session['id']
     fromname = request.session['fromname']
@@ -4337,6 +4756,10 @@ def update_ack(request):
         messages.success(request,data['message'])
         #url = reverse('indent_item_list_ack', args=[id2])
         return redirect('/pending_indent_ack')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response.json()
@@ -4348,6 +4771,9 @@ def update_ack(request):
         #url = reverse('indent_item_list_ack', args=[id2])
         return redirect('/pending_indent_ack')
 def add_indentitem(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
@@ -4376,6 +4802,10 @@ def add_indentitem(request,id):
             messages.success(request, data['message'])
             url = reverse('indent_item_list', args=[id])
             return redirect(url)
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data = response.json()
@@ -4391,72 +4821,84 @@ def add_indentitem(request,id):
     #return render(request, 'create_indent/indent_item_list.html',{"item_masterlist":item_masterlist,'id':id,'menuname':menuname})
 
 def indent_item_list(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
 
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        item_masterlist = data['itemmasterlist']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    item_masterlist = data['itemmasterlist']
-    if request.method == 'POST':
-        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "indentno": id,
+                "itemname": request.POST.get('itemname'),
+                "itemcode": request.POST.get('itemcode'),
+                "warehouseid": request.POST.get('whcode'),
+                "warehousename": request.POST.get('whname'),
+                "date ": request.POST.get('date'),
+                "qty": request.POST.get('quantity'),
+                "mrp": request.POST.get('price'),
+
+            })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                id = data['indentno']
+                messages.success(request, data['message'])
+                url = reverse('indent_item_list', args=[id])
+                return redirect(url)
+            else:
+                try:
+                    data = response.json()
+                    messages.error(request, data['message'])
+                    url = reverse('indent_item_list', args=[id])
+                    return redirect(url)
+                except:
+                    messages.error(request, response.text)
+                url = reverse('indent_item_list', args=[id])
+                return redirect(url)
+        url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
 
         payload = json.dumps({
             "accesskey": accesskey,
-            "indentno": id,
-            "itemname": request.POST.get('itemname'),
-            "itemcode": request.POST.get('itemcode'),
-            "warehouseid": request.POST.get('whcode'),
-            "warehousename": request.POST.get('whname'),
-            "date ": request.POST.get('date'),
-            "qty": request.POST.get('quantity'),
-            "mrp": request.POST.get('price'),
-
+            "indentno":id
         })
         headers = {
-            'Content-Type': 'text/plain'
+            'Content-Type': 'application/json'
         }
+
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
             data = response.json()
-            id = data['indentno']
-            messages.success(request, data['message'])
-            url = reverse('indent_item_list', args=[id])
-            return redirect(url)
+            ind_item_list = data['indentitemlist']
+
+            return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list,'data':ind_item_list[0],'id':id,'menuname':menuname,'item_masterlist':item_masterlist})
         else:
-            try:
-                data = response.json()
-                messages.error(request, data['message'])
-                url = reverse('indent_item_list', args=[id])
-                return redirect(url)
-            except:
-                messages.error(request, response.text)
-            url = reverse('indent_item_list', args=[id])
-            return redirect(url)
-    url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
-
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "indentno":id
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        ind_item_list = data['indentitemlist']
-
-        return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list,'data':ind_item_list[0],'id':id,'menuname':menuname,'item_masterlist':item_masterlist})
-    else:
-        return render(request, 'create_indent/indent_item_list.html',{'menuname':menuname})
+            return render(request, 'create_indent/indent_item_list.html',{'menuname':menuname})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request,'create_indent/indent_item_list.html')
 def pending_indent_item_list(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
@@ -4477,10 +4919,17 @@ def pending_indent_item_list(request,id):
         return render(request, 'create_indent/pending_indent_item_list.html',
                       {"all_data": ind_item_list, 'id': id, 'menuname': menuname,
                        })
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'create_indent/pending_indent_item_list.html', {'menuname': menuname,"id":id})
 
 def indent_item_list_ack(request, id):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
 
@@ -4506,11 +4955,18 @@ def indent_item_list_ack(request, id):
             request.session['toname'] = toname
             request.session['toid'] = toid
             return render(request, 'create_indent/indent_list_ack.html', {'menuname':menuname,"all_data": ind_item_list,'id':id})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/indent_list_ack.html',{'menuname':menuname,'id':id})
 
 
 def out_passlist(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -4533,6 +4989,10 @@ def out_passlist(request):
             outpass_list = data['indentlist']
 
             return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list,'menuname':menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
 
             return render(request, 'create_indent/outpass_list.html',{'menuname':menuname})
@@ -4554,14 +5014,20 @@ def out_passlist(request):
         if response.status_code == 200:
             data = response.json()
             outpass_list = data['indentlist']
-
             return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list, 'menuname': menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
 
             return render(request, 'create_indent/outpass_list.html', {'menuname': menuname})
 
 
 def out_pass_itemlist(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/outpassitem-list.php"
@@ -4578,14 +5044,20 @@ def out_pass_itemlist(request,id):
     if response.status_code == 200:
         data = response.json()
         outpassitem_list = data['Outpassitemlist']
-
         return render(request, 'create_indent/out_pass_itemlist.html', {"all_data": outpassitem_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'create_indent/out_pass_itemlist.html',{'menuname':menuname})
 
 
 
 def out_pass_scanner(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     if request.method == 'POST':
 
@@ -4608,9 +5080,14 @@ def out_pass_scanner(request):
             data2 = response.json()
             messages.success(request,data2['message'])
             return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data2 = response.json()
+                messages.error(request,data2['message'])
                 return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
             except:
                 messages.error(request,response.text)
@@ -4619,6 +5096,9 @@ def out_pass_scanner(request):
 
 
 def out_passlist1(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -4638,10 +5118,12 @@ def out_passlist1(request):
         if response.status_code == 200:
             data = response.json()
             outpass_list = data['indentlist']
-
             return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list,'menuname':menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
-
             return render(request, 'create_indent/outpass_list.html',{'menuname':menuname})
     else:
 
@@ -4661,14 +5143,19 @@ def out_passlist1(request):
         if response.status_code == 200:
             data = response.json()
             outpass_list = data['indentlist']
-
             return render(request, 'create_indent/outpass_list.html', {"all_data": outpass_list, 'menuname': menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
-
             return render(request, 'create_indent/outpass_list.html', {'menuname': menuname})
 
 
 def out_pass_itemlist(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/outpassitem-list.php"
@@ -4685,14 +5172,20 @@ def out_pass_itemlist(request,id):
     if response.status_code == 200:
         data = response.json()
         outpassitem_list = data['Outpassitemlist']
-
         return render(request, 'create_indent/out_pass_itemlist.html', {"all_data": outpassitem_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'create_indent/out_pass_itemlist.html',{'menuname':menuname})
 
 
 
 def out_pass_scanner(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     if request.method == 'POST':
 
@@ -4715,15 +5208,23 @@ def out_pass_scanner(request):
             data2 = response.json()
             messages.success(request,data2['message'])
             return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data2 = response.json()
+                messages.error(request,data2['message'])
                 return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
             except:
                 messages.error(request,response.text)
             return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
     return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
 def approved_indlist_pending(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -4744,8 +5245,11 @@ def approved_indlist_pending(request):
         if response.status_code == 200:
             data = response.json()
             approved_list = data['stocklist']
-
             return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
@@ -4767,12 +5271,18 @@ def approved_indlist_pending(request):
 
             return render(request, 'create_indent/approved_indlist.html',
                           {"all_data": approved_list, 'menuname': menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/approved_indlist.html',
                           {'menuname': menuname})
 
 def approve_item_list(request,id):
-
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
 
@@ -4791,13 +5301,19 @@ def approve_item_list(request,id):
         if response.status_code == 200:
             data = response.json()
             approved_item_list = data['stocklist']
-
             return render(request, 'create_indent/approved_item_list.html', {"all_data": approved_item_list,'menuname':menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/approved_item_list.html',{'menuname':menuname})
 
 
 def approve_accept(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/submit-items-accepted.php"
 
@@ -4816,6 +5332,10 @@ def approve_accept(request):
         data = response.json()
         messages.success(request,data['message'])
         return redirect('/approved_indlist_pending')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response.json()
@@ -4825,6 +5345,9 @@ def approve_accept(request):
             messages.error(request,response.text)
         return redirect('/approved_indlist_pending')
 def approved_indlist_accept(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -4848,6 +5371,10 @@ def approved_indlist_accept(request):
             approved_list = data['stocklist']
 
             return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
@@ -4867,13 +5394,19 @@ def approved_indlist_accept(request):
         if response.status_code == 200:
             data = response.json()
             approved_list = data['stocklist']
-
             return render(request, 'create_indent/approved_indlist.html',
                           {"all_data": approved_list, 'menuname': menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/approved_indlist.html', {'menuname': menuname})
 
 def get_grn_item_data(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     itemname = request.POST.get('itemname')
 
@@ -4896,7 +5429,10 @@ def get_grn_item_data(request):
             if str(i['itemcode']) == itemname:
                 data = {"mrp": i["mrp"], "uom": i["uom"], "itemname": i["itemname"],"sno":i['sno']}
         return JsonResponse({'data': data})
-
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
             try:
                 data = response.json()
@@ -4906,6 +5442,9 @@ def get_grn_item_data(request):
             return redirect('/add_grnitem')
 
 def get_price1(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     region = request.session['regionid']
     accesskey = request.session['accesskey']
     itemcode = request.POST.get('itemname')
@@ -4923,11 +5462,18 @@ def get_price1(request):
     }
 
     data = requests.request("POST", url, headers=headers, data=payload)
-    data2 = data.json()
-    return JsonResponse({'data': data2})
+    if response.status_code == 200:
+        data2 = data.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def get_indentitem(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     itemname = request.POST.get('itemname')
 
@@ -4943,11 +5489,20 @@ def get_indentitem(request):
     }
 
     data = requests.request("POST", url, headers=headers, data=payload)
-    data2 = data.json()
-    return JsonResponse({'data': data2})
+    if response.status_code == 200:
+        data2 = data.json()
+        return JsonResponse({'data': data2})
+
+    elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
 
 @csrf_exempt
 def get_item_data(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     name = request.POST.get('name')
@@ -4962,17 +5517,23 @@ def get_item_data(request):
     headers = {
         'Content-Type': 'application/json'
     }
-
-    data = requests.request("POST", url, headers=headers, data=payload)
-    data2 = data.json()
-    return JsonResponse({'data': data2})
+    if response.status_code == 200:
+        data = requests.request("POST", url, headers=headers, data=payload)
+        data2 = data.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 
 
 
 @csrf_exempt
 def get_sale_item_data(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     itemname = request.POST.get('itemcode')
 
 
@@ -4990,12 +5551,20 @@ def get_sale_item_data(request):
         'Content-Type': 'application/json'
     }
     print(payload)
-    data = requests.request("POST", url, headers=headers, data=payload)
-    data2 = data.json()
-    return JsonResponse({'data': data2})
+    if response.status_code == 200:
+        data = requests.request("POST", url, headers=headers, data=payload)
+        data2 = data.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 
 def item_edit(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
 
@@ -5026,6 +5595,10 @@ def item_edit(request):
         if response.status_code == 200:
             messages.success(request, data['message'])
             return redirect('/item_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             messages.error(request, data['message'])
             return redirect('/item_edit')
@@ -5036,6 +5609,9 @@ def vendor_edit(request):
 
 
 def get_warehouse(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     id = request.POST.get('id')
     url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
@@ -5060,7 +5636,11 @@ def get_warehouse(request):
 
 
 
+
 def warehouse_edit(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         url = "http://13.235.112.1/ziva/mobile-api/edit-warehousemaster.php"
@@ -5087,13 +5667,21 @@ def warehouse_edit(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/warehouse_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
             return redirect('/warehouse_list')
+
 def des_edit(request):
     pass
 def get_depo(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/depo-search.php"
 
@@ -5106,10 +5694,18 @@ def get_depo(request):
         'Content-Type': 'application/json'
     }
     data = requests.request("POST", url, headers=headers, data=payload)
-    data2 = data.json()
-    return JsonResponse({'data': data2})
+    if response.status_code == 200:
+        data2 = data.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def depo_edit(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == "POST":
         url = "http://13.235.112.1/ziva/mobile-api/edit-depomaster.php"
@@ -5140,6 +5736,10 @@ def depo_edit(request):
         if response.status_code == 200:
             messages.success(request, data['message'])
             return redirect('depo_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             messages.error(request, data['message'])
             return redirect('depo_list')
@@ -5151,6 +5751,9 @@ def level_edit(request):
 
 
 def pending_indent_ack(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
@@ -5169,10 +5772,17 @@ def pending_indent_ack(request):
         data = response.json()
         data = data['indentlist']
         return render(request, 'create_indent/wh_indent_ack.html', {'data': data,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'create_indent/wh_indent_ack.html',{'menuname':menuname})
 
 def pending_indent_pending(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -5194,6 +5804,10 @@ def pending_indent_pending(request):
             data = response.json()
             data = data['indentlist']
             return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/wh_indent_pending.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
@@ -5214,11 +5828,18 @@ def pending_indent_pending(request):
             data = response.json()
             data = data['indentlist']
             return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'data1':data[0] ,'menuname': menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname})
 
 
 def pending_indent_pending1(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     if request.method == 'POST':
@@ -5240,6 +5861,10 @@ def pending_indent_pending1(request):
             data = response.json()
             data = data['indentlist']
             return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'data1':data[0],'menuname':menuname,'fdate':fdate,'tdate':tdate})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/wh_indent_pending.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
@@ -5260,10 +5885,17 @@ def pending_indent_pending1(request):
             data = response.json()
             data = data['indentlist']
             return render(request, 'create_indent/wh_indent_pending.html', {'data': data, 'menuname': menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname})
 
 def pending_ind_status(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     #url = "http://13.235.112.1/ziva/mobile-api/acknowledgement-update.php"
     url = "http://13.235.112.1/ziva/mobile-api/dc-generate.php"
@@ -5285,6 +5917,10 @@ def pending_ind_status(request):
         data = response.json()
         messages.success(request, data['message'])
         return redirect('pending_indent_pending')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response.json()
@@ -5296,7 +5932,9 @@ def pending_ind_status(request):
 
 
 def readyto_ship(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -5332,9 +5970,13 @@ def readyto_ship(request):
                 data1 = response.json()
                 data2 = data1['indentlist']
                 #messages.success(request,data1['message'])
-                return render(request, 'create_indent/readytoship.html', {'data': data2,'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                return render(request, 'create_indent/readytoship.html', {'status':'Pending','data': data2,'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
             else:
-                return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'status':'Pending','menuname':menuname,'fdate':fdate,'tdate':tdate})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
 
@@ -5354,14 +5996,20 @@ def readyto_ship(request):
                 data2 = data1['indentlist']
                 #messages.success(request, data1['message'])
                 return render(request, 'create_indent/readytoship.html',
-                              {'data': data2, 'vehicals': vehicals, 'menuname': menuname})
+                              {'data': data2, 'vehicals': vehicals, 'menuname': menuname,'status':'Pending',})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
             else:
-                return render(request, 'create_indent/readytoship.html', {'vehicals': vehicals, 'menuname': menuname})
+                return render(request, 'create_indent/readytoship.html', {'vehicals': vehicals, 'menuname': menuname,'status':'Pending',})
     except:
         messages.error(request,response.text)
     return render(request, 'create_indent/readytoship.html', {'menuname': menuname})
 def readyto_ship1(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -5397,9 +6045,9 @@ def readyto_ship1(request):
                 data1 = response.json()
                 data2 = data1['indentlist']
                 messages.success(request,data1['message'])
-                return render(request, 'create_indent/readytoship.html', {'data': data2,'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                return render(request, 'create_indent/readytoship.html', {'status':'Approve','data': data2,'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
             else:
-                return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                return render(request, 'create_indent/readytoship.html', {'vehicals':vehicals,'status':'Approve','menuname':menuname,'fdate':fdate,'tdate':tdate})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/quantityupdated-list.php"
 
@@ -5419,14 +6067,20 @@ def readyto_ship1(request):
                 data2 = data1['indentlist']
                 messages.success(request, data1['message'])
                 return render(request, 'create_indent/readytoship.html',
-                              {'data': data2, 'vehicals': vehicals, 'menuname': menuname})
+                              {'data': data2,'status':'Approve', 'vehicals': vehicals, 'menuname': menuname})
             else:
-                return render(request, 'create_indent/readytoship.html', {'vehicals': vehicals, 'menuname': menuname})
+                return render(request, 'create_indent/readytoship.html', {'vehicals': vehicals, 'status':'Approve','menuname': menuname})
     except:
-        messages.error(request,response.text)
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    messages.error(request,response.text)
     return render(request, 'create_indent/readytoship.html', {'menuname': menuname})
 def generate_gate_pass(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url="http://13.235.112.1/ziva/mobile-api/outpass-generated.php"
@@ -5450,6 +6104,10 @@ def generate_gate_pass(request):
         data = response.json()
         messages.success(request,data['message'])
         return redirect('readyto_ship')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response.json()
@@ -5479,6 +6137,9 @@ def generate_gate_pass(request):
     else:
         return render(request, 'create_indent/partiallysupplied.html')'''
 def sales_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         if request.method  == 'POST':
@@ -5532,6 +6193,9 @@ def sales_list(request):
         messages.error(request, response.text)
     return render(request, 'sales/sales_list.html', {'menuname': menuname,"status":"Approved"})
 def sales_list_outpass(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     if request.method == 'POST':
         date = request.POST.get('date')
@@ -5551,7 +6215,7 @@ def sales_list_outpass(request):
             data = response.json()
             data = data['saleslist']
             return render(request, 'sales/sales_list.html', {'data': data, 'date': date,'menuname':menuname})
-        if response.status_code == 400:
+        elif response.status_code == 400:
             data = response.json()
             messages.error(request,data['message'])
             return render(request, 'login1.html')
@@ -5574,7 +6238,7 @@ def sales_list_outpass(request):
             data = response.json()
             data = data['saleslist']
             return render(request, 'sales/sales_list.html', {"data": data,'menuname':menuname})
-        if response.status_code == 400:
+        elif response.status_code == 400:
             data = response.json()
             messages.error(request,data['message'])
             return render(request, 'login1.html')
@@ -5582,6 +6246,9 @@ def sales_list_outpass(request):
             return render(request, 'sales/sales_list.html',{'menuname':menuname})
 
 def sales_admin_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -5651,66 +6318,79 @@ def sales_admin_list(request):
     return render(request, 'sales/sales_admin_list.html')
 
 def sales_admin_approvelist(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    wh_masterlist = data['warehouselist']
-    if request.method == 'POST':
-        date = request.POST.get('date')
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
         accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/sales-list-admin.php"
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-        payload = json.dumps({
-            "accesskey": accesskey,
-            "warehouseid": request.POST.get('warehouseid1'),
-            "depoid": request.POST.get('depoid1'),
-            "regionid": request.POST.get('regionid1'),
-            "busstationid": request.POST.get('busstationname1'),
-            "type": "Pending",
-            "date": date
-        })
+        payload = json.dumps({"accesskey": accesskey})
         headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            data = data['saleslist']
-            return render(request, 'sales/sales_admin_list.html',
-                          {'data': data,'status':data[0], 'date': date, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
-        else:
-            return render(request, 'sales/sales_admin_list.html',
-                          {'date': date, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
-    else:
-        accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/sales-list-admin.php"
 
-        payload = json.dumps({
-            "accesskey": accesskey,
-            "type": "Outpass",
-            "date": "All"
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            data = data['saleslist']
-            return render(request, 'sales/sales_admin_list.html',
-                          {"data": data,'status':data[0], 'menuname': menuname, 'wh_masterlist': wh_masterlist})
+        data = response.json()
+        wh_masterlist = data['warehouselist']
+        if request.method == 'POST':
+            date = request.POST.get('date')
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/sales-list-admin.php"
+
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "warehouseid": request.POST.get('warehouseid1'),
+                "depoid": request.POST.get('depoid1'),
+                "regionid": request.POST.get('regionid1'),
+                "busstationid": request.POST.get('busstationname1'),
+                "type": "Pending",
+                "date": date
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                data = data['saleslist']
+                return render(request, 'sales/sales_admin_list.html',
+                              {'data': data,'status':data[0], 'date': date, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
+            else:
+                return render(request, 'sales/sales_admin_list.html',
+                              {'date': date, 'menuname': menuname, 'wh_masterlist': wh_masterlist})
         else:
-            return render(request, 'sales/sales_admin_list.html',
-                          {'menuname': menuname, 'wh_masterlist': wh_masterlist})
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/sales-list-admin.php"
+
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "type": "Outpass",
+                "date": "All"
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                data = data['saleslist']
+                return render(request, 'sales/sales_admin_list.html',
+                              {"data": data,'status':data[0], 'menuname': menuname, 'wh_masterlist': wh_masterlist})
+            else:
+                return render(request, 'sales/sales_admin_list.html',
+                              {'menuname': menuname, 'wh_masterlist': wh_masterlist})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request,'sales/sales_admin_list.html')
 def dc_pending(request):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
 
         url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
 
@@ -5731,11 +6411,18 @@ def dc_pending(request):
         if response.status_code == 200:
             messages.success(request, data['message'])
             return redirect('sales')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             messages.error(request, data['message'])
             return redirect('sale_item_list')
 
 def taxinvoice_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     tdate = datetime.date.today()
@@ -5783,11 +6470,18 @@ def taxinvoice_list(request):
             data = response.json()
             invlist = data['deliverypendinglist']
             return render(request, 'sales/taxinvoicelist.html', {'list': invlist, 'fdate': tdate, 'tdate': tdate,'menuname':menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             return render(request, 'sales/taxinvoicelist.html', {'fdate': tdate, 'tdate': tdate,'menuname':menuname})
 
 
 def taxinvoice(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/tax-invoice.php"
@@ -5805,6 +6499,10 @@ def taxinvoice(request,id):
         data = response1.json()
         data1 = data['itemslist']
         return render(request, 'sales/invoice.html',{'data1':data1,'data':data,'menuname':menuname})
+    elif response1.status_code == 400:
+        data = response1.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response1.json()
@@ -5814,6 +6512,9 @@ def taxinvoice(request,id):
         return redirect('/taxinvoice_list')
 
 def stock_transfer(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -5880,12 +6581,18 @@ def stock_transfer(request):
         else:
             return render(request, 'stock_transfer/stock_transfer_home.html',{'warehouselist':warehouselist[0],'depolist':depolist,'buslist':buslist,'menuname':menuname,'displayrole':displayrole})
     except:
-        messages.error(request,data['message'])
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    messages.error(request,response.text)
     return render(request, 'login1.html')
 
 
 def get_store_data(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
     stid = request.POST.get('storeid')
@@ -5904,17 +6611,19 @@ def get_store_data(request):
 
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    '''if response.status_code == 400:
+    if response.status_code == 400:
         data = response.json()
         messages.error(request,data['message'])
         return render(request,'login1.html')
-    if response.status_code == 200:'''
-    data = response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
 
 
 def store_search(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('store')
     url = "http://13.235.112.1/ziva/mobile-api/store-master-search.php"
@@ -5929,10 +6638,17 @@ def store_search(request):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 def get_wh_item(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     depoid = request.session['depoid']
     code = request.session['codee']
     accesskey = request.session['accesskey']
@@ -5951,11 +6667,18 @@ def get_wh_item(request):
 
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data=response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data=response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def wh_search(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster.php"
 
@@ -5968,10 +6691,18 @@ def wh_search(request):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return JsonResponse({'data':data})
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data':data})
+    if response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def wh_add_stf(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     code = request.session['codee']
     menuname = request.session['mylist']
@@ -6014,6 +6745,10 @@ def wh_add_stf(request):
             request.session['warehouseinventorylist'] = warehouseinventorylist
             messages.success(request, data['message'])
             return render(request,'stock_transfer/stock_transfer_home.html',{'warehouselist':warehouselist[0],'warehouseinventorylist':warehouseinventorylist,'menuname':menuname,'wh':'active','data':stocktransferlistto})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data = response.json()
@@ -6025,7 +6760,9 @@ def wh_add_stf(request):
         return redirect('stock_transfer')
 
 def wh_item_add(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     depoid = request.session['depoid']
 
     taxinvoice  = request.session['taxinvoice']
@@ -6051,6 +6788,10 @@ def wh_item_add(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('wh_item_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data = response.json()
@@ -6064,6 +6805,9 @@ def wh_item_add(request):
         return redirect('stock_transfer')
 
 def wh_item_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     warehouselist = request.session['warehouselist']
     warehouseinventorylist = request.session['warehouseinventorylist']
     stocktransferlistto = request.session['stocktransferlistto']
@@ -6084,10 +6828,17 @@ def wh_item_list(request):
         data=response.json()
         wh_item_list=data['stocktransferitemlist']
         return render(request,'stock_transfer/stock_transfer_home.html',{'taxinvoice':taxinvoice,'warehouseinventorylist':warehouseinventorylist,'warehouselist':warehouselist[0],'wh_item_list':wh_item_list,'menuname':menuname,'data':stocktransferlistto,'wh':'active'})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'stock_transfer/stock_transfer_home.html',
                       { 'warehouseinventorylist' : warehouseinventorylist, 'menuname': menuname,'data':stocktransferlistto,'taxinvoice':taxinvoice,'wh':'active','wh':'active','warehouselist':warehouselist[0]})
 def delete_stk_item(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     taxinvoice = request.session['taxinvoice']
     accesskey = request.session['accesskey']
 
@@ -6108,6 +6859,10 @@ def delete_stk_item(request,id):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('wh_item_list')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
                 data = response.json()
@@ -6118,6 +6873,9 @@ def delete_stk_item(request,id):
         return redirect('stock_transfer')
 
 def delete_stkbus_item(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     taxinvoice = request.session['taxinvoice']
     accesskey = request.session['accesskey']
 
@@ -6138,6 +6896,10 @@ def delete_stkbus_item(request,id):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('busstation_item_list')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
                 data = response.json()
@@ -6147,6 +6909,9 @@ def delete_stkbus_item(request,id):
                 messages.error(request, response.text)
         return redirect('stock_transfer')
 def delete_stkdepo_item(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     taxinvoice = request.session['taxinvoice']
     accesskey = request.session['accesskey']
 
@@ -6166,6 +6931,10 @@ def delete_stkdepo_item(request,id):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('depo_item_list')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
                 data = response.json()
@@ -6178,6 +6947,9 @@ def delete_stkdepo_item(request,id):
 
 
 def edit_stk_item(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     taxinvoice = request.session['taxinvoice']
     accesskey = request.session['accesskey']
 
@@ -6200,6 +6972,10 @@ def edit_stk_item(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('wh_item_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data = response.json()
@@ -6213,6 +6989,9 @@ def edit_stk_item(request):
 
 
 def complete_whinv(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     taxinvoice = request.session['taxinvoice']
@@ -6235,6 +7014,10 @@ def complete_whinv(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('stock_transfer')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data = response.json()
@@ -6247,6 +7030,9 @@ def complete_whinv(request):
         return render(request,'stock_transfer/stock_transfer_home.html',{'wh_item_list':wh_item_list,'menuname':menuname,'data':stocktransferlistto})
 
 def depo_search(request):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
         accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster.php"
 
@@ -6259,10 +7045,21 @@ def depo_search(request):
         }
 
         response = requests.request("GET", url, headers=headers, data=payload)
-        data = response.json()
-        return JsonResponse({'data': data})
-def get_depo_item(request):
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        else:
+            return render(request, 'depo_list.html')
 
+
+def get_depo_item(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     code = request.session['codee']
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
@@ -6280,9 +7077,17 @@ def get_depo_item(request):
 
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data=response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data=response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 def depo_add_stf(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     code = request.session['codee']
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
@@ -6327,8 +7132,11 @@ def depo_add_stf(request):
             depoinventorylist = data['warehouseinventorylist']
             request.session['warehouseinventorylist'] = depoinventorylist
             messages.success(request,data1['message'])
-
             return redirect('depo_item_add')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data = response.json()
@@ -6340,7 +7148,9 @@ def depo_add_stf(request):
         return render(request,'stock_transfer/stock_transfer_home.html',{'data':stocktransferlistto,'depo':'active','menuname':menuname})
 
 def depo_item_add(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     depolist = request.session['depolist']
     depoinventorylist = request.session['warehouseinventorylist']
     menuname = request.session['mylist']
@@ -6370,6 +7180,10 @@ def depo_item_add(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('depo_item_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data = response.json()
@@ -6383,6 +7197,9 @@ def depo_item_add(request):
         return render(request,'stock_transfer/stock_transfer_home.html',{'depolist':depolist,'taxinvoice':taxinvoice,'items':depoinventorylist,'data':stocktransferlistto,'depo':'active','menuname':menuname,'txtDepoId':txtDepoId})
 
 def depo_item_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     txtDepoId = request.session['txtDepoId']
     depo_list = request.session['depolist']
     stocktransferlistto = request.session['stocktransferlistto']
@@ -6403,6 +7220,10 @@ def depo_item_list(request):
         data=response.json()
         depo_item_list=data['stocktransferitemlist']
         return render(request,'stock_transfer/stock_transfer_home.html',{'txtDepoId':txtDepoId,'depolist':depo_list,'items':depoinventorylist,'taxinvoice':taxinvoice,'data':stocktransferlistto,'depo':'active','depo_item_list':depo_item_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'stock_transfer/stock_transfer_home.html',
                       {'txtDepoId': txtDepoId, 'depolist': depo_list, 'items': depoinventorylist,
@@ -6411,6 +7232,9 @@ def depo_item_list(request):
 
 
 def complete_depoinv(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     stocktransferlistto = request.session['stocktransferlistto']
     menuname = request.session['mylist']
     deponame = request.session['name']
@@ -6435,6 +7259,10 @@ def complete_depoinv(request):
             del request.session['taxinvoice']
             messages.success(request, data['message'])
             return redirect('stock_transfer')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             try:
                 data = response.json()
@@ -6448,7 +7276,9 @@ def complete_depoinv(request):
 
 
 def busstation_search(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster.php"
 
@@ -6461,11 +7291,19 @@ def busstation_search(request):
         }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 
 def get_busstation_item(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     code = request.session['codee']
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
@@ -6483,11 +7321,19 @@ def get_busstation_item(request):
 
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data=response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data=response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 
 def busstation_add_stf(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     stocktransferlistto = request.session['stocktransferlistto']
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
@@ -6514,6 +7360,10 @@ def busstation_add_stf(request):
             request.session['taxinvoice'] = data['taxinvoice']
             request.session['busid'] = request.POST.get('busname')
             return redirect('busstation_item_add')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request,'login1.html')
         else:
             try:
                 data = response.json()
@@ -6525,6 +7375,9 @@ def busstation_add_stf(request):
         return render(request,'stock_transfer/stock_transfer_home.html',{'buslist':buslist,'bus':'active','menuname':menuname,'warehouseinventorylist':warehouseinventorylist,'data':stocktransferlistto})
 
 def busstation_item_add(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     warehouseinventorylist = request.session['warehouseinventorylist']
     stocktransferlistto = request.session['stocktransferlistto']
     menuname = request.session['mylist']
@@ -6553,6 +7406,10 @@ def busstation_item_add(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('busstation_item_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request,'login1.html')
         else:
             try:
                 data = response.json()
@@ -6568,6 +7425,9 @@ def busstation_item_add(request):
 
 
 def busstation_item_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     warehouseinventorylist = request.session['warehouseinventorylist']
     busstation_name =  request.session['busid']
     stocktransferlistto = request.session['stocktransferlistto']
@@ -6589,10 +7449,17 @@ def busstation_item_list(request):
         data=response.json()
         bus_item_list=data['stocktransferitemlist']
         return render(request,'stock_transfer/stock_transfer_home.html',{'buslist':buslist,'warehouseinventorylist':warehouseinventorylist,'taxinvoice':taxinvoice,'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'bus_item_list':bus_item_list,'bus_item_list1':bus_item_list[0]})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         return render(request, 'stock_transfer/stock_transfer_home.html',
                       {'buslist':buslist,'warehouseinventorylist': warehouseinventorylist, 'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'taxinvoice':taxinvoice})
 def edit_stkbus_item(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     taxinvoice = request.session['taxinvoice']
     accesskey = request.session['accesskey']
 
@@ -6615,6 +7482,10 @@ def edit_stkbus_item(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('busstation_item_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request,'login1.html')
         else:
             try:
                 data = response.json()
@@ -6627,6 +7498,9 @@ def edit_stkbus_item(request):
         return redirect('stock_transfer')
 
 def edit_stkdepo_item(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     displayrole = request.session['displayrole']
     taxinvoice = request.session['taxinvoice']
     accesskey = request.session['accesskey']
@@ -6658,6 +7532,10 @@ def edit_stkdepo_item(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('depo_item_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request,'login1.html')
         else:
             try:
                 data = response.json()
@@ -6670,6 +7548,9 @@ def edit_stkdepo_item(request):
         return redirect('stock_transfer')
 
 def complete_businv(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     stocktransferlistto = request.session['stocktransferlistto']
     menuname = request.session['mylist']
     deponame = request.session['name']
@@ -6695,6 +7576,10 @@ def complete_businv(request):
             del request.session['taxinvoice']
             messages.success(request, data['message'])
             return redirect('stock_transfer')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request,'login1.html')
         else:
             try:
                 data = response.json()
@@ -6708,7 +7593,9 @@ def complete_businv(request):
 
 
 def region_status_active(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
@@ -6728,6 +7615,10 @@ def region_status_active(request):
         data = response.json()
         messages.success(request, data['message'])
         return redirect('/region_list')
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response.json()
@@ -6737,6 +7628,9 @@ def region_status_active(request):
             messages.error(request, response.text)
         return redirect('/region_list')
 def bus_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -6805,57 +7699,69 @@ def bus_list(request):
             return render(request,'login1.html')
     return render(request, 'busstation/bus_list.html')
 def bus_add(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
 
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    depolist = data['depolist']
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        depolist = data['depolist']
 
-    if request.method == 'POST':
-        id = request.POST.get("depoid")
-        for i in depolist:
-            if i['depoid'] == id:
-                regionid = i['regionid']
-                regionname = i['regionname']
-                warehouseid = i['warehouseid']
-                warehousename = i['warehousename']
-                deponame = i['depo_name']
-                payload = json.dumps(
-                {
-                    "accesskey": accesskey,
-                    "busstationname":request.POST.get('busname'),
-                    "depoid": request.POST.get('depoid'),
-                    "deponame": deponame,
-                    "busstation_contact_no":" ",
-                    "busstation_manager": " ",
-                    "regionid":  regionid,
-                    "regionname": regionname,
-                    "warehouseid":  warehouseid,
-                    "warehousename": warehousename
-                })
-                headers = {
-                    'Content-Type': 'text/plain'
-                }
-                url="http://13.235.112.1/ziva/mobile-api/create-busstation.php"
-                response = requests.request("GET", url, headers=headers, data=payload)
-                if response.status_code == 200:
-                    data = response.json()
-                    messages.success(request,data['message'])
-                    return redirect('/bus_list')
-                else:
-                    data = response.json()
-                    messages.error(request, data['message'])
-                    return redirect('/bus_list')
-    return render(request,'busstation/bus_add.html',{'data':depolist,'menuname':menuname})
+        if request.method == 'POST':
+            id = request.POST.get("depoid")
+            for i in depolist:
+                if i['depoid'] == id:
+                    regionid = i['regionid']
+                    regionname = i['regionname']
+                    warehouseid = i['warehouseid']
+                    warehousename = i['warehousename']
+                    deponame = i['depo_name']
+                    payload = json.dumps(
+                    {
+                        "accesskey": accesskey,
+                        "busstationname":request.POST.get('busname'),
+                        "depoid": request.POST.get('depoid'),
+                        "deponame": deponame,
+                        "busstation_contact_no":" ",
+                        "busstation_manager": " ",
+                        "regionid":  regionid,
+                        "regionname": regionname,
+                        "warehouseid":  warehouseid,
+                        "warehousename": warehousename
+                    })
+                    headers = {
+                        'Content-Type': 'text/plain'
+                    }
+                    url="http://13.235.112.1/ziva/mobile-api/create-busstation.php"
+                    response = requests.request("GET", url, headers=headers, data=payload)
+                    if response.status_code == 200:
+                        data = response.json()
+                        messages.success(request,data['message'])
+                        return redirect('/bus_list')
+                    else:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        return redirect('/bus_list')
+        return render(request,'busstation/bus_add.html',{'data':depolist,'menuname':menuname})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request,'login1.html')
+    return render(request,'busstation/bus_add.html')
 def  get_bus(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/bus-search.php"
 
@@ -6868,12 +7774,19 @@ def  get_bus(request):
         'Content-Type': 'application/json'
     }
     data = requests.request("POST", url, headers=headers, data=payload)
-    data2 = data.json()
-    return JsonResponse({'data': data2})
-
+    if response.status_code == 200:
+        data2 = data.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 
 def bus_edit(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -6899,6 +7812,10 @@ def bus_edit(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/bus_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -6907,6 +7824,7 @@ def bus_edit(request):
 
 def live_inventory(request):
     if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
         return redirect('/login')
     try:
             menuname = request.session['mylist']
@@ -6921,7 +7839,7 @@ def live_inventory(request):
 
             data = response.json()
             wh_masterlist = data['warehouselist']
-            url = "http://13.235.112.1/ziva/mobile-api/inventorylist-new.php"
+            '''url = "http://13.235.112.1/ziva/mobile-api/inventorylist-new.php"
             payload = json.dumps(
                 {
                     "accesskey": accesskey
@@ -6933,7 +7851,7 @@ def live_inventory(request):
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                inventorylist = data['inventorylist']
+                inventorylist = data['inventorylist']'''
             url = "http://13.235.112.1/ziva/mobile-api/inventorylist-new.php"
             payload = json.dumps(
                 {
@@ -6958,6 +7876,9 @@ def live_inventory(request):
     return render(request, 'grn/inventory.html',{'menuname':menuname})
 
 def batch_codeexpry(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/batchcode-expdate-inventorylist.php"
@@ -6975,12 +7896,19 @@ def batch_codeexpry(request,id):
         inventorylist = data['inventorylist']
         messages.success(request, data['message'])
         return render(request, 'grn/batchcode.html', {'data': inventorylist,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'grn/batchcode.html',{'menuname':menuname})
 
 def get_storetype(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     id = request.POST.get('id')
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -6998,6 +7926,10 @@ def get_storetype(request):
             if str(i['ddcode']) == id:
                 data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response.json()
@@ -7007,6 +7939,9 @@ def get_storetype(request):
         return redirect('/storetype_list')
 
 def edit_storetype(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7026,6 +7961,10 @@ def edit_storetype(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/storetype_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7033,6 +7972,9 @@ def edit_storetype(request):
     return redirect('/storetype_list')
 
 def get_case(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     id = request.POST.get('id')
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -7050,6 +7992,10 @@ def get_case(request):
             if str(i['ddcode']) == id:
                 data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
     else:
         try:
             data = response.json()
@@ -7061,6 +8007,9 @@ def get_case(request):
 
 
 def edit_case(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7080,6 +8029,10 @@ def edit_case(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/uom_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7087,6 +8040,9 @@ def edit_case(request):
     return redirect('/uom_list')
 
 def get_category(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     id = request.POST.get('id')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -7104,8 +8060,15 @@ def get_category(request):
             if str(i['ddcode']) == id:
                 data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def edit_category(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7125,6 +8088,10 @@ def edit_category(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/category_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7132,6 +8099,9 @@ def edit_category(request):
     return redirect('/category_list')
 
 def edit_gst(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7151,6 +8121,10 @@ def edit_gst(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/gst_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7158,6 +8132,9 @@ def edit_gst(request):
     return redirect('/gst_list')
 
 def get_gst(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     id = request.POST.get('id')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -7175,8 +8152,15 @@ def get_gst(request):
             if str(i['ddcode']) == id:
                 data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def get_city(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     id = request.POST.get('id')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -7194,8 +8178,15 @@ def get_city(request):
             if str(i['ddcode']) == id:
                 data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def edit_city(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7215,6 +8206,10 @@ def edit_city(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/city_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7223,6 +8218,9 @@ def edit_city(request):
 
 
 def get_level(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     id = request.POST.get('id')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -7240,10 +8238,17 @@ def get_level(request):
             if str(i['ddcode']) == id:
                 data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 
 
 def edit_level(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7263,6 +8268,10 @@ def edit_level(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/level_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7272,6 +8281,9 @@ def edit_level(request):
 
 
 def get_role(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     id = request.POST.get('id')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -7289,8 +8301,15 @@ def get_role(request):
             if str(i['ddcode']) == id:
                 data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def edit_role(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7310,6 +8329,10 @@ def edit_role(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/role_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7318,6 +8341,9 @@ def edit_role(request):
 
 
 def get_state(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     id = request.POST.get('id')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
@@ -7335,8 +8361,15 @@ def get_state(request):
             if str(i['ddcode']) == id:
                 data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def edit_state(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7356,6 +8389,10 @@ def edit_state(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/state_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7364,6 +8401,9 @@ def edit_state(request):
 
 
 def get_pricelist(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     id = request.POST.get('id')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/price-list.php"
@@ -7381,8 +8421,15 @@ def get_pricelist(request):
             if str(i['price_code']) == id:
                 data = {"ddcode": i["price_code"], "mrp": i["mrp"], "sno": i["sno"]}
         return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def edit_price(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
         payload = json.dumps(
@@ -7400,6 +8447,10 @@ def edit_price(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/des_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -7408,6 +8459,9 @@ def edit_price(request):
 
 
 def payment_report(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
 
             menuname=request.session['mylist']
@@ -7538,6 +8592,9 @@ def payment_report(request):
     return render(request, 'Reports/payments.html')
 
 def warehouse_items(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/warehouse-itemwise-report.php"
@@ -7559,7 +8616,14 @@ def warehouse_items(request):
         response = response.json()
         # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 def bus_items(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/busstation-itemwise-report.php"
@@ -7581,8 +8645,15 @@ def bus_items(request):
         response = response.json()
         # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def region_items(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/region-itemwise-report.php"
@@ -7604,7 +8675,14 @@ def region_items(request):
         response = response.json()
         # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 def depo_items(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/depo-itemwise-report.php"
@@ -7626,9 +8704,15 @@ def depo_items(request):
         response = response.json()
         # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def region_payment(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
 
@@ -7652,8 +8736,15 @@ def region_payment(request):
             response = response.json()
             #daywisesaleslist = data['daywisesaleswarehouselist']
             return JsonResponse({'response':response})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def bus_payment(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/busstationwise-total-report.php"
@@ -7675,8 +8766,14 @@ def bus_payment(request):
         response = response.json()
         # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 def depo_payment(request):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
 
 
@@ -7700,9 +8797,115 @@ def depo_payment(request):
             response = response.json()
             #daywisesaleslist = data['daywisesaleswarehouselist']
             return JsonResponse({'response':response})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
 
 def depot_stock(request,id):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        try:
+            accesskey = request.session['accesskey']
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+            response = requests.request("POST", url, headers=headers, data=payload)
+
+            data = response.json()
+            regionlist = data['regionlist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data = response.json()
+            wh_masterlist = data['warehouselist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+            payload = json.dumps({"accesskey": accesskey,
+                                  "warehouseid": request.POST.get('warehouseid'),
+                                  "regionid": request.POST.get('regionid')})
+
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            data = response.json()
+            depolist = data['depolist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+            payload = json.dumps({
+                "accesskey": accesskey
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            data = response.json()
+            bus = data['buslist']
+
+            menuname = request.session['mylist']
+            current_date = datetime.date.today()
+            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+            # warehouse_id = ['WDP0002', 'WDP0001']
+            item_sum_qty = DepoInventory.objects.using('auth').filter(
+                createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+            ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
+
+            depo_info = DepoMaster.objects.using('auth').filter(regionname=id).values('deponame', 'depoid')
+            grouped_data = []
+            sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
+
+            for depo_id, group in groupby(sorted_data, key=lambda x: x['region_id']):
+                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                grouped_data.append({'region_id': depo_id, 'items': items})
+
+            merged_data1 = []
+            for d in depo_info:
+                depo_id = d['depoid']
+                deponame = d['deponame']
+                for depo in grouped_data:
+                    if depo['region_id'] == depo_id:
+                        deponame = deponame
+                        createdon__date = current_date
+                        date_createdon = createdon__date.strftime("%d-%b-%Y")
+                        items = depo['items']
+                        merged_dict = {
+                                'depoid': depo_id,
+                                'deponame': deponame,
+                                'createdon__date': date_createdon,
+                                'items': items,
+
+                            }
+                        merged_data1.append(merged_dict)
+                        break
+
+            return render(request, 'Reports/depo_stockreport.html',
+                          {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantities': merged_data1})
+        except:
+            if response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+        return render(request, 'Reports/depo_stockreport.html')
+
+def depot_stock_new(request, id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
         accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
         payload = json.dumps({"accesskey": accesskey})
         headers = {
             'Content-Type': 'application/json'
@@ -7749,15 +8952,16 @@ def depot_stock(request,id):
         data = response.json()
         bus = data['buslist']
 
-        menuname = request.session['mylist']
         current_date = datetime.date.today()
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
         # warehouse_id = ['WDP0002', 'WDP0001']
         item_sum_qty = DepoInventory.objects.using('auth').filter(
             createdon__lte=current_date, itemcode__in=filtered_itemcodes,
         ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
-
-        depo_info = DepoMaster.objects.using('auth').filter(regionname=id).values('deponame', 'depoid')
+        if id=='All':
+            depo_info = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
+        else:
+            depo_info = DepoMaster.objects.using('auth').filter(deponame=id).values('deponame', 'depoid')
         grouped_data = []
         sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
 
@@ -7776,225 +8980,66 @@ def depot_stock(request,id):
                     date_createdon = createdon__date.strftime("%d-%b-%Y")
                     items = depo['items']
                     merged_dict = {
-                            'depoid': depo_id,
-                            'deponame': deponame,
-                            'createdon__date': date_createdon,
-                            'items': items,
+                        'depoid': depo_id,
+                        'deponame': deponame,
+                        'createdon__date': date_createdon,
+                        'items': items,
 
-                        }
+                    }
                     merged_data1.append(merged_dict)
                     break
 
         return render(request, 'Reports/depo_stockreport.html',
-                      {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantities': merged_data1})
-
-
-def depot_stock_new(request, id):
-    accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    data = response.json()
-    regionlist = data['regionlist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    wh_masterlist = data['warehouselist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
-
-    payload = json.dumps({"accesskey": accesskey,
-                          "warehouseid": request.POST.get('warehouseid'),
-                          "regionid": request.POST.get('regionid')})
-
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    depolist = data['depolist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
-    payload = json.dumps({
-        "accesskey": accesskey
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    bus = data['buslist']
-
-    current_date = datetime.date.today()
-    filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-    # warehouse_id = ['WDP0002', 'WDP0001']
-    item_sum_qty = DepoInventory.objects.using('auth').filter(
-        createdon__lte=current_date, itemcode__in=filtered_itemcodes,
-    ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
-    if id=='All':
-        depo_info = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
-    else:
-        depo_info = DepoMaster.objects.using('auth').filter(deponame=id).values('deponame', 'depoid')
-    grouped_data = []
-    sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
-
-    for depo_id, group in groupby(sorted_data, key=lambda x: x['region_id']):
-        items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-        grouped_data.append({'region_id': depo_id, 'items': items})
-
-    merged_data1 = []
-    for d in depo_info:
-        depo_id = d['depoid']
-        deponame = d['deponame']
-        for depo in grouped_data:
-            if depo['region_id'] == depo_id:
-                deponame = deponame
-                createdon__date = current_date
-                date_createdon = createdon__date.strftime("%d-%b-%Y")
-                items = depo['items']
-                merged_dict = {
-                    'depoid': depo_id,
-                    'deponame': deponame,
-                    'createdon__date': date_createdon,
-                    'items': items,
-
-                }
-                merged_data1.append(merged_dict)
-                break
-
-    return render(request, 'Reports/depo_stockreport.html',
-                  {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': merged_data1})
-
+                      {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': merged_data1})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'Reports/depo_stockreport.html')
 
 
 def depot_indent_report(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
 
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
 
-    data = response.json()
-    wh_masterlist = data['warehouselist']
+        url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        selectrange = data['timingslist']
+        if request.method == 'POST':
+            warehouseid1 = request.POST.get('warehousename1')
+            regionname1 = request.POST.get('regionname1')
+            deponame1 = request.POST.get('deponame1')
 
-    data = response.json()
-    selectrange = data['timingslist']
-    if request.method == 'POST':
-        warehouseid1 = request.POST.get('warehousename1')
-        regionname1 = request.POST.get('regionname1')
-        deponame1 = request.POST.get('deponame1')
-
-        option = request.POST.get('from')
-        where = [
-            'indent_item.indent_no = outpass_item.indent_no',
-            'indent_item.indent_no = generate_indent.indent_no',
-            'depo_master.warehouseid = generate_indent.to_id',
-            'depo_master.depoid = generate_indent.from_id',
-
-        ]
-
-        if option == 'Today':
-            tdate = datetime.date.today()
-            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
-        elif option == 'Yesterday':
-            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-            Previous_Date = Previous_Date.date()
-            where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
-        elif option == 'Current Month':
-            current_month = datetime.date.today().month
-            where.append(f"MONTH(indent_item.createdon) = '{current_month}'")
-        elif option == 'Current Week':
-            today = datetime.date.today()
-            current_week = today.isocalendar().week
-            where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
-        elif option == 'Last 7 days':
-            current_date = datetime.date.today()
-            start_date = current_date - timedelta(days=current_date.weekday() + 7)
-            end_date = current_date - timedelta(days=current_date.weekday() + 1)
-            where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
-        elif option == 'Custom Dates':
-            fdate = request.POST.get('fdate')
-            ldate = request.POST.get('ldate')
-            where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
-        elif option == '':
-            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
-        if warehouseid1 != '' and warehouseid1 != 'All':
-            where.append(f"depo_master.warehouse = '{warehouseid1}'")
-        if deponame1 != '' and deponame1 != 'All':
-            where.append(f"depo_master.deponame = '{deponame1}'")
-        if regionname1 != '' and regionname1 != 'All' :
-            where.append(f"depo_master.regionname = '{regionname1}'")
-        queryset = IndentItem.objects.using('auth').extra(
-            tables=['outpass_item', 'indent_item', 'generate_indent', 'depo_master'],
-            where=where,
-            select={
-                'generate_indent_from_name': 'generate_indent.from_name',
-                'indent_item_indent_no': 'indent_item.indent_no',
-                'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                'indent_item_qty': 'indent_item.qty',
-                'depo_master_deponame': 'depo_master.deponame',
-                'depo_master_regionname': 'depo_master.regionname',
-                'outpass_item_qty': 'outpass_item.qty',
-                'depo_master_warehouse': 'depo_master.warehouse',
-            }
-        ).values(
-            'indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
-            'generate_indent_from_name', 'depo_master_deponame', 'depo_master_regionname',
-            'indent_item_qty', 'outpass_item_qty', 'depo_master_warehouse'
-        )
-        if queryset:
-            queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                    indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-            )
-            merged_data = []
-            for data2 in queryset1:
-                for data1 in queryset:
-                    if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                            and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                        merged_data.append({
-                            'indent_item_createdon': data1['indent_item_createdon'],
-                            'indent_item_item_name': data1['indent_item_item_name'],
-                            'indent_sum_item': data2['indent_sum_item'],
-                            'depo_master_deponame': data1['depo_master_deponame'],
-                            'depo_master_regionname': data1['depo_master_regionname'],
-                            'indent_item_indent_no': data1['indent_item_indent_no'],
-                            'depo_master_warehouse': data1['depo_master_warehouse']
-                        })
-                        break
-
+            option = request.POST.get('from')
             where = [
                 'indent_item.indent_no = outpass_item.indent_no',
                 'indent_item.indent_no = generate_indent.indent_no',
-                'depo_master.depoid =generate_indent.from_id',
-                "outpass_item.status = 'Accepted'"
+                'depo_master.warehouseid = generate_indent.to_id',
+                'depo_master.depoid = generate_indent.from_id',
+
             ]
 
             if option == 'Today':
@@ -8006,7 +9051,7 @@ def depot_indent_report(request):
                 where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
             elif option == 'Current Month':
                 current_month = datetime.date.today().month
-                where.append(f"Month(indent_item.createdon) = '{current_month}'")
+                where.append(f"MONTH(indent_item.createdon) = '{current_month}'")
             elif option == 'Current Week':
                 today = datetime.date.today()
                 current_week = today.isocalendar().week
@@ -8016,108 +9061,41 @@ def depot_indent_report(request):
                 start_date = current_date - timedelta(days=current_date.weekday() + 7)
                 end_date = current_date - timedelta(days=current_date.weekday() + 1)
                 where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
-
             elif option == 'Custom Dates':
                 fdate = request.POST.get('fdate')
                 ldate = request.POST.get('ldate')
                 where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
             elif option == '':
                 where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
-            if warehouseid1 != '' and  warehouseid1 != 'All':
+            if warehouseid1 != '' and warehouseid1 != 'All':
                 where.append(f"depo_master.warehouse = '{warehouseid1}'")
             if deponame1 != '' and deponame1 != 'All':
                 where.append(f"depo_master.deponame = '{deponame1}'")
-            if regionname1 != '' and regionname1 != 'All':
+            if regionname1 != '' and regionname1 != 'All' :
                 where.append(f"depo_master.regionname = '{regionname1}'")
-            queryset2 = OutpassItem.objects.using('auth').extra(
-                tables=['indent_item','depo_master','generate_indent'],
-                 where=where,
+            queryset = IndentItem.objects.using('auth').extra(
+                tables=['outpass_item', 'indent_item', 'generate_indent', 'depo_master'],
+                where=where,
                 select={
+                    'generate_indent_from_name': 'generate_indent.from_name',
+                    'indent_item_indent_no': 'indent_item.indent_no',
                     'indent_item_item_name': 'indent_item.item_name',
                     'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
+                    'indent_item_qty': 'indent_item.qty',
+                    'depo_master_deponame': 'depo_master.deponame',
+                    'depo_master_regionname': 'depo_master.regionname',
                     'outpass_item_qty': 'outpass_item.qty',
+                    'depo_master_warehouse': 'depo_master.warehouse',
                 }
-            ).values('outpass_item_qty','indent_item_item_name', 'indent_item_createdon')
-
-            outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+            ).values(
+                'indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
+                'generate_indent_from_name', 'depo_master_deponame', 'depo_master_regionname',
+                'indent_item_qty', 'outpass_item_qty', 'depo_master_warehouse'
             )
-            result = []
-            for data1 in merged_data:
-                for data2 in outpass_sum:
-                    if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                            and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                        result.append({
-                            'indent_item_createdon': data1['indent_item_createdon'],
-                            'indent_item_item_name': data1['indent_item_item_name'],
-                            'outpass_sum_item': data2['outpass_sum_item'],
-                            'indent_sum_item': data1['indent_sum_item'],
-                            'depo_master_deponame':data1['depo_master_deponame'],
-                            'depo_master_regionname': data1['depo_master_regionname'],
-                            'indent_item_indent_no':data1['indent_item_indent_no'],
-                            'depo_master_warehouse':data1['depo_master_warehouse']
-                        })
-                        break
-            result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'],
-                                                                             '%d-%b-%Y'), reverse=True)
-
-            return render(request, 'Reports/depotwise_indent.html',
-                          {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
-        else:
-            return render(request, 'Reports/depotwise_indent.html',
-                          {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,
-                           'menuname': menuname})
-    else:
-
-
-        queryset = IndentItem.objects.using('auth').extra(
-            tables=['outpass_item', 'indent_item','generate_indent', 'depo_master'],
-            where=[
-                'indent_item.indent_no = outpass_item.indent_no',
-                'depo_master.warehouseid = generate_indent.to_id',
-                'indent_item.indent_no = generate_indent.indent_no',
-                'depo_master.depoid = generate_indent.from_id',
-                'depo_master.warehouseid = generate_indent.to_id',
-
-            ],
-            select={
-
-                'indent_item_indent_no': 'indent_item.indent_no',
-                'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",  # Extract the date portion only
-                'indent_item_qty':'indent_item.qty',
-                'depo_master_deponame': 'depo_master.deponame',
-                'depo_master_warehouse': 'depo_master.warehouse',
-                'depo_master_regionname': 'depo_master.regionname',
-            }
-        ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
-                 'depo_master_deponame', 'depo_master_regionname','indent_item_qty', 'depo_master_warehouse')
-        if queryset:
-                queryset2 = OutpassItem.objects.using('auth').extra(
-                    tables=['indent_item', 'generate_indent', 'depo_master'],
-                    where=[
-                        'indent_item.indent_no = outpass_item.indent_no',
-                        'indent_item.indent_no = generate_indent.indent_no',
-                        'depo_master.depoid =generate_indent.from_id',
-                        'depo_master.warehouseid = generate_indent.to_id',
-
-                        "outpass_item.status = 'Accepted'"
-                    ],
-                    select={
-
-                        'indent_item_item_name': 'indent_item.item_name',
-                        'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                        'outpass_item_qty': 'outpass_item.qty',
-                        'indent_item_indent_no':'indent_item.indent_no'
-
-                    }
-                ).values('outpass_item_qty','indent_item_indent_no','indent_item_item_name', 'indent_item_createdon')
-                outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                    outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-                )
+            if queryset:
                 queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                                   indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-                               )
+                        indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                )
                 merged_data = []
                 for data2 in queryset1:
                     for data1 in queryset:
@@ -8134,6 +9112,58 @@ def depot_indent_report(request):
                             })
                             break
 
+                where = [
+                    'indent_item.indent_no = outpass_item.indent_no',
+                    'indent_item.indent_no = generate_indent.indent_no',
+                    'depo_master.depoid =generate_indent.from_id',
+                    "outpass_item.status = 'Accepted'"
+                ]
+
+                if option == 'Today':
+                    tdate = datetime.date.today()
+                    where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
+                elif option == 'Yesterday':
+                    Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
+                    Previous_Date = Previous_Date.date()
+                    where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
+                elif option == 'Current Month':
+                    current_month = datetime.date.today().month
+                    where.append(f"Month(indent_item.createdon) = '{current_month}'")
+                elif option == 'Current Week':
+                    today = datetime.date.today()
+                    current_week = today.isocalendar().week
+                    where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
+                elif option == 'Last 7 days':
+                    current_date = datetime.date.today()
+                    start_date = current_date - timedelta(days=current_date.weekday() + 7)
+                    end_date = current_date - timedelta(days=current_date.weekday() + 1)
+                    where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
+
+                elif option == 'Custom Dates':
+                    fdate = request.POST.get('fdate')
+                    ldate = request.POST.get('ldate')
+                    where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
+                elif option == '':
+                    where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
+                if warehouseid1 != '' and  warehouseid1 != 'All':
+                    where.append(f"depo_master.warehouse = '{warehouseid1}'")
+                if deponame1 != '' and deponame1 != 'All':
+                    where.append(f"depo_master.deponame = '{deponame1}'")
+                if regionname1 != '' and regionname1 != 'All':
+                    where.append(f"depo_master.regionname = '{regionname1}'")
+                queryset2 = OutpassItem.objects.using('auth').extra(
+                    tables=['indent_item','depo_master','generate_indent'],
+                     where=where,
+                    select={
+                        'indent_item_item_name': 'indent_item.item_name',
+                        'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
+                        'outpass_item_qty': 'outpass_item.qty',
+                    }
+                ).values('outpass_item_qty','indent_item_item_name', 'indent_item_createdon')
+
+                outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                    outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                )
                 result = []
                 for data1 in merged_data:
                     for data2 in outpass_sum:
@@ -8144,462 +9174,582 @@ def depot_indent_report(request):
                                 'indent_item_item_name': data1['indent_item_item_name'],
                                 'outpass_sum_item': data2['outpass_sum_item'],
                                 'indent_sum_item': data1['indent_sum_item'],
-                                'depo_master_deponame': data1['depo_master_deponame'],
+                                'depo_master_deponame':data1['depo_master_deponame'],
                                 'depo_master_regionname': data1['depo_master_regionname'],
-                                'indent_item_indent_no': data1['indent_item_indent_no'],
+                                'indent_item_indent_no':data1['indent_item_indent_no'],
                                 'depo_master_warehouse':data1['depo_master_warehouse']
                             })
                             break
                 result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'],
-                                                                                          '%d-%b-%Y'), reverse=True)
-                #result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
-                return render(request,'Reports/depotwise_indent.html',{'menuname':menuname,'entry':result,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+                                                                                 '%d-%b-%Y'), reverse=True)
+
+                return render(request, 'Reports/depotwise_indent.html',
+                              {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
+            else:
+                return render(request, 'Reports/depotwise_indent.html',
+                              {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,
+                               'menuname': menuname})
         else:
-            return render(request, 'Reports/depotwise_indent.html',
-                          {'menuname': menuname,'wh_masterlist': wh_masterlist,
-                           'selectrange': selectrange})
+
+
+            queryset = IndentItem.objects.using('auth').extra(
+                tables=['outpass_item', 'indent_item','generate_indent', 'depo_master'],
+                where=[
+                    'indent_item.indent_no = outpass_item.indent_no',
+                    'depo_master.warehouseid = generate_indent.to_id',
+                    'indent_item.indent_no = generate_indent.indent_no',
+                    'depo_master.depoid = generate_indent.from_id',
+                    'depo_master.warehouseid = generate_indent.to_id',
+
+                ],
+                select={
+
+                    'indent_item_indent_no': 'indent_item.indent_no',
+                    'indent_item_item_name': 'indent_item.item_name',
+                    'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",  # Extract the date portion only
+                    'indent_item_qty':'indent_item.qty',
+                    'depo_master_deponame': 'depo_master.deponame',
+                    'depo_master_warehouse': 'depo_master.warehouse',
+                    'depo_master_regionname': 'depo_master.regionname',
+                }
+            ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
+                     'depo_master_deponame', 'depo_master_regionname','indent_item_qty', 'depo_master_warehouse')
+            if queryset:
+                    queryset2 = OutpassItem.objects.using('auth').extra(
+                        tables=['indent_item', 'generate_indent', 'depo_master'],
+                        where=[
+                            'indent_item.indent_no = outpass_item.indent_no',
+                            'indent_item.indent_no = generate_indent.indent_no',
+                            'depo_master.depoid =generate_indent.from_id',
+                            'depo_master.warehouseid = generate_indent.to_id',
+
+                            "outpass_item.status = 'Accepted'"
+                        ],
+                        select={
+
+                            'indent_item_item_name': 'indent_item.item_name',
+                            'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
+                            'outpass_item_qty': 'outpass_item.qty',
+                            'indent_item_indent_no':'indent_item.indent_no'
+
+                        }
+                    ).values('outpass_item_qty','indent_item_indent_no','indent_item_item_name', 'indent_item_createdon')
+                    outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                        outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                    )
+                    queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                                       indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                                   )
+                    merged_data = []
+                    for data2 in queryset1:
+                        for data1 in queryset:
+                            if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                                    and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                                merged_data.append({
+                                    'indent_item_createdon': data1['indent_item_createdon'],
+                                    'indent_item_item_name': data1['indent_item_item_name'],
+                                    'indent_sum_item': data2['indent_sum_item'],
+                                    'depo_master_deponame': data1['depo_master_deponame'],
+                                    'depo_master_regionname': data1['depo_master_regionname'],
+                                    'indent_item_indent_no': data1['indent_item_indent_no'],
+                                    'depo_master_warehouse': data1['depo_master_warehouse']
+                                })
+                                break
+
+                    result = []
+                    for data1 in merged_data:
+                        for data2 in outpass_sum:
+                            if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                                    and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                                result.append({
+                                    'indent_item_createdon': data1['indent_item_createdon'],
+                                    'indent_item_item_name': data1['indent_item_item_name'],
+                                    'outpass_sum_item': data2['outpass_sum_item'],
+                                    'indent_sum_item': data1['indent_sum_item'],
+                                    'depo_master_deponame': data1['depo_master_deponame'],
+                                    'depo_master_regionname': data1['depo_master_regionname'],
+                                    'indent_item_indent_no': data1['indent_item_indent_no'],
+                                    'depo_master_warehouse':data1['depo_master_warehouse']
+                                })
+                                break
+                    result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'],
+                                                                                              '%d-%b-%Y'), reverse=True)
+                    #result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
+                    return render(request,'Reports/depotwise_indent.html',{'menuname':menuname,'entry':result,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+            else:
+                return render(request, 'Reports/depotwise_indent.html',
+                              {'menuname': menuname,'wh_masterlist': wh_masterlist,
+                               'selectrange': selectrange})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'Reports/depotwise_indent.html',{'menuname': menuname})
 def depot_qtyissued1(request):
     pass
 
 def depot_qtyissued(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    data = response.json()
-    selectrange = data['timingslist']
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        data = response.json()
+        selectrange = data['timingslist']
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    data = response.json()
-    wh_masterlist = data['warehouselist']
+        data = response.json()
+        wh_masterlist = data['warehouselist']
 
-    if request.method == 'POST':
-        option = request.POST.get('from')
-        warehouseid1 = request.POST.get('warehousename1')
-        regionname1 = request.POST.get('regionname1')
-        deponame1 = request.POST.get('deponame1')
-        where = [
-            'indent_item.indent_no = outpass_item.indent_no',
-            'indent_item.indent_no = generate_indent.indent_no',
-            'depo_master.depoid =generate_indent.to_id',
-        ]
-
-        if option == 'Today':
-            tdate = datetime.date.today()
-            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
-        elif option == 'Yesterday':
-            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-            Previous_Date = Previous_Date.date()
-            where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
-        elif option == 'Current Month':
-            current_month = datetime.date.today().month
-            where.append(f"MONTH(indent_item.createdon) = '{current_month}'")
-        elif option == 'Current Week':
-            today = datetime.date.today()
-            current_week = today.isocalendar().week
-            where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
-        elif option == 'Last 7 days':
-            current_date = datetime.date.today()
-            start_date = current_date - timedelta(days=current_date.weekday() + 7)
-            end_date = current_date - timedelta(days=current_date.weekday() + 1)
-            where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
-        elif option == 'Custom Dates':
-            fdate = request.POST.get('fdate')
-            ldate = request.POST.get('ldate')
-            where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
-        elif option == '':
-            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
-        if warehouseid1 != '' and warehouseid1 != 'All':
-            where.append(f"depo_master.warehouse = '{warehouseid1}'")
-        if deponame1 != '' and deponame1 != 'All':
-            where.append(f"depo_master.deponame = '{deponame1}'")
-        if regionname1 != '' and regionname1 != 'All':
-            where.append(f"depo_master.regionname = '{regionname1}'")
-
-        queryset = IndentItem.objects.using('auth').extra(
-            tables=['outpass_item', 'generate_indent', 'depo_master'],
-            where=where,
-            select={
-                'indent_item_indent_no': 'indent_item.indent_no',
-                'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                'indent_item_qty': 'indent_item.qty',
-                'depo_master_deponame': 'depo_master.deponame',
-                'depo_master_regionname': 'depo_master.regionname',
-                'outpass_item_qty': 'outpass_item.qty',
-                'depo_master_warehouse': 'depo_master.warehouse',
-                'generate_indent_fromname':'generate_indent.from_name',
-
-            }
-        ).values(
-            'indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
-            'depo_master_deponame', 'depo_master_regionname',
-            'indent_item_qty', 'outpass_item_qty', 'depo_master_warehouse','generate_indent_fromname'
-        )
-        where = [
-            'indent_item.indent_no = outpass_item.indent_no',
-
-            'indent_item.indent_no = generate_indent.indent_no',
-            'depo_master.depoid =generate_indent.to_id',
-
-        ]
-        if option == 'Today':
-            tdate = datetime.date.today()
-            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
-        elif option == 'Yesterday':
-            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-            Previous_Date = Previous_Date.date()
-            where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
-        elif option == 'Current Month':
-            current_month = datetime.date.today().month
-            where.append(f"MONTH(indent_item.createdon) = '{current_month}'")
-        elif option == 'Current Week':
-            today = datetime.date.today()
-            current_week = today.isocalendar().week
-            where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
-        elif option == 'Last 7 days':
-            current_date = datetime.date.today()
-            start_date = current_date - timedelta(days=current_date.weekday() + 7)
-            end_date = current_date - timedelta(days=current_date.weekday() + 1)
-            where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
-        elif option == 'Custom Dates':
-            fdate = request.POST.get('fdate')
-            ldate = request.POST.get('ldate')
-            where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
-        elif option == '':
-            where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
-        if warehouseid1 != '' and warehouseid1 != 'All':
-            where.append(f"depo_master.warehouse = '{warehouseid1}'")
-        if deponame1 != '' and deponame1 != 'All':
-            where.append(f"depo_master.deponame = '{deponame1}'")
-        if regionname1 != '' and regionname1 != 'All':
-            where.append(f"depo_master.regionname = '{regionname1}'")
-
-
-        queryset2 = OutpassItem.objects.using('auth').extra(
-            tables=['indent_item', 'depo_master', 'generate_indent'],
-            where=where,
-            select={
-                'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                'outpass_item_qty': 'outpass_item.qty',
-
-
-            }
-        ).values('outpass_item_qty', 'indent_item_item_name', 'indent_item_createdon')
-        if queryset and queryset2:
-            outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-            )
-            queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-            )
-            merged_data = []
-            for data1 in queryset1:
-                for data2 in outpass_sum:
-                    if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                            and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                        merged_data.append({
-                            'indent_item_createdon': data1['indent_item_createdon'],
-                            'indent_item_item_name': data1['indent_item_item_name'],
-                            'outpass_sum_item': data2['outpass_sum_item'],
-                            'indent_sum_item': data1['indent_sum_item'],
-
-                        })
-                        break
-            result = []
-            for data1 in merged_data:
-                for data2 in queryset:
-                    if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                            and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                        result.append({
-                            'indent_item_createdon': data1['indent_item_createdon'],
-                            'indent_item_item_name': data1['indent_item_item_name'],
-                            'outpass_sum_item': data1['outpass_sum_item'],
-                            'indent_sum_item': data1['indent_sum_item'],
-                            'depo_master_deponame': data2['depo_master_deponame'],
-                            'depo_master_regionname': data2['depo_master_regionname'],
-                            'indent_item_indent_no': data2['indent_item_indent_no'],
-                            'depo_master_warehouse': data2['depo_master_warehouse'],
-                            'generate_indent_fromname': data2['generate_indent_fromname']
-                        })
-                        break
-
-            result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'], '%d-%b-%Y'),
-                                 reverse=True)
-
-            return render(request, 'Reports/depot_qtyissued.html',
-                          {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
-        else:
-            return render(request, 'Reports/depot_qtyissued.html',
-                          {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,
-                           'menuname': menuname})
-    else:
-        queryset = IndentItem.objects.using('auth').extra(
-            tables=['outpass_item', 'generate_indent', 'depo_master'],
-            where=[
-                'indent_item.indent_no = outpass_item.indent_no',
-                'indent_item.indent_no = generate_indent.indent_no',
-                'depo_master.depoid = generate_indent.to_id',
-            ],
-            select={
-                'generate_indent_to_name': 'generate_indent.to_name',
-                'generate_indent_fromname': 'generate_indent.from_name',
-                'indent_item_indent_no': 'indent_item.indent_no',
-                'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                # Extract the date portion only
-                'indent_item_qty': 'indent_item.qty',
-                'depo_master_deponame': 'depo_master.deponame',
-                'depo_master_warehouse': 'depo_master.warehouse',
-                'depo_master_regionname': 'depo_master.regionname',
-            }
-        ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon', 'generate_indent_to_name',
-                 'depo_master_deponame', 'depo_master_regionname', 'indent_item_qty', 'depo_master_warehouse','generate_indent_fromname')
-        queryset2 = OutpassItem.objects.using('auth').extra(
-            tables=['indent_item', 'generate_indent', 'depo_master'],
-            where=[
+        if request.method == 'POST':
+            option = request.POST.get('from')
+            warehouseid1 = request.POST.get('warehousename1')
+            regionname1 = request.POST.get('regionname1')
+            deponame1 = request.POST.get('deponame1')
+            where = [
                 'indent_item.indent_no = outpass_item.indent_no',
                 'indent_item.indent_no = generate_indent.indent_no',
                 'depo_master.depoid =generate_indent.to_id',
+            ]
 
-            ],
-            select={
+            if option == 'Today':
+                tdate = datetime.date.today()
+                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
+            elif option == 'Yesterday':
+                Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
+                Previous_Date = Previous_Date.date()
+                where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
+            elif option == 'Current Month':
+                current_month = datetime.date.today().month
+                where.append(f"MONTH(indent_item.createdon) = '{current_month}'")
+            elif option == 'Current Week':
+                today = datetime.date.today()
+                current_week = today.isocalendar().week
+                where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
+            elif option == 'Last 7 days':
+                current_date = datetime.date.today()
+                start_date = current_date - timedelta(days=current_date.weekday() + 7)
+                end_date = current_date - timedelta(days=current_date.weekday() + 1)
+                where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
+            elif option == 'Custom Dates':
+                fdate = request.POST.get('fdate')
+                ldate = request.POST.get('ldate')
+                where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
+            elif option == '':
+                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
+            if warehouseid1 != '' and warehouseid1 != 'All':
+                where.append(f"depo_master.warehouse = '{warehouseid1}'")
+            if deponame1 != '' and deponame1 != 'All':
+                where.append(f"depo_master.deponame = '{deponame1}'")
+            if regionname1 != '' and regionname1 != 'All':
+                where.append(f"depo_master.regionname = '{regionname1}'")
 
-                'indent_item_item_name': 'indent_item.item_name',
-                'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                'outpass_item_qty': 'outpass_item.qty',
-                'indent_item_indent_no': 'indent_item.indent_no',
-            }
-        ).values('outpass_item_qty', 'indent_item_item_name', 'indent_item_createdon', 'indent_item_indent_no')
-        if queryset and queryset2:
-            outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+            queryset = IndentItem.objects.using('auth').extra(
+                tables=['outpass_item', 'generate_indent', 'depo_master'],
+                where=where,
+                select={
+                    'indent_item_indent_no': 'indent_item.indent_no',
+                    'indent_item_item_name': 'indent_item.item_name',
+                    'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
+                    'indent_item_qty': 'indent_item.qty',
+                    'depo_master_deponame': 'depo_master.deponame',
+                    'depo_master_regionname': 'depo_master.regionname',
+                    'outpass_item_qty': 'outpass_item.qty',
+                    'depo_master_warehouse': 'depo_master.warehouse',
+                    'generate_indent_fromname':'generate_indent.from_name',
+
+                }
+            ).values(
+                'indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
+                'depo_master_deponame', 'depo_master_regionname',
+                'indent_item_qty', 'outpass_item_qty', 'depo_master_warehouse','generate_indent_fromname'
             )
-            queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-            )
-            merged_data = []
-            for data1 in queryset1:
-                for data2 in outpass_sum:
-                    if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                            and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                        merged_data.append({
-                            'indent_item_createdon': data1['indent_item_createdon'],
-                            'indent_item_item_name': data1['indent_item_item_name'],
-                            'outpass_sum_item': data2['outpass_sum_item'],
-                            'indent_sum_item': data1['indent_sum_item'],
-                        })
-                        break
-            result = []
-            for data1 in merged_data:
-                for data2 in queryset:
-                    if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                            and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                        result.append({
-                            'indent_item_createdon': data1['indent_item_createdon'],
-                            'indent_item_item_name': data1['indent_item_item_name'],
-                            'outpass_sum_item': data1['outpass_sum_item'],
-                            'indent_sum_item': data1['indent_sum_item'],
-                            'depo_master_deponame': data2['depo_master_deponame'],
-                            'depo_master_regionname': data2['depo_master_regionname'],
-                            'indent_item_indent_no': data2['indent_item_indent_no'],
-                            'depo_master_warehouse': data2['depo_master_warehouse'],
-                            'generate_indent_fromname':data2['generate_indent_fromname']
-                        })
-                        break
-            result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'], '%d-%b-%Y'),
-                            reverse=True)
-            return render(request, 'Reports/depot_qtyissued.html',
-                          {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
+            where = [
+                'indent_item.indent_no = outpass_item.indent_no',
+
+                'indent_item.indent_no = generate_indent.indent_no',
+                'depo_master.depoid =generate_indent.to_id',
+
+            ]
+            if option == 'Today':
+                tdate = datetime.date.today()
+                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
+            elif option == 'Yesterday':
+                Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
+                Previous_Date = Previous_Date.date()
+                where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
+            elif option == 'Current Month':
+                current_month = datetime.date.today().month
+                where.append(f"MONTH(indent_item.createdon) = '{current_month}'")
+            elif option == 'Current Week':
+                today = datetime.date.today()
+                current_week = today.isocalendar().week
+                where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
+            elif option == 'Last 7 days':
+                current_date = datetime.date.today()
+                start_date = current_date - timedelta(days=current_date.weekday() + 7)
+                end_date = current_date - timedelta(days=current_date.weekday() + 1)
+                where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
+            elif option == 'Custom Dates':
+                fdate = request.POST.get('fdate')
+                ldate = request.POST.get('ldate')
+                where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
+            elif option == '':
+                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
+            if warehouseid1 != '' and warehouseid1 != 'All':
+                where.append(f"depo_master.warehouse = '{warehouseid1}'")
+            if deponame1 != '' and deponame1 != 'All':
+                where.append(f"depo_master.deponame = '{deponame1}'")
+            if regionname1 != '' and regionname1 != 'All':
+                where.append(f"depo_master.regionname = '{regionname1}'")
+
+
+            queryset2 = OutpassItem.objects.using('auth').extra(
+                tables=['indent_item', 'depo_master', 'generate_indent'],
+                where=where,
+                select={
+                    'indent_item_item_name': 'indent_item.item_name',
+                    'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
+                    'outpass_item_qty': 'outpass_item.qty',
+
+
+                }
+            ).values('outpass_item_qty', 'indent_item_item_name', 'indent_item_createdon')
+            if queryset and queryset2:
+                outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                    outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                )
+                queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                    indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                )
+                merged_data = []
+                for data1 in queryset1:
+                    for data2 in outpass_sum:
+                        if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                                and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                            merged_data.append({
+                                'indent_item_createdon': data1['indent_item_createdon'],
+                                'indent_item_item_name': data1['indent_item_item_name'],
+                                'outpass_sum_item': data2['outpass_sum_item'],
+                                'indent_sum_item': data1['indent_sum_item'],
+
+                            })
+                            break
+                result = []
+                for data1 in merged_data:
+                    for data2 in queryset:
+                        if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                                and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                            result.append({
+                                'indent_item_createdon': data1['indent_item_createdon'],
+                                'indent_item_item_name': data1['indent_item_item_name'],
+                                'outpass_sum_item': data1['outpass_sum_item'],
+                                'indent_sum_item': data1['indent_sum_item'],
+                                'depo_master_deponame': data2['depo_master_deponame'],
+                                'depo_master_regionname': data2['depo_master_regionname'],
+                                'indent_item_indent_no': data2['indent_item_indent_no'],
+                                'depo_master_warehouse': data2['depo_master_warehouse'],
+                                'generate_indent_fromname': data2['generate_indent_fromname']
+                            })
+                            break
+
+                result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'], '%d-%b-%Y'),
+                                     reverse=True)
+
+                return render(request, 'Reports/depot_qtyissued.html',
+                              {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
+            else:
+                return render(request, 'Reports/depot_qtyissued.html',
+                              {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,
+                               'menuname': menuname})
         else:
-            return render(request, 'Reports/depot_qtyissued.html',
-                          {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,
-                           'menuname': menuname})
+            queryset = IndentItem.objects.using('auth').extra(
+                tables=['outpass_item', 'generate_indent', 'depo_master'],
+                where=[
+                    'indent_item.indent_no = outpass_item.indent_no',
+                    'indent_item.indent_no = generate_indent.indent_no',
+                    'depo_master.depoid = generate_indent.to_id',
+                ],
+                select={
+                    'generate_indent_to_name': 'generate_indent.to_name',
+                    'generate_indent_fromname': 'generate_indent.from_name',
+                    'indent_item_indent_no': 'indent_item.indent_no',
+                    'indent_item_item_name': 'indent_item.item_name',
+                    'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
+                    # Extract the date portion only
+                    'indent_item_qty': 'indent_item.qty',
+                    'depo_master_deponame': 'depo_master.deponame',
+                    'depo_master_warehouse': 'depo_master.warehouse',
+                    'depo_master_regionname': 'depo_master.regionname',
+                }
+            ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon', 'generate_indent_to_name',
+                     'depo_master_deponame', 'depo_master_regionname', 'indent_item_qty', 'depo_master_warehouse','generate_indent_fromname')
+            queryset2 = OutpassItem.objects.using('auth').extra(
+                tables=['indent_item', 'generate_indent', 'depo_master'],
+                where=[
+                    'indent_item.indent_no = outpass_item.indent_no',
+                    'indent_item.indent_no = generate_indent.indent_no',
+                    'depo_master.depoid =generate_indent.to_id',
+
+                ],
+                select={
+
+                    'indent_item_item_name': 'indent_item.item_name',
+                    'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
+                    'outpass_item_qty': 'outpass_item.qty',
+                    'indent_item_indent_no': 'indent_item.indent_no',
+                }
+            ).values('outpass_item_qty', 'indent_item_item_name', 'indent_item_createdon', 'indent_item_indent_no')
+            if queryset and queryset2:
+                outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                    outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                )
+                queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                    indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
+                )
+                merged_data = []
+                for data1 in queryset1:
+                    for data2 in outpass_sum:
+                        if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                                and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                            merged_data.append({
+                                'indent_item_createdon': data1['indent_item_createdon'],
+                                'indent_item_item_name': data1['indent_item_item_name'],
+                                'outpass_sum_item': data2['outpass_sum_item'],
+                                'indent_sum_item': data1['indent_sum_item'],
+                            })
+                            break
+                result = []
+                for data1 in merged_data:
+                    for data2 in queryset:
+                        if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
+                                and data1['indent_item_item_name'] == data2['indent_item_item_name']:
+                            result.append({
+                                'indent_item_createdon': data1['indent_item_createdon'],
+                                'indent_item_item_name': data1['indent_item_item_name'],
+                                'outpass_sum_item': data1['outpass_sum_item'],
+                                'indent_sum_item': data1['indent_sum_item'],
+                                'depo_master_deponame': data2['depo_master_deponame'],
+                                'depo_master_regionname': data2['depo_master_regionname'],
+                                'indent_item_indent_no': data2['indent_item_indent_no'],
+                                'depo_master_warehouse': data2['depo_master_warehouse'],
+                                'generate_indent_fromname':data2['generate_indent_fromname']
+                            })
+                            break
+                result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'], '%d-%b-%Y'),
+                                reverse=True)
+                return render(request, 'Reports/depot_qtyissued.html',
+                              {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
+            else:
+                return render(request, 'Reports/depot_qtyissued.html',
+                              {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,
+                               'menuname': menuname})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'Reports/depot_qtyissued.html',{'menuname':menuname})
+
 
 
 def Vendor_itemsply(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
-    accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        selectrange = data['timingslist']
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    selectrange = data['timingslist']
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
 
-    data = response.json()
-    wh_masterlist = data['warehouselist']
+        url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
 
-    url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data1 = response.json()
+        vendor_masterlist = data1['vendormasterlist']
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data1 = response.json()
-    vendor_masterlist = data1['vendormasterlist']
-
-    if request.method == 'POST':
-        option = request.POST.get('from')
-        warehouseid1= request.POST.get('warehouseid1')
-        vendorid =  request.POST.get('vendorname')
-        where = [
-            'grn.grn = grn_item.grn',
-            'grn.warehouse_id = warehouse_master.warehouseid',
-            "grn.status = 'Verified'"
-        ]
-        if warehouseid1:
-            where.append( f"grn.warehouse_id = '{warehouseid1}'")
-        if vendorid:
-            where.append(f"grn.vendorname = '{vendorid}'")
-        if option == 'All':
-            where.append(f"DATE_FORMAT(grn.invoice_date,'%%Y-%%m-%%d')")
-        if option == 'Today':
-            today = datetime.date.today()
-            where.append(f"DATE_FORMAT(grn.invoice_date, '%%Y-%%m-%%d') = '{today}'")
-        elif option == 'Current Month':
-            today = datetime.date.today().month
-            where.append("MONTH(grn.invoice_date) = %s" % today)
-        elif option == 'Current Week':
-            today = datetime.date.today()
-            current_week = today.isocalendar().week
-            where.append(f"WEEK(grn.invoice_date, '%%Y-%%m-%%d') = '{current_week}'")
-        elif option == 'Last 7 days':
-            current_date = datetime.date.today()
-            start_date = current_date - timedelta(days=current_date.weekday() + 7)
-            end_date = current_date - timedelta(days=current_date.weekday() + 1)
-            where.append("grn.invoice_date >= '%s' AND grn.invoice_date <= '%s'" % (start_date, end_date))
-        elif option == 'Custom Dates':
-            fdate = request.POST.get('fdate')
-            ldate = request.POST.get('ldate')
-            where.append("grn.invoice_date >= '%s' AND grn.invoice_date <= '%s'" % (fdate, ldate))
-        elif option == 'Yesterday':
-            Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-            formatted_date = Previous_Date.date().strftime('%Y-%m-%d')
-            where.append(f"DATE_FORMAT(grn.invoice_date, '%%Y-%%m-%%d') = '{formatted_date}'")
-
-        queryset = GrnItem.objects.using('auth').extra(
-            tables=['grn', 'grn_item', 'warehouse_master'],
-            where=where,
-            select={
-                'grn_grn': 'grn.grn',
-                'grn_warehouse_id': 'grn.warehouse_id',
-                'grn_vendorname': 'grn.vendorname',
-                'grn_item_created_on': "DATE_FORMAT(grn.invoice_date, '%%d-%%b-%%Y')",
-                'grn_item_item_name': 'grn_item.item_name',
-                'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
-                'warehouse_master_warehousename': 'warehouse_master.warehousename',
-            }
-        ).values(
-            'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
-            'grn_item_created_on', 'grn_item_item_name', 'grn_item_quantity', 'warehouse_master_warehousename',
-        )
-
-        queryset2 = queryset.values('grn_vendorname', 'warehouse_master_warehousename', 'grn_item_created_on',
-                                    'grn_item_item_name')
-        queryset1 = queryset.values('grn_item_created_on','grn_vendorname','warehouse_master_warehousename', 'grn_item_item_name').annotate(
-            total_quantity=Cast(Sum('quantity'), CharField()))
-        grouped_data = groupby(queryset1, key=lambda x: (x['grn_item_created_on'], x['grn_vendorname']))
-        merged_data = []
-
-        for (date, vendor), group in grouped_data:
-            merged_dict = {
-                'grn_item_created_on': date,
-                'grn_vendorname': vendor,
-                'items': []
-            }
-
-            for item in group:
-                merged_dict['warehouse_master_warehousename'] = item['warehouse_master_warehousename']
-                merged_dict['items'].append({
-                    'itemname': item['grn_item_item_name'],
-                    'quantity': item['total_quantity']
-                })
-
-            merged_data.append(merged_dict)
-            merged_data = sorted(merged_data,
-                                 key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
-                                 reverse=True)
-        return render(request, 'Reports/vendor_itemsupply.html', {"vendor_masterlist":vendor_masterlist,"wh_masterlist":wh_masterlist,"entry": merged_data,'menuname':menuname,'selectrange':selectrange})
-
-    else:
-        queryset = GrnItem.objects.using('auth').extra(
-            tables=['grn', 'grn_item', 'warehouse_master'],
-            where=[
+        if request.method == 'POST':
+            option = request.POST.get('from')
+            warehouseid1= request.POST.get('warehouseid1')
+            vendorid =  request.POST.get('vendorname')
+            where = [
                 'grn.grn = grn_item.grn',
                 'grn.warehouse_id = warehouse_master.warehouseid',
                 "grn.status = 'Verified'"
-            ],
-            select={
-                'grn_grn': 'grn.grn',
-                'grn_warehouse_id': 'grn.warehouse_id',
-                'grn_vendorname': 'grn.vendorname',
-                'grn_item_created_on': "DATE_FORMAT(grn.invoice_date, '%%d-%%b-%%Y')",
-                'grn_item_item_name': 'grn_item.item_name',
-                'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
-                'warehouse_master_warehousename': 'warehouse_master.warehousename',
-                'grn_status':'grn.status'
-            }
+            ]
+            if warehouseid1:
+                where.append( f"grn.warehouse_id = '{warehouseid1}'")
+            if vendorid:
+                where.append(f"grn.vendorname = '{vendorid}'")
+            if option == 'All':
+                where.append(f"DATE_FORMAT(grn.invoice_date,'%%Y-%%m-%%d')")
+            if option == 'Today':
+                today = datetime.date.today()
+                where.append(f"DATE_FORMAT(grn.invoice_date, '%%Y-%%m-%%d') = '{today}'")
+            elif option == 'Current Month':
+                today = datetime.date.today().month
+                where.append("MONTH(grn.invoice_date) = %s" % today)
+            elif option == 'Current Week':
+                today = datetime.date.today()
+                current_week = today.isocalendar().week
+                where.append(f"WEEK(grn.invoice_date, '%%Y-%%m-%%d') = '{current_week}'")
+            elif option == 'Last 7 days':
+                current_date = datetime.date.today()
+                start_date = current_date - timedelta(days=current_date.weekday() + 7)
+                end_date = current_date - timedelta(days=current_date.weekday() + 1)
+                where.append("grn.invoice_date >= '%s' AND grn.invoice_date <= '%s'" % (start_date, end_date))
+            elif option == 'Custom Dates':
+                fdate = request.POST.get('fdate')
+                ldate = request.POST.get('ldate')
+                where.append("grn.invoice_date >= '%s' AND grn.invoice_date <= '%s'" % (fdate, ldate))
+            elif option == 'Yesterday':
+                Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
+                formatted_date = Previous_Date.date().strftime('%Y-%m-%d')
+                where.append(f"DATE_FORMAT(grn.invoice_date, '%%Y-%%m-%%d') = '{formatted_date}'")
 
-        ).values(
-            'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
-            'grn_item_created_on', 'grn_item_item_name', 'grn_item_quantity', 'warehouse_master_warehousename'
-        )
+            queryset = GrnItem.objects.using('auth').extra(
+                tables=['grn', 'grn_item', 'warehouse_master'],
+                where=where,
+                select={
+                    'grn_grn': 'grn.grn',
+                    'grn_warehouse_id': 'grn.warehouse_id',
+                    'grn_vendorname': 'grn.vendorname',
+                    'grn_item_created_on': "DATE_FORMAT(grn.invoice_date, '%%d-%%b-%%Y')",
+                    'grn_item_item_name': 'grn_item.item_name',
+                    'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
+                    'warehouse_master_warehousename': 'warehouse_master.warehousename',
+                }
+            ).values(
+                'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
+                'grn_item_created_on', 'grn_item_item_name', 'grn_item_quantity', 'warehouse_master_warehousename',
+            )
 
-        queryset2 = queryset.values('grn_vendorname', 'warehouse_master_warehousename', 'grn_item_created_on','grn_item_item_name')
-        queryset1 = queryset.values('grn_item_created_on', 'grn_vendorname','warehouse_master_warehousename','grn_item_item_name').annotate(
-            total_quantity=Cast(Sum('quantity'), CharField()))
-        grouped_data = groupby(queryset1, key=lambda x: (x['grn_item_created_on'], x['grn_vendorname']))
-        merged_data = []
+            queryset2 = queryset.values('grn_vendorname', 'warehouse_master_warehousename', 'grn_item_created_on',
+                                        'grn_item_item_name')
+            queryset1 = queryset.values('grn_item_created_on','grn_vendorname','warehouse_master_warehousename', 'grn_item_item_name').annotate(
+                total_quantity=Cast(Sum('quantity'), CharField()))
+            grouped_data = groupby(queryset1, key=lambda x: (x['grn_item_created_on'], x['grn_vendorname']))
+            merged_data = []
 
-        for (date, vendor), group in grouped_data:
-            merged_dict = {
-                'grn_item_created_on': date,
-                'grn_vendorname': vendor,
-                'items': []
-            }
+            for (date, vendor), group in grouped_data:
+                merged_dict = {
+                    'grn_item_created_on': date,
+                    'grn_vendorname': vendor,
+                    'items': []
+                }
 
-            for item in group:
-                merged_dict['warehouse_master_warehousename'] = item['warehouse_master_warehousename']
-                merged_dict['items'].append({
-                    'itemname': item['grn_item_item_name'],
-                    'quantity': item['total_quantity']
-                })
+                for item in group:
+                    merged_dict['warehouse_master_warehousename'] = item['warehouse_master_warehousename']
+                    merged_dict['items'].append({
+                        'itemname': item['grn_item_item_name'],
+                        'quantity': item['total_quantity']
+                    })
 
-            merged_data.append(merged_dict)
-            merged_data = sorted(merged_data,
-                                 key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
-                                 reverse=True)
-        return render(request,'Reports/vendor_itemsupply.html',{"vendor_masterlist":vendor_masterlist,"wh_masterlist":wh_masterlist,"entry":merged_data,'menuname':menuname,'selectrange':selectrange})
+                merged_data.append(merged_dict)
+                merged_data = sorted(merged_data,
+                                     key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
+                                     reverse=True)
+            return render(request, 'Reports/vendor_itemsupply.html', {"vendor_masterlist":vendor_masterlist,"wh_masterlist":wh_masterlist,"entry": merged_data,'menuname':menuname,'selectrange':selectrange})
 
+        else:
+            queryset = GrnItem.objects.using('auth').extra(
+                tables=['grn', 'grn_item', 'warehouse_master'],
+                where=[
+                    'grn.grn = grn_item.grn',
+                    'grn.warehouse_id = warehouse_master.warehouseid',
+                    "grn.status = 'Verified'"
+                ],
+                select={
+                    'grn_grn': 'grn.grn',
+                    'grn_warehouse_id': 'grn.warehouse_id',
+                    'grn_vendorname': 'grn.vendorname',
+                    'grn_item_created_on': "DATE_FORMAT(grn.invoice_date, '%%d-%%b-%%Y')",
+                    'grn_item_item_name': 'grn_item.item_name',
+                    'grn_item_quantity': 'CAST(grn_item.quantity AS CHAR)',
+                    'warehouse_master_warehousename': 'warehouse_master.warehousename',
+                    'grn_status':'grn.status'
+                }
+
+            ).values(
+                'grn_warehouse_id', 'grn_grn', 'grn_vendorname',
+                'grn_item_created_on', 'grn_item_item_name', 'grn_item_quantity', 'warehouse_master_warehousename'
+            )
+
+            queryset2 = queryset.values('grn_vendorname', 'warehouse_master_warehousename', 'grn_item_created_on','grn_item_item_name')
+            queryset1 = queryset.values('grn_item_created_on', 'grn_vendorname','warehouse_master_warehousename','grn_item_item_name').annotate(
+                total_quantity=Cast(Sum('quantity'), CharField()))
+            grouped_data = groupby(queryset1, key=lambda x: (x['grn_item_created_on'], x['grn_vendorname']))
+            merged_data = []
+
+            for (date, vendor), group in grouped_data:
+                merged_dict = {
+                    'grn_item_created_on': date,
+                    'grn_vendorname': vendor,
+                    'items': []
+                }
+
+                for item in group:
+                    merged_dict['warehouse_master_warehousename'] = item['warehouse_master_warehousename']
+                    merged_dict['items'].append({
+                        'itemname': item['grn_item_item_name'],
+                        'quantity': item['total_quantity']
+                    })
+
+                merged_data.append(merged_dict)
+                merged_data = sorted(merged_data,
+                                     key=lambda x: datetime.datetime.strptime(x['grn_item_created_on'], '%d-%b-%Y'),
+                                     reverse=True)
+            return render(request,'Reports/vendor_itemsupply.html',{"vendor_masterlist":vendor_masterlist,"wh_masterlist":wh_masterlist,"entry":merged_data,'menuname':menuname,'selectrange':selectrange})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'Reports/vendor_itemsupply.html',{"menuname":menuname})
 
 def busstation_stalls(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     accesskey = request.session['accesskey']
     payload = json.dumps(
         {
@@ -8629,357 +9779,213 @@ def busstation_stalls(request):
     return HttpResponse({'data':data})
 
 def busstation_stock(request,id):
-        menuname = request.session['mylist']
-        accesskey = request.session['accesskey']
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        try:
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
 
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-        response = requests.request("POST", url, headers=headers, data=payload)
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+            response = requests.request("POST", url, headers=headers, data=payload)
 
-        data = response.json()
-        regionlist = data['regionlist']
+            data = response.json()
+            regionlist = data['regionlist']
 
-        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        data = response.json()
-        wh_masterlist = data['warehouselist']
+            url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data = response.json()
+            wh_masterlist = data['warehouselist']
 
-        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-        payload = json.dumps({"accesskey": accesskey,
-                              "warehouseid": request.POST.get('warehouseid'),
-                              "regionid": request.POST.get('regionid')})
+            payload = json.dumps({"accesskey": accesskey,
+                                  "warehouseid": request.POST.get('warehouseid'),
+                                  "regionid": request.POST.get('regionid')})
 
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
 
-        data = response.json()
-        depolist = data['depolist']
+            data = response.json()
+            depolist = data['depolist']
 
-        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
-        payload = json.dumps({
-            "accesskey": accesskey
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
+            url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+            payload = json.dumps({
+                "accesskey": accesskey
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+            response = requests.request("GET", url, headers=headers, data=payload)
 
-        data = response.json()
-        buslist = data['buslist']
+            data = response.json()
+            buslist = data['buslist']
 
-        busstation_id = request.POST.get('busstationid1')
-        current_date = datetime.date.today()
-        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        # warehouse_id = ['WDP0002', 'WDP0001']
-        item_sum_qty = BusstationInventory.objects.using('auth').values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
+            busstation_id = request.POST.get('busstationid1')
+            current_date = datetime.date.today()
+            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+            # warehouse_id = ['WDP0002', 'WDP0001']
+            item_sum_qty = BusstationInventory.objects.using('auth').values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
 
-        bus_info = BusstationMaster.objects.using('auth').filter(deponame=id).values('busstationname', 'busatation_id')
-        grouped_data = []
-        sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
+            bus_info = BusstationMaster.objects.using('auth').filter(deponame=id).values('busstationname', 'busatation_id')
+            grouped_data = []
+            sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
-        for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-            grouped_data.append({'busstation_id': busatation_id, 'items': items})
+            for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
+                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                grouped_data.append({'busstation_id': busatation_id, 'items': items})
 
-        merged_data1 = []
-        for d in grouped_data:
-            busstation_id = d['busstation_id']
-            createdon__date = current_date
-            date_createdon = createdon__date.strftime("%d-%b-%Y")
-            items = d['items']
+            merged_data1 = []
+            for d in grouped_data:
+                busstation_id = d['busstation_id']
+                createdon__date = current_date
+                date_createdon = createdon__date.strftime("%d-%b-%Y")
+                items = d['items']
 
-            for bus in bus_info:
-                if bus['busatation_id'] == busstation_id:
-                    busstationname = bus['busstationname']
-                    merged_dict = {
-                        'busatation_id': busatation_id,
-                        'busstationname': busstationname,
-                        'createdon__date': date_createdon,
-                        'items': items,
+                for bus in bus_info:
+                    if bus['busatation_id'] == busstation_id:
+                        busstationname = bus['busstationname']
+                        merged_dict = {
+                            'busatation_id': busatation_id,
+                            'busstationname': busstationname,
+                            'createdon__date': date_createdon,
+                            'items': items,
 
-                    }
+                        }
 
-                    merged_data1.append(merged_dict)
-        return render(request, 'Reports/busstation_stock.html',
-                      {"regionlist": regionlist, 'bus': buslist, 'depolist': depolist, "menuname": menuname,
-                       'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
-
+                        merged_data1.append(merged_dict)
+            return render(request, 'Reports/busstation_stock.html',
+                          {"regionlist": regionlist, 'bus': buslist, 'depolist': depolist, "menuname": menuname,
+                           'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
+        except:
+            if response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+        return render(request, 'Reports/busstation_stock.html',{'menuname':menuname})
 
 def busstation_stock1(request,id):
-        menuname = request.session['mylist']
-        accesskey = request.session['accesskey']
+    if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+    try:
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
 
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-        response = requests.request("POST", url, headers=headers, data=payload)
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+            response = requests.request("POST", url, headers=headers, data=payload)
 
-        data = response.json()
-        regionlist = data['regionlist']
+            data = response.json()
+            regionlist = data['regionlist']
 
-        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        data = response.json()
-        wh_masterlist = data['warehouselist']
+            url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data = response.json()
+            wh_masterlist = data['warehouselist']
 
-        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-        payload = json.dumps({"accesskey": accesskey,
-                              "warehouseid": request.POST.get('warehouseid'),
-                              "regionid": request.POST.get('regionid')})
+            payload = json.dumps({"accesskey": accesskey,
+                                  "warehouseid": request.POST.get('warehouseid'),
+                                  "regionid": request.POST.get('regionid')})
 
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
 
-        data = response.json()
-        depolist = data['depolist']
+            data = response.json()
+            depolist = data['depolist']
 
-        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
-        payload = json.dumps({
-            "accesskey": accesskey
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
+            url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+            payload = json.dumps({
+                "accesskey": accesskey
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+            response = requests.request("GET", url, headers=headers, data=payload)
 
-        data = response.json()
-        buslist = data['buslist']
-        current_date = datetime.date.today()
+            data = response.json()
+            buslist = data['buslist']
+            current_date = datetime.date.today()
 
-        item_sum_qty = BusstationInventory.objects.using('auth').values('itemcode', 'busstation_id').annotate(
-    total_qty=Func(Sum('sale_qty'), function='ROUND', expression=F('sale_qty'), template='%(function)s(%(expressions)s)')
-)
-        if id == 'All':
-            bus_info = BusstationMaster.objects.using('auth').all().values('busstationname','busatation_id')
-        else:
-            bus_info = BusstationMaster.objects.using('auth').filter(busstationname=id).values('busstationname', 'busatation_id')
-        grouped_data = []
-        sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
+            item_sum_qty = BusstationInventory.objects.using('auth').values('itemcode', 'busstation_id').annotate(
+        total_qty=Func(Sum('sale_qty'), function='ROUND', expression=F('sale_qty'), template='%(function)s(%(expressions)s)'))
 
-        for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-            grouped_data.append({'busstation_id': busatation_id, 'items': items})
+            if id == 'All':
+                bus_info = BusstationMaster.objects.using('auth').all().values('busstationname','busatation_id')
+            else:
+                bus_info = BusstationMaster.objects.using('auth').filter(busstationname=id).values('busstationname', 'busatation_id')
+            grouped_data = []
+            sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
-        merged_data1 = []
-        for d in grouped_data:
-            busstation_id = d['busstation_id']
-            createdon__date = current_date
-            date_createdon = createdon__date.strftime("%d-%b-%Y")
-            items = d['items']
+            for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
+                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                grouped_data.append({'busstation_id': busatation_id, 'items': items})
 
-            for bus in bus_info:
-                if bus['busatation_id'] == busstation_id:
-                    busstationname = bus['busstationname']
-                    merged_dict = {
-                        'busatation_id': busatation_id,
-                        'busstationname': busstationname,
-                        'createdon__date': date_createdon,
-                        'items': items,
+            merged_data1 = []
+            for d in grouped_data:
+                busstation_id = d['busstation_id']
+                createdon__date = current_date
+                date_createdon = createdon__date.strftime("%d-%b-%Y")
+                items = d['items']
 
-                    }
-                    merged_data1.append(merged_dict)
+                for bus in bus_info:
+                    if bus['busatation_id'] == busstation_id:
+                        busstationname = bus['busstationname']
+                        merged_dict = {
+                            'busatation_id': busatation_id,
+                            'busstationname': busstationname,
+                            'createdon__date': date_createdon,
+                            'items': items,
+
+                        }
+                        merged_data1.append(merged_dict)
 
 
-        return render(request, 'Reports/busstation_stock.html',
-                      {"regionlist":regionlist,'bus':buslist,'depolist':depolist,"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
-
+            return render(request, 'Reports/busstation_stock.html',
+                          {"regionlist":regionlist,'bus':buslist,'depolist':depolist,"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'Reports/busstation_stock.html',{'menuname':menuname})
 
 
 
 
 def depot_stock1(request):
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    wh_masterlist = data['warehouselist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
-
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    selectrange = data['timingslist']
-
-
-
-
-    if request.method == 'POST':
-      pass
-    else:
-        current_date = datetime.date.today()
-        queryset = OutpassItem.objects.using('auth').extra(
-            tables=['outpass_item', 'outpass_generate','busstation_master'],
-            where=[
-                'outpass_item.outpass_number = outpass_generate.outpass_number',
-                "outpass_generate.status = 'Accepted'",
-                "(outpass_generate.warehouseid = busstation_master.busatation_id OR outpass_generate.regionid = busstation_master.busatation_id)"
-            ],
-
-            select={
-                'busstation_id': 'outpass_generate.regionid',
-                'outpass_generate_regionid': 'outpass_generate.warehouseid',
-                'item_code': 'outpass_item.item_code',
-                'quantity': 'outpass_item.qty',
-                'busstation_id1': 'busstation_master.busatation_id',
-                'busstationname': 'outpass_generate.region_name',
-            }
-
-            ).values(
-                'busstation_id', 'outpass_generate_regionid', 'item_code',
-                'quantity', 'busstationname','busstation_id1'
-            )
-
-        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        queryset1 = queryset.filter(
-            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-        ).values('outpass_generate_regionid',
-                 'item_code').annotate(total_qty=Sum('qty'))
-        queryset2 = queryset.filter(
-            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-        ).values('busstation_id', 'busstationname','item_code').annotate(total_sum=Sum('qty'))
-        merged_list = []
-        for item2 in queryset2:
-            for item1 in queryset1:
-                if item1['outpass_generate_regionid'] == item2['busstation_id'] and item1['item_code'] == item2[
-                    'item_code']:
-                    total_qty = item1['total_qty']+item2['total_sum']
-                    merged_item = {
-
-                        'busstation_id': item2['busstation_id'],
-                        'item_code': item2['item_code'],
-                        'total_qty': total_qty,
-                        'busstationname':item2['busstationname']
-                    }
-                    merged_list.append(merged_item)
-                    break
-            else:
-                    merged_item = {
-                        'busstation_id': item2['busstation_id'],
-                        'item_code': item2['item_code'],
-                        'total_qty': item2['total_sum'],
-                        'busstationname': item2['busstationname']
-
-                    }
-                    merged_list.append(merged_item)
-
-        print(merged_list)
-        sorted_data = sorted(merged_list, key=lambda x: x['busstation_id'])
-        grouped_data1 = []
-        for (busstation_id, busstationname), group in groupby(sorted_data,
-                                                             key=lambda x: (x['busstation_id'], x['busstationname'])):
-            items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_qty']} for item in group]
-            grouped_data1.append({'busstation_id': busstation_id, 'busstationname': busstationname, 'items1': items1})
-
-        item_sum_qty = BusstationInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
-        ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
-
-        bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
-        grouped_data = []
-        sorted_data1 = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
-
-        for busatation_id, group in groupby(sorted_data1, key=lambda x: x['busstation_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-            grouped_data.append({'busstation_id': busatation_id, 'items': items})
-
-        merged_data1 = []
-        for d in grouped_data:
-            busstation_id = d['busstation_id']
-            createdon__date = current_date
-            date_createdon = createdon__date.strftime("%d-%b-%Y")
-            items = d['items']
-
-            for bus in bus_info:
-                if bus['busatation_id'] == busstation_id:
-                    busstationname = bus['busstationname']
-                    break
-                else:
-                    busstationname = None
-
-            merged_dict = {
-                'busatation_id': busstation_id,
-                'busstationname': busstationname,
-                'createdon__date': date_createdon,
-                'items': items,
-
-            }
-
-            merged_data1.append(merged_dict)
-
-        merged_data2 = []
-        for item1 in grouped_data1:
-            match_found = False
-            for item2 in merged_data1:
-                if item1['busstation_id'] == item2['busatation_id'] and item1['busstationname'] == item2[
-                    'busstationname']:
-                    item2['items'].extend(item1['items1'])
-                    merged_data2.append(item2)
-                    match_found = True
-                    break
-            if not match_found:
-                merged_data2.append(item1)
-
-        # Add remaining items from list2 (if any) to the combined list
-        for item2 in merged_data1:
-            match_found = False
-            for item1 in merged_data2:
-                if item2['busatation_id'] == item1['busatation_id'] and item2['busstationname'] == item1['busstationname']:
-                    match_found = True
-                    break
-            if not match_found:
-                merged_data2.append(item2)
-
-        print(merged_data2)
-        return render(request, 'Reports/busstation_stock.html',
-                      {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data2})
-
-
-def warehouse_stock1(request,id):
-
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
-
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-        response = requests.request("POST", url, headers=headers, data=payload)
-
-        data = response.json()
-        regionlist = data['regionlist']
-
         url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
         payload = json.dumps({"accesskey": accesskey})
         headers = {
@@ -8989,112 +9995,450 @@ def warehouse_stock1(request,id):
         data = response.json()
         wh_masterlist = data['warehouselist']
 
-        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+        url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
-        payload = json.dumps({"accesskey": accesskey,
-                              "warehouseid": request.POST.get('warehouseid'),
-                              "regionid": request.POST.get('regionid')})
-
+        payload = json.dumps({"accesskey": accesskey})
         headers = {
             'Content-Type': 'text/plain'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
 
         data = response.json()
-        depolist = data['depolist']
+        selectrange = data['timingslist']
 
-        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
-        payload = json.dumps({
-            "accesskey": accesskey
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
+        if request.method == 'POST':
+          pass
+        else:
+            current_date = datetime.date.today()
+            queryset = OutpassItem.objects.using('auth').extra(
+                tables=['outpass_item', 'outpass_generate','busstation_master'],
+                where=[
+                    'outpass_item.outpass_number = outpass_generate.outpass_number',
+                    "outpass_generate.status = 'Accepted'",
+                    "(outpass_generate.warehouseid = busstation_master.busatation_id OR outpass_generate.regionid = busstation_master.busatation_id)"
+                ],
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+                select={
+                    'busstation_id': 'outpass_generate.regionid',
+                    'outpass_generate_regionid': 'outpass_generate.warehouseid',
+                    'item_code': 'outpass_item.item_code',
+                    'quantity': 'outpass_item.qty',
+                    'busstation_id1': 'busstation_master.busatation_id',
+                    'busstationname': 'outpass_generate.region_name',
+                }
 
-        data = response.json()
-        bus = data['buslist']
+                ).values(
+                    'busstation_id', 'outpass_generate_regionid', 'item_code',
+                    'quantity', 'busstationname','busstation_id1'
+                )
 
+            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+            queryset1 = queryset.filter(
+                modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+            ).values('outpass_generate_regionid',
+                     'item_code').annotate(total_qty=Sum('qty'))
+            queryset2 = queryset.filter(
+                modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+            ).values('busstation_id', 'busstationname','item_code').annotate(total_sum=Sum('qty'))
+            merged_list = []
+            for item2 in queryset2:
+                for item1 in queryset1:
+                    if item1['outpass_generate_regionid'] == item2['busstation_id'] and item1['item_code'] == item2[
+                        'item_code']:
+                        total_qty = item1['total_qty']+item2['total_sum']
+                        merged_item = {
 
-
-        warehouse_id = request.POST.get('warehouseid1')
-
-        current_date = datetime.date.today()
-        queryset = OutpassItem.objects.using('auth').extra(
-            tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
-            where=[
-                'outpass_item.outpass_number = outpass_generate.outpass_number',
-                'outpass_generate.warehouseid = warehouse_master.warehouseid',
-                "outpass_generate.status = 'Accepted'"
-            ],
-            select={
-                'warehouse_id': 'outpass_generate.warehouseid',
-                'outpass_generate_regionid': 'outpass_generate.regionid',
-                'warehouse_id1': 'warehouse_master.warehouseid',
-                'created_on': "DATE_FORMAT(outpass_generate.modified_on, '%%d-%%b-%%Y')",
-                'outpass_item_item_code': 'outpass_item.item_code',
-                'grn_item_quantity': 'outpass_item.qty',
-                'warehouse_name': 'outpass_generate.warehouse_name',
-            }
-
-        ).values(
-            'warehouse_id1', 'outpass_generate_regionid', 'warehouse_id', 'created_on', 'item_code',
-            'grn_item_quantity', 'warehouse_name'
-        )
-        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        queryset1 = queryset.filter(
-            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-        ).values('outpass_generate_regionid',
-                 'item_code').annotate(total_qty=Sum('qty'))
-        queryset2 = queryset.filter(
-            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-        ).values('warehouse_id', 'warehouse_name', 'item_code').annotate(total_sum=Sum('qty'))
-        sorted_data = sorted(queryset2, key=lambda x: x['warehouse_id'])
-        grouped_data1 = []
-        for (warehouse_id, warehouse_name), group in groupby(sorted_data,
-                                                             key=lambda x: (x['warehouse_id'], x['warehouse_name'])):
-            items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
-            grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
-
-        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        item_sum_qty = WarehouseInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id=id,
-        ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
-
-        warehouse_info = WarehouseMaster.objects.using('auth').filter(warehouseid=id).values('warehousename', 'warehouseid')
-        grouped_data = []
-        sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
-
-        for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-            grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
-
-        merged_data1 = []
-        for d in grouped_data:
-            warehouse_id = d['warehouse_id']
-            createdon__date = current_date
-            date_createdon = createdon__date.strftime("%d-%b-%Y")
-            items = d['items']
-
-            for warehouse in warehouse_info:
-                if warehouse['warehouseid'] == warehouse_id:
-                    warehousename = warehouse['warehousename']
-                    break
+                            'busstation_id': item2['busstation_id'],
+                            'item_code': item2['item_code'],
+                            'total_qty': total_qty,
+                            'busstationname':item2['busstationname']
+                        }
+                        merged_list.append(merged_item)
+                        break
                 else:
-                    warehousename = None
+                        merged_item = {
+                            'busstation_id': item2['busstation_id'],
+                            'item_code': item2['item_code'],
+                            'total_qty': item2['total_sum'],
+                            'busstationname': item2['busstationname']
 
-            merged_dict = {
-                'warehouse_id': warehouse_id,
-                'warehousename': warehousename,
-                'createdon__date': date_createdon,
-                'items': items,
+                        }
+                        merged_list.append(merged_item)
 
+            print(merged_list)
+            sorted_data = sorted(merged_list, key=lambda x: x['busstation_id'])
+            grouped_data1 = []
+            for (busstation_id, busstationname), group in groupby(sorted_data,
+                                                                 key=lambda x: (x['busstation_id'], x['busstationname'])):
+                items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_qty']} for item in group]
+                grouped_data1.append({'busstation_id': busstation_id, 'busstationname': busstationname, 'items1': items1})
+
+            item_sum_qty = BusstationInventory.objects.using('auth').filter(
+                createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+            ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
+
+            bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
+            grouped_data = []
+            sorted_data1 = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
+
+            for busatation_id, group in groupby(sorted_data1, key=lambda x: x['busstation_id']):
+                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                grouped_data.append({'busstation_id': busatation_id, 'items': items})
+
+            merged_data1 = []
+            for d in grouped_data:
+                busstation_id = d['busstation_id']
+                createdon__date = current_date
+                date_createdon = createdon__date.strftime("%d-%b-%Y")
+                items = d['items']
+
+                for bus in bus_info:
+                    if bus['busatation_id'] == busstation_id:
+                        busstationname = bus['busstationname']
+                        break
+                    else:
+                        busstationname = None
+
+                merged_dict = {
+                    'busatation_id': busstation_id,
+                    'busstationname': busstationname,
+                    'createdon__date': date_createdon,
+                    'items': items,
+
+                }
+
+                merged_data1.append(merged_dict)
+
+            merged_data2 = []
+            for item1 in grouped_data1:
+                match_found = False
+                for item2 in merged_data1:
+                    if item1['busstation_id'] == item2['busatation_id'] and item1['busstationname'] == item2[
+                        'busstationname']:
+                        item2['items'].extend(item1['items1'])
+                        merged_data2.append(item2)
+                        match_found = True
+                        break
+                if not match_found:
+                    merged_data2.append(item1)
+
+            # Add remaining items from list2 (if any) to the combined list
+            for item2 in merged_data1:
+                match_found = False
+                for item1 in merged_data2:
+                    if item2['busatation_id'] == item1['busatation_id'] and item2['busstationname'] == item1['busstationname']:
+                        match_found = True
+                        break
+                if not match_found:
+                    merged_data2.append(item2)
+
+            print(merged_data2)
+            return render(request, 'Reports/busstation_stock.html',
+                          {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_quantities': merged_data2})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'Reports/busstation_stock.html',{'menuname':menuname})
+
+def warehouse_stock1(request,id):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        try:
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+            response = requests.request("POST", url, headers=headers, data=payload)
+
+            data = response.json()
+            regionlist = data['regionlist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data = response.json()
+            wh_masterlist = data['warehouselist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+            payload = json.dumps({"accesskey": accesskey,
+                                  "warehouseid": request.POST.get('warehouseid'),
+                                  "regionid": request.POST.get('regionid')})
+
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            data = response.json()
+            depolist = data['depolist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+            payload = json.dumps({
+                "accesskey": accesskey
+            })
+            headers = {
+                'Content-Type': 'application/json'
             }
 
-            merged_data1.append(merged_dict)
-        merged_data2 = []
-        for d in merged_data1:
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            data = response.json()
+            bus = data['buslist']
+
+
+
+            warehouse_id = request.POST.get('warehouseid1')
+
+            current_date = datetime.date.today()
+            queryset = OutpassItem.objects.using('auth').extra(
+                tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
+                where=[
+                    'outpass_item.outpass_number = outpass_generate.outpass_number',
+                    'outpass_generate.warehouseid = warehouse_master.warehouseid',
+                    "outpass_generate.status = 'Accepted'"
+                ],
+                select={
+                    'warehouse_id': 'outpass_generate.warehouseid',
+                    'outpass_generate_regionid': 'outpass_generate.regionid',
+                    'warehouse_id1': 'warehouse_master.warehouseid',
+                    'created_on': "DATE_FORMAT(outpass_generate.modified_on, '%%d-%%b-%%Y')",
+                    'outpass_item_item_code': 'outpass_item.item_code',
+                    'grn_item_quantity': 'outpass_item.qty',
+                    'warehouse_name': 'outpass_generate.warehouse_name',
+                }
+
+            ).values(
+                'warehouse_id1', 'outpass_generate_regionid', 'warehouse_id', 'created_on', 'item_code',
+                'grn_item_quantity', 'warehouse_name'
+            )
+            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+            queryset1 = queryset.filter(
+                modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+            ).values('outpass_generate_regionid',
+                     'item_code').annotate(total_qty=Sum('qty'))
+            queryset2 = queryset.filter(
+                modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+            ).values('warehouse_id', 'warehouse_name', 'item_code').annotate(total_sum=Sum('qty'))
+            sorted_data = sorted(queryset2, key=lambda x: x['warehouse_id'])
+            grouped_data1 = []
+            for (warehouse_id, warehouse_name), group in groupby(sorted_data,
+                                                                 key=lambda x: (x['warehouse_id'], x['warehouse_name'])):
+                items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
+                grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
+
+            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+            item_sum_qty = WarehouseInventory.objects.using('auth').filter(
+                createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id=id,
+            ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
+
+            warehouse_info = WarehouseMaster.objects.using('auth').filter(warehouseid=id).values('warehousename', 'warehouseid')
+            grouped_data = []
+            sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
+
+            for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
+                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
+
+            merged_data1 = []
+            for d in grouped_data:
+                warehouse_id = d['warehouse_id']
+                createdon__date = current_date
+                date_createdon = createdon__date.strftime("%d-%b-%Y")
+                items = d['items']
+
+                for warehouse in warehouse_info:
+                    if warehouse['warehouseid'] == warehouse_id:
+                        warehousename = warehouse['warehousename']
+                        break
+                    else:
+                        warehousename = None
+
+                merged_dict = {
+                    'warehouse_id': warehouse_id,
+                    'warehousename': warehousename,
+                    'createdon__date': date_createdon,
+                    'items': items,
+
+                }
+
+                merged_data1.append(merged_dict)
+            merged_data2 = []
+            for d in merged_data1:
+                    warehouse_id = d['warehouse_id']
+                    warehousename = d['warehousename']
+                    createdon__date = d['createdon__date']
+                    items = d['items']
+
+                    for data in grouped_data1:
+                        if data['warehouse_id'] == warehouse_id:
+                            items1 = data['items1']
+                            createdon__date = current_date
+                            date_createdon = createdon__date.strftime("%d-%b-%Y")
+                            merged_dict = {
+                                'warehouse_id': warehouse_id,
+                                'warehousename': warehousename,
+                                'createdon__date': date_createdon,
+                                'items': items,
+                                'items1': items1
+                            }
+                            break
+                        else:
+                            items1 = ''
+                            merged_dict = {
+                                'warehouse_id': d['warehouse_id'],
+                                'warehousename': d['warehousename'],
+                                'createdon__date': createdon__date,
+                                'items': items,
+                                'items1': items1
+                            }
+
+                    merged_data2.append(merged_dict)
+            return render(request,'Reports/warehouse_stock.html',{"bus":bus,"depolist":depolist,"regionlist":regionlist,"menuname":menuname,'wh_masterlist':wh_masterlist,'item_quantities':merged_data2})
+        except:
+            if response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+        return render(request, 'Reports/warehouse_stock.html',{'menuname':menuname})
+
+def warehouse_stock(request):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        try:
+            accesskey = request.session['accesskey']
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+            response = requests.request("POST", url, headers=headers, data=payload)
+
+            data = response.json()
+            regionlist = data['regionlist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data = response.json()
+            wh_masterlist = data['warehouselist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+            payload = json.dumps({"accesskey": accesskey,
+                                  "warehouseid": request.POST.get('warehouseid'),
+                                  "regionid": request.POST.get('regionid')})
+
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            data = response.json()
+            depolist = data['depolist']
+
+            url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+            payload = json.dumps({
+                "accesskey": accesskey
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            data = response.json()
+            bus = data['buslist']
+            menuname = request.session['mylist']
+            current_date = datetime.date.today()
+            queryset = OutpassItem.objects.using('auth').extra(
+                tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
+                where=[
+                    'outpass_item.outpass_number = outpass_generate.outpass_number',
+                    'outpass_generate.warehouseid = warehouse_master.warehouseid',
+                    "outpass_generate.status = 'Accepted'"
+                ],
+                select={
+                    'warehouse_id': 'outpass_generate.warehouseid',
+                    'outpass_generate_regionid': 'outpass_generate.regionid',
+                    'warehouse_id1': 'warehouse_master.warehouseid',
+                    'created_on': "DATE_FORMAT(outpass_generate.modified_on, '%%d-%%b-%%Y')",
+                    'outpass_item_item_code': 'outpass_item.item_code',
+                    'grn_item_quantity': 'outpass_item.qty',
+                    'warehouse_name': 'outpass_generate.warehouse_name',
+                }
+
+            ).values(
+                'warehouse_id1', 'outpass_generate_regionid', 'warehouse_id', 'created_on', 'item_code',
+                'grn_item_quantity', 'warehouse_name'
+            )
+            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+            queryset1 = queryset.filter(
+                modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+            ).values('outpass_generate_regionid',
+                     'item_code').annotate(total_qty=Sum('qty'))
+            queryset2 = queryset.filter(
+                modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
+            ).values('warehouse_id', 'warehouse_name', 'item_code').annotate(total_sum=Sum('qty'))
+            sorted_data = sorted(queryset2, key=lambda x: x['warehouse_id'])
+            grouped_data1 = []
+            for (warehouse_id, warehouse_name), group in groupby(sorted_data,
+                                                                 key=lambda x: (x['warehouse_id'], x['warehouse_name'])):
+                items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
+                grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
+
+            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+            warehouse_id = ['WDP0002', 'WDP0001']
+            item_sum_qty = WarehouseInventory.objects.using('auth').filter(
+                createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id__in=warehouse_id,
+            ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
+
+            warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
+            grouped_data = []
+            sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
+
+            for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
+                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
+
+            merged_data1 = []
+            for d in grouped_data:
+                warehouse_id = d['warehouse_id']
+                createdon__date = current_date
+                date_createdon = createdon__date.strftime("%d-%b-%Y")
+                items = d['items']
+
+                for warehouse in warehouse_info:
+                    if warehouse['warehouseid'] == warehouse_id:
+                        warehousename = warehouse['warehousename']
+                        break
+                    else:
+                        warehousename = None
+
+                merged_dict = {
+                    'warehouse_id': warehouse_id,
+                    'warehousename': warehousename,
+                    'createdon__date': date_createdon,
+                    'items': items,
+                }
+
+                merged_data1.append(merged_dict)
+            merged_data2 = []
+            for d in merged_data1:
                 warehouse_id = d['warehouse_id']
                 warehousename = d['warehousename']
                 createdon__date = d['createdon__date']
@@ -9124,9 +10468,24 @@ def warehouse_stock1(request,id):
                         }
 
                 merged_data2.append(merged_dict)
-        return render(request,'Reports/warehouse_stock.html',{"bus":bus,"depolist":depolist,"regionlist":regionlist,"menuname":menuname,'wh_masterlist':wh_masterlist,'item_quantities':merged_data2})
-def warehouse_stock(request):
+            return render(request, 'Reports/warehouse_stock.html',
+                          {"bus":bus,"depolist":depolist,"regionlist":regionlist,"menuname": menuname,'merged_data2': merged_data2,
+                           'item_quantities': merged_data2
+                           })
+        except:
+            if response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+        return render(request, 'Reports/warehouse_stock.html',{'menuname':menuname})
+
+def region_stock1(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
         accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
         payload = json.dumps({"accesskey": accesskey})
         headers = {
             'Content-Type': 'application/json'
@@ -9172,351 +10531,207 @@ def warehouse_stock(request):
 
         data = response.json()
         bus = data['buslist']
-        menuname = request.session['mylist']
+
+        regionname1 = id
+
         current_date = datetime.date.today()
-        queryset = OutpassItem.objects.using('auth').extra(
-            tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
-            where=[
-                'outpass_item.outpass_number = outpass_generate.outpass_number',
-                'outpass_generate.warehouseid = warehouse_master.warehouseid',
-                "outpass_generate.status = 'Accepted'"
-            ],
-            select={
-                'warehouse_id': 'outpass_generate.warehouseid',
-                'outpass_generate_regionid': 'outpass_generate.regionid',
-                'warehouse_id1': 'warehouse_master.warehouseid',
-                'created_on': "DATE_FORMAT(outpass_generate.modified_on, '%%d-%%b-%%Y')",
-                'outpass_item_item_code': 'outpass_item.item_code',
-                'grn_item_quantity': 'outpass_item.qty',
-                'warehouse_name': 'outpass_generate.warehouse_name',
-            }
-
-        ).values(
-            'warehouse_id1', 'outpass_generate_regionid', 'warehouse_id', 'created_on', 'item_code',
-            'grn_item_quantity', 'warehouse_name'
-        )
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        queryset1 = queryset.filter(
-            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-        ).values('outpass_generate_regionid',
-                 'item_code').annotate(total_qty=Sum('qty'))
-        queryset2 = queryset.filter(
-            modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-        ).values('warehouse_id', 'warehouse_name', 'item_code').annotate(total_sum=Sum('qty'))
-        sorted_data = sorted(queryset2, key=lambda x: x['warehouse_id'])
-        grouped_data1 = []
-        for (warehouse_id, warehouse_name), group in groupby(sorted_data,
-                                                             key=lambda x: (x['warehouse_id'], x['warehouse_name'])):
-            items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
-            grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
-
-        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        warehouse_id = ['WDP0002', 'WDP0001']
-        item_sum_qty = WarehouseInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id__in=warehouse_id,
-        ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
-
-        warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
+        item_sum_qty = DepoInventory.objects.using('auth').filter(
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+        ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
+        if regionname1=='All':
+            depo_info = DepoMaster.objects.using('auth').all().values('deponame', 'depoid','regionname')
+        else:
+            depo_info = DepoMaster.objects.using('auth').filter(regionname=regionname1).values('deponame', 'depoid',
+                                                                                              'regionname')
         grouped_data = []
-        sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
+        sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
 
-        for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
+        for depoid, group in groupby(sorted_data, key=lambda x: x['region_id']):
             items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-            grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
+            grouped_data.append({'region_id': depoid, 'items': items})
 
         merged_data1 = []
+        grouped_data1 = []
         for d in grouped_data:
-            warehouse_id = d['warehouse_id']
+            depo_id = d['region_id']
             createdon__date = current_date
             date_createdon = createdon__date.strftime("%d-%b-%Y")
             items = d['items']
 
-            for warehouse in warehouse_info:
-                if warehouse['warehouseid'] == warehouse_id:
-                    warehousename = warehouse['warehousename']
-                    break
-                else:
-                    warehousename = None
+            for depo in depo_info:
+                if depo['depoid'] == depo_id:
+                    deponame = depo['deponame']
+                    regionname = depo['regionname']
 
-            merged_dict = {
-                'warehouse_id': warehouse_id,
-                'warehousename': warehousename,
-                'createdon__date': date_createdon,
-                'items': items,
-            }
-
-            merged_data1.append(merged_dict)
-        merged_data2 = []
-        for d in merged_data1:
-            warehouse_id = d['warehouse_id']
-            warehousename = d['warehousename']
-            createdon__date = d['createdon__date']
-            items = d['items']
-
-            for data in grouped_data1:
-                if data['warehouse_id'] == warehouse_id:
-                    items1 = data['items1']
-                    createdon__date = current_date
-                    date_createdon = createdon__date.strftime("%d-%b-%Y")
                     merged_dict = {
-                        'warehouse_id': warehouse_id,
-                        'warehousename': warehousename,
+                        'depoid': depo_id,
+                        'deponame': deponame,
+                        'regionname': regionname,
                         'createdon__date': date_createdon,
                         'items': items,
-                        'items1': items1
+
                     }
+                    merged_data1.append(merged_dict)
                     break
-                else:
-                    items1 = ''
-                    merged_dict = {
-                        'warehouse_id': d['warehouse_id'],
-                        'warehousename': d['warehousename'],
-                        'createdon__date': createdon__date,
-                        'items': items,
-                        'items1': items1
-                    }
+            region_item_totals = defaultdict(float)
 
-            merged_data2.append(merged_dict)
-        return render(request, 'Reports/warehouse_stock.html',
-                      {"bus":bus,"depolist":depolist,"regionlist":regionlist,"menuname": menuname,'merged_data2': merged_data2,
-                       'item_quantities': merged_data2
-                       })
+            for entry in merged_data1:
+                region = entry['regionname']
+                items = entry['items']
 
-def region_stock1(request,id):
-    accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-    response = requests.request("POST", url, headers=headers, data=payload)
+                for item in items:
+                    itemcode = item['itemcode']
+                    total_qty = item['total_qty']
+                    region_item_totals[(region, itemcode)] += total_qty
 
-    data = response.json()
-    regionlist = data['regionlist']
+            result_list = []
 
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    wh_masterlist = data['warehouselist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
-
-    payload = json.dumps({"accesskey": accesskey,
-                          "warehouseid": request.POST.get('warehouseid'),
-                          "regionid": request.POST.get('regionid')})
-
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    depolist = data['depolist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
-    payload = json.dumps({
-        "accesskey": accesskey
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    bus = data['buslist']
-
-    regionname1 = id
-
-    current_date = datetime.date.today()
-    filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-    item_sum_qty = DepoInventory.objects.using('auth').filter(
-        createdon__lte=current_date, itemcode__in=filtered_itemcodes,
-    ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
-    if regionname1=='All':
-        depo_info = DepoMaster.objects.using('auth').all().values('deponame', 'depoid','regionname')
-    else:
-        depo_info = DepoMaster.objects.using('auth').filter(regionname=regionname1).values('deponame', 'depoid',
-                                                                                          'regionname')
-    grouped_data = []
-    sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
-
-    for depoid, group in groupby(sorted_data, key=lambda x: x['region_id']):
-        items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-        grouped_data.append({'region_id': depoid, 'items': items})
-
-    merged_data1 = []
-    grouped_data1 = []
-    for d in grouped_data:
-        depo_id = d['region_id']
-        createdon__date = current_date
-        date_createdon = createdon__date.strftime("%d-%b-%Y")
-        items = d['items']
-
-        for depo in depo_info:
-            if depo['depoid'] == depo_id:
-                deponame = depo['deponame']
-                regionname = depo['regionname']
-
-                merged_dict = {
-                    'depoid': depo_id,
-                    'deponame': deponame,
-                    'regionname': regionname,
-                    'createdon__date': date_createdon,
-                    'items': items,
-
-                }
-                merged_data1.append(merged_dict)
-                break
-        region_item_totals = defaultdict(float)
-
-        for entry in merged_data1:
-            region = entry['regionname']
-            items = entry['items']
-
-            for item in items:
-                itemcode = item['itemcode']
-                total_qty = item['total_qty']
-                region_item_totals[(region, itemcode)] += total_qty
-
-        result_list = []
-
-        for (region, itemcode), total_qty in region_item_totals.items():
-            result_list.append({
-                'regionname': region,
-                'itemcode': itemcode,
-                'total_qty': total_qty,
-                'createdon__date': merged_data1[0]['createdon__date'],  #
-            })
-        grouped_data1 = []
-        for regionname, group in groupby(result_list, key=lambda x: x['regionname']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-            grouped_data1.append(
-                {'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
-    return render(request, 'Reports/region_stockreport.html',
-                  {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
-
-
-def region_stock(request,id):
-    accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    data = response.json()
-    regionlist = data['regionlist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    wh_masterlist = data['warehouselist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
-
-    payload = json.dumps({"accesskey": accesskey,
-                          "warehouseid": request.POST.get('warehouseid'),
-                          "regionid": request.POST.get('regionid')})
-
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    depolist = data['depolist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
-    payload = json.dumps({
-        "accesskey": accesskey
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    bus = data['buslist']
-
-    regionname1=id
-    current_date = datetime.date.today()
-    filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-    item_sum_qty = DepoInventory.objects.using('auth').filter(
-        createdon__lte=current_date, itemcode__in=filtered_itemcodes,
-    ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
-
-    depo_info = DepoMaster.objects.using('auth').filter(warehouse=regionname1).values('deponame', 'depoid', 'regionname')
-    grouped_data = []
-    sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
-
-    for depoid, group in groupby(sorted_data, key=lambda x: x['region_id']):
-        items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-        grouped_data.append({'region_id': depoid, 'items': items})
-
-    merged_data1 = []
-    grouped_data1 = []
-    for d in grouped_data:
-        depo_id = d['region_id']
-        createdon__date = current_date
-        date_createdon = createdon__date.strftime("%d-%b-%Y")
-        items = d['items']
-
-        for depo in depo_info:
-            if depo['depoid'] == depo_id:
-                deponame = depo['deponame']
-                regionname = depo['regionname']
-
-                merged_dict = {
-                    'depoid': depo_id,
-                    'deponame': deponame,
-                    'regionname': regionname,
-                    'createdon__date': date_createdon,
-                    'items': items,
-
-                }
-                merged_data1.append(merged_dict)
-                break
-        region_item_totals = defaultdict(float)
-
-        for entry in merged_data1:
-            region = entry['regionname']
-            items = entry['items']
-
-
-            for item in items:
-                itemcode = item['itemcode']
-                total_qty = item['total_qty']
-                region_item_totals[(region,itemcode)] += total_qty
-
-
-        result_list = []
-
-        for (region, itemcode), total_qty in region_item_totals.items():
+            for (region, itemcode), total_qty in region_item_totals.items():
                 result_list.append({
                     'regionname': region,
                     'itemcode': itemcode,
                     'total_qty': total_qty,
                     'createdon__date': merged_data1[0]['createdon__date'],  #
                 })
-        grouped_data1=[]
-        for regionname, group in groupby(result_list, key=lambda x: x['regionname']):
+            grouped_data1 = []
+            for regionname, group in groupby(result_list, key=lambda x: x['regionname']):
+                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                grouped_data1.append(
+                    {'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
+        return render(request, 'Reports/region_stockreport.html',
+                      {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'Reports/region_stockreport.html',{'menuname':menuname})
+def region_stock(request,id):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        data = response.json()
+        regionlist = data['regionlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "warehouseid": request.POST.get('warehouseid'),
+                              "regionid": request.POST.get('regionid')})
+
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        depolist = data['depolist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        bus = data['buslist']
+
+        regionname1=id
+        current_date = datetime.date.today()
+        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
+        item_sum_qty = DepoInventory.objects.using('auth').filter(
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+        ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
+
+        depo_info = DepoMaster.objects.using('auth').filter(warehouse=regionname1).values('deponame', 'depoid', 'regionname')
+        grouped_data = []
+        sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
+
+        for depoid, group in groupby(sorted_data, key=lambda x: x['region_id']):
             items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
-            grouped_data1.append({'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
-    return render(request, 'Reports/region_stockreport.html',
-                  {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
+            grouped_data.append({'region_id': depoid, 'items': items})
+
+        merged_data1 = []
+        grouped_data1 = []
+        for d in grouped_data:
+            depo_id = d['region_id']
+            createdon__date = current_date
+            date_createdon = createdon__date.strftime("%d-%b-%Y")
+            items = d['items']
+
+            for depo in depo_info:
+                if depo['depoid'] == depo_id:
+                    deponame = depo['deponame']
+                    regionname = depo['regionname']
+
+                    merged_dict = {
+                        'depoid': depo_id,
+                        'deponame': deponame,
+                        'regionname': regionname,
+                        'createdon__date': date_createdon,
+                        'items': items,
+
+                    }
+                    merged_data1.append(merged_dict)
+                    break
+            region_item_totals = defaultdict(float)
+
+            for entry in merged_data1:
+                region = entry['regionname']
+                items = entry['items']
+
+
+                for item in items:
+                    itemcode = item['itemcode']
+                    total_qty = item['total_qty']
+                    region_item_totals[(region,itemcode)] += total_qty
+
+
+            result_list = []
+
+            for (region, itemcode), total_qty in region_item_totals.items():
+                    result_list.append({
+                        'regionname': region,
+                        'itemcode': itemcode,
+                        'total_qty': total_qty,
+                        'createdon__date': merged_data1[0]['createdon__date'],  #
+                    })
+            grouped_data1=[]
+            for regionname, group in groupby(result_list, key=lambda x: x['regionname']):
+                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                grouped_data1.append({'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
+        return render(request, 'Reports/region_stockreport.html',
+                      {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request,'Reports/region_stockreport.html',{'menuname':menuname})
 
 def __id_generator__(size=6, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -9695,6 +10910,9 @@ def response(request, order_id, paymentmode, sonumber,date,spelloftheday,remarks
 
 
 def pending_indent_admin(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -9784,6 +11002,9 @@ def pending_indent_admin(request):
     return render(request, 'create_indent/pending_indent_admin.html')
 
 def taxinvoice_list_admin(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -9874,6 +11095,9 @@ def taxinvoice_list_admin(request):
 
 
 def ready_toship_admin(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -9961,6 +11185,9 @@ def ready_toship_admin(request):
     return render(request, 'create_indent/ready_toship_admin.html')
 
 def outpass_list_admin(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -10047,6 +11274,9 @@ def outpass_list_admin(request):
             return render(request, 'login1.html')
     return render(request, 'create_indent/ready_toship_admin.html')
 def approve_list_admin(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -10134,9 +11364,16 @@ def approve_list_admin(request):
     return render(request, 'create_indent/approved_list_admin.html')
 
 def dashboard(request):
+
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     return render(request,'index4.html',{"menuname":menuname})
 
 def sales_dashboard(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
     menuname = request.session['mylist']
     return render(request, 'index5.html', {"menuname": menuname})

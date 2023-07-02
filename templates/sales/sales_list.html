@@ -75,12 +75,12 @@
                        <td style="text-align:center;">{{ all_data.itemcount }}</td>
                              <td class="text-success"><b>₹ &nbsp{{ all_data.total }}</b></td>
                            <td> {{all_data.paymentmode }}</td>
-                            {% if  all_data.transaction_status == 'success'  %}
+                            {% if  all_data.transaction_status == 'success' or all_data.paymentmode == 'CASH'  %}
                                 <td class="text-success">{{ all_data.transaction_status }}</td>
                            {% else %}
                                 <td class="text-danger">{{ all_data.transaction_status }}</td>
                            {% endif %}
-                           {% if  all_data.transaction_status == 'success'  %}
+                           {% if  all_data.transaction_status == 'success' or all_data.paymentmode == 'CASH'  %}
                                 <td>
                                    <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
                                 </td>

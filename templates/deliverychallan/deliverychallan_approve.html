@@ -99,7 +99,7 @@
                                         {% else %}
                                             <td class="text-danger">{{ all_data.transaction_status }}</td>
                                         {% endif %}
-                                        {% if all_data.status == "success" %}
+                                        {% if all_data.status == "success"  or all_data.paymentmode == 'CASH'%}
                                         <td>
                                             <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
                                          </td>
