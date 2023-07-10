@@ -101,11 +101,11 @@
                                     <th>Region</th>
                                     <th>Depot</th>
                                     <th>Bus Station</th>
-                                    <th>Store Name</th>
+                                    <th>Stall Name</th>
                                     <!--<th>Store type</th>-->
                                     <th>Contact Person</th>
                                     <th>Mobile Number</th>
-                                    <th>Store Location</th>
+                                    <th>Stall Location</th>
                                     <th>Created By</th>
                                     <th>Action</th>
                            </tr>
@@ -130,7 +130,7 @@
                                       {% if list.status == "Active" %}
 
                                          <a class="editstore" href="#"  onclick="editstore('{{list.storecode}}','{{list.depoid}}')"  data-id="{{ list.storecode }}">
-                                        <i class="fa fa-edit"></i></a>
+                                        <span style="color:#88A30A;"><i class="fa fa-edit"></i></span></a>
 
                                           <a href="#" onclick="VerifyClick('{{ list.sno }}')"><span class="badge badge-info" data-toggle="modal" data-target="#store-status">
                                          <i class="fa fa-trash"></i></span></a>

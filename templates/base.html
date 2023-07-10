@@ -613,6 +613,13 @@ $(document).ready(function() {
  if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
+
+ $('.items').change(function() {
+    console.log('Dropdown value changed');
+    if($(this).val() === '') {
+      alert('Please select an option');
+    }
+  });
 </script>
 
 

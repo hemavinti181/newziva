@@ -1,0 +1,826 @@
+
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+<style>
+	.style{
+	position: absolute !important;
+	width: 100% !important;
+	}
+	.style1{
+	position: absolute !important;
+	width: 100% !important;
+	right: 20px;
+	}
+	.submit-btn{
+	width: 50% !important;
+	}
+	#qrcode-container {
+  width: 70%; /* Set the maximum width of the QR code image */
+  height: 40%; /* Maintain the aspect ratio of the image */
+}
+.btn-warning{
+        color: black;
+        background-color: white !important;
+}
+
+.join-btn:checked + label {
+    /* Apply your highlighted style here */
+    /* For example, change the background color and add a border */
+    background-color: #06911A !important;
+    border: 5px solid #ccc !important;
+  }
+</style>
+ <div class="right_col" role="main">
+        <div class="">
+          <div class="page-title">
+            <div class="title_left">
+              <h3 style="color:#1372ba">Proforma Invoice</h3>
+
+
+            </div>
+           <!-- <div class="title_right">
+              <div class="col-md-6 col-sm-9 offset-md-9">
+					<a href="sales_item_add"><button type="submit" class="btn btn-success">Add Item</button></a>
+                </div>
+          </div>-->
+          <div class="clearfix"></div>
+            <div class="row">
+            <div class="col-md-6 col-md-12">
+                <div class="x_panel">
+                <div class="x_content">
+                                        <form class="form-label-left input_mask"  method="POST" action="proformainvoice"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                            	<!--<div  class="col-md-3 col-sm-4  form-group has-feedback">
+													<label>Select Warehouse</label>
+											 <input type="hidden" name="warehousename" id="warehousename" />
+												<select class="form-control" name="warehouseid" id="warehouseid">
+													<option value="">Warehouse </option>
+													{% for data1 in whlist %}
+														{% if data1.status == 'Active' %}
+                            		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+										</div>
+											<div  class="col-md-3 col-sm-4  form-group has-feedback">
+													<label> Region</label>
+											 <input type="hidden" name="regionname" id="regionname" />
+												<select class="form-control" name="regionid" id="regionid">
+													<option value=""> Region</option>
+												</select>
+										</div>-->
+                                            	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
+
+
+
+                                                    {% if request.session.displayrole == 'BUS STATION CONTROLLER' %}
+                                                     <input type="text"  class="form-control" name="deponame"  value="{{ busdeponame }}" />
+                                                    <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}" />
+                                                     <!--<select class="form-control depoid" name="depoid2"  >
+                                                      <option value="">depot </option>
+                                                           <option value="{{ busdepoid}}" selected>{{  busdeponame  }} </option>
+												    </select>-->
+                                                    {% else %}
+                                                     <input type="hidden" name="deponame" id="deponame" />
+                                                       <input type="hidden" name="depoid1" id="depoid1"  value="{{  deponame }}" />
+                                                    <select class="form-control depoid" name="depoid" id="depoid">
+                                                      <option value="">depot </option>
+                                                        {% for data in depolist %}
+                                                           <option value="{{ data.id }}">{{ data.name }} </option>
+                                                        {% endfor %}
+												    </select>
+                                                 {% endif %}
+                                                </div>
+                                        <div class="col-md-3 col-sm-4  form-group has-feedback">
+
+                                                {% if bustation %}
+												<select class="form-control" name="busstationid1" id="busstationid1">
+													<option value="{{  bustation }}"> {{ bustation }}</option>
+                                                    </select>
+                                                {% else %}
+                                                    <input type="hidden" name="busstationname" id="busstationname" />
+                                                    <select class="form-control" name="busstationid" id="busstationid">
+													<option value="">bus station</option>
+                                                    </select>
+                                                {% endif %}
+										</div>
+                                       <div class="col-md-3 col-sm-4  form-group has-feedback">
+                                            {% if stname %}
+                                             <input type="hidden" name="stid2" id="stid2" value="{{ stid }}"  />
+                                                <select class="form-control" name="stid" id="stid1">
+													<option value="{{ stname }}">{{ stname }}</option>
+                                                </select>
+                                            {% else %}
+                                            <input type="hidden" name="stname" id="stname"  />
+                                                <select class="form-control" name="stid" id="stid">
+													<option value="">Store</option>
+                                                </select>
+                                            {% endif %}
+										</div>
+                                                <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                           <button type="submit" id="add" style="margin-top: 0px;" class="btn btn-primary">Submit</button>
+                                       </div>
+
+                                            <input type="hidden" id="txtStoreId" name="txtStoreId" value="{{ stid }}"/>
+                                             <input type="hidden" id="lblStoreName1" name="lblStoreName"/>
+                                          <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label><b>Store Name  : <span id="lblStoreName" ></span></b></label>
+										</div>
+                                      <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label><b>GST NO : </b><span id="lblGstNo"></span></label>
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label><b>Manager : <span id="lblManager"></span></b></label>
+										</div>-->
+                                        </form>
+                </div>
+                </div>
+                 <div class="x_panel saleitem ">
+                     <div class="x_content">
+                                   <form class="form-label-left input_mask"  method="POST" action="sales_item_add"   enctype="multipart/form-data">
+										{% csrf_token %}
+
+										<div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
+                                               <input type="hidden" id="itemname1" name="itemname1" />
+                                            <label>Select Items </label>
+                                                <select class="form-control" name="itemname" id="saleitem">
+													<option value=" ">Items</option>
+                                                    {% for data in data2 %}
+                                                        <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            <input type="hidden" id="txtItemName2" name="txtItemName2" />
+										</div>
+                                        <div class="col-md-1 col-sm-1  form-group has-feedback">
+											<label>Qty(In Cases) </label>
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity" onchange="myFunction(this.value)">
+										</div>
+                                         <div class="col-md-1 col-sm-1 form-group has-feedback">
+											<label>No Of bottles </label>
+                                           <input type="text" class="form-control" placeholder="bottles" name="nbottles" id="nbottles"  readonly/>
+
+                                       </div>
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
+											<label>Date </label>
+                                           <input class="form-control"    type="date" name="date" id="todate"  required>
+                                       </div>
+                                         <div class="col-md-1 col-sm-1 form-group has-feedback">
+											<label>Price </label>
+                                           <input type="text" class="form-control" placeholder="price" name="mrp" id="price" readonly/>
+                                       </div>
+                                        <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
+											<label>Batch *</label>
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Expiry Date *</label>
+										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate1" >
+										</div>-->
+                                           <div class="col-md-3 col-sm-3 form-group has-feedback">
+											<label>Remarks </label>
+                                               <input type="text"  class="form-control" placeholder="remarks" name="remarks" id="remarks1"/>
+                                       </div>
+										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}" required>
+										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data3.cp_sno }}" required>
+                                            <input type="hidden" class="form-control" name="cases" id="cases">
+                                             <input type="hidden" class="form-control" name="mrp" id="mrp">
+
+                                      	<div class="col-md-2 col-sm-2  offset-md-12">
+                                           <button type="submit" name="add" id="collectorder" style="margin-top: 25px;" class="btn btn-primary">Collect Order</button>
+                                       </div>
+
+                                       <input type="hidden" id="store_id" name="store_id" />
+                                   </form>
+                                     </div>
+              </div>
+              </div>
+            </div>
+                 <div class="x_panel salelist">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+                        <table id="datatable-buttons" class="display table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Item Name</th>
+                                    <th>Qty In Cases</th>
+                                    <th>Qty In Bottles</th>
+                                    <!--<th>HSN</th>-->
+                                    <th>Batch</th>
+                                    <th>Total </th>
+                                    <th>Manufacture</th>
+                                    <th>Action</th>
+
+                        </tr>
+                      </thead>
+                            <tbody>
+                            {% for all_data in all_data %}
+                       <tr>
+                           <td>{{ forloop.counter }}</td>
+                      <td>{{ all_data.item_name }}</td>
+                       <td> {{ all_data.quantity }} </td>
+                           <td> {{ all_data.noofbottles }}</td>
+
+                        <!--<td>{{ all_data.hsn }}</td>-->
+                       <td>{{ all_data.batch_no }}</td>
+                       <td class="text-success">₹ {{ all_data.total }}</td>
+                           <td>{{all_data.manufacturer}}</td>
+
+                       <td>
+                            <a href="/delete_sale_item/{{ all_data.id }}/"><i class="fa fa-trash"></i></a>
+                            <a class="edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><i class="fa fa-edit"></i></a>
+                       </td>
+                            </tbody>
+                           <!--<tfoot>
+                           <tr>
+                               <th colspan="10">
+                                   Invoice No: {{all_data.so_number}}
+            <span style="float:right;">Net : {{ all_data.total }}</span>
+
+                               </th>
+                          </tr>
+                           </tfoot>-->
+                      </tr>
+                      {% endfor %}
+                      <tbody>
+                      </tbody>
+                      </table>
+                            </div>
+                          <p class="text-muted font-13 m-b-30">
+                    </p>
+
+
+                     <div class="x_content saleslist">
+                                <div class="col-sm-6 invoice-col">
+                            <h6 style="color:black"><b>Invoice No : </b><b style="color:#06911A">{{ taxinvoice }}</b></h6>
+                                </div>
+                               <div class="col-sm-4 invoice-col">
+                             <h6 style="color:black"><b> Net Value : </b><b style="color:#06911A">{{ netvalue }}</b></h6>
+
+                               </div>
+                         <div class="col-sm-2 invoice-col">
+
+                           <button type="button" class="btn btn-primary" style="padding: 0px 10px !important;" data-toggle="modal"  onclick="VerifyClick('{{ data.so_number }}')" data-target="#complete">COMPLETE SALE</button>
+                        </div>
+                      <!-- /.row -->
+                            </div>
+                          </div>
+                                </div>
+
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+
+            </div>
+          </div>
+</div>
+
+    <div class="modal custom-modal fade" id="complete" role="dialog">
+                                       <div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style">
+                                <div class="modal-header">
+                             <h3 class="modal-title">Complete Sale</h3>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+							<div class="modal-body">
+                                             <form method="POST" action="complete_sale" id="saleform">
+                                                    {% csrf_token %}
+                                                          <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+                                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                   <label for="remarks">Delivery date</label>
+										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" required>
+										    </div>
+                                                   <input type="hidden" name="netvalue" id="netvalue" value="{{ netvalue }}" />
+                                                 	<div  class="col-md-6 col-sm-6  form-group has-feedback">
+													<label>Spell Of The Day</label>
+											 <input type="hidden" name="spell" id="spell" />
+
+												<select class="form-control" name="spell1" id="spell1" required>
+                                                     <option value="">Spell of the day</option>
+                                                    {% for spell in spell %}
+													    <option value="{{ spell.type }} ">{{ spell.type }}</option>
+                                                    {% endfor %}
+												</select>
+										</div>
+                                                <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                 <label>Payment mode</label><br>
+                                                 <label class="btn btn-round btn-warning" id="btn_cash">
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
+                                                </label>
+
+                                                   <label class="btn btn-round btn-warning" id="btn_upi">
+                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()"  /> UPI
+                                                </label>
+                                                   <label class="btn btn-round btn-warning" id="btn_scanner">
+                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" onclick="displayQRCode()" /> SCANNER
+                                                </label>
+
+                                                  <label class="btn btn-round btn-warning" id="btn_due">
+                                                 <input type="radio" name="paymenttype" id="due" value="Due" class="join-btn" onclick="toggleButtonVisibility()"/> DUE
+                                                </label>
+
+                                                </div>
+                                                 <div id="qrcode-container" style="display:none;">
+                                                       <img id="qr-image" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
+                                                       <h4 id="status"></h4>
+                                                 </div>
+                                                <p></p>
+
+                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                   <label for="remarks">Remarks</label>
+										       <textarea class="form-control" placeholder="remarks" rows="2"  name="remarks" id="remarks" required></textarea>
+										    </div>
+
+                                                    <div class="col-md-6 col-sm-6   offset-md-3">
+											            <button class="btn btn-primary submit-btn" id="completebtn" onclick="submitToPayment()">Complete</button>
+                                                        <button class="btn  btn-primary submit-btn" id="paytmWithPaytm" onclick="submitFormToPayment()"  style="display:none;">Proceed to pay</button>
+                                                    </div>
+
+									</div>
+                                        </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+<div class="modal custom-modal fade" id="edit_sale_item" role="dialog">
+                                       <div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+                                <div class="modal-header">
+                             <h5 class="modal-title" style="color:#14c38e;">Edit Sale Item</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                </div>
+							<div class="modal-body">
+                                <form method="POST" action="edit_sale_item">
+                                                    {% csrf_token %}
+
+                                                          <input type="hidden" id="txtHdnId1" name="txtHdnId1"  />
+
+
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Qty(In Cases) *</label>
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity1" onchange="myFunction(this.value)">
+										</div>
+                                         <div class="col-md-6 col-sm-6 form-group has-feedback">
+											<label>No Of bottles *</label>
+                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles1"  readonly/>
+                                       </div>
+
+                                         <div class="col-md-12 col-sm-12 form-group has-feedback">
+											<label>Price *</label>
+                                           <input type="text" class="form-control" placeholder="0" name="mrp" id="price1" readonly/>
+                                       </div>
+                                        <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
+											<label>Batch *</label>
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
+										</div>
+										<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Expiry Date *</label>
+										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate1" >
+										</div>-->
+
+                                            <input type="hidden" class="form-control" name="cases" id="cases1">
+                                             <input type="hidden" class="form-control" name="mrp" id="mrp1">
+
+                                                 <div class="col-md-6 col-sm-6  offset-md-5">
+                                                     <button type="submit" class="btn btn-primary">Edit</button>
+                                            </div>
+  </form>
+                                        </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+<script>
+window.onload=function()
+{
+$(".join-btn").on('change', function(e){
+console.log(e.currentTarget);
+   var id=e.currentTarget.id;
+   $(".btn-round").removeClass("btn-primary");
+   $(".btn-round").addClass("btn-warning");
+   $("#btn_"+e.currentTarget.id+"").removeClass("btn-warning");
+   $("#btn_"+e.currentTarget.id+"").addClass("btn-primary");
+
+});
+}
+function ItemChange1(e){
+	   $("#txtItemName2").val($(e).find(":selected").text());
+	}
+ function VerifyClick(id){
+$("#date").val("");
+$("#remarks").val("");
+$("#txtHdnId").val(id);
+}
+
+$("#warehouseid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#warehousename").val(selectedOptionText);
+});
+$("#stid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#stname").val(selectedOptionText);
+});
+$("#depoid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame").val(selectedOptionText);
+});
+$("#depoid2").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame").val(selectedOptionText);
+});
+$("#busstationid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#busstationname").val(selectedOptionText);
+});
+$("#saleitem").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#itemname1").val(selectedOptionText);
+});
+
+function editSale(id){
+
+      $.ajax({
+        url: "{% url 'get_sale_item' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data.saleitemlist
+          	console.log(obj[0].so_number);
+             if(obj){
+             $("#saleitemname").val(obj[0].item_name);
+             $("#saleitem1").val(obj[0].item_code);
+             $("#cases1").val(obj[0].uom);
+             $("#nbottles1").val(obj[0].noofbottles);
+             $("#price1").val(obj[0].total);
+             $("#mrp1").val(obj[0].mrp);
+             $("#quantity1").val(obj[0].quantity);
+             $("#todate1").val(obj[0].createdon);
+             $("#txtHdnId1").val(obj[0].id);
+             $('#edit_sale_item').modal('show');
+        	}
+        }
+      });
+  }
+$(document).ready(function() {
+        	var depo = $('#depoid2').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_proformabus" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+
+			 		$("#busstationid").empty();
+			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+                	}
+          });
+   });
+
+   $("#depoid").change(function() {
+        	var depo = $('#depoid').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_proformabus" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+
+			 		$("#busstationid").empty();
+			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+                }
+            });
+   });
+$("#busstationid").change(function() {
+        	var depoid = $('#depoid2').val();
+        	var busid = $('#busstationid').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_proformastore" %}',
+            	data: {
+                	'depo':depoid,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.adminstoremasterlistdata
+					if(obj) {
+			 		$("#stid").empty();
+			 		$("#stid").append("<option  value=''>Choose Store</option>");
+                	$.each(obj, function (index, item) {
+                    $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+
+
+    	$("#busstationid").change(function() {
+        	var depoid = $('#depoid').val();
+        	var busid = $('#busstationid').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_proformastore" %}',
+            	data: {
+                	'depo':depoid,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.adminstoremasterlistdata
+					if(obj) {
+			 		$("#stid").empty();
+			 		$("#stid").append("<option  value=''>Choose Store</option>");
+                	$.each(obj, function (index, item) {
+                    $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#saleitem").change(function() {
+        	var itemname1 = $('#saleitem').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_price1" %}',
+            	data: {
+                	'itemname':itemname1,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		 var obj = data.data.pricemasterlist
+                        console.log(obj[0].mrp);
+                        if(obj.length>0){
+                            $("#mrp").val(obj[0].mrp);
+                            $("#cases").val(obj[0].uom1);
+                            $("#quantity").val(" ");
+                            $("#nbottles").val(" ");
+                            $("#price").val(" ");
+					}
+}
+        	});
+    	});
+    	$('#quantity').on('input', function()  {
+    	    val  = $("#quantity").val();
+            val1 = $("#cases").val();
+            mrp = $("#mrp").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp)
+            $("#nbottles").val(val2);
+            $("#price").val(val3);
+         });
+	$("#saleitem1").change(function() {
+        	var itemname = $('#saleitem1').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_grn_item_data" %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].gst);
+                        if(obj.length>0){
+                            $("#mrp1").val(obj[0].mrp);
+                            $("#cases1").val(obj[0].uom);
+                            $("#quantity1").val(" ");
+                            $("#nbottles1").val(" ");
+                            $("#price1").val(" ");
+					}
+             	}
+        	});
+    });
+    $('#quantity1').on('input', function()  {
+    	    val  = $("#quantity1").val();
+            val1 = $("#cases1").val();
+            mrp2 = $("#mrp1").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp2)
+            $("#nbottles1").val(val2);
+            $("#price1").val(val3);
+    });
+$('#todate').val(new Date().toJSON().slice(0,10));
+$('#date').val(new Date().toJSON().slice(0,10));
+$(document).ready(function(){
+  var optionValue = $("#depoid1").val();
+  $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
+})
+
+ document.getElementById("paytmWithPaytm").addEventListener("click", function(){
+          onScriptLoad();
+      });
+      function onScriptLoad()
+      {
+          var config = {
+              "root": "",
+              "flow": "WEBSTAGING",
+              "merchant":{
+                   "name":"XYZ Enterprises",
+                   "logo":"https://developer.paytm.com/demo//static/images/merchant-logo.png?v=1.4"
+               },
+               "style":{
+                   "headerBackgroundColor":"#8dd8ff",
+                   "headerColor":"#3f3f40"
+              },
+              "data": {
+                  "orderId": "{{ context.txnToken }}",
+                  "token": "{{ context.data_dict.orderId}}",
+                  "tokenType": "TXN_TOKEN",
+                  "amount":"{{ context.data_dict.txnAmount}}"
+              },
+
+              "handler":{
+                   // "notifyMerchant": function (eventName, data) {
+                   //    if(eventName == 'SESSION_EXPIRED'){
+                   //        alert("Your session has expired!!");
+                   //        location.reload();
+                   //    }
+                   // }
+                   "notifyMerchant": function (eventName, data) {
+                     console.log("Handler log");
+                      if(eventName == 'SESSION_EXPIRED'){
+                          alert("Your session has expired!!");
+                          location.reload();
+                          console.log("Session Expired");
+                      }
+                   }
+              }
+          };
+          console.log("onscript loaded");
+        //  console.log(window.Paytm);
+          window.Paytm.CheckoutJS.invoke();
+          if (window.Paytm && window.Paytm.CheckoutJS) {
+              // initialze configuration using init method
+              window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                  console.log('Before JS Checkout invoke');
+                  // after successfully update configuration invoke checkoutjs
+                  window.Paytm.CheckoutJS.invoke();
+              }).catch(function onError(error) {
+                console.log("Error section");
+                  console.log("Error => ", error);
+              });
+          }
+          else{
+            console.log("something went wrong");
+          }
+      }
+function displayQRCode() {
+  // Check if the radio button is checked
+  var scannerRadioButton = document.getElementById("scanner");
+  var paytmButton = document.getElementById("paytmWithPaytm");
+  var completeButton = document.getElementById("completebtn");
+  if (scannerRadioButton.checked) {
+        paytmButton.style.display = "none";
+        completeButton.style.display = "block";// Make an AJAX request to the server
+    $.ajax({
+      url: "/qr_code",
+      type: "POST",
+      dataType: "json",
+      data: {
+        'csrfmiddlewaretoken': '{{ csrf_token }}' // Your request parameters
+      },
+      success: function (data) {
+        // Retrieve the image URL from the response
+        var imageURL = data.data.image;
+
+        // Create an image element
+        var qrImage = new Image();
+
+        // Set the source of the image to the retrieved URL
+         var qrcodeContainer = document.getElementById("qrcode-container");
+        qrImage.src = 'data:image/png;base64,' + imageURL;
+        qrImage.style.maxWidth = '150px'; // Adjust the width as desired
+        qrImage.style.maxHeight = '150px';
+        qrImage.style.marginLeft = '119px';
+        // Display the QR code container
+        document.getElementById("qrcode-container").style.display = 'block';
+
+        // Get the reference to the qrcode-container div
+       // var qrcodeContainer = document.getElementById("qrcode-container");
+
+        // Clear any existing contents in the div
+        qrcodeContainer.innerHTML = '';
+
+        // Append the image to the container
+        qrcodeContainer.appendChild(qrImage);
+        //var successMessage = document.createElement('p');
+        //successMessage.textContent = 'Transaction success!';
+        //successMessage.style.marginTop = '136px';
+        //successMessage.style.marginTop = '10px';
+
+// Append the success message below the QR code
+qrcodeContainer.appendChild(successMessage);
+      },
+      error: function (xhr, status, error) {
+        // Handle error response
+        console.error('Error: ' + xhr.status);
+      }
+    });
+  }
+  else{
+    var qrcodeContainer = document.getElementById("qrcode-container");
+    qrcodeContainer.style.display = "none";
+  }
+}
+
+ function toggleButtonVisibility() {
+        var upiRadioButton = document.getElementById("upi");
+         var cashRadioButton = document.getElementById("cash");
+         var dueRadioButton = document.getElementById("due");
+         var paytmButton = document.getElementById("paytmWithPaytm");
+         var completeButton = document.getElementById("completebtn");
+          var scannerButton = document.getElementById("scanner");
+         var qrCode = document.getElementById("qrcode-container");
+
+        if (upiRadioButton.checked) {
+            paytmButton.style.display = "block";
+            completeButton.style.display = "none";
+            qrCode.style.display = "none";
+        }
+        if (cashRadioButton.checked) {
+            paytmButton.style.display = "none";
+            completeButton.style.display = "block";
+            qrCode.style.display = "none";
+        }
+        if (dueRadioButton.checked) {
+            paytmButton.style.display = "none";
+            completeButton.style.display = "block";
+            qrCode.style.display = "none";
+        }
+        if (scannerButton.checked){
+            paytmButton.style.display = "none";
+            completeButton.style.display = "block";
+        }
+    }
+    function submitFormToPayment() {
+        document.getElementById("saleform").action = "payment";
+    }
+     function submitToPayment() {
+        document.getElementById("saleform").action = "complete_sale";
+    }
+function getQRCode() {
+  // Check if the radio button is checked
+  var scannerRadioButton = document.getElementById("scanner");
+   var completeButton = document.getElementById("completebtn");
+   var paytmButton = document.getElementById("paytmWithPaytm");
+  if (scannerRadioButton.checked) {
+
+    paytmButton.style.display = "none";
+    completeButton.style.display = "block";
+    $.ajax({
+      url: "/qr_code",
+      type: "POST",
+      dataType: "json",
+      data: {
+        'csrfmiddlewaretoken': '{{ csrf_token }}' // Your request parameters
+      },
+      success: function (data) {
+        // Retrieve the image URL from the response
+        var imageURL = data.data.qrData;
+         var qrText = data.data.qrData;
+        // Create a new QRCode instance
+        var qrCode = new QRCode(document.getElementById("qrcode-container"), {
+          text: imageURL,
+          width: 150,
+          height: 150,
+        });
+
+        // Display the QR code container
+        document.getElementById("qrcode-container").style.display = 'block';
+      },
+      error: function (xhr, status, error) {
+        // Handle error response
+        console.error('Error: ' + xhr.status);
+      }
+    });
+  }
+}
+
+</script>
+
+{% endblock %}

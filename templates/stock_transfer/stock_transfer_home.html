@@ -48,7 +48,7 @@
                             <form class="form-label-left input_mask"  method="POST" action="wh_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
                                                 <div class="col-md-3 col-sm-4 form-group has-feedback" id="warehousename_group">
-											<input  type="text" class="form-control"  name="warehousename" id="warehousename"  value="{{ warehouselist.name }}"  />
+											<input  type="text" class="form-control"  name="warehousename" id="warehousename"  value="{{ warehouselist.name }}"  readonly/>
                                                 	<input type="hidden" name="warehouseid" id="warehouseid" value="{{ warehouselist.id  }}" />
                                                </div>
 
@@ -63,24 +63,33 @@
 
 										<div class="col-md-3 col-sm-3 input-icons  form-group has-feedback">
                                             <input type="hidden" name="itemname" id="itemname" />
-
-												<select class="form-control" name="itemid" id="itemid" >
+                                                                            <label>Select Item name</label>
+												<select class="form-control" name="itemid" id="itemid" required>
                                                     <option value="">Items</option>
 													{% for data1 in warehouseinventorylist %}
                             							<option value="{{ data1.itemcode }}">{{ data1.itemname }}</option>
                                                     {% endfor %}
 												</select>
 										</div>
-                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
-
-										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity">
+                                       <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
+                                            <input type="hidden" name="typename" id="typename" />
+                                                                            <label>Type</label>
+												<select class="form-control" name="typename" id="typeid" required>
+													{% for data1 in warehouseinventorylist %}
+                            							<option value="{{ data1.itemcode }}">{{ data1.itemname }}</option>
+                                                    {% endfor %}
+												</select>
+										</div>
+                                        <div class="col-md-1 col-sm-1 form-group has-feedback">
+                                                                    <label>Qty(In Cases) </label>
+										    <input type="text" class="form-control" placeholder="cases" name="quantity" id="quantity">
+										</div>
+                                        <div class="col-md-1 col-sm-1 form-group has-feedback">
+                                                                     <label>Qty(In bottles)</label>
+										    <input type="text" class="form-control" placeholder="bottles" name="nob" id="nob" readonly>
 										</div>
                                         <div class="col-md-2 col-sm-3 form-group has-feedback">
-
-										    <input type="text" class="form-control" placeholder="number of bottles" name="nob" id="nob" readonly>
-										</div>
-                                        <div class="col-md-2 col-sm-3 form-group has-feedback">
-
+                                                         <label>Remarks *</label>
 										    <input type="text" class="form-control" placeholder="remarks" name="remarks" />
 										</div>
                                         <!--<div class="col-md-1 col-sm-1  form-group has-feedback">

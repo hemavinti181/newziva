@@ -87,7 +87,6 @@
                                     <th>Store Name</th>
                                     <th>Invoice Number </th>
                                     <th>Created on</th>
-                                    <!--<th>DC Number</th>-->
                                     <th>Delivery Date</th>
                                     <th>Itemcount</th>
                                      <th>Total</th>
@@ -106,11 +105,10 @@
                                     <td>{{ all_data.storename }}</td>
                                     <td> {{ all_data.sonumber }} </td>
                                         <td>{{ all_data.date }}</td>
-                                    <!--<td>{{  all_data.dcnumber}}</td>-->
                                     <td>{{ all_data.delivery_date }}</td>
                                         <td style="text-align:center;">{{ all_data.itemcount }}</td>
+                                         <td class="text-info"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                         <td>{{ all_data.paymentmode }}</td>
-                                          <td class="text-info"><b>₹ &nbsp{{ all_data.total }}</b></td>
                                         {% if all_data.transaction_status == 'success' %}
                                         <td class="text-success">{{ all_data.transaction_status }}</td>
                                         {% else %}

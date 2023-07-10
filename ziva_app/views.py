@@ -2836,9 +2836,8 @@ def add_grn(request):
                 data2 = r.json()
                 grn = data2['grnnumber']
                 messages.success(request, data2['message'])
-                url = reverse('add_grnitem', args=[id])
+                url = reverse('add_grnitem', args=[grn])
                 return redirect(url)
-
             else:
                 data2 = r.json()
                 messages.error(request, data2['message'])
@@ -2863,7 +2862,6 @@ def add_grnitem(request,id):
         headers = {
             'Content-Type': 'application/json'
         }
-
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         item_masterlist = data['itemmasterlist']
@@ -2918,8 +2916,12 @@ def add_grnitem(request,id):
         else:
             return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname,'id':id})
     except:
-        messages.error(request,response.text)
-    return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname,'id':id})
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request,data['message'])
+            return redirect('/login')
+    messages.error(request, response.text)
+    return render(request, 'grn/add_grnitem.html',)
 
 def add_grnitem_list(request,id):
     if 'accesskey' not in request.session:
@@ -2944,6 +2946,10 @@ def add_grnitem_list(request,id):
         data = response.json()
         grn_item_list = data['grnitemlist']
         return render(request, 'grn/add_grnitem_list.html', {'all_data': grn_item_list,'menuname':menuname,'id':id})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return redirect('/login')
     else:
         return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname,'id':id})
 
@@ -2968,6 +2974,9 @@ def add_grnitem_list1(request,id):
         data = response.json()
         grn_item_list = data['grnitemlist']
         return render(request, 'grn/add_grnitem_list1.html', {'all_data': grn_item_list,'menuname':menuname,'id':id})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
     else:
         return render(request, 'grn/add_grnitem_list1.html',{'menuname':menuname,'id':id})
 
@@ -3133,7 +3142,29 @@ def grn_list1(request):
     else:
         return render(request, 'grn/grn_list1.html',{'menuname':menuname})
 
+def grn_new_verified_status(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
 
+    payload = json.dumps({"accesskey": accesskey, "status": "verified"})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        grn_list = data['grnlist']
+        return render(request, 'grn/grn_new_verified_status.html', {'all_data': grn_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request,data['message'])
+        return render(request, 'login1.html')
+    else:
+        return render(request, 'grn/grn_new_verified_status.html',{'menuname':menuname})
 
 def grn_verified_status(request):
     if 'accesskey' not in request.session:
@@ -3157,7 +3188,34 @@ def grn_verified_status(request):
         messages.error(request,data['message'])
         return render(request, 'login1.html')
     else:
-        return render(request, 'grn/grn_list_pending.html',{'menuname':menuname})
+        return render(request, 'grn/grn_list_verified.html',{'menuname':menuname})
+
+
+def grn_new_pending_status(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
+
+    payload = json.dumps({"accesskey": accesskey, "status": "pending"})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        grn_list = data['grnlist']
+        return render(request, 'grn/grn_new.html', {'all_data': grn_list, 'menuname': menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return render(request, 'login1.html')
+    else:
+        return render(request, 'grn/grn_new.html', {'menuname': menuname})
 
 
 def grn_pending_status(request):
@@ -3435,6 +3493,7 @@ def proformainvoice(request):
         return render(request, 'sales/sales_new.html', {'depolist':data1,'menuname':menuname,'busdepoid':busdepoid,'busdeponame':busdeponame})
     except:
         if response.status_code == 400:
+            data = response.json()
             messages.error(request, data['message'])
             return render(request, 'login1.html')
     return render(request,'sales/sales_new.html')
@@ -3546,7 +3605,7 @@ def complete_sale(request):
                 headers = {
                     'Content-Type': 'application/json'
                 }
-                response = requests.request("GET", url, headers=headers, data=payload)
+                response = requests.request("POST", url, headers=headers, data=payload)
 
                 if response.status_code == 200:
                     data = response.json()
@@ -4336,13 +4395,33 @@ def deliver_challan_update(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-qtyupdate.php"
-    payload = json.dumps({
-        "accesskey":accesskey,
-        "sonumber":request.POST.get('txtHdnId'),
-        "paymentmode":request.POST.get('paymenttype'),
-
-    })
+    paymentmode = request.POST.get('paymenttype')
+    if paymentmode == 'CASH':
+            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "sonumber": request.POST.get('txtHdnId'),
+                "paymentmode": request.POST.get('paymenttype'),
+                "transaction_status": "success",
+                "transaction_id": "",
+            })
+    if paymentmode == 'scanner':
+            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "sonumber": request.POST.get('txtHdnId'),
+                "paymentmode": request.POST.get('paymenttype'),
+                "transaction_status": "success",
+                "transaction_id": request.POST.get("txnid"),
+            })
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-qtyupdate.php"
+        payload = json.dumps({
+            "accesskey":accesskey,
+            "sonumber":request.POST.get('txtHdnId2'),
+            "paymentmode":request.POST.get('paymentmode'),
+            "transaction_status": "success"
+        })
     headers = {
         'Content-Type': 'application/json'
     }
@@ -5461,9 +5540,9 @@ def get_price1(request):
         'Content-Type': 'application/json'
     }
 
-    data = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data2 = data.json()
+        data2 = response.json()
         return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
@@ -5488,9 +5567,9 @@ def get_indentitem(request):
         'Content-Type': 'application/json'
     }
 
-    data = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data2 = data.json()
+        data2 = response.json()
         return JsonResponse({'data': data2})
 
     elif response.status_code == 400:
@@ -6430,12 +6509,13 @@ def taxinvoice_list(request):
     if request.method == 'POST':
         fdate = request.POST.get('fdate')
         tdate = request.POST.get('tdate')
-        url = "http://13.235.112.1/ziva/mobile-api/tax-invoicelist-new.php"
+        url = "http://13.235.112.1/ziva/mobile-api/tax-invoicelist.php"
 
         payload = json.dumps({
             "accesskey":accesskey,
             "fdate":request.POST.get('fdate'),
-            "tdate":request.POST.get('tdate')
+            "tdate":request.POST.get('tdate'),
+            "status": "Approved"
         })
         headers = {
             'Content-Type': 'application/json'
@@ -6488,7 +6568,8 @@ def taxinvoice(request,id):
 
     payload = json.dumps({
         "accesskey": accesskey,
-        "invoiceno": id
+        "invoiceno": id,
+
     })
     headers = {
         'Content-Type': 'application/json'
@@ -10740,13 +10821,13 @@ def qr_code(request):
 
     # import checksum generation utility
     # You can get this utility from https://developer.paytm.com/docs/checksum/
-
+    amount = request.POST.get('amount')
     paytmParams = dict()
     order_id = __id_generator__()
     paytmParams["body"] = {
         "mid": "TSRTCP03244016260030",
         "orderId": order_id,
-        "amount": "1303.00",
+        "amount": amount,
         "businessType": "UPI_QR_CODE",
         "posId": "S12_123"
     }
@@ -10770,10 +10851,50 @@ def qr_code(request):
     # url = "https://securegw.paytm.in/paymentservices/qr/create"
     response = requests.post(url, data = post_data, headers = {"Content-type": "application/json"}).json()
     result=response['body']
+    result['id'] = order_id
     image=result['image']
     return JsonResponse({'data':result})
     #return render(request,'sales/sales_new.html',{'image':image,'result':result})
 
+
+def qr_response(request):
+    paytmParams = dict()
+    order_id = request.POST.get('order_id')
+    # body parameters
+    paytmParams["body"] = {
+
+        # Find your MID in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+        "mid": "TSRTCP03244016260030",
+
+        # Enter your order id which needs to be check status for
+        "orderId": order_id,
+    }
+
+    # Generate checksum by parameters we have in body
+    # Find your Merchant Key in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+    checksum = paytmchecksum.generateSignature(json.dumps(paytmParams["body"]), "jXXQfmzmqD3PpchQ")
+
+    # head parameters
+    paytmParams["head"] = {
+
+        # put generated checksum value here
+        "signature": checksum
+    }
+
+    # prepare JSON string for request
+    post_data = json.dumps(paytmParams)
+
+    # for Staging
+    url = "https://securegw-stage.paytm.in/v3/order/status"
+
+    # for Production
+    # url = "https://securegw.paytm.in/v3/order/status"
+
+    response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
+    resultMsg = response['body']
+    response = resultMsg['resultInfo']
+    response['txnId'] = resultMsg['txnId']
+    return JsonResponse(response)
 
 @csrf_exempt
 def payment(request):
@@ -11050,7 +11171,7 @@ def taxinvoice_list_admin(request):
                                   "warehouseid":warehouseid1,
                                   "regionid":request.POST.get('regionid1'),
                                   "fdate":fdate,
-                                  "busstationid":request.POST.get('busstationid1'),"status":"pending"}),
+                                  "busstationid":request.POST.get('busstationid1'),"status":"Approved"}),
 
             headers = {
                 'Content-Type': 'text/plain'
@@ -11073,7 +11194,7 @@ def taxinvoice_list_admin(request):
                                   "warehouseid": "All",
                                   "regionid": "All",
                                   "fdate": "All",
-                                  "busstationid":"All", "status":"pending"})
+                                  "busstationid":"All", "status":"Approved"})
             headers = {
                 'Content-Type': 'text/plain'
             }

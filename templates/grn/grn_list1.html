@@ -52,9 +52,11 @@
 
                             <td  class="text-center">
                             {%if all_data.status == "pending" %}
-                               <a href="/add_grnitem_list1/{{ all_data.grn }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>
-                               {% else %}
-                                <a href="/add_grnitem_list1/{{ all_data.grn }}/"><span class="badge bg-green">{{ all_data.status }}</span></a>
+                               <a href="/add_grnitem_list/{{ all_data.grn }}/"><span class="badge badge-warning">Pending</span></a>
+                            {% elif all_data.status == "Verified" %}
+                                     <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge bg-green">Verified</span>
+                              {% else %}
+                                     <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge badge-danger">Rejected</span>
                                 <!-- /modals -->
                                 {% endif %}
                             </td>
@@ -76,13 +78,12 @@
             </div>
 
           </div>
-                            <!-- <div class="inner-fabs">
-                                  <div class="fab bg-blue round" id="fab4"><a href="grn_list1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -95px !important;">All</span></div>
-                                  <div class="fab bg-green round" id="fab3"><a href="grn_list1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Verified</span></div>
-                                  <div class="fab bg-yellow round" id="fab2"><a href="grn_list1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                            <div class="inner-fabs">
+                                  <div class="fab bg-blue  round" id="fab4" ><a href="grn_list1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -95px !important;">All</span></div>
+                                  <div class="fab bg-green  round" id="fab3" ><a href="grn_new_verified_status"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Verified</span></div>
+                                 <div class="fab bg-yellow round" id="fab2" ><a href="grn_new_pending_status"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
                               </div>
-                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-                            </div>-->
+                             <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 
 
 {% endblock %}

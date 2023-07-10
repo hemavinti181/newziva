@@ -132,13 +132,16 @@
                             {% if  all_data.transaction_status == 'success'  or all_data.paymentmode == 'CASH' %}
                                 <td>
                                    <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
+                                      <!--{% if all_data.status == 'Approved' %}
+                                    <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick1('{{all_data.sonumber}}','{{ all_data.paymentmode }}')"  data-target="#Approve">APPROVE</span>
+                                    {% endif %}-->
                                 </td>
                            {% else %}
                             <td>
                                  <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
-                                    {% if all_data.status == 'Approved' %}
+                                    <!--{% if all_data.status == 'Approved' %}
                                 <span class="badge badge-danger" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
-                                {% endif %}
+                                {% endif %}-->
                             </td>
                            {% endif %}
 
@@ -386,6 +389,173 @@ $("#button1").click(function() {
   var selectedOptionText = $('#busstationid1').find(":selected").text();
   $("#busstationname1").val(selectedOptionText);
 });
+
+window.onload=function()
+{
+$(".join-btn").on('change', function(e){
+console.log(e.currentTarget);
+   var id=e.currentTarget.id;
+   $(".btn-round").removeClass("btn-primary");
+   $(".btn-round").addClass("btn-warning");
+   $("#btn_"+e.currentTarget.id+"").removeClass("btn-warning");
+   $("#btn_"+e.currentTarget.id+"").addClass("btn-primary");
+});
+}
+function VerifyClick(id,id1){
+$("#price").val(id1);
+$("#txtHdnId").val(id);
+}
+function VerifyClick1(id,id1){
+$("#txtHdnId2").val(id);
+$('#paymentmode').val(id1);
+}
+function displayQRCode() {
+  // Check if the radio button is checked
+  var scannerRadioButton = document.getElementById("scanner");
+  var paytmButton = document.getElementById("paytmWithPaytm");
+  var completeButton = document.getElementById("completebtn");
+  if (scannerRadioButton.checked) {
+        paytmButton.style.display = "none";
+        completeButton.style.display = "none";// Make an AJAX request to the server
+        var amount = document.getElementById("price").value;
+
+    $.ajax({
+      url: "/qr_code",
+      type: "POST",
+      dataType: "json",
+      data: {
+        'amount':amount,
+        'csrfmiddlewaretoken': '{{ csrf_token }}' // Your request parameters
+      },
+      success: function (data,order_id) {
+        // Retrieve the image URL from the response
+        var imageURL = data.data.image;
+
+        // Create an image element
+        var qrImage = new Image();
+        // Set the source of the image to the retrieved URL
+        var qrcodeContainer = document.getElementById("qrcode-container");
+        qrImage.src = 'data:image/png;base64,' + imageURL;
+        qrImage.style.maxWidth = '150px'; // Adjust the width as desired
+        qrImage.style.maxHeight = '150px';
+        qrImage.style.marginLeft = '150px';
+        // Display the QR code container
+        document.getElementById("qrcode-container").style.display = 'block';
+
+        // Get the reference to the qrcode-container div
+       // var qrcodeContainer = document.getElementById("qrcode-container");
+
+        // Clear any existing contents in the div
+        qrcodeContainer.innerHTML = '';
+
+        // Append the image to the container
+        qrcodeContainer.appendChild(qrImage);
+        document.getElementById("payment_status").style.display = 'block';
+        var orderInput = document.getElementById('order_id_input');
+        orderInput.value = data.data.id;
+        //var successMessage = document.createElement('p');
+        //successMessage.textContent = 'Transaction success!';
+        //successMessage.style.marginTop = '136px';
+        //successMessage.style.marginTop = '10px';
+
+// Append the success message below the QR code
+qrcodeContainer.appendChild(successMessage);
+      },
+      error: function (xhr, status, error) {
+        // Handle error response
+        console.error('Error: ' + xhr.status);
+      }
+    });
+  }
+  else{
+    var qrcodeContainer = document.getElementById("qrcode-container");
+    qrcodeContainer.style.display = "none";
+  }
+}
+
+ function toggleButtonVisibility() {
+        var upiRadioButton = document.getElementById("upi");
+         var cashRadioButton = document.getElementById("cash");
+         var dueRadioButton = document.getElementById("due");
+         var paytmButton = document.getElementById("paytmWithPaytm");
+         var qrButton = document.getElementById("payment_status");
+         var completeButton = document.getElementById("completebtn");
+         var scannerButton = document.getElementById("scanner");
+         var qrCode = document.getElementById("qrcode-container");
+         var msg = document.getElementById("response_label");
+         var msg1 = document.getElementById("response_label1");
+
+        if (upiRadioButton.checked) {
+            paytmButton.style.display = "block";
+            completeButton.style.display = "none";
+            qrButton.style.display = "none";
+            qrCode.style.display = "none";
+            msg.style.display = "none";
+            msg1.style.display = "none";
+        }
+        if (cashRadioButton.checked) {
+            paytmButton.style.display = "none";
+            qrButton.style.display = "none";
+            completeButton.style.display = "block";
+            qrCode.style.display = "none";
+             msg.style.display = "none";
+              msg1.style.display = "none";
+        }
+        if (dueRadioButton.checked) {
+            paytmButton.style.display = "none";
+            completeButton.style.display = "block";
+            qrCode.style.display = "none";
+            qrButton.style.display = "none";
+             msg.style.display = "none";
+              msg1.style.display = "none";
+        }
+        if (scannerButton.checked){
+            paytmButton.style.display = "none";
+            completeButton.style.display = "block";
+
+        }
+    }
+    function submitFormToPayment() {
+        document.getElementById("saleform").action = "payment";
+    }
+     function submitToPayment() {
+        document.getElementById("saleform").action = "deliver_challan_update";
+    }
+
+function qrResponse(event) {
+  event.preventDefault();
+  var order_id = $('#order_id_input').val();
+  $.ajax({
+    url: 'qr_response',  // Replace with the actual URL of your Django view
+    type: 'POST',
+    dataType: 'json',  // Specify the expected response type as JSON
+    data: {
+      'order_id': order_id,
+      'csrfmiddlewaretoken': '{{ csrf_token }}'  // Render the csrf_token using Django template tags
+    },
+    success: function(response) {
+       $('#response_label1').empty();
+       $('#response_label').empty();
+     $('#qrcode-container').show();
+      $('#txnid').val(response.txnId);
+     if (response.resultStatus === 'TXN_SUCCESS') {
+           $('#response_label').hide;
+          $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
+        $('#completebtn').show();
+        $('#payment_status').hide();
+    } else {
+        $('#response_label1').hide;
+       $('#response_label').html('<b>' + response.resultMsg + '</b>');
+        $('#completebtn').hide();
+        $('#payment_status').show();
+    }
+    },
+    error: function(xhr, status, error) {
+      console.log(error);  // Handle any error that occurred during the AJAX request
+    }
+  });
+}
+
 
 
 

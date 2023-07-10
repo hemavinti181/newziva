@@ -134,7 +134,7 @@ $("#itemcode").change(function() {
             $("#mrp").val(val3);
          });
          $('#getdate').val(new Date().toJSON().slice(0,10));
-$('.items').change(function() {
+$('.form-control').change(function() {
     console.log('Dropdown value changed');
     if($(this).val() === '') {
       alert('Please select an option');
