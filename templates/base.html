@@ -620,6 +620,13 @@ $(document).ready(function() {
       alert('Please select an option');
     }
   });
+
+  $('.items').change(function() {
+    console.log('Dropdown value changed');
+    if($(this).val() === '1') {
+      alert('Please select an option');
+    }
+  });
 </script>
 
 

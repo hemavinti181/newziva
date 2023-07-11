@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba">Internal Consumption</h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-6 offset-md-10">
+                    <a href="#"><button type="submit" data-toggle="modal" data-target="#add_consumption" class="btn btn-primary"  >Add </button></a>
+                </div>
+            </div>
+              </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+                                <p></p>
+                        <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">
+                                <table id="datatable" class="display table-striped table-bordered" style="width:100%">-->
+                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Depot</th>
+                                    <th>Service no</th>
+                                    <th>Date</th>
+                                    <th>No Of Bottles</th>
+                                    <th>OPRS</th>
+                                    <th>Staff Name</th>
+                                    <th>Return</th>
+
+                        </tr>
+                      </thead>
+                            <tbody>
+                              <td>1</td>
+                              <td>Adilabad</td>
+                              <td>TS045</td>
+                              <td>23-Jun-2023</td>
+                              <td>96</td>
+                              <td>12345</td>
+                            <td>Srinivas</td>
+                            <td></td>
+
+
+                      </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+<div id="add_consumption" class="modal custom-modal fade"  role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Internal Consumption</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+            </div>
+            <div class="modal-body">
+                <form   method="POST" action='item_edit'   enctype="multipart/form-data">
+										{% csrf_token %}
+                                        <input type="hidden" name="itemid" id="itemid" />
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Select Depot</label>
+											 <input type="hidden" name="deponame1" id="deponame1" />
+												<select class="form-control" name="depoid1" id="depoid1">
+													<option value=""> depot</option>
+												</select>
+										</div>
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Select Service</label>
+											 <input type="hidden" name="servicename" id="servicename" />
+												<select class="form-control" name="service" id="service">
+													<option value=""> depot</option>
+												</select>
+										</div>
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>OPRS *</label>
+										    <input type="text" class="form-control" placeholder="OPRS" name="oprs" id="oprs" readonly>
+										</div>
+
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Departure *</label>
+										    <input type="text" class="form-control" placeholder="OPRS" name="departure" id="departure" readonly>
+										</div>
+
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Manufacture *</label>
+										    <input type="text" class="form-control"  name="manufacture" id="manufacture">
+										</div>
+
+										<!--<div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Latest Purchase *</label>
+										    <input type="text" class="form-control"  name="latestpurchase" id="latestpurchase"  required>
+
+                    </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+    </div>
+</div>
+<div class="modal custom-modal fade" id="item-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="item_status_active">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Inactive?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id" name="id"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+<div id="edit_store" class="modal custom-modal fade"    role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Store</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+            </div>
+            <div class="modal-body">
+                	<form  method="POST" action="store_edit"   enctype="multipart/form-data">
+											{% csrf_token %}
+										<div  class="col-md-4  form-group has-feedback">
+													<label> Warehouse</label>
+											 <input type="hidden" name="warehousename1" id="warehousename1" />
+												<select class="form-control" name="warehouseid1" id="warehouseid1">
+													<option value=""> Warehouse</option>
+													{% for data1 in wh_masterlist %}
+															{% if data1.status == 'Active' %}
+                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif  %}
+                                                     {% endfor %}
+												</select>
+										</div>
+											<div  class="col-md-4  form-group has-feedback">
+													<label> Region</label>
+											 <input type="hidden" name="regionname1" id="regionname1" />
+												<select class="form-control" name="regionid1" id="regionid1">
+													<option value=""> Region</option>
+												</select>
+										</div>
+											<div  class="col-md-4  form-group has-feedback">
+													<label> Depot</label>
+											 <input type="hidden" name="deponame1" id="deponame1" />
+												<select class="form-control" name="depoid1" id="depoid1">
+													<option value=""> depot</option>
+												</select>
+											</div>
+
+										<div  class="col-md-4  form-group has-feedback">
+													<label> Bus Station</label>
+											 <input type="hidden" name="busstationname1" id="busstationname1" />
+												<select class="form-control" name="busstationid1" id="busstationid1">
+													<option value=""> bus station</option>
+												</select>
+										</div>
+										<div class="col-md-4 form-group has-feedback">
+                                            <input type="hidden" name="stcode" id="stcode" />
+											<label>Store Name *</label>
+										    <input type="text" class="form-control"  name="storename" id="storename1">
+										</div>
+
+										<div class="col-md-4 form-group has-feedback">
+											<label>Legal Name </label>
+										    <input type="text" class="form-control"  name=" legalname" id="legalname1">
+										</div>
+
+										<div class="col-md-4 form-group has-feedback">
+											<label>GST Number </label>
+										    <input type="text" class="form-control" name="gstnumber" id="gstnumber1">
+										</div>
+										<div class="col-md-4  form-group has-feedback">
+											<label>PAN Card </label>
+										    <input type="text" class="form-control" name="pancard" id="pancard1"  >
+										</div>
+
+										<div class="col-md-4   form-group has-feedback">
+											<label>Trade License</label>
+										    <input type="text" class="form-control" name="tradelicenceno" id="tradelicenceno1">
+										</div>
+							      <div class="col-md-4 form-group has-feedback">
+											<label>Nature Of Business *</label>
+										    <input type="text" class="form-control" placeholder="nature of business" name="natofbus1"  id="natofbus1">
+											</div>
+											<div  class="col-md-4 form-group has-feedback">
+													<label>Store Type *</label>
+												<select class="form-control" name="store_type1" id="store_type1">
+														<option  value="">Select store type</option>
+													{% for data in storetype_list %}
+														<option  value="{{ data.displayname }}">{{ data.displayname }} </option>
+													{% endfor %}
+
+												</select>
+											</div>
+										<div class="col-md-4  form-group has-feedback">
+											<label>Contact Person *</label>
+										    <input type="text" class="form-control" id="contactperson1" name="contactperson">
+										</div>
+										<div class="col-md-4  form-group has-feedback">
+											<label>Mobile *</label>
+										    <input type="text" class="form-control" id="mobileno1" name="mobileno" pattern= "[6789][0-9]{9}">
+										</div>
+
+
+											<div class="col-md-4  form-group has-feedback">
+											<label>Alternate Mobile *</label>
+										    <input type="text" class="form-control" placeholder="alternate mobile nmber" name="mobileno2" id="mobileno2" pattern= "[6789][0-9]{9}" >
+											</div>
+
+                                        <div class="col-md-4  form-group has-feedback">
+											<label>Email *</label>
+										    <input type="email" name="email" id="email1" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+											</div>
+										<div class="col-md-6 form-group has-feedback">
+											<label class="col-form-label col-md-3 col-sm-3 ">Remarks*</label>
+											<textarea   name="remarks" id="remarks1" class="form-control"  rows="2" ></textarea>
+										</div>
+
+                                        <input type="hidden" name="storelocation" id="storelocation" />
+
+			</div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </form>
+        </div>
+	</div>
+</div>
+
+	</div>
+</div>
+<div class="modal custom-modal fade" id="item-status1" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="item_status_inactive">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Active?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id1" name="id"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('.edit_item').click(function() {
+      var id = $(this).data('id');
+      $.ajax({
+        url: "{% url 'get_item_data' %}",
+        type: 'POST',
+        data: {
+          'name': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data.itemmasterlist
+             if(obj){
+             $("#itemid").val(obj[0].sno);
+             $("#nameitem").val(obj[0].itemname);
+             $("#hsn1").val(obj[0].hsncode);
+             $("#gst1").val(obj[0].gst);
+             $("#category1").val(obj[0].category);
+             $("#manufacture").val(obj[0].manufacturername);
+             $("#latestpurchase").val(obj[0].lpp);
+             $("#mrp").val(obj[0].mrp);
+             $("#uom").val(obj[0].uom);
+              $("#codeitem").val(obj[0].item_code_org);
+             $('#edit_item').modal('show');
+        	}
+        }
+      });
+    });
+  });
+  function VerifyClick(id){
+$("#id").val(id);
+console.log(val(id))
+}
+ function VerifyClick1(id){
+$("#id1").val(id);
+}
+
+</script>
+{% endblock %}
+

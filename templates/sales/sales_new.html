@@ -49,7 +49,7 @@
             <div class="col-md-6 col-md-12">
                 <div class="x_panel">
                 <div class="x_content">
-                                        <form class="form-label-left input_mask"  method="POST" action="proformainvoice"   enctype="multipart/form-data">
+                                        <form class="form-label-left input_mask" id="myForm" method="POST" action="/proformainvoice"   enctype="multipart/form-data">
 										{% csrf_token %}
                                             	<!--<div  class="col-md-3 col-sm-4  form-group has-feedback">
 													<label>Select Warehouse</label>
@@ -119,7 +119,7 @@
                                             {% endif %}
 										</div>
                                                 <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                           <button type="submit" name="add" style="margin-top: 0px;" class="btn btn-primary">Submit</button>
+                                           <button type="submit" name="add" style="margin-top: 0px;" onclick="myFunction()" class="btn btn-primary">Submit</button>
                                        </div>
 
                                             <input type="hidden" id="txtStoreId" name="txtStoreId" value="{{ stid }}"/>
@@ -136,7 +136,7 @@
                                         </form>
                 </div>
                 </div>
-                 <div class="x_panel saleitem">
+                 <div class="x_panel" id="saleitemdiv">
                      <div class="x_content">
                                    <form class="form-label-left input_mask"  method="POST" action="sales_item_add"   enctype="multipart/form-data">
 										{% csrf_token %}
@@ -144,8 +144,8 @@
 										<div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
                                                <input type="hidden" id="itemname1" name="itemname1" />
                                             <label>Select Items </label>
-                                                <select class="form-control" name="itemname" id="saleitem">
-													<option value=" ">Items</option>
+                                                <select class="form-control items" name="itemname" id="saleitem" required>
+													<option value="">Items</option>
                                                     {% for data in data2 %}
                                                         <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
                                                     {% endfor %}
@@ -187,7 +187,7 @@
                                              <input type="hidden" class="form-control" name="mrp" id="mrp">
 
                                       	<div class="col-md-2 col-sm-2  offset-md-12">
-                                           <button type="submit" name="add" style="margin-top: 25px;" class="btn btn-primary">Collect Order</button>
+                                           <button type="submit" id="collectorder" name="add" style="margin-top: 25px;" class="btn btn-primary">Collect Order</button>
                                        </div>
 
                                        <input type="hidden" id="store_id" name="store_id" />
@@ -296,6 +296,8 @@
                                              <form method="POST" action="complete_sale" id="saleform">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+                                                   <input type="hidden" id="order_id_input" name="order_id_input"  />
+                                                    <input type="hidden" id="txnid" name="txnid"  />
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
 										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" >
@@ -322,19 +324,24 @@
                                                  <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()"  /> UPI
                                                 </label>
                                                    <label class="btn btn-round btn-warning" id="btn_scanner">
-                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" onclick="displayQRCode()" /> SCANNER
+                                                 <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" /> SCANNER
                                                 </label>
 
                                                   <label class="btn btn-round btn-warning" id="btn_due">
-                                                 <input type="radio" name="paymenttype" id="due" value="Due" class="join-btn" onclick="toggleButtonVisibility()"/> DUE
+                                                 <input type="radio" name="paymenttype" id="due" value="DUE" class="join-btn" onclick="toggleButtonVisibility()"/> DUE
                                                 </label>
 
                                                 </div>
                                                  <div id="qrcode-container" style="display:none;">
                                                        <img id="qr-image" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
-                                                       <h4 id="status"></h4>
+                                                         <label id="qrcodemsg" style="width:250px;margin-left:180px;color:#1372ba;">SCAN QR CODE</label>
                                                  </div>
+
                                                 <p></p>
+                                                  <div id="response-container">
+                                                 <label id="response_label" style="width:250px;margin-left:130px;color:#EF091E;"></label>
+                                                    <label id="response_label1" style="width:250px;margin-left:180px;color:#06911A;"></label>
+                                                    </div>
 
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
@@ -343,6 +350,7 @@
 
                                                     <div class="col-md-6 col-sm-6   offset-md-3">
 											            <button class="btn btn-primary submit-btn" id="completebtn" onclick="submitToPayment()">Complete</button>
+                                                        <button class="btn btn-info" id="payment_status"  onclick="qrResponse(event)" style="display:none; width: 250px;margin-left:-27px;" >Check  Payment Status </button>
                                                         <button class="btn  btn-primary submit-btn" id="paytmWithPaytm" onclick="submitFormToPayment()"  style="display:none;">Proceed to pay</button>
                                                     </div>
 
@@ -412,6 +420,7 @@
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
 <script>
+
 window.onload=function()
 {
 $(".join-btn").on('change', function(e){
@@ -702,27 +711,29 @@ function displayQRCode() {
   var completeButton = document.getElementById("completebtn");
   if (scannerRadioButton.checked) {
         paytmButton.style.display = "none";
-        completeButton.style.display = "block";// Make an AJAX request to the server
+        completeButton.style.display = "none";// Make an AJAX request to the server
+        var amount = document.getElementById("netvalue").value;
+
     $.ajax({
       url: "/qr_code",
       type: "POST",
       dataType: "json",
       data: {
+        'amount':amount,
         'csrfmiddlewaretoken': '{{ csrf_token }}' // Your request parameters
       },
-      success: function (data) {
+      success: function (data,order_id) {
         // Retrieve the image URL from the response
         var imageURL = data.data.image;
 
         // Create an image element
         var qrImage = new Image();
-
         // Set the source of the image to the retrieved URL
-         var qrcodeContainer = document.getElementById("qrcode-container");
+        var qrcodeContainer = document.getElementById("qrcode-container");
         qrImage.src = 'data:image/png;base64,' + imageURL;
         qrImage.style.maxWidth = '150px'; // Adjust the width as desired
         qrImage.style.maxHeight = '150px';
-        qrImage.style.marginLeft = '119px';
+        qrImage.style.marginLeft = '150px';
         // Display the QR code container
         document.getElementById("qrcode-container").style.display = 'block';
 
@@ -734,6 +745,9 @@ function displayQRCode() {
 
         // Append the image to the container
         qrcodeContainer.appendChild(qrImage);
+        document.getElementById("payment_status").style.display = 'block';
+        var orderInput = document.getElementById('order_id_input');
+        orderInput.value = data.data.id;
         //var successMessage = document.createElement('p');
         //successMessage.textContent = 'Transaction success!';
         //successMessage.style.marginTop = '136px';
@@ -759,28 +773,41 @@ qrcodeContainer.appendChild(successMessage);
          var cashRadioButton = document.getElementById("cash");
          var dueRadioButton = document.getElementById("due");
          var paytmButton = document.getElementById("paytmWithPaytm");
+         var qrButton = document.getElementById("payment_status");
          var completeButton = document.getElementById("completebtn");
-          var scannerButton = document.getElementById("scanner");
+         var scannerButton = document.getElementById("scanner");
          var qrCode = document.getElementById("qrcode-container");
+         var msg = document.getElementById("response_label");
+         var msg1 = document.getElementById("response_label1");
 
         if (upiRadioButton.checked) {
             paytmButton.style.display = "block";
             completeButton.style.display = "none";
+            qrButton.style.display = "none";
             qrCode.style.display = "none";
+            msg.style.display = "none";
+            msg1.style.display = "none";
         }
         if (cashRadioButton.checked) {
             paytmButton.style.display = "none";
+            qrButton.style.display = "none";
             completeButton.style.display = "block";
             qrCode.style.display = "none";
+             msg.style.display = "none";
+              msg1.style.display = "none";
         }
         if (dueRadioButton.checked) {
             paytmButton.style.display = "none";
             completeButton.style.display = "block";
             qrCode.style.display = "none";
+            qrButton.style.display = "none";
+             msg.style.display = "none";
+              msg1.style.display = "none";
         }
         if (scannerButton.checked){
             paytmButton.style.display = "none";
             completeButton.style.display = "block";
+
         }
     }
     function submitFormToPayment() {
@@ -826,6 +853,40 @@ function getQRCode() {
     });
   }
 }
+function qrResponse(event) {
+  event.preventDefault();
+  var order_id = $('#order_id_input').val();
+  $.ajax({
+    url: 'qr_response',  // Replace with the actual URL of your Django view
+    type: 'POST',
+    dataType: 'json',  // Specify the expected response type as JSON
+    data: {
+      'order_id': order_id,
+      'csrfmiddlewaretoken': '{{ csrf_token }}'  // Render the csrf_token using Django template tags
+    },
+    success: function(response) {
+       $('#response_label1').empty();
+       $('#response_label').empty();
+     $('#qrcode-container').show();
+      $('#txnid').val(response.txnId);
+     if (response.resultStatus === 'TXN_SUCCESS') {
+          $('#response_label').hide();
+          $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
+          $('#completebtn').show();
+          $('#payment_status').hide();
+    } else {
+        $('#response_label1').hide();
+       $('#response_label').html('<b>' + response.resultMsg + '</b>');
+        $('#completebtn').hide();
+        $('#payment_status').show();
+    }
+    },
+    error: function(xhr, status, error) {
+      console.log(error);  // Handle any error that occurred during the AJAX request
+    }
+  });
+}
+
 
 </script>
 

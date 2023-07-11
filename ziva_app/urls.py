@@ -242,24 +242,8 @@ urlpatterns = [
     path('qr_code',views.qr_code,name='qr_code'),
     path('location_map/<str:id>/',views.location_map,name='location_map'),
     path('sale_item_list_approve/<str:id>/',views.sale_item_list_approve,name='sale_item_list_approve'),
-    path('indent_item_list_approve/<str:id>/',views.indent_item_list_approve,name='indent_item_list_approve')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    path('indent_item_list_approve/<str:id>/',views.indent_item_list_approve,name='indent_item_list_approve'),
+    path('internal_consumption',views.internal_consumption,name='internal_consumption')
 
 
 

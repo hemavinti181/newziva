@@ -3593,7 +3593,18 @@ def complete_sale(request):
                         "transaction_status":"success",
                         "transaction_id":"",
                     })
-                if paymentmode == 'Due':
+                if paymentmode == 'SCANNER':
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "sonumber": request.POST.get('txtHdnId'),
+                        "paymentmode": request.POST.get('paymenttype'),
+                        "remarks": request.POST.get('remarks'),
+                        "date": request.POST.get('date'),
+                        "spelloftheday": request.POST.get('spell1'),
+                        "transaction_status": "success",
+                        "transaction_id": request.POST.get('txnid')
+                    })
+                if paymentmode == 'DUE':
                     payload = json.dumps({
                         "accesskey": accesskey,
                         "sonumber": request.POST.get('txtHdnId'),
@@ -10896,8 +10907,12 @@ def qr_response(request):
     response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
     resultMsg = response['body']
     response = resultMsg['resultInfo']
-    response['txnId'] = resultMsg['txnId']
-    return JsonResponse(response)
+    if response['resultCode'] == '01':
+        response = resultMsg['resultInfo']
+        response['txnId'] = resultMsg['txnId']
+        return JsonResponse(response)
+    else:
+        return JsonResponse(response)
 
 @csrf_exempt
 def payment(request):
@@ -11503,3 +11518,6 @@ def sales_dashboard(request):
         return redirect('/login')
     menuname = request.session['mylist']
     return render(request, 'index5.html', {"menuname": menuname})
+
+def internal_consumption(request):
+    return render(request,'intconsumption/internal_consumption.html')
