@@ -3,6 +3,8 @@ import json
 import math
 import random
 import string
+from django.db.models import Sum, F, ExpressionWrapper, IntegerField
+
 from collections import defaultdict
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import logout as auth_logout
@@ -8940,7 +8942,8 @@ def depot_stock(request,id):
             filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
             # warehouse_id = ['WDP0002', 'WDP0001']
             item_sum_qty = DepoInventory.objects.using('auth').filter(
-                createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+                createdon__lte=current_date, itemcode__in=filtered_itemcodes,is_active=1,
+                expiry_date__gte=current_date
             ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
 
             depo_info = DepoMaster.objects.using('auth').filter(regionname=id).values('deponame', 'depoid')
@@ -8948,7 +8951,7 @@ def depot_stock(request,id):
             sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
 
             for depo_id, group in groupby(sorted_data, key=lambda x: x['region_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
                 grouped_data.append({'region_id': depo_id, 'items': items})
 
             merged_data1 = []
@@ -9037,7 +9040,8 @@ def depot_stock_new(request, id):
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
         # warehouse_id = ['WDP0002', 'WDP0001']
         item_sum_qty = DepoInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,is_active=1,
+                expiry_date__gte=current_date
         ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
         if id=='All':
             depo_info = DepoMaster.objects.using('auth').all().values('deponame', 'depoid')
@@ -9047,7 +9051,7 @@ def depot_stock_new(request, id):
         sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
 
         for depo_id, group in groupby(sorted_data, key=lambda x: x['region_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
             grouped_data.append({'region_id': depo_id, 'items': items})
 
         merged_data1 = []
@@ -9920,14 +9924,15 @@ def busstation_stock(request,id):
             current_date = datetime.date.today()
             filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
             # warehouse_id = ['WDP0002', 'WDP0001']
-            item_sum_qty = BusstationInventory.objects.using('auth').values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
+            item_sum_qty = BusstationInventory.objects.using('auth').filter(is_active=1,
+                expiry_date__gte=current_date).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
 
             bus_info = BusstationMaster.objects.using('auth').filter(deponame=id).values('busstationname', 'busatation_id')
             grouped_data = []
             sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
             for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
                 grouped_data.append({'busstation_id': busatation_id, 'items': items})
 
             merged_data1 = []
@@ -10013,10 +10018,9 @@ def busstation_stock1(request,id):
             data = response.json()
             buslist = data['buslist']
             current_date = datetime.date.today()
-
-            item_sum_qty = BusstationInventory.objects.using('auth').values('itemcode', 'busstation_id').annotate(
-        total_qty=Func(Sum('sale_qty'), function='ROUND', expression=F('sale_qty'), template='%(function)s(%(expressions)s)'))
-
+            item_sum_qty = BusstationInventory.objects.using('auth').filter(is_active=1,
+                expiry_date__gte=current_date).values('itemcode', 'busstation_id').annotate(
+                total_qty=Func(Sum('sale_qty'), function='ROUND', expression=F('sale_qty'), template='%(function)s(%(expressions)s)'))
             if id == 'All':
                 bus_info = BusstationMaster.objects.using('auth').all().values('busstationname','busatation_id')
             else:
@@ -10025,7 +10029,7 @@ def busstation_stock1(request,id):
             sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
             for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
                 grouped_data.append({'busstation_id': busatation_id, 'items': items})
 
             merged_data1 = []
@@ -10112,7 +10116,6 @@ def depot_stock1(request):
                     'busstation_id', 'outpass_generate_regionid', 'item_code',
                     'quantity', 'busstationname','busstation_id1'
                 )
-
             filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
             queryset1 = queryset.filter(
                 modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
@@ -10122,13 +10125,12 @@ def depot_stock1(request):
                 modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
             ).values('busstation_id', 'busstationname','item_code').annotate(total_sum=Sum('qty'))
             merged_list = []
-            for item2 in queryset2:
-                for item1 in queryset1:
+            for item1 in queryset1:
+                for item2 in queryset2:
                     if item1['outpass_generate_regionid'] == item2['busstation_id'] and item1['item_code'] == item2[
                         'item_code']:
                         total_qty = item1['total_qty']+item2['total_sum']
                         merged_item = {
-
                             'busstation_id': item2['busstation_id'],
                             'item_code': item2['item_code'],
                             'total_qty': total_qty,
@@ -10136,7 +10138,7 @@ def depot_stock1(request):
                         }
                         merged_list.append(merged_item)
                         break
-                else:
+                    else:
                         merged_item = {
                             'busstation_id': item2['busstation_id'],
                             'item_code': item2['item_code'],
@@ -10145,7 +10147,6 @@ def depot_stock1(request):
 
                         }
                         merged_list.append(merged_item)
-
             print(merged_list)
             sorted_data = sorted(merged_list, key=lambda x: x['busstation_id'])
             grouped_data1 = []
@@ -10155,7 +10156,8 @@ def depot_stock1(request):
                 grouped_data1.append({'busstation_id': busstation_id, 'busstationname': busstationname, 'items1': items1})
 
             item_sum_qty = BusstationInventory.objects.using('auth').filter(
-                createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+                createdon__lte=current_date, itemcode__in=filtered_itemcodes,is_active=1,  # Include the is_active condition
+                expiry_date__gte=current_date,
             ).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
 
             bus_info = BusstationMaster.objects.using('auth').all().values('busstationname', 'busatation_id')
@@ -10163,7 +10165,7 @@ def depot_stock1(request):
             sorted_data1 = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
 
             for busatation_id, group in groupby(sorted_data1, key=lambda x: x['busstation_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
                 grouped_data.append({'busstation_id': busatation_id, 'items': items})
 
             merged_data1 = []
@@ -10276,11 +10278,7 @@ def warehouse_stock1(request,id):
 
             data = response.json()
             bus = data['buslist']
-
-
-
             warehouse_id = request.POST.get('warehouseid1')
-
             current_date = datetime.date.today()
             queryset = OutpassItem.objects.using('auth').extra(
                 tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
@@ -10298,7 +10296,6 @@ def warehouse_stock1(request,id):
                     'grn_item_quantity': 'outpass_item.qty',
                     'warehouse_name': 'outpass_generate.warehouse_name',
                 }
-
             ).values(
                 'warehouse_id1', 'outpass_generate_regionid', 'warehouse_id', 'created_on', 'item_code',
                 'grn_item_quantity', 'warehouse_name'
@@ -10315,12 +10312,13 @@ def warehouse_stock1(request,id):
             grouped_data1 = []
             for (warehouse_id, warehouse_name), group in groupby(sorted_data,
                                                                  key=lambda x: (x['warehouse_id'], x['warehouse_name'])):
-                items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
+                items1 = [{'itemcode': item['item_code'], 'total_sum': int(item['total_sum'])} for item in group]
                 grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
 
             filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
             item_sum_qty = WarehouseInventory.objects.using('auth').filter(
-                createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id=id,
+                createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id=id,is_active=1,
+                expiry_date__gte=current_date
             ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
 
             warehouse_info = WarehouseMaster.objects.using('auth').filter(warehouseid=id).values('warehousename', 'warehouseid')
@@ -10328,7 +10326,7 @@ def warehouse_stock1(request,id):
             sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
 
             for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
                 grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
 
             merged_data1 = []
@@ -10485,15 +10483,18 @@ def warehouse_stock(request):
             filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
             warehouse_id = ['WDP0002', 'WDP0001']
             item_sum_qty = WarehouseInventory.objects.using('auth').filter(
-                createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id__in=warehouse_id,
-            ).values('itemcode', 'warehouse_id').annotate(total_qty=Sum('sale_qty'))
+                createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id__in=warehouse_id,is_active=1,
+                expiry_date__gte=current_date
+            ).values('itemcode', 'warehouse_id').annotate(
+                total_qty=(Sum('sale_qty'))
+            )
 
             warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
             grouped_data = []
             sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
 
             for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                items = [{'itemcode': item['itemcode'], 'total_qty':int(item['total_qty'])} for item in group]
                 grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
 
             merged_data1 = []
@@ -10618,7 +10619,8 @@ def region_stock1(request,id):
         current_date = datetime.date.today()
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
         item_sum_qty = DepoInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,is_active=1,
+                expiry_date__gte=current_date
         ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
         if regionname1=='All':
             depo_info = DepoMaster.objects.using('auth').all().values('deponame', 'depoid','regionname')
@@ -10629,7 +10631,7 @@ def region_stock1(request,id):
         sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
 
         for depoid, group in groupby(sorted_data, key=lambda x: x['region_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
             grouped_data.append({'region_id': depoid, 'items': items})
 
         merged_data1 = []
@@ -10677,7 +10679,7 @@ def region_stock1(request,id):
                 })
             grouped_data1 = []
             for regionname, group in groupby(result_list, key=lambda x: x['regionname']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
                 grouped_data1.append(
                     {'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
         return render(request, 'Reports/region_stockreport.html',
@@ -10745,7 +10747,8 @@ def region_stock(request,id):
         current_date = datetime.date.today()
         filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
         item_sum_qty = DepoInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,
+            createdon__lte=current_date, itemcode__in=filtered_itemcodes,is_active=1,
+                expiry_date__gte=current_date
         ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
 
         depo_info = DepoMaster.objects.using('auth').filter(warehouse=regionname1).values('deponame', 'depoid', 'regionname')
@@ -10753,7 +10756,7 @@ def region_stock(request,id):
         sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
 
         for depoid, group in groupby(sorted_data, key=lambda x: x['region_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+            items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
             grouped_data.append({'region_id': depoid, 'items': items})
 
         merged_data1 = []
@@ -10803,7 +10806,7 @@ def region_stock(request,id):
                     })
             grouped_data1=[]
             for regionname, group in groupby(result_list, key=lambda x: x['regionname']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': item['total_qty']} for item in group]
+                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
                 grouped_data1.append({'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
         return render(request, 'Reports/region_stockreport.html',
                       {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
@@ -11121,6 +11124,8 @@ def pending_indent_admin(request):
             messages.error(request, data['message'])
             return render(request, 'login1.html')
     return render(request, 'create_indent/pending_indent_admin.html')
+
+
 
 def taxinvoice_list_admin(request):
     if 'accesskey' not in request.session:
