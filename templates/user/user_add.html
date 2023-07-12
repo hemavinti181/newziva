@@ -43,7 +43,8 @@
 										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" >
 										 </div>
 											<div  class="col-md-3 col-sm-3  form-group has-feedback" >
-												<select class="form-control" name="level">
+												<input type="hidden" name="level" id="levelname" />
+												<select class="form-control" name="levelname" id="level">
 													<option>Level</option>
                                                     {% for all_data3 in all_data3 %}
 														{% if  all_data3.status == "Active" %}
@@ -127,6 +128,14 @@
           </div>
 </div>
 <script>
+$("#role").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#rolename").val(selectedOptionText);
+});
+$("#level").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#levelname").val(selectedOptionText);
+});
 $("#warehouse").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename").val(selectedOptionText);

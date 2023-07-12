@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
+<style>
+    .style{
+	position: absolute !important;
+	width: 80% !important;
+	margin-left:50px !important;
+	}
+</style>
 
 <div class="right_col" role="main">
           <div class="">
@@ -23,7 +29,7 @@
                                     <div>
                                 </div>
                             </div></div>
-                                {% if data.status == 'Pending' %}
+                                {% if data.status == 'Pending' or data == 'Pending' %}
                                         <button type="button" id="add_indentitem" style="margin-top:10px;margin-right:20px;" class="btn btn-primary">Add Indent Item</button>
                                 {% endif %}
                             </div>
@@ -77,9 +83,11 @@
                                         <input type="hidden" class="form-control"  name="mrp1" id="mrp1">
 
                                  </div>
-                  </div>
+                    </form>
+                </div>
               </div>
             </div>
+
             <div class="clearfix"></div>
   <div class="row" style="display: block;">
               <div class="col-md-12 col-sm-12 ">
@@ -101,8 +109,11 @@
                                     <th>Qty(In Bottles)</th>
                                     <th>MRP</th>
                                     <th>Dispatch Qty</th>
-                                    <th>Batch Code</th>
-                                    <th>Expiry Date</th>
+                             {% if data.status == 'Pending' or data == 'Pending' %}
+                                    <th>Action</th>
+                            {% endif %}
+                                    <!--<th>Batch Code</th>-->
+                                    <!--<th>Expiry Date</th>-->
                                     <!--<th>Indent No</th>-->
 
                         </tr>
@@ -116,8 +127,14 @@
                                      <td> {{ all_data.noofbottles }} </td>
                                     <td>{{ all_data.mrp }}</td>
                                     <td>{{all_data.dispatch_qty}}</td>
-                                    <td>{{ all_data.batch_code }}</td>
-                                    <td>{{  all_data.expirydate }}</td>
+                                    {% if data.status == 'Pending' or data == 'Pending' %}
+                                    <td>
+                                    <a href="#" onclick="VerifyClick('{{ all_data.indent_no }}','{{ all_data.sno }}')"><span class="badge badge-info" data-toggle="modal" data-target="#store-status">
+                                         <i class="fa fa-trash"></i></span></a>
+                                        </td>
+                                    {% endif %}
+                                    <!--<td>{{ all_data.batch_code }}</td>-->
+                                    <!--<td>{{  all_data.expirydate }}</td>-->
                                     <!--<td>{{all_data.indent_no}}</td>-->
                                 </tr>
                              {% endfor %}
@@ -133,8 +150,39 @@
             </div>
           </div>
 </div>
-<script>
 
+
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form  class="form-label-left input_mask" method="post" action="/delete_indent_item">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Indent</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									<input type="hidden" id="indentid" name="indentid"  />
+                                      	<input type="hidden" id="sno" name="sno"  />
+									<div class="row">
+										<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:110px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+                                    </div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+</div>
+
+<script>
 
     $(document).ready(function() {
         $('#add_indentitem').on('click', function() {
@@ -186,6 +234,11 @@ $('.items').change(function() {
     }
   });
 
+function VerifyClick(id,id1){
+$("#indentid").val(id);
+$("#sno").val(id1);
+}
 </script>
+
 {% endblock %}
 

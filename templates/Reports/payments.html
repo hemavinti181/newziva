@@ -228,37 +228,6 @@
               </div>
             </div>
                 </div>
-                  <div class="x_panel itemsbus" style="display:none">
-                    <div class="clearfix"></div>
-                  <div class="x_content">
-                      <div class="row">
-                          <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
-                    </p>
-
-                        <table id="items_bus" class="display  table-bordered" style="width:100%">
-
-                     <thead>
-                                    <tr>
-                                      <th>S No</th>
-                                        <th>Date</th>
-                                        <th>Bus Station</th>
-                                        <th>Item Name</th>
-                                        <th>Quantity</th>
-                                        <th>Payment mode</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                  </tbody>
-                      </table>
-                  </div>
-                  </div>
-              </div>
-            </div>
-                </div>
-
 
                    <div class="x_panel region"  style="display:none">
                     <div class="clearfix"></div>
@@ -377,6 +346,7 @@
               </div>
             </div>
                 </div>
+
 <div class="x_panel bus" style="display:none">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -407,13 +377,42 @@
                 </div>
 
 
+ <div class="x_panel itemsbus" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
 
+                        <table id="items_bus" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                        <th>S No</th>
+                                        <th>Date</th>
+                                        <th>Bus Station</th>
+                                        <th>No of Stalls</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Price/Case</th>
+                                        <th>Payment mode</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
               </div>
             </div>
+                </div>
+
+              </div>
           </div>
 </div>
-
-
 <!-- Include jQuery and jQuery UI libraries -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
@@ -1170,7 +1169,7 @@ $(document).on('click', '.items_buslist', function () {
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         success: function(response) {
-            var responseData = response.response.daywisesalesbusstationlist;
+            var responseData = response.response.itemwisesalesbusstationlist;
             $('.itemsreg').hide();
              $('.itemsdepot').hide();
             $('.itemsbus').show();
@@ -1183,13 +1182,15 @@ $(document).on('click', '.items_buslist', function () {
             for (var i = 0; i < responseData.length; i++) {
                 var item = responseData[i];
                 var row = $('<tr>');
-                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(i + 1));
                 row.append($('<td>').text(item.delivery_date));
-                   row.append($('<td>').text(item.bus_station));// Region
-                row.append($('<td>').text(item.item_name));  // Quantity
+                row.append($('<td>').text(item.bus_station));
+                row.append($('<td>').text(item.No_of_stalls));
+                row.append($('<td>').text(item.item_name));
                 row.append($('<td>').text(item.qty));
+                row.append($('<td>').text(item.price_case));
                 row.append($('<td>').text(item.paymentmode));
-                 row.append($('<td>').text(item.total));
+                row.append($('<td>').text(item.total));
                 tableBody.append(row);
             }
             $("#items_bus").DataTable({

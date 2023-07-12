@@ -243,7 +243,10 @@ urlpatterns = [
     path('location_map/<str:id>/',views.location_map,name='location_map'),
     path('sale_item_list_approve/<str:id>/',views.sale_item_list_approve,name='sale_item_list_approve'),
     path('indent_item_list_approve/<str:id>/',views.indent_item_list_approve,name='indent_item_list_approve'),
-    path('internal_consumption',views.internal_consumption,name='internal_consumption')
+    path('internal_consumption',views.internal_consumption,name='internal_consumption'),
+    path('delete_indent',views.delete_indent,name='delete_indent'),
+    path('delete_indent_item',views.delete_indent_item,name='delete_indent_item'),
+    path('add_bussupply',views.add_bussupply,name='add_bussupply')
 
 
 
