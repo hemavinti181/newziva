@@ -57,7 +57,7 @@
                                     <!--<select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ warehouseid }}">{{ warehouse }}</option>
 												</select>-->
-											 <input type="hidden" name="warehousename1" id="warehousename1" />
+											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 													<option value="">All</option>
 													{% for data1 in wh_masterlist %}
@@ -158,6 +158,7 @@
             </div>
           </div>
 </div>
+</div>
   <!--<div class="inner-fabs">
 
                                   <div class="fab bg-green round" id="fab3"><a href="medeliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
@@ -255,6 +256,7 @@ $("#depoid").change(function() {
 
 $("#depoid").change(function() {
         	var depo = $(this).val();
+
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_salebus" %}',
@@ -360,6 +362,7 @@ $(document).ready(function(){
     	$("#regionid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
+        	alert(warehousename)
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storedepo" %}',

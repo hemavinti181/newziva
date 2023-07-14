@@ -5,8 +5,13 @@
 <style xmlns="http://www.w3.org/1999/html">
 	.style{
 	position: absolute !important;
-	width: 80% !important;
-	margin-left:50px !important;
+	width: 130% !important;
+
+	}
+		.style1{
+	position: absolute !important;
+	width: 100% !important;
+
 	}
 	#checked {
   margin-left: 10px; /* Adjust the margin as needed */
@@ -67,7 +72,7 @@
                                 <td>{{ data.departure_time }}</td>
                             <td>{{ data.staffname }}</td>
                             <td>
-                                  <span class="badge badge-info" style="background-color:#8161C2;" data-toggle="modal" onclick="VerifyClick1('{{all_data.sonumber}}','{{ all_data.paymentmode }}')"  data-target="#return">RETURN</span>
+                                  <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}')"  data-target="#return">RETURN</span>
                             </td>
                                 </tr>
                             {% endfor %}
@@ -84,7 +89,7 @@
 </div>
 <div id="add_consumption" class="modal custom-modal fade"  role="dialog" >
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
-        <div class="modal-content">
+        <div class="modal-content style">
             <div class="modal-header">
                 <h3 class="modal-title">Internal Consumption</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -95,7 +100,7 @@
                 <form   method="POST" action='/add_bussupply'   enctype="multipart/form-data">
 										{% csrf_token %}
                                         <input type="hidden" name="itemid" id="itemid" />
-										<div class="col-md-6 col-sm-6  form-group has-feedback">
+										<div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Select Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control depot" name="depoid1" id="depoid1" required>
@@ -105,45 +110,73 @@
                                                     {% endfor %}
 												</select>
 										</div>
-                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Select Service</label>
 											 <input type="hidden" name="servicename" id="servicename" />
 												<select class="form-control" name="service" id="service">
 													<option value=""> service</option>
-                                                    <option value="TS055">TS055</option>
 												</select>
 										</div>
-                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>OPRS *</label>
 										    <input type="text" class="form-control" placeholder="OPRS" name="oprs" id="oprs" readonly>
 										</div>
 
-										<div class="col-md-6 col-sm-6  form-group has-feedback">
+										<div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Departure *</label>
 										    <input type="text" class="form-control" placeholder="Departure" name="departure" id="departure" readonly>
 										</div>
-
-										<div class="col-md-12 col-sm-12  form-group has-feedback">
-											<label>Select Staff Number *</label>
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Route *</label>
+										    <input type="text" class="form-control" placeholder="Route" name="route" id="route" readonly>
+										</div>
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label> Staff Number *</label>
 										     <input type="hidden" name="staffnum" id="staffnum" />
 												<select class="form-control" name="staffnumb" id="staffnumb">
 													<option value=""> staff number</option>
-                                                    <option value="02342">02342</option>
 												</select>
 										</div>
-                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Staff Name *</label>
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Staff Name1 *</label>
 										    <input type="text" class="form-control" placeholder="name" name="staffname" id="staffname" readonly>
 										</div>
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label> Staff Number</label>
+										     <input type="hidden" name="staffnum" id="staffnum1" />
+												<select class="form-control" name="staffnumb1" id="staffnumb1">
+													<option value=""> staff number</option>
+												</select>
+										</div>
 
-                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Staff Name2 </label>
+										    <input type="text" class="form-control" placeholder="name" name="staffname1" id="staffname1" readonly>
+										</div>
+										<div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label> Vehical Number *</label>
+										     <input type="hidden" name="vehicalname" id="vehicalname" />
+												<select class="form-control" name="vehicalnumb" id="vehicalnumb">
+													<option value=""> Vehical number</option>
+												</select>
+										</div>
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label> Product type *</label>
+										    <input type="text" class="form-control" placeholder="product type" name="product" id="product" readonly>
+										</div>
+                                        <!--<div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Staff Name *</label>
+										    <input type="text" class="form-control" placeholder="name" name="staffname" id="staffname" readonly>
+										</div>-->
+
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Select No Of Bottles *</label>
 										     <input type="hidden" name="nob" id="nob" />
 												<select class="form-control" name="nobt" id="nobt">
 													<option value="">bottles</option>
-                                                    	<option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    	<option value="150">150</option>
+                                                    	{% for data in nobot %}
+                                                            	<option value="{{ data.noofbottles }}">{{ data.noofbottles}}</option>
+                                                    {% endfor %}
 												</select>
 										</div>
 </div>
@@ -187,10 +220,10 @@
 </div>
 <div class="modal custom-modal fade"  id="return" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content style">
+                                            <div class="modal-content style1">
                                                <div class="modal-body">
 
-                                             <form method="POST" action="">
+                                             <form method="POST" action="/return_bussupply">
                                                     {% csrf_token %}
                               <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -202,23 +235,53 @@
 											<label>No Of Tickets *</label>
 										    <input type="text" class="form-control" placeholder="tickets" name="tickets" id="tickets">
 										</div>
-
+                                            <input type="hidden" name="service_id" id="service_id" />
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Return Bottles *</label>
-										    <input type="text" class="form-control" placeholder="bottles" name="bottlesreturn" id="bottlesreturn">
+											<label>To be return  *</label>
+										    <input type="text" class="form-control" placeholder="bottles" name="bottlesreturn" id="bottlesreturn" readonly>
+										</div>
+                                                 <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Actual Return  *</label>
+										    <input type="text" class="form-control" placeholder="bottles" name="actbottlesreturn" id="actbottlesreturn">
+										</div>
+                                          <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Short </label>
+										    <input type="text" class="form-control" placeholder="bottles" name="shortbottlesreturn" id="shortbottlesreturn">
 										</div>
 
                                                     <div class="col-md-10 col-sm-10  form-group has-feedback">
                                                         <label>Do you want update driver details?
-
                                                             <input type="checkbox" id="checked" class="js-switch"  /></label>
                                                     </div>
-                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                <!-- <div class="col-md-12 col-sm-12  form-group has-feedback">
 										   <input type="text" class="form-control" placeholder="Driver Name" name="drivername" id="drivername" style="display:none;" />
+										</div>-->
+                                                  <div class="col-md-6 col-sm-6  form-group has-feedback">
+
+										     <input type="hidden" name="staffnumret" id="staffnumret" />
+												<select class="form-control" name="staffnumret1" id="staffnumret1"  style="display:none;">
+													<option value=""> staff number</option>
+                                                    <option value="02342">02342</option>
+												</select>
+										</div>
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
+										    <input type="text" class="form-control" placeholder="staff name" name="staffname3" id="staffname3"  style="display:none;" readonly>
+										</div>
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
+
+										     <input type="hidden" name="staffnameret2" id="staffnameret2" />
+												<select class="form-control" name="staffnumret2" id="staffnumret2"  style="display:none;">
+													<option value=""> staff number</option>
+                                                    <option value="02342">02342</option>
+												</select>
+										</div>
+
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
+										    <input type="text" class="form-control" placeholder="staff name" name="staffname4" id="staffname4"  style="display:none;" readonly>
 										</div>
                                                  </div>
                                             <div class="col-md-6 col-sm-6  offset-md-4">
-                                                 <button type="button" class="btn btn-primary" style="margin-top:-30px;">Save</button>
+                                                 <button type="submit" class="btn btn-primary" style="margin-top:-30px;">Save</button>
                                                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-top:-30px;">Cancel</button>
                                             </div>
                                                 <p></p>
@@ -233,6 +296,204 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <script>
+$("#depoid1").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "depo_servicenum" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+					if(obj) {
+			 		$("#service").empty();
+                	$.each(obj, function (index, item) {
+                    $("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
+					});
+                	}
+             	}
+        	});
+});
+
+$("#depoid1").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "depo_servicenum" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+					if(obj) {
+			 		$("#service").empty();
+			 		$("#service").append("<option  value=''>choose service</option>");
+                	$.each(obj, function (index, item) {
+                    $("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
+					});
+                	}
+             	}
+        	});
+});
+
+$("#service").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+            var service = $('#service').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "service_details" %}',
+            	data: {
+                	'depo':depo,'service':service,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+                    console.log(obj[0].oprs);
+					if(obj) {
+			 		$("#oprs").val(obj[0].oprs);
+                	$("#departure").val(obj[0].depot);
+                	$("#route").val(obj[0].route);
+                	}
+             	}
+        	});
+});
+
+$("#depoid1").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffnumber" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+                    console.log(obj[0].st_no);
+					if(obj) {
+			 		$("#staffnumb").empty();
+			 		$("#staffnumb").append("<option  value=''> staff number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#staffnumb").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
+                    });
+                	}
+             	}
+        	});
+});
+$("#depoid1").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffnumber" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+                    console.log(obj[0].st_no);
+					if(obj) {
+			 		$("#staffnumb1").empty();
+			 		$("#staffnumb1").append("<option  value=''> staff number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#staffnumb1").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
+                    });
+                	}
+             	}
+        	});
+});
+
+$("#depoid1").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "vehicallist" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+                    console.log(obj[0].st_no);
+					if(obj) {
+			 		$("#vehicalnumb").empty();
+			 		$("#vehicalnumb").append("<option  value=''> vehical number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#vehicalnumb").append("<option value='" + item.vehicleno+ "'>" + item.vehicleno+ "</option>");
+                    });
+                	}
+             	}
+        	});
+});
+
+$("#vehicalnumb").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+            var vehicalnumb = $('#vehicalnumb').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "producttype" %}',
+            	data: {
+                	'depo':depo,'vehicalnumb':vehicalnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+                        console.log(obj[0].product_type)
+                        alert(obj[0].product_type)
+					if(obj) {
+			 		$("#product").val(obj[0].product_type);
+                	}
+             	}
+        	});
+});
+
+
+$("#staffnumb").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+            var staffnumb = $('#staffnumb').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffname" %}',
+            	data: {
+                	'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+                    alert(obj[0].name)
+
+					if(obj) {
+			 		$("#staffname").val(obj[0].name);
+                	}
+             	}
+        	});
+});
+
+$("#staffnumb1").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+            var staffnumb = $('#staffnumb1').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffname" %}',
+            	data: {
+                	'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+                    alert(obj[0].name)
+
+					if(obj) {
+			 		$("#staffname1").val(obj[0].name);
+                	}
+             	}
+        	});
+});
+
+
 $(document).ready(function() {
     $('.edit_item').click(function() {
       var id = $(this).data('id');
@@ -271,24 +532,29 @@ $("#id1").val(id);
  $(document).ready(function() {
     $("#checked").click(function() {
       if ($(this).is(":checked")) {
-        $("#drivername").show();
+        $("#staffnumret1").show();
+        $("#staffname3").show();
+        $("#staffnumret2").show();
+        $("#staffname4").show();
       } else {
-        $("#drivername").hide();
+        $("#staffnumret1").hide();
+        $("#staffname3").hide();
+        $("#staffnumret2").hide();
+        $("#staffname4").hide();
       }
     });
   });
-  $('#service').change(function() {
-      $('#oprs').val('12345')
-      $('#departure').val('08:00 PM')
-  });
-  $('#staffnumb').change(function() {
-      $('#staffname').val('Sukesh')
-  });
+
+
 
 $("#depoid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#deponame1").val(selectedOptionText);
 });
+
+function VerifyClick1(id){
+$("#service_id").val(id);
+}
 </script>
 {% endblock %}
 

@@ -361,7 +361,8 @@
                      <thead>
                                     <tr>
                                         <th>S No</th>
-                                        <th>Bus Station  name</th>
+                                        <th>Bus Station</th>
+                                        <th>No Of Stalls</th>
                                         <th>Quantity</th>
                                       <th>Amount Collected</th>
                                         <th>Action</th>
@@ -393,7 +394,7 @@
                                         <th>S No</th>
                                         <th>Date</th>
                                         <th>Bus Station</th>
-                                        <th>No of Stalls</th>
+                                        <th>Stall name</th>
                                         <th>Item Name</th>
                                         <th>Quantity</th>
                                         <th>Price/Case</th>
@@ -908,6 +909,7 @@ $(document).on('click', '.bus_list', function () {
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));  // S No
                 row.append($('<td>').text(item.bus_station));
+                row.append($('<td>').text(item.no_of_stalls));
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
                   var code = '<td class="text-center"><a href="#" class="items_buslist" data-id="' + item.busstation_id + '"  data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
@@ -975,8 +977,8 @@ $(".items_list").on('click', function () {
                 var item = responseData[i];
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));
-                  row.append($('<td>').text(item.warehouse));// S No
-                row.append($('<td>').text(item.date));  // Region
+                  row.append($('<td>').text(item.date));// S No
+                row.append($('<td>').text(item.warehouse));  // Region
                 row.append($('<td>').text(item.item_name));  // Quantity
                 row.append($('<td>').text(item.qty));
                 row.append($('<td>').text(item.paymentmode));
@@ -1044,7 +1046,7 @@ $(document).on('click', '.items_regionlist', function () {
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));
                   // S No
-                row.append($('<td>').text(item.delivery_date));
+                row.append($('<td>').text(item.date));
                   row.append($('<td>').text(item.region));// Region
                 row.append($('<td>').text(item.item_name));  // Quantity
                 row.append($('<td>').text(item.qty));
@@ -1183,9 +1185,9 @@ $(document).on('click', '.items_buslist', function () {
                 var item = responseData[i];
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));
-                row.append($('<td>').text(item.delivery_date));
+                row.append($('<td>').text(item.date));
                 row.append($('<td>').text(item.bus_station));
-                row.append($('<td>').text(item.No_of_stalls));
+                 row.append($('<td>').text(item.stall_name));
                 row.append($('<td>').text(item.item_name));
                 row.append($('<td>').text(item.qty));
                 row.append($('<td>').text(item.price_case));

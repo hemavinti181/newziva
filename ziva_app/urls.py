@@ -246,7 +246,15 @@ urlpatterns = [
     path('internal_consumption',views.internal_consumption,name='internal_consumption'),
     path('delete_indent',views.delete_indent,name='delete_indent'),
     path('delete_indent_item',views.delete_indent_item,name='delete_indent_item'),
-    path('add_bussupply',views.add_bussupply,name='add_bussupply')
+    path('add_bussupply',views.add_bussupply,name='add_bussupply'),
+    path('return_bussupply',views.return_bussupply,name='return_bussupply'),
+    path('depo_servicenum',views.depo_servicenum,name='depo_servicenum'),
+    path('create_indent_admin',views.create_indent_admin,name='create_indent_admin'),
+    path('service_details',views.service_details,name='service_details'),
+    path('staffnumber', views.staffnumber, name='staffnumber'),
+    path('staffname',views.staffname,name='staffname'),
+    path('vehicallist',views.vehicallist,name='vehicallist'),
+    path('producttype',views.producttype,name='producttype')
 
 
 

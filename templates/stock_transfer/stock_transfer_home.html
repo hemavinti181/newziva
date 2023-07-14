@@ -61,7 +61,7 @@
                                    <form class="form-label-left input_mask"  method="POST" action="wh_item_add"   enctype="multipart/form-data">
 										{% csrf_token %}
 
-										<div class="col-md-3 col-sm-3 input-icons  form-group has-feedback">
+										<div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
                                             <input type="hidden" name="itemname" id="itemname" />
                                                                             <label>Select Item name</label>
 												<select class="form-control" name="itemid" id="itemid" required>
@@ -80,15 +80,15 @@
                                                     {% endfor %}
 												</select>
 										</div>
-                                        <div class="col-md-1 col-sm-1 form-group has-feedback">
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
                                                                     <label>Qty(In Cases) </label>
 										    <input type="text" class="form-control" placeholder="cases" name="quantity" id="quantity">
 										</div>
-                                        <div class="col-md-1 col-sm-1 form-group has-feedback">
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
                                                                      <label>Qty(In bottles)</label>
 										    <input type="text" class="form-control" placeholder="bottles" name="nob" id="nob" readonly>
 										</div>
-                                        <div class="col-md-2 col-sm-3 form-group has-feedback">
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
                                                          <label>Remarks *</label>
 										    <input type="text" class="form-control" placeholder="remarks" name="remarks" />
 										</div>
@@ -108,7 +108,7 @@
 										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"  required>
 										</div>
                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                           <button type="submit" name="add" style="margin-top: -23px;" class="btn btn-primary">Add</button>
+                                           <button type="submit" name="add" style="margin-top: 10px;" class="btn btn-primary">Add</button>
                                        </div>
                                        <input type="hidden" class="form-control" name="uom" id="uom" />
                                        <input type="hidden" class="form-control" name="mrp" id="mrp" />
@@ -130,7 +130,7 @@
                                     <th>S No</th>
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
-                                    <th>ExpDate</th>
+                                    <th>Expiry Date</th>
                                     <!--<th>HSN</th>-->
                                     <th>Batch</th>
                                     <th>MRP</th>
@@ -390,7 +390,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="busstock_datatable" class="display  table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
@@ -448,6 +448,13 @@
 
 </div>
                   </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+          </div>
+</div>
+
  <div class="modal custom-modal fade" id="complete" role="dialog">
      <div class="modal-dialog modal-dialog-centered" role="document">
          <div class="modal-content style">
@@ -738,6 +745,38 @@ $('#busedit').click(function(){
   var optionValue1 = $("#txtdeposearch1").val();
   $("#txtDepoId").find("option[value='" + optionValue1 + "']").prop("selected", true);
 });
+
+    $(document).ready(function() {
+
+        $("#busstock_datatable").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+        });
+    });
+
 
 </script>
 {% endblock %}
