@@ -11690,24 +11690,24 @@ def add_bussupply(request):
                     "staffname":request.POST.get('staffname'),
                     "vehicleno": request.POST.get('vehicalnumb'),
                     "product_type": request.POST.get('product'),
+                    "staffnumbertwo": request.POST.get('staffnumb1'),
+                    "staffnametwo": request.POST.get('staffname1'),
+                    "route": request.POST.get('route'),
                     "noofbottles":request.POST.get('nobt')})
             headers = {
                 'Content-Type': 'text/plain'
             }
-            response = requests.request("GET", url, headers=headers, data=payload)
+            response = requests.request("POST", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
                 messages.success(request,data['message'])
-                return render(request, 'intconsumption/internal_consumption.html',
-                              {"depolist": depolist, 'menuname': menuname,'nobot':nobot})
+                return redirect('/internal_consumption')
             elif response.status_code == 400:
                 data = response.json()
                 messages.error(request, data['message'])
                 return render('/login')
             else:
-                return render(request, 'intconsumption/internal_consumption.html',
-                              {"depolist": depolist, 'menuname': menuname,'nobot':nobot})
-
+                return redirect('/internal_consumption')
     except:
         return render(request, 'intconsumption/internal_consumption.html', {'menuname': menuname})
 
@@ -11722,8 +11722,9 @@ def return_bussupply(request):
         payload = json.dumps({
             "accesskey": accesskey,
             "no_of_tickets":request.POST.get('tickets'),
-            "return_no_of_bottles":request.POST.get('bottlesreturn'),
-            "return_drivername":request.POST.get('drivername'),
+            "return_no_of_bottles":request.POST.get('actbottlesreturn'),
+            "return_drivername":request.POST.get('staffname3'),
+            "return_drivername_two":request.POST.get('staffname4'),
             "service_id":request.POST.get('service_id')
         })
         headers = {
@@ -11733,15 +11734,15 @@ def return_bussupply(request):
         if response.status_code == 200:
             data = response.json()
             messages.success(request, data['message'])
-            return render('internal_consumption')
+            return redirect('internal_consumption')
         elif response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
             return redirect('/login')
         else:
-            return render('internal_consumption')
+            return redirect('internal_consumption')
     except:
-        return render('internal_consumption')
+        return redirect('internal_consumption')
 def depo_servicenum(request):
 
     if 'accesskey' not in request.session:
@@ -11833,7 +11834,28 @@ def staffnumber(request):
         data = response.json()
         messages.error(request,data['message'])
         return redirect('/login')
+def returnsconsumption(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist.php"
 
+    payload = json.dumps({
+                          "accesskey":accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        busservicesupplylist = data['busservicesupplylist']
+        return render(request,'intconsumption/return_consumption.html', {'menuname': menuname,'data':busservicesupplylist})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request,data['message'])
+        return redirect('/login')
 def vehicallist(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')

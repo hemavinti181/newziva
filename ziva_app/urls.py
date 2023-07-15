@@ -254,7 +254,8 @@ urlpatterns = [
     path('staffnumber', views.staffnumber, name='staffnumber'),
     path('staffname',views.staffname,name='staffname'),
     path('vehicallist',views.vehicallist,name='vehicallist'),
-    path('producttype',views.producttype,name='producttype')
+    path('producttype',views.producttype,name='producttype'),
+    path('returnsconsumption',views.returnsconsumption,name='returnsconsumption')
 
 
 
