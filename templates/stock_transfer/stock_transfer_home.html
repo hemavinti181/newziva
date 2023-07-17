@@ -14,7 +14,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h4>Stock Transfer</h4>
+                <h3>Stock Transfer</h3>
               </div>
 
               <div class="title_right">
@@ -71,23 +71,24 @@
                                                     {% endfor %}
 												</select>
 										</div>
-                                       <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
-                                            <input type="hidden" name="typename" id="typename" />
-                                                                            <label>Type</label>
-												<select class="form-control" name="typename" id="typeid" required>
-													{% for data1 in warehouseinventorylist %}
-                            							<option value="{{ data1.itemcode }}">{{ data1.itemname }}</option>
+                                        <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
+                                              <label>Type</label>
+                                            <input type="hidden" id="typename" name="typename" />
+                                            	<select class="form-control items" name="typeid" id="typeid"  required>
+                                                <option value="">Type</option>
+													{% for data1 in type %}
+                            							<option value="{{ data1.type }}">{{ data1.type }}</option>
                                                     {% endfor %}
 												</select>
-										</div>
+                                                                                </div>
+                                                                               <div class="col-md-2 col-sm-2 form-group has-feedback">
+                                          <label>Qty(In Cases) </label>
+                                          <input type="text" class="form-control" placeholder="cases" name="quantity" id="quantity">
+                                        </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
-                                                                    <label>Qty(In Cases) </label>
-										    <input type="text" class="form-control" placeholder="cases" name="quantity" id="quantity">
-										</div>
-                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
-                                                                     <label>Qty(In bottles)</label>
-										    <input type="text" class="form-control" placeholder="bottles" name="nob" id="nob" readonly>
-										</div>
+                                          <label>Qty(In bottles)</label>
+                                          <input type="text" class="form-control" placeholder="bottles" name="nob" id="nob">
+                                        </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                                          <label>Remarks *</label>
 										    <input type="text" class="form-control" placeholder="remarks" name="remarks" />
@@ -117,6 +118,8 @@
                                    </form>
                      </form>
                      </div>
+
+
                                 <div class="x_content">
                   <div class="row">
                           <div class="col-sm-12">
@@ -213,13 +216,23 @@
                                                     {% endfor %}
 												</select>
 										</div>
+                                       	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
+
+                                            <input type="hidden" id="typename1" name="typename1" />
+                                            	<select class="form-control items" name="typeid1" id="typeid1"  required>
+                                                    <option value="">Type</option>
+													{% for data1 in type %}
+                            							<option value="{{ data1.type }}">{{ data1.type }}</option>
+                                                    {% endfor %}
+												</select>
+										</div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
 
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="depoquantity">
 										</div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
 
-										    <input type="text" class="form-control" placeholder="no of bottles" name="deponob" id="deponob" readonly>
+										    <input type="text" class="form-control" placeholder="no of bottles" name="deponob" id="deponob">
 										</div>
                                         <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="price" name="depoprice" id="depoprice">
@@ -325,7 +338,7 @@
                                      <form class="form-label-left input_mask"  method="POST" action="busstation_add_stf"   enctype="multipart/form-data">
 										{% csrf_token %}
                                                <div class="col-md-3 col-sm-4 form-group has-feedback">
-                                                        <select class="form-control" name="busname" id="busname">
+                                                        <select class="form-control items" name="busname" id="busname" required>
                                                     <option value="">Bus Station</option>
 													{% for data1 in buslist %}
                             							<option value="{{ data1.id }}">{{ data1.name }}</option>
@@ -347,10 +360,20 @@
 										<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
 
                                             <input type="hidden" id="busitemname" name="busitemname" />
-                                            	<select class="form-control" name="busitem_id" id="busitem_id" >
+                                            	<select class="form-control items" name="busitem_id" id="busitem_id"  required>
                                                     <option value="">Items</option>
 													{% for data1 in warehouseinventorylist %}
                             							<option value="{{ data1.itemcode }}">{{ data1.itemname }}</option>
+                                                    {% endfor %}
+												</select>
+										</div>
+                                       	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
+
+                                            <input type="hidden" id="typename2" name="typename2" />
+                                            	<select class="form-control items" name="typeid2" id="typeid2"  required>
+                                                    <option value="">Type</option>
+													{% for data1 in type %}
+                            							<option value="{{ data1.type }}">{{ data1.type }}</option>
                                                     {% endfor %}
 												</select>
 										</div>
@@ -360,7 +383,7 @@
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="busquantity">
 										</div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
-										    <input type="text" class="form-control" placeholder="no of bottles" name="busnob" id="busnob" readonly>
+										    <input type="text" class="form-control" placeholder="no of bottles" name="busnob" id="busnob">
 										</div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                            <input type="text" class="form-control" placeholder="remarks" name="freequantity" id="busfreequantity">
@@ -650,7 +673,15 @@ $('#quantity').on('input', function()  {
     	    val  = $("#quantity").val();
             val1 = $("#uom").val();
             val2 =    (val * val1)
+            alert(val2)
             $("#nob").val(val2);
+         });
+ $('#nob').on('input', function()  {
+            $("#nob").val(" ");
+    	    val  = $("#nob").val();
+            val1 = $("#uom").val();
+            val2 =    (val / val1)
+            $("#quantity").val(val2);
          });
    $('#busitem_id').change(function() {
                     var searchterm = $("#busitemname").val();
@@ -673,7 +704,7 @@ $('#quantity').on('input', function()  {
                     })
  })
 $('#busquantity').on('input', function()  {
-            $("#nob").val(" ");
+            $("#busnob").val(" ");
     	    val  = $("#busquantity").val();
             val1 = $("#busuom").val();
             val2 =    (val * val1)
@@ -681,6 +712,14 @@ $('#busquantity').on('input', function()  {
 
 
          });
+         $('#busnob').on('input', function()  {
+            $("#busnob").val(" ");
+    	    val  = $("#busnob").val();
+            val1 = $("#busuom").val();
+            val2 =    (val * val1)
+            $("#busquantity").val(val2);
+         });
+
           $('#depo_id').change(function() {
                     var searchterm = $("#depoitemname").val();
                     $.ajax({
@@ -702,7 +741,7 @@ $('#busquantity').on('input', function()  {
                     })
  })
 $('#depoquantity').on('input', function()  {
-            $("#nob").val(" ");
+            $("#deponob").val(" ");
     	    val  = $("#depoquantity").val();
             val1 = $("#depocases").val();
             val2 =    (val * val1)
@@ -777,6 +816,19 @@ $('#busedit').click(function(){
         });
     });
 
+ $(document).ready(function() {
+    $("#typeid").on("change", function() {
+      var selectedOption = $(this).val();
+
+      if (selectedOption === "Bottles") {
+        $("#quantity").prop("readonly", true);
+        $("#nob").prop("readonly", false);
+      } else if (selectedOption === "Cases") {
+        $("#quantity").prop("readonly", false);
+        $("#nob").prop("readonly", true);
+      }
+    });
+  });
 
 </script>
 {% endblock %}

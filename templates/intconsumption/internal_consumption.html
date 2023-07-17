@@ -13,6 +13,12 @@
 	width: 100% !important;
 
 	}
+	.style2{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:80px !important;
+
+	}
 	#checked {
   margin-left: 10px; /* Adjust the margin as needed */
 }
@@ -70,11 +76,12 @@
                               <td>{{ data.created_on }}</td>
                               <td>{{ data.noofbottles_recieve }}</td>
                               <td>{{ data.oprs }}</td>
+                                <td>{{ data.vehicleno  }}</td>
                                 <td>{{ data.staffnumber }}</td>
-                                <td>{{ data.vehicleno }}</td>
                             <td>{{ data.staffname }}</td>
                             <td>
-                                  <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return">RETURN</span>
+                                  <!--span class="badge badge-info" style="background-color:#E4B60D;" data-toggle="modal" onclick="VerifyClick('{{ data.sno }}')"  data-target="#bs-example-modal-sm">Authorization</span>-->
+                                  <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" >RETURN</span>
                             </td>
                                 </tr>
                             {% endfor %}
@@ -140,7 +147,7 @@
 											<label> Driver Id1 *</label>
 										     <input type="hidden" name="staffnum" id="staffnum" />
 												<select class="form-control select2" name="staffnumb" id="staffnumb" style="width:180px !important;">
-													<option value=""> staff number</option>
+													<option value="">driver id</option>
 												</select>
 										</div>
                                          <div class="col-md-4 col-sm-4  form-group has-feedback">
@@ -151,7 +158,7 @@
 											<label> Driver Id2 </label>
 										     <input type="hidden" name="staffnum" id="staffnum1" />
 												<select class="form-control select2" name="staffnumb1" id="staffnumb1" style="width:180px !important;">
-													<option value=""> staff number</option>
+													<option value="">driver id</option>
 												</select>
 										</div>
 
@@ -240,7 +247,7 @@
                                                  <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                      <input type="hidden" id="bott" name="bott" />
 											<label>No Of Tickets *</label>
-										    <input type="text" class="form-control" placeholder="tickets" name="tickets" id="tickets">
+										    <input type="text" class="form-control" placeholder="tickets" name="tickets" id="tickets" required>
 										</div>
                                             <input type="hidden" name="service_id" id="service_id" />
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
@@ -249,10 +256,10 @@
 										</div>
                                                  <div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Actual Return  *</label>
-										    <input type="text" class="form-control" placeholder="bottles" name="actbottlesreturn" id="actbottlesreturn">
+										    <input type="text" class="form-control" placeholder="bottles" name="actbottlesreturn" id="actbottlesreturn" required>
 										</div>
                                           <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Short </label>
+											<label>Shortage *</label>
 										    <input type="text" class="form-control" placeholder="bottles" name="shortbottlesreturn" id="shortbottlesreturn" readonly>
 										</div>
 
@@ -267,21 +274,30 @@
 
 										     <input type="hidden" name="staffnumret" id="staffnumret" />
 												<select class="form-control select2" name="staffnumret1" id="staffnumret1" style="width:180px !important;">
-													<option value=""> Driver ID</option>
+													<option value=""> Driver ID1</option>
 												</select>
 										</div>
                                          <div class="col-md-6 col-sm-6  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="driver name" name="staffname3" id="staffname3"  style="display:none;" readonly>
-										</div>
-                                         <div class="col-md-6 col-sm-6  form-group has-feedback" id="list2">
+                                         </div>
+
+                                                 <div class="col-md-10 col-sm-10  form-group has-feedback">
+                                             <label>Do you want add another  driver?
+                                                 <input type="checkbox" id="checked1" class="js-switch"   /></label>
+                                         </div>
+
+                                           <!--<button type="button"  class="btn btn-primary"  id="checked1" name="search" style="display:none;margin-left:-20px;"><i class="fa fa-plus-square"></i></button>
+
+										</div>-->
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback" id="list2"  style="display:none;">
 
 										     <input type="hidden" name="staffnameret2" id="staffnameret2" />
 												<select class="form-control select2" name="staffnumret2" id="staffnumret2"  style="width:180px !important;">
-													<option value=""> Driver ID</option>
+													<option value=""> Driver ID2</option>
 												</select>
 										</div>
 
-                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback" >
 										    <input type="text" class="form-control" placeholder="driver name" name="staffname4" id="staffname4"  style="display:none;" readonly>
 										</div>
                                                  </div>
@@ -295,6 +311,32 @@
     </div>
 </div>
 
+<div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content style2">
+                                               <div class="modal-body">
+
+                                             <form method="POST" action="deliver_challan_status">
+                                                    {% csrf_token %}
+                              <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+
+                                    <h3  id="myModalLabel4" style="text-align:center;">Authorization</h3>
+
+                                                 <input type="hidden" id="sno" name="sno"  />
+                                                      <label for="auth">Remarks *</label>
+                                                  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="auth">
+
+                                            <p></p>
+                                            <div class="col-md-6 col-sm-6  offset-md-4">
+                                                  <button type="submit" class="btn btn-primary" style="margin-left:-30px;">Authorize</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
 
 <div class="inner-fabs">
 
@@ -654,7 +696,7 @@ $(document).ready(function() {
     });
   });
   function VerifyClick(id){
-$("#id").val(id);
+$("#sno").val(id);
 console.log(val(id))
 }
  function VerifyClick1(id){
@@ -668,16 +710,16 @@ $("#id1").val(id);
         $("#staffnumret1").show();
         $("#staffname3").show();
         $("#staffnumret2").show();
-        $("#staffname4").show();
-        $("#list1").show();
-        $("#list2").show();
+        $("#list1").show()
+        $("#list2").hide();
+        $("#staffname4").hide();
       } else {
         $("#staffnumret1").hide();
         $("#staffname3").hide();
         $("#staffnumret2").hide();
-        $("#staffname4").hide();
         $("#list1").hide();
         $("#list2").hide();
+        $("#staffname4").hide();
       }
     });
   });
@@ -704,10 +746,24 @@ $('#tickets').on('input', function() {
  $('#actbottlesreturn').on('input', function()  {
             val2  = parseInt($("#bottlesreturn").val());
             val3  = $("#actbottlesreturn").val();
-            val4 = (val2 - val3)
+            val4 = (val3 - val2)
             $("#shortbottlesreturn").val(val4);
 
     });
+  $(document).ready(function() {
+    // When the button with ID "checked1" is clicked
+    $("#checked1").click(function() {
+           if ($(this).is(":checked")) {
+      $("#list2").show();
+      $("#staffname4").show();
+    }
+    else{
+     $("#list2").hide();
+      $("#staffname4").hide();
+    }
+    });
+  });
+
 </script>
 {% endblock %}
 

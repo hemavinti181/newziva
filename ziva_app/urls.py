@@ -255,7 +255,9 @@ urlpatterns = [
     path('staffname',views.staffname,name='staffname'),
     path('vehicallist',views.vehicallist,name='vehicallist'),
     path('producttype',views.producttype,name='producttype'),
-    path('returnsconsumption',views.returnsconsumption,name='returnsconsumption')
+    path('returnsconsumption',views.returnsconsumption,name='returnsconsumption'),
+    path('create_depoindent',views.create_depoindent,name='create_depoindent'),
+    path('create_busindent',views.create_busindent,name='create_busindent')
 
 
 

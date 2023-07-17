@@ -38,15 +38,19 @@
                                     <th>S No</th>
                                     <th>Depot</th>
                                     <th>Date</th>
+                                    <th>Service No</th>
                                     <th>Received</th>
                                     <th>Consumed</th>
                                     <th>Actual Return</th>
                                     <th>To be Return</th>
                                     <th>Shortage</th>
-                            <th>Vehical no</th>
-                                    <th>Driver Id</th>
-                                    <th>Driver Name</th>
-                                    <th>Status</th>
+                                    <th>Vehical no</th>
+                                    <th>Driver Id1</th>
+                                    <th>Driver Name1</th>
+                             <th>Status</th>
+                                    <th>Driver Id2</th>
+                                     <th>Driver Name2</th>
+
 
                         </tr>
                       </thead>
@@ -56,17 +60,21 @@
                               <td>{{ forloop.counter }}</td>
                               <td>{{ data.deponame }}</td>
                               <td>{{ data.created_on }}</td>
+                                <td>{{ data.bus_service_no }}</td>
                               <td>{{ data.noofbottles_recieve }}</td>
                               <td>{{ data.no_of_tickets_consumed }}</td>
                               <td>{{ data.return_no_of_bottles }}</td>
                                 <td>{{ data.to_be_returned }}</td>
                                 <td>{{ data.shortage }}</td>
                                 <td>{{ data.Vehicleno }}</td>
-                                <td></td>
-                            <td>{{ data.return_drivername }}</td>
-                            <td>
+                                <td>{{ data.staffnumber }}</td>
+                            <td>{{ data.staffname }}</td>
+                                 <td>
                                   <span class="badge badge-info" style="background-color:#DC88C2;">{{ data.status }}</span>
                             </td>
+                                 <td>{{ data.staffnumber2 }}</td>
+                            <td>{{ data.staffnumber2name }}</td>
+
                                 </tr>
                             {% endfor %}
                       </tbody>

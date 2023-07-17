@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"> <b>Add Indent </b></h3>
+                <h3 style="color:#1372ba"> <b>Create Indent </b></h3>
               </div>
 
               <div class="title_right">
@@ -19,20 +19,61 @@
               </div>
 
             <div class="clearfix"></div>
-
-            <div class="row">
+             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                  <div class="x_content">
-									<br />
-									<form class="form-label-left input_mask"  method="POST" action="/create_indent"   enctype="multipart/form-data">
-										{% csrf_token %}
+                     <div class="">
 
+									<br />
                                         	<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Select Warehouse *</label>
-										    	 <select class="form-control items" name="whcode" id="whcode" required>
+											<label>Create Indent  *</label>
+										    	 <select class="form-control items" name="wh" id="wh" required>
+                                                     <option value="">Indent From</option>
+
+                                                           <option value="Depot">Depot</option>
+                                                            <option value="Busstation">Busstation</option>
+
+                                                </select>
+										</div>
+                                    </form>
+                 </div>
+                </div>
+              </div>
+             </div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel warehouse-div" style="display:none;">
+                    <!--<div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba">Indent From depot</h3>
+              </div>
+                    </div>-->
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="/create_depoindent"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                                             <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Indent from *</label>
+
+    <input type="hidden" name="deponame1" id="deponame1" />
+                                            <select class="form-control items" name="depocode1" id="depocode1" required>
+
+                                                     <option value="">select depot</option>
+                                                    {% for data in depo %}
+                                                        {% if data.status == "Active" %}
+                                                            <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                        {% endif %}
+                                                     {% endfor %}
+
+                                                </select>
+                                        </div>
+                                        	<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Indent to  *</label>
+                                                   <input type="hidden" name="whname1" id="whname1" />
+										    	 <select class="form-control items" name="wh1" id="wh1" required>
                                                      <option value="">select warehouse</option>
-                                                    {% for data in wh_masterlist %}
+                                                    {% for data in warehouse %}
                                                         {% if data.status == "Active" %}
                                                             <option value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
                                                         {% endif %}
@@ -41,14 +82,10 @@
                                                 </select>
 										</div>
 
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Depot *</label>
-                                              <input type="text" class="form-control"  name="deponame" id="depo" value="{{ deponame }}">
-                                        </div>
 
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Select Items *</label>
-										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+										    	 <select class="form-control items" name="itemcode1" id="itemcode1" required>
 													<option value="">Items</option>
                                                     {% for data in item_masterlist %}
                                                         {% if data.status == "Active" %}
@@ -59,7 +96,7 @@
 										</div>
                                         	<div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label"> Date</label>
-									<input class="form-control" type="date" name="date" id="getdate" required>
+									<input class="form-control" type="date" name="getdate1" id="getdate1" required>
 							</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Quantity(In Cases) *</label>
@@ -78,10 +115,89 @@
 												<button type="submit"  style="margin-top: 25px;"  class="btn btn-primary">Create</button>
 											</div>
 
-										  <input type="hidden" class="form-control"  name="itemname" id="itemname">
+										  <input type="hidden" class="form-control"  name="itemname1" id="itemname1">
                                         <input type="hidden" class="form-control"  name="whname" id="whname">
                                         <input type="hidden" class="form-control"  name="cases1" id="cases1">
                                         <input type="hidden" class="form-control"  name="mrp1" id="mrp1">
+
+                                 </div>
+              </div>
+                </form>
+                  </div>
+              </div>
+            </div>
+
+  <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel depot-div" style="display:none;">
+
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="/create_busindent"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                                             <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Indent from *</label>
+                                            <input type="hidden" name="busname" id="busname" />
+                                            <select class="form-control items" name="buscode" id="buscode" required>
+                                                     <option value="">select busstation</option>
+                                                    {% for data in bus %}
+                                                        {% if data.status == "Active" %}
+                                                            <option value="{{ data.busatationid }}">{{ data.busstationname }}</option>
+                                                        {% endif %}
+                                                     {% endfor %}
+
+                                                </select>
+                                        </div>
+                                        	<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Indent to  *</label>
+										      <input type="hidden" name="deponame" id="deponame" />
+                                            <select class="form-control items" name="depocode" id="depocode" required>
+                                                     <option value="">select depot</option>
+                                                    {% for data in depo %}
+                                                        {% if data.status == "Active" %}
+                                                            <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                        {% endif %}
+                                                     {% endfor %}
+
+                                                </select>
+										</div>
+
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Select Items *</label>
+										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+													<option value="">Items</option>
+                                                    {% for data in item_masterlist %}
+                                                        {% if data.status == "Active" %}
+                                                            <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+										</div>
+                                        	<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label"> Date</label>
+									<input class="form-control" type="date" name="date" id="getdate" required>
+							</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Quantity(In Cases) *</label>
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity1" id="quantity1" required>
+										</div>
+                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Quantity(In Bottles) *</label>
+										    <input type="text" class="form-control" placeholder="quantity in bottles" name="nob1" id="nob1" readonly>
+										</div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Total Price *</label>
+										    <input type="text" class="form-control" placeholder="total price" id="mrp2" name="mrp2" readonly>
+										</div>
+
+										<div class="col-md-2 col-sm-2 form-group has-feedback">
+												<button type="submit"  style="margin-top: 25px;"  class="btn btn-primary">Create</button>
+											</div>
+
+										  <input type="hidden" class="form-control"  name="itemname2" id="itemname2">
+                                        <input type="hidden" class="form-control"  name="whname" id="whname2">
+                                        <input type="hidden" class="form-control"  name="cases2" id="cases2">
+
 
                                  </div>
                   </div>
@@ -95,15 +211,31 @@
 <script>
 $("#itemcode").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-  $("#itemname").val(selectedOptionText);
+  $("#itemname2").val(selectedOptionText);
 });
-$("#whcode").change(function() {
+$("#buscode").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-  $("#whname").val(selectedOptionText);
+  $("#busname").val(selectedOptionText);
+});
+$("#depocode").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame").val(selectedOptionText);
 });
 
-$("#itemcode").change(function() {
-        	var itemname = $('#itemcode').val();
+$("#itemcode1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#itemname1").val(selectedOptionText);
+});
+$("#wh1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#whname1").val(selectedOptionText);
+});
+$("#depocode1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
+});
+$("#itemcode1").change(function() {
+        	var itemname = $('#itemcode1').val();
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_indentitem"  %}',
@@ -134,6 +266,38 @@ $("#itemcode").change(function() {
             $("#nob").val(val2);
             $("#mrp").val(val3);
          });
+         $("#itemcode").change(function() {
+        	var itemname = $('#itemcode').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_indentitem"  %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].mrp);
+                        if(obj.length>0){
+                            $("#mrp2").val(obj[0].mrp);
+                            $("#cases2").val(obj[0].uom);
+                            $("#quantity").val(" ");
+                            $("#nob").val(" ");
+                             $("#mrp").val(obj[0].mrp);
+
+					}
+             	}
+        	});
+    	});
+    	$('#quantity1').on('input', function()  {
+    	    val  = $("#quantity1").val();
+            val1 = $("#cases2").val();
+            mrp2 = $("#mrp2").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp2)
+            $("#nob1").val(val2);
+            $("#mrp2").val(val3);
+         });
          $('#getdate').val(new Date().toJSON().slice(0,10));
 $('.form-control').change(function() {
     console.log('Dropdown value changed');
@@ -141,5 +305,25 @@ $('.form-control').change(function() {
       alert('Please select an option');
     }
   });
+  $(document).ready(function() {
+    $("#wh").on("change", function() {
+      var selectedOption = $(this).val();
+
+      // Hide all the divs initially
+      $(".warehouse-div").hide();
+      $(".depot-div").hide();
+
+      if (selectedOption === "Depot") {
+        // Show the Warehouse-specific div
+        $(".warehouse-div").show();
+        $(".depot-div").hide();
+      } else if (selectedOption === "Busstation") {
+        // Show the Depot-specific div
+        $(".depot-div").show();
+         $(".warehouse-div").hide();
+      }
+    });
+  });
+   $('#getdate1').val(new Date().toJSON().slice(0,10));
 </script>
 {% endblock %}

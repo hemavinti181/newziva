@@ -3861,7 +3861,6 @@ def deliver_challan(request):
             data1  = data['dropdownlist']
             url = "http://13.235.112.1/ziva/mobile-api/vehicle-dropdownlist.php"
             payload = json.dumps({
-
                 "accesskey": accesskey
             })
             headers = {
@@ -6682,6 +6681,7 @@ def stock_transfer(request):
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
         displayrole = request.session['displayrole']
+
         url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster-new.php"
         payload = json.dumps({
             "accesskey": accesskey,
@@ -6724,6 +6724,19 @@ def stock_transfer(request):
         buslist = data['warehouselist']
         request.session['buslist'] = buslist
 
+        url = "http://13.235.112.1/ziva/mobile-api/quantitytypelist.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        type = data['qtyupdatedlist']
+        request.session['type'] = type
+
         url = "http://13.235.112.1/ziva/mobile-api/stock-translist.php"
 
         payload = json.dumps({
@@ -6740,9 +6753,9 @@ def stock_transfer(request):
             data = response.json()
             stocktransferlistto = data['stocktransferlistto']
             request.session['stocktransferlistto'] = stocktransferlistto
-            return render(request, 'stock_transfer/stock_transfer_home.html',{'data':stocktransferlistto,'depolist':depolist,'buslist':buslist,'warehouselist':warehouselist[0],'menuname':menuname})
+            return render(request, 'stock_transfer/stock_transfer_home.html',{'type':type,'data':stocktransferlistto,'depolist':depolist,'buslist':buslist,'warehouselist':warehouselist[0],'menuname':menuname})
         else:
-            return render(request, 'stock_transfer/stock_transfer_home.html',{'warehouselist':warehouselist[0],'depolist':depolist,'buslist':buslist,'menuname':menuname,'displayrole':displayrole})
+            return render(request, 'stock_transfer/stock_transfer_home.html',{'type':type,'warehouselist':warehouselist[0],'depolist':depolist,'buslist':buslist,'menuname':menuname,'displayrole':displayrole})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -6871,6 +6884,9 @@ def wh_add_stf(request):
     menuname = request.session['mylist']
     stocktransferlistto = request.session['stocktransferlistto']
     warehouselist =request.session['warehouselist']
+    buslist = request.session['buslist']
+    type= request.session['type']
+
     if  request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/generate-transitid.php"
@@ -6907,7 +6923,7 @@ def wh_add_stf(request):
             warehouseinventorylist = data['warehouseinventorylist']
             request.session['warehouseinventorylist'] = warehouseinventorylist
             messages.success(request, data['message'])
-            return render(request,'stock_transfer/stock_transfer_home.html',{'warehouselist':warehouselist[0],'warehouseinventorylist':warehouseinventorylist,'menuname':menuname,'wh':'active','data':stocktransferlistto})
+            return render(request,'stock_transfer/stock_transfer_home.html',{'buslist':buslist,'type':type,'warehouselist':warehouselist[0],'warehouseinventorylist':warehouseinventorylist,'menuname':menuname,'wh':'active','data':stocktransferlistto})
         elif response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
@@ -6975,7 +6991,7 @@ def wh_item_list(request):
     warehouseinventorylist = request.session['warehouseinventorylist']
     stocktransferlistto = request.session['stocktransferlistto']
     menuname = request.session['mylist']
-
+    type = request.session['type']
     accesskey = request.session['accesskey']
     taxinvoice  = request.session['taxinvoice']
     url = "http://13.235.112.1/ziva/mobile-api/stocktransfer-item-list.php"
@@ -6990,14 +7006,14 @@ def wh_item_list(request):
     if response.status_code == 200:
         data=response.json()
         wh_item_list=data['stocktransferitemlist']
-        return render(request,'stock_transfer/stock_transfer_home.html',{'taxinvoice':taxinvoice,'warehouseinventorylist':warehouseinventorylist,'warehouselist':warehouselist[0],'wh_item_list':wh_item_list,'menuname':menuname,'data':stocktransferlistto,'wh':'active'})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'taxinvoice':taxinvoice,'warehouseinventorylist':warehouseinventorylist,'warehouselist':warehouselist[0],'wh_item_list':wh_item_list,'menuname':menuname,'data':stocktransferlistto,'wh':'active'})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
     else:
         return render(request, 'stock_transfer/stock_transfer_home.html',
-                      { 'warehouseinventorylist' : warehouseinventorylist, 'menuname': menuname,'data':stocktransferlistto,'taxinvoice':taxinvoice,'wh':'active','wh':'active','warehouselist':warehouselist[0]})
+                      {'type':type,'warehouseinventorylist' : warehouseinventorylist, 'menuname': menuname,'data':stocktransferlistto,'taxinvoice':taxinvoice,'wh':'active','wh':'active','warehouselist':warehouselist[0]})
 def delete_stk_item(request,id):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -7256,6 +7272,7 @@ def depo_add_stf(request):
     accesskey = request.session['accesskey']
     stocktransferlistto = request.session['stocktransferlistto']
     depo_list = request.session['warehouselist']
+    type = request.session['type']
     if request.method  == 'POST':
 
         deponame = request.POST.get('txtdeposearch')
@@ -7308,7 +7325,7 @@ def depo_add_stf(request):
                 messages.error(request,response.text)
             return redirect('depo_item_list')
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'data':stocktransferlistto,'depo':'active','menuname':menuname})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'data':stocktransferlistto,'depo':'active','menuname':menuname})
 
 def depo_item_add(request):
     if 'accesskey' not in request.session:
@@ -7365,6 +7382,7 @@ def depo_item_list(request):
         return redirect('/login')
     txtDepoId = request.session['txtDepoId']
     depo_list = request.session['depolist']
+    type = request.session['type']
     stocktransferlistto = request.session['stocktransferlistto']
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
@@ -7382,7 +7400,7 @@ def depo_item_list(request):
     if response.status_code == 200:
         data=response.json()
         depo_item_list=data['stocktransferitemlist']
-        return render(request,'stock_transfer/stock_transfer_home.html',{'txtDepoId':txtDepoId,'depolist':depo_list,'items':depoinventorylist,'taxinvoice':taxinvoice,'data':stocktransferlistto,'depo':'active','depo_item_list':depo_item_list,'menuname':menuname})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'txtDepoId':txtDepoId,'depolist':depo_list,'items':depoinventorylist,'taxinvoice':taxinvoice,'data':stocktransferlistto,'depo':'active','depo_item_list':depo_item_list,'menuname':menuname})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
@@ -7391,7 +7409,7 @@ def depo_item_list(request):
         return render(request, 'stock_transfer/stock_transfer_home.html',
                       {'txtDepoId': txtDepoId, 'depolist': depo_list, 'items': depoinventorylist,
                        'taxinvoice': taxinvoice, 'data': stocktransferlistto, 'depo': 'active',
-                        'menuname': menuname})
+                        'menuname': menuname,'type':type,})
 
 
 def complete_depoinv(request):
@@ -11704,8 +11722,12 @@ def add_bussupply(request):
                 return redirect('/internal_consumption')
             elif response.status_code == 400:
                 data = response.json()
-                messages.error(request, data['message'])
-                return render('/login')
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return redirect('/internal_consumption')
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
             else:
                 return redirect('/internal_consumption')
     except:
@@ -11725,6 +11747,8 @@ def return_bussupply(request):
             "return_no_of_bottles":request.POST.get('actbottlesreturn'),
             "return_drivername":request.POST.get('staffname3'),
             "return_drivername_two":request.POST.get('staffname4'),
+            "return_staffno":request.POST.get('staffnumret1'),
+            "return_staffno_two":request.POST.get('staffnumret2'),
             "service_id":request.POST.get('service_id')
         })
         headers = {
@@ -11905,5 +11929,149 @@ def producttype(request):
 
 
 def create_indent_admin(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+
+    accesskey = request.session['accesskey']
     menuname = request.session['mylist']
-    return render(request,'create_indent/create_indent_admin.html',{'menuname':menuname})
+
+    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    item_masterlist = data['itemmasterlist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    wh_masterlist = data['warehouselist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    depolist = data['depolist']
+    url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+    payload = json.dumps({
+        "accesskey": accesskey
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    bus = data['buslist']
+    return render(request,'create_indent/create_indent_admin.html',{'item_masterlist':item_masterlist,'bus':bus,'menuname':menuname,'warehouse':wh_masterlist,'depo':depolist})
+
+def create_depoindent(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+
+    accesskey = request.session['accesskey']
+    menuname = request.session['mylist']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "indentno": "",
+            "itemname": request.POST.get('itemname1'),
+            "itemcode": request.POST.get('itemcode1'),
+            "to_id": request.POST.get('whname1'),
+            "to_name": request.POST.get('wh1'),
+            "date ": request.POST.get('getdate1'),
+            "qty": request.POST.get('quantity'),
+            "mrp": request.POST.get('price'),
+            "from_name": request.POST.get('depocode1'),
+            "from_id": request.POST.get('deponame1'),
+        })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            id = data['indentno']
+            messages.success(request, data['message'])
+            url = reverse('indent_item_list', args=[id])
+            return redirect(url)
+        elif response.status_code == 400:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/login')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('/create_indent_admin')
+            except:
+                messages.error(request, response.text)
+            return redirect('/create_indent_admin')
+    else:
+        return redirect('/create_indent_admin')
+
+def create_busindent(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+
+    accesskey = request.session['accesskey']
+    menuname = request.session['mylist']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "indentno": "",
+            "itemname": request.POST.get('itemname2'),
+            "itemcode": request.POST.get('itemcode'),
+            "to_id": request.POST.get('depocode'),
+            "to_name": request.POST.get('deponame'),
+            "date ": request.POST.get('date'),
+            "qty": request.POST.get('quantity1'),
+            "mrp": request.POST.get('mrp2'),
+            "from_name": request.POST.get('buscode'),
+            "from_id": request.POST.get('busname'),
+        })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            id = data['indentno']
+            messages.success(request, data['message'])
+            url = reverse('indent_item_list', args=[id])
+            return redirect(url)
+        elif response.status_code == 400:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/login')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('/create_indent_admin')
+            except:
+                messages.error(request, response.text)
+            return redirect('/create_indent_admin')
+    else:
+        return redirect('/create_indent_admin')
