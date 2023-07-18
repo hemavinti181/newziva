@@ -33,13 +33,24 @@
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-6 offset-md-10">
-                    <a href="#"><button type="submit" data-toggle="modal" data-target="#add_consumption" class="btn btn-primary"  >Add </button></a>
+                    <a href="#"><button type="submit" data-toggle="modal" data-target="#add_consumption" class="btn btn-primary"  > Add </button></a>
                 </div>
-            </div>
               </div>
-            <div class="clearfix"></div>
-
+            </div>
+                  <div class="clearfix"></div>
             <div class="row">
+              <div class="col-md-12 col-sm-12">
+                               			<!-- Search Filter -->
+						<form  method="POST" action="/internal_consumption"  id="myForm" enctype="multipart/form-data">
+									{% csrf_token %}
+                            <div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">Select  Date</label>
+									<input class="form-control" type="date" name="date"  id="getdate"  value="{{ request.POST.date }}"required>
+							</div>
+                             <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>-->
+                        </form>
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_content">
@@ -80,8 +91,8 @@
                                 <td>{{ data.staffnumber }}</td>
                             <td>{{ data.staffname }}</td>
                             <td>
-                                  <!--span class="badge badge-info" style="background-color:#E4B60D;" data-toggle="modal" onclick="VerifyClick('{{ data.sno }}')"  data-target="#bs-example-modal-sm">Authorization</span>-->
-                                  <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" >RETURN</span>
+                                 <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+                             <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" style="" >RETURN</span>
                             </td>
                                 </tr>
                             {% endfor %}
@@ -96,6 +107,8 @@
             </div>
           </div>
 </div>
+</div>
+
 <div id="add_consumption" class="modal custom-modal fade"  role="dialog" >
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
         <div class="modal-content style">
@@ -316,7 +329,7 @@
                                             <div class="modal-content style2">
                                                <div class="modal-body">
 
-                                             <form method="POST" action="deliver_challan_status">
+                                             <form method="POST" action="/authorize_staffid">
                                                     {% csrf_token %}
                               <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -325,9 +338,10 @@
 
                                     <h3  id="myModalLabel4" style="text-align:center;">Authorization</h3>
 
-                                                 <input type="hidden" id="sno" name="sno"  />
-                                                      <label for="auth">Remarks *</label>
-                                                  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="auth">
+
+                                                      <label for="sno">Employee id *</label>
+                                                  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="sno">
+                                                 <input type="hidden" name="serviceid1" id="serviceid1" />
 
                                             <p></p>
                                             <div class="col-md-6 col-sm-6  offset-md-4">
@@ -695,9 +709,9 @@ $(document).ready(function() {
       });
     });
   });
-  function VerifyClick(id){
+  function VerifyClick(id,id1){
 $("#sno").val(id);
-console.log(val(id))
+$("#serviceid1").val(id1)
 }
  function VerifyClick1(id){
 $("#id1").val(id);
@@ -764,6 +778,13 @@ $('#tickets').on('input', function() {
     });
   });
 
+    document.getElementById('getdate').addEventListener('change', function() {
+        // Get the form element by its id
+        var form = document.getElementById('myForm');
+
+        // Submit the form
+        form.submit();
+    });
 </script>
 {% endblock %}
 

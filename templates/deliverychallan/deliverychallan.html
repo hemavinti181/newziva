@@ -222,37 +222,36 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
-window.onload=function()
-{
-      $("#tblChallan").DataTable({
-                dom: "Blfrtip",
-                aaSorting: [[2, '
-                ']],
-                buttons: [
-                    {
-                        extend: "copy",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "csv",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "excel",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "pdfHtml5",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "print",
-                        className: "btn-sm"
-                    },
-                ],
-                responsive: true
-            });
+window.onload = function () {
+    $("#tblChallan").DataTable({
+        dom: "Blfrtip",
+        aaSorting: [[2, 'asc']],
+        buttons: [
+            {
+                extend: "copy",
+                className: "btn-sm"
+            },
+            {
+                extend: "csv",
+                className: "btn-sm"
+            },
+            {
+                extend: "excel",
+                className: "btn-sm"
+            },
+            {
+                extend: "pdfHtml5",
+                className: "btn-sm"
+            },
+            {
+                extend: "print",
+                className: "btn-sm"
+            }
+        ],
+        responsive: true
+    });
 }
+
 $("#busstationid1").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#busstationname1").val(selectedOptionText);

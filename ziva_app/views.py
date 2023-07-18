@@ -1,5 +1,6 @@
 import base64
 import json
+import re
 import math
 import random
 import string
@@ -4424,7 +4425,7 @@ def deliver_challan_update(request):
                 "transaction_status": "success",
                 "transaction_id": "",
             })
-    if paymentmode == 'scanner':
+    elif paymentmode == 'scanner':
             url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
             payload = json.dumps({
                 "accesskey": accesskey,
@@ -6682,11 +6683,26 @@ def stock_transfer(request):
         accesskey = request.session['accesskey']
         displayrole = request.session['displayrole']
 
+        code = request.session['codee']
+        url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search-new.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "id": code
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        warehouseinventorylist = data['warehouseinventorylist']
+
+        request.session['warehouseinventorylist'] =warehouseinventorylist
+
         url = "http://13.235.112.1/ziva/mobile-api/search-warehousemaster-new.php"
         payload = json.dumps({
             "accesskey": accesskey,
             "type": "Depo"
-
         })
         headers = {
             'Content-Type': 'application/json'
@@ -6753,9 +6769,9 @@ def stock_transfer(request):
             data = response.json()
             stocktransferlistto = data['stocktransferlistto']
             request.session['stocktransferlistto'] = stocktransferlistto
-            return render(request, 'stock_transfer/stock_transfer_home.html',{'type':type,'data':stocktransferlistto,'depolist':depolist,'buslist':buslist,'warehouselist':warehouselist[0],'menuname':menuname})
+            return render(request, 'stock_transfer/stock_transfer_home.html',{'type':type,'data':stocktransferlistto,'depolist':depolist,'buslist':buslist,'warehouselist':warehouselist[0],'menuname':menuname,'warehouseinventorylist':warehouseinventorylist})
         else:
-            return render(request, 'stock_transfer/stock_transfer_home.html',{'type':type,'warehouselist':warehouselist[0],'depolist':depolist,'buslist':buslist,'menuname':menuname,'displayrole':displayrole})
+            return render(request, 'stock_transfer/stock_transfer_home.html',{'type':type,'warehouselist':warehouselist[0],'depolist':depolist,'buslist':buslist,'menuname':menuname,'displayrole':displayrole,'warehouseinventorylist':warehouseinventorylist})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -6829,13 +6845,17 @@ def get_wh_item(request):
     code = request.session['codee']
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
-
+    pattern = r"\d+[mM][lL]"
+    match = re.search(pattern, serchterm, re.IGNORECASE)
+    if match:
+        extracted_text = match.group()
+        print(extracted_text)
 
     url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search.php"
 
     payload = json.dumps({
         "accesskey": accesskey,
-        "searchterm":serchterm,
+        "searchterm":extracted_text,
         "id": depoid ,
     })
     headers = {
@@ -6906,7 +6926,7 @@ def wh_add_stf(request):
         if response.status_code == 200:
             data = response.json()
             request.session['taxinvoice'] = data['taxinvoice']
-            #request.session['id'] = request.POST.get('whid')
+
             url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search-new.php"
 
             payload = json.dumps({
@@ -6921,7 +6941,6 @@ def wh_add_stf(request):
 
             data = response.json()
             warehouseinventorylist = data['warehouseinventorylist']
-            request.session['warehouseinventorylist'] = warehouseinventorylist
             messages.success(request, data['message'])
             return render(request,'stock_transfer/stock_transfer_home.html',{'buslist':buslist,'type':type,'warehouselist':warehouselist[0],'warehouseinventorylist':warehouseinventorylist,'menuname':menuname,'wh':'active','data':stocktransferlistto})
         elif response.status_code == 400:
@@ -6952,6 +6971,8 @@ def wh_item_add(request):
 
         payload = json.dumps({
             "accesskey":accesskey,
+            "noofbottles":request.POST.get('nob'),
+            "type":request.POST.get('typeid') ,
             "cp_sno": request.POST.get('cpsno'),
             "quantity": request.POST.get('quantity'),
             "freeqty":" ",
@@ -6988,12 +7009,29 @@ def wh_item_list(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     warehouselist = request.session['warehouselist']
-    warehouseinventorylist = request.session['warehouseinventorylist']
+
     stocktransferlistto = request.session['stocktransferlistto']
     menuname = request.session['mylist']
     type = request.session['type']
     accesskey = request.session['accesskey']
     taxinvoice  = request.session['taxinvoice']
+
+    code = request.session['codee']
+    url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search-new.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "id": code
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    data = response.json()
+    warehouseinventorylist = data['warehouseinventorylist']
+
     url = "http://13.235.112.1/ziva/mobile-api/stocktransfer-item-list.php"
 
     payload = json.dumps({"accesskey":accesskey,
@@ -7137,6 +7175,7 @@ def edit_stk_item(request):
 
         payload = json.dumps({
             "accesskey": accesskey,
+            "noofbottles":request.POST.get('nob1'),
             "sno": request.POST.get('sno'),
             "quantity":request.POST.get('qty'),
             "type": " Warehouse",
@@ -7242,13 +7281,17 @@ def get_depo_item(request):
     code = request.session['codee']
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
-
+    pattern = r"\d+[mM][lL]"
+    match = re.search(pattern, serchterm, re.IGNORECASE)
+    if match:
+        extracted_text = match.group()
+        print(extracted_text)
 
     url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search.php"
 
     payload = json.dumps({
         "accesskey": accesskey,
-        "searchterm":serchterm,
+        "searchterm":extracted_text,
         "id": code,
     })
     headers = {
@@ -7339,7 +7382,7 @@ def depo_item_add(request):
     accesskey = request.session['accesskey']
     stocktransferlistto = request.session['stocktransferlistto']
     txtDepoId = request.session['txtDepoId']
-
+    type = request.session['type']
     if request.method == 'POST':
         url = "http://13.235.112.1/ziva/mobile-api/add-stockitem-warehouse.php"
 
@@ -7371,10 +7414,10 @@ def depo_item_add(request):
                 return redirect('depo_item_list')
             except:
                 messages.error(request,response.text)
-            return render(request,'stock_transfer/stock_transfer_home.html',{'depolist':depolist,'taxinvoice':taxinvoice,'items':depoinventorylist,'data':stocktransferlistto,'depo':'active','menuname':menuname,'txtDepoId':txtDepoId})
+            return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'depolist':depolist,'taxinvoice':taxinvoice,'items':depoinventorylist,'data':stocktransferlistto,'depo':'active','menuname':menuname,'txtDepoId':txtDepoId})
 
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'depolist':depolist,'taxinvoice':taxinvoice,'items':depoinventorylist,'data':stocktransferlistto,'depo':'active','menuname':menuname,'txtDepoId':txtDepoId})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'depolist':depolist,'taxinvoice':taxinvoice,'items':depoinventorylist,'data':stocktransferlistto,'depo':'active','menuname':menuname,'txtDepoId':txtDepoId})
 
 def depo_item_list(request):
     if 'accesskey' not in request.session:
@@ -7488,13 +7531,17 @@ def get_busstation_item(request):
     code = request.session['codee']
     accesskey = request.session['accesskey']
     serchterm = request.POST.get('searchterm')
-
+    pattern = r"\d+[mM][lL]"
+    match = re.search(pattern, serchterm, re.IGNORECASE)
+    if match:
+        extracted_text = match.group()
+        print(extracted_text)
 
     url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search.php"
 
     payload = json.dumps({
         "accesskey": accesskey,
-        "searchterm":serchterm,
+        "searchterm":extracted_text,
         "id": code,
     })
     headers = {
@@ -7553,12 +7600,13 @@ def busstation_add_stf(request):
                 messages.error(request,response.text)
             return redirect('busstation_item_list')
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'buslist':buslist,'bus':'active','menuname':menuname,'warehouseinventorylist':warehouseinventorylist,'data':stocktransferlistto})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'buslist':buslist,'bus':'active','menuname':menuname,'data':stocktransferlistto,'warehouseinventorylist':warehouseinventorylist})
 
 def busstation_item_add(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
+    type = request.session['type']
     warehouseinventorylist = request.session['warehouseinventorylist']
     stocktransferlistto = request.session['stocktransferlistto']
     menuname = request.session['mylist']
@@ -7573,9 +7621,11 @@ def busstation_item_add(request):
 
         payload = json.dumps({
             "accesskey": accesskey,
+            "type": request.POST.get('typeid2'),
             "cp_sno": request.POST.get('buscpsno'),
             "quantity": request.POST.get('quantity'),
-            "freeqty": " ",
+            "freeqty": "",
+            "noofbottles":request.POST.get('busnob'),
             "id": code,
             "transitid": taxinvoice
         })
@@ -7589,8 +7639,12 @@ def busstation_item_add(request):
             return redirect('busstation_item_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request,'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/busstation_item_add')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
             try:
                 data = response.json()
@@ -7599,16 +7653,17 @@ def busstation_item_add(request):
             except:
                 messages.error(request, response.text)
 
-            return render(request, 'stock_transfer/stock_transfer_home.html', {'buslist':buslist,'taxinvoice':taxinvoice,'busstation_name': busstation_name,'warehouseinventorylist':warehouseinventorylist,'bus':'active','data':stocktransferlistto,'menuname':menuname})
+            return render(request, 'stock_transfer/stock_transfer_home.html', {'type':type,'buslist':buslist,'taxinvoice':taxinvoice,'busstation_name': busstation_name,'warehouseinventorylist':warehouseinventorylist,'bus':'active','data':stocktransferlistto,'menuname':menuname})
 
     else:
-        return render(request, 'stock_transfer/stock_transfer_home.html', {'buslist':buslist,'taxinvoice':taxinvoice,'busstation_name': busstation_name,'bus':'active','data':stocktransferlistto,'menuname':menuname,'warehouseinventorylist':warehouseinventorylist})
+        return render(request, 'stock_transfer/stock_transfer_home.html', {'type':type,'buslist':buslist,'taxinvoice':taxinvoice,'busstation_name': busstation_name,'bus':'active','data':stocktransferlistto,'menuname':menuname,'warehouseinventorylist':warehouseinventorylist})
 
 
 def busstation_item_list(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
+    type = request.session['type']
     warehouseinventorylist = request.session['warehouseinventorylist']
     busstation_name =  request.session['busid']
     stocktransferlistto = request.session['stocktransferlistto']
@@ -7629,14 +7684,14 @@ def busstation_item_list(request):
     if response.status_code == 200:
         data=response.json()
         bus_item_list=data['stocktransferitemlist']
-        return render(request,'stock_transfer/stock_transfer_home.html',{'buslist':buslist,'warehouseinventorylist':warehouseinventorylist,'taxinvoice':taxinvoice,'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'bus_item_list':bus_item_list,'bus_item_list1':bus_item_list[0]})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'buslist':buslist,'warehouseinventorylist':warehouseinventorylist,'taxinvoice':taxinvoice,'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'bus_item_list':bus_item_list,'bus_item_list1':bus_item_list[0]})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
     else:
         return render(request, 'stock_transfer/stock_transfer_home.html',
-                      {'buslist':buslist,'warehouseinventorylist': warehouseinventorylist, 'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'taxinvoice':taxinvoice})
+                      {'type':type,'buslist':buslist,'warehouseinventorylist': warehouseinventorylist, 'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'taxinvoice':taxinvoice})
 def edit_stkbus_item(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -7649,6 +7704,7 @@ def edit_stkbus_item(request):
 
         payload = json.dumps({
             "accesskey": accesskey,
+            "noofbottles":request.POST.get('nob1'),
             "sno": request.POST.get('sno'),
             "quantity":request.POST.get('qty'),
             "type": "Bus station",
@@ -11644,7 +11700,7 @@ def internal_consumption(request):
         nobot = data['noofbottleslist']
 
         url = "http://13.235.112.1/ziva/mobile-api/busservicesupplylist.php"
-        payload = json.dumps({"accesskey": accesskey})
+        payload = json.dumps({"accesskey": accesskey, "date":request.POST.get('date')})
         headers = {
             'Content-Type': 'text/plain'
         }
@@ -12063,7 +12119,7 @@ def create_busindent(request):
             return redirect(url)
         elif response.status_code == 400:
             data = response.json()
-            messages.success(request, data['message'])
+            messages.error(request, data['message'])
             return redirect('/login')
         else:
             try:
@@ -12075,3 +12131,39 @@ def create_busindent(request):
             return redirect('/create_indent_admin')
     else:
         return redirect('/create_indent_admin')
+
+def authorize_staffid(request):
+
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/driver-authorization.php"
+
+    payload = json.dumps({"accesskey": accesskey,
+                          "service_id": request.POST.get('serviceid1'),
+                          "staffno": request.POST.get('auth')
+                          })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request,data['message'])
+        return redirect('/internal_consumption')
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/internal_consumption')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/internal_consumption')
+    elif response.status_code == 500:
+        messages.error(request,"Internal Server Error")
+        return redirect('/internal_consumption')
+    else:
+        return redirect('/internal_consumption')
+

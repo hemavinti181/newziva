@@ -152,20 +152,20 @@
                                                 </select>
                                             <input type="hidden" id="txtItemName2" name="txtItemName2" />
 										</div>
-                                        <div class="col-md-1 col-sm-1  form-group has-feedback">
-											<label>Qty(In Cases) </label>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Qty(In Cases)</label>
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity" onchange="myFunction(this.value)">
 										</div>
-                                         <div class="col-md-1 col-sm-1 form-group has-feedback">
-											<label>No Of bottles </label>
-                                           <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles"  readonly/>
+                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
+											<label>Qty(In bottles)</label>
+                                           <input type="text" class="form-control" placeholder="bottles" name="nbottles" id="nbottles"  readonly/>
 
                                        </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
 											<label>Date </label>
                                            <input class="form-control"    type="date" name="date" id="todate"  required>
                                        </div>
-                                         <div class="col-md-1 col-sm-1 form-group has-feedback">
+                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
 											<label>Price </label>
                                            <input type="text" class="form-control" placeholder="0" name="mrp" id="price" readonly/>
                                        </div>
@@ -176,11 +176,11 @@
 										<div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Expiry Date *</label>
 										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate1" >
-										</div>-->
-                                           <div class="col-md-3 col-sm-3 form-group has-feedback">
+										</div>
+                                           <div class="col-md-2 col-sm-2 form-group has-feedback">
 											<label>Remarks </label>
                                                <input type="text"  class="form-control" placeholder="remarks" name="remarks" id="remarks1"/>
-                                       </div>
+                                       </div>-->
 										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}" required>
 										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"   value="{{ data3.cp_sno }}" required>
                                             <input type="hidden" class="form-control" name="cases" id="cases">
@@ -320,9 +320,9 @@
                                                  <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
                                                 </label>
 
-                                                   <label class="btn btn-round btn-warning" id="btn_upi">
+                                                   <!--<label class="btn btn-round btn-warning" id="btn_upi">
                                                  <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()"  /> UPI
-                                                </label>
+                                                </label>-->
                                                    <label class="btn btn-round btn-warning" id="btn_scanner">
                                                  <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" /> SCANNER
                                                 </label>
@@ -345,7 +345,7 @@
 
                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
                                                    <label for="remarks">Remarks</label>
-										       <textarea class="form-control" placeholder="remarks" rows="2"  name="remarks" id="remarks" required></textarea>
+										       <textarea class="form-control" placeholder="remarks" rows="2"  name="remarks" id="remarks" ></textarea>
 										    </div>
 
                                                     <div class="col-md-6 col-sm-6   offset-md-3">
@@ -355,6 +355,7 @@
                                                     </div>
 
 									</div>
+                            </form>
                                         </div>
 
                                         </div>
@@ -364,7 +365,7 @@
                                        <div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content style1">
                                 <div class="modal-header">
-                             <h5 class="modal-title">Edit Sale Item</h5>
+                             <h3>Edit Sale Item</h3>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -373,43 +374,24 @@
                                              <form method="POST" action="edit_sale_item">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId1" name="txtHdnId1"  />
-                                                 <!--<div class="col-md-6 col-sm-6 input-icons  form-group has-feedback">
-
-                                            <label>Select Items *</label>
-                                                      <input type="hidden" id="saleitemname" name="saleitemname"  />
-                                                <select class="form-control" name="itemname" id="saleitem1">
-													<option value=" ">Items</option>
-                                                    {% for data in data2 %}
-                                                        <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
-                                                    {% endfor %}
-                                                </select>
-										</div>-->
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Qty(In Cases) *</label>
+											<label>Qty(In Cases) </label>
 										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity1" onchange="myFunction(this.value)">
 										</div>
                                          <div class="col-md-6 col-sm-6 form-group has-feedback">
-											<label>No Of bottles *</label>
+											<label>Qty(In bottles) </label>
                                            <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles1"  readonly/>
                                        </div>
 
                                          <div class="col-md-12 col-sm-12 form-group has-feedback">
-											<label>Price *</label>
+											<label>Price </label>
                                            <input type="text" class="form-control" placeholder="0" name="mrp" id="price1" readonly/>
                                        </div>
-                                        <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
-											<label>Batch *</label>
-										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
-										</div>
-										<div class="col-md-2 col-sm-2  form-group has-feedback">
-											<label>Expiry Date *</label>
-										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate1" >
-										</div>-->
 
                                             <input type="hidden" class="form-control" name="cases" id="cases1">
                                              <input type="hidden" class="form-control" name="mrp" id="mrp1">
                                                   <div class="col-md-6 col-sm-6  offset-md-5">
-                                                  <button type="submit" name="complete" class="btn btn-info">Edit</button>
+                                                  <button type="submit" name="complete" class="btn btn-primary">Edit</button>
                                             </div>
   </form>
                                         </div>
@@ -871,6 +853,7 @@ function qrResponse(event) {
       $('#txnid').val(response.txnId);
      if (response.resultStatus === 'TXN_SUCCESS') {
           $('#response_label').hide();
+          $('#response_label1').show();
           $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
           $('#completebtn').show();
           $('#payment_status').hide();
