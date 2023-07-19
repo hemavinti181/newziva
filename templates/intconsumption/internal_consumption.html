@@ -44,8 +44,12 @@
 						<form  method="POST" action="/internal_consumption"  id="myForm" enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-sm-3 col-md-3 form-group has-feedback">
-									<label class="focus-label">Select  Date</label>
-									<input class="form-control" type="date" name="date"  id="getdate"  value="{{ request.POST.date }}"required>
+									<label class="focus-label">from </label>
+									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ request.POST.date }}" required>
+							</div>
+                             <div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">To</label>
+									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ request.POST.date }}" required>
 							</div>
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
@@ -92,7 +96,7 @@
                             <td>{{ data.staffname }}</td>
                             <td>
                                  <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
-                             <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" style="" >RETURN</span>
+                             <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" >RETURN</span>
                             </td>
                                 </tr>
                             {% endfor %}
@@ -778,11 +782,9 @@ $('#tickets').on('input', function() {
     });
   });
 
-    document.getElementById('getdate').addEventListener('change', function() {
-        // Get the form element by its id
+    document.getElementById('fdate').addEventListener('change', function() {
         var form = document.getElementById('myForm');
 
-        // Submit the form
         form.submit();
     });
 </script>

@@ -7,236 +7,290 @@
 	width: 70% !important;
 	margin-left:100px !important;
 	}
+.form-group {
+    margin-bottom: 20px !important;
+}
+.custom-modal .modal-body {
+    padding: 1px !important;
+}
 </style>
 
 <div class="right_col" role="main">
-          <div class="">
-            <div class="page-title">
-              <div class="title_left">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
                 <h3>Stock Transfer</h3>
-              </div>
+            </div>
 
-              <div class="title_right">
+            <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
                 </div>
-             </div>
             </div>
-              <div class="">
-              <div class="col-md-12 col-sm-12  ">
+        </div>
+        <div class="">
+            <div class="col-md-12 col-sm-12  ">
                 <div class="x_panel">
-                  <div class="x_content">
-  <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
-                        {% for item in data %}
+                    <div class="x_content">
+                        <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+                            {% for item in data %}
                             {% if item.stock == 'Warehouse' %}
-                        <li class="nav-item">
-                        <a class="nav-link" id="wh-tab" data-toggle="tab" href="#wh_add" role="tab" aria-controls="home" aria-selected="true">{{ item.stock }}</a>
-                      </li>
-                         {% elif item.stock == 'Depo' %}
-                     <li class="nav-item">
-                        <a class="nav-link" id="depo-tab" data-toggle="tab" href="#depo" role="tab" aria-controls="profile" aria-selected="false">{{ item.stock }}</a>
-                      </li>
-                         {% elif item.stock == 'Bus station' %}
-                         <li class="nav-item">
-                          <a class="nav-link" id="bus-tab" data-toggle="tab" href="#busstation" role="tab" aria-controls="uom" aria-selected="false">{{ item.stock }}</a>
-                      </li>
-                        {% endif %}
-                        {% endfor %}
-                    </ul>
-                       <div class="tab-content" id="myTabContent">
-                      <div class="tab-pane fade show {{ wh }}" id="wh_add" role="tabpanel" aria-labelledby="wh-tab">
-                            <form class="form-label-left input_mask"  method="POST" action="wh_add_stf"   enctype="multipart/form-data">
-										{% csrf_token %}
-                                                <div class="col-md-3 col-sm-4 form-group has-feedback" id="warehousename_group">
-											<input  type="text" class="form-control"  name="warehousename" id="warehousename"  value="{{ request.session.warehousename  }}"  readonly/>
-                                                	<input type="hidden" name="warehouseid" id="warehouseid" value="{{ warehouselist.id  }}" />
-                                               </div>
+                            <li class="nav-item">
+                                <a aria-controls="home" aria-selected="true" class="nav-link" data-toggle="tab"
+                                   href="#wh_add"
+                                   id="wh-tab" role="tab">{{ item.stock }}</a>
+                            </li>
+                            {% elif item.stock == 'Depo' %}
+                            <li class="nav-item">
+                                <a aria-controls="profile" aria-selected="false" class="nav-link" data-toggle="tab"
+                                   href="#depo"
+                                   id="depo-tab" role="tab">{{ item.stock }}</a>
+                            </li>
+                            {% elif item.stock == 'Bus station' %}
+                            <li class="nav-item">
+                                <a aria-controls="uom" aria-selected="false" class="nav-link" data-toggle="tab"
+                                   href="#busstation"
+                                   id="bus-tab" role="tab">{{ item.stock }}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div aria-labelledby="wh-tab" class="tab-pane fade show {{ wh }}" id="wh_add"
+                                 role="tabpanel">
+                                <form action="wh_add_stf" class="form-label-left input_mask"
+                                      enctype="multipart/form-data"
+                                      method="POST">
+                                    {% csrf_token %}
+                                    <div class="col-md-3 col-sm-4 form-group has-feedback" id="warehousename_group">
+                                        <input class="form-control" id="warehousename" name="warehousename" readonly
+                                               type="text" value="{{ request.session.warehousename  }}"/>
+                                        <input id="warehouseid" name="warehouseid" type="hidden"
+                                               value="{{ warehouselist.id  }}"/>
+                                    </div>
 
-                                        <div class="col-md-3 col-sm-4 form-group has-feedback">
-                                               <button type="submit"  class="btn btn-primary store">Submit</button>
-                                            </div>
+                                    <div class="col-md-3 col-sm-4 form-group has-feedback">
+                                        <button class="btn btn-primary store" onclick="DisplayItems()" type="submit">
+                                            Submit
+                                        </button>
+                                    </div>
 
-                            </form>
-                     <div class="x_content">
-                                   <form class="form-label-left input_mask"  method="POST" action="wh_item_add"   enctype="multipart/form-data">
-										{% csrf_token %}
+                                </form>
+                                <div class="x_content" id="divItems" style="display:none;">
+                                    <form action="wh_item_add" class="form-label-left input_mask"
+                                          enctype="multipart/form-data"
+                                          method="POST">
+                                        {% csrf_token %}
 
-										<div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
-                                            <input type="hidden" name="itemname" id="itemname" />
-                                                                            <label>Select Items</label>
-												<select class="form-control select2" name="itemid" id="itemid"   style="width:400px !important;" required><br>
-                                                    <option value="">Item details</option>
-													{% for data1 in warehouseinventorylist %}
-                            							<option value="{{ data1.itemcode }}">{{ data1.itemname }}(Batch:{{ data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})</option>
-                                                    {% endfor %}
-												</select>
-										</div>
+                                        <div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
+                                            <input id="itemname" name="itemname" type="hidden"/>
+                                            <label>Select Items</label>
+                                            <select class="form-control select2" id="itemid" name="itemid"
+                                                    required style="width:400px !important;"><br>
+                                                <option value="">Item details</option>
+                                                {% for data1 in warehouseinventorylist %}
+                                                <option value="{{ data1.itemcode }}">{{ data1.itemname }}(Batch:{{
+                                                    data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                         <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
-                                              <label>Type</label>
-                                            <input type="hidden" id="typename" name="typename" />
-                                            	<select class="form-control items" name="typeid" id="typeid"  required>
+                                            <label>Type</label>
+                                            <input id="typename" name="typename" type="hidden"/>
+                                            <select class="form-control items" id="typeid" name="typeid" required>
                                                 <option value="">Type</option>
-													{% for data1 in type %}
-                            							<option value="{{ data1.type }}">{{ data1.type }}</option>
-                                                    {% endfor %}
-												</select>
-                                                                                </div>
-                                                                               <div class="col-md-2 col-sm-2 form-group has-feedback">
-                                          <label>Qty(In Cases) </label>
-                                          <input type="text" class="form-control" placeholder="cases" name="quantity" id="quantity">
+                                                {% for data1 in type %}
+                                                <option value="{{ data1.type }}">{{ data1.type }}</option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
-                                          <label>Qty(In bottles)</label>
-                                          <input type="text" class="form-control" placeholder="bottles" name="nob" id="nob">
+                                            <label>Qty(In Cases) </label>
+                                            <input class="form-control" id="quantity" name="quantity"
+                                                   placeholder="cases"
+                                                   type="text">
                                         </div>
-                                          <!--<div class="col-md-2 col-sm-2 form-group has-feedback">
-                                                         <label>Remarks *</label>
-										    <input type="text" class="form-control" placeholder="remarks" name="remarks" />
-										</div>
-                                      <div class="col-md-1 col-sm-1  form-group has-feedback">
-										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
-										</div>
-										<div class="col-md-2 col-sm-2  form-group has-feedback">
-										    <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate" >
-										</div>
-                                       <div class="col-md-2 col-sm-2 form-group has-feedback">
-                                           <input type="text" class="form-control" placeholder="free quantity" name="freequantity" id="freequantity">
-                                       </div>-->
-                                       <div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="manufacture"  id="manufacture" value="{{ data.manufacture }}"required>
-										</div>
-										<div class="col-md-2 col-sm-3  form-group has-feedback">
-										    <input type="hidden" class="form-control" name="cpsno" id="cpsno"  required>
-										</div>
-                                       <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                           <button type="submit" name="add" style="margin-top: 10px;" class="btn btn-primary">Add</button>
-                                       </div>
-                                       <input type="hidden" class="form-control" name="uom" id="uom" />
-                                       <input type="hidden" class="form-control" name="mrp" id="mrp" />
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
+                                            <label>Qty(In bottles)</label>
+                                            <input class="form-control" id="nob" name="nob" placeholder="bottles"
+                                                   type="text">
+                                        </div>
+                                        <!--<div class="col-md-2 col-sm-2 form-group has-feedback">
+                                                       <label>Remarks *</label>
+                                          <input type="text" class="form-control" placeholder="remarks" name="remarks" />
+                                      </div>
+                                    <div class="col-md-1 col-sm-1  form-group has-feedback">
+                                          <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
+                                      </div>
+                                      <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                          <input type="text" class="form-control" placeholder="expiry date" name="expdate" id="expdate" >
+                                      </div>
+                                     <div class="col-md-2 col-sm-2 form-group has-feedback">
+                                         <input type="text" class="form-control" placeholder="free quantity" name="freequantity" id="freequantity">
+                                     </div>-->
+                                        <div class="col-md-2 col-sm-3  form-group has-feedback">
+                                            <input class="form-control" id="manufacture" name="manufacture"
+                                                   required type="hidden" value="{{ data.manufacture }}">
+                                        </div>
+                                        <div class="col-md-2 col-sm-3  form-group has-feedback">
+                                            <input class="form-control" id="cpsno" name="cpsno" required type="hidden">
+                                        </div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                            <button class="btn btn-primary" name="add" style="margin-top: 10px;"
+                                                    type="submit">Add
+                                            </button>
+                                        </div>
+                                        <input class="form-control" id="uom" name="uom" type="hidden"/>
+                                        <input class="form-control" id="mrp" name="mrp" type="hidden"/>
 
-                                       <input type="hidden" id="store_id" name="store_id" />
-                                   </form>
-                     </form>
-                     </div>
-
-
-                                <div class="x_content">
-                  <div class="row">
-                          <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
-                    </p>
-
-                        <table id="datatable" class="display  table-bordered" style="width:100%">
-                      <thead>
-                        <tr>
-                                    <th>S No</th>
-                                    <th>Item Name</th>
-                                    <th>Qty(In Cases)</th>
-                                  <th>Qty(In bottles)</th>
-                                    <th>Expiry Date</th>
-                                    <!--<th>HSN</th>-->
-                                    <th>Batch</th>
-                                    <!--<th>MRP</th>-->
-                                    <th>Manufacture</th>
-                                    <th>Action</th>
-
-                        </tr>
-                      </thead>
-                            <tbody>
-                            {% for all_data in wh_item_list %}
-                       <tr>
-                           <td>{{ forloop.counter }}</td>
-                      <td>{{ all_data.item_name }}</td>
-                       <td> {{ all_data.quantity }} </td>
-                           <td>{{ all_data.noofbottles }}</td>
-                       <td>{{  all_data.expiry_date }}</td>
-                        <!--<td>{{ all_data.hsn }}</td>-->
-                       <td>{{ all_data.batch_no }}</td>
-                       <!--<td>{{ all_data.mrp }}</td>-->
-                           <td>{{all_data.manufacturer}}</td>
-
-                       <td>
-                           <a href="delete_stk_item/{{ all_data.sno }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                           <span  data-toggle="modal"  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"  data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
-
-                       </td>
-                            </tbody>
-                           <tfoot>
-
-                           </tfoot>
-                      </tr>
-                      {% endfor %}
+                                        <input id="store_id" name="store_id" type="hidden"/>
+                                    </form>
+                                    </form>
+                                </div>
 
 
-                      <tbody>
-                      </tbody>
-                            <td colspan="9" style="color:#06911A" >
-                                   <b>Invoice No: {{ taxinvoice }}</b>
+                                <div class="x_content" id="divItemsAdd" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card-box table-responsive">
+                                                <p class="text-muted font-13 m-b-30">
+                                                </p>
 
-     <span style="float:right;"><span   class="badge-warning"  style="padding:  4px !important;"    data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#complete">COMPLETE SALE</span></span>
-                               </th>
-                          </tr>
-                           </tfoot>
-                      </table>
+                                                <table class="display  table-bordered" id="datatable"
+                                                       style="width:100%">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>S No</th>
+                                                        <th>Item Name</th>
+                                                        <th>Qty(In Cases)</th>
+                                                        <th>Qty(In bottles)</th>
+                                                        <th>Expiry Date</th>
+                                                        <!--<th>HSN</th>-->
+                                                        <th>Batch</th>
+                                                        <!--<th>MRP</th>-->
+                                                        <th>Manufacture</th>
+                                                        <th>Action</th>
 
-                              </div>
-                          </div>
-                </div>
-                </div>
-                      </div>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for all_data in wh_item_list %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ all_data.item_name }}</td>
+                                                        <td> {{ all_data.quantity }}</td>
+                                                        <td>{{ all_data.noofbottles }}</td>
+                                                        <td>{{ all_data.expiry_date }}</td>
+                                                        <!--<td>{{ all_data.hsn }}</td>-->
+                                                        <td>{{ all_data.batch_no }}</td>
+                                                        <!--<td>{{ all_data.mrp }}</td>-->
+                                                        <td>{{all_data.manufacturer}}</td>
 
-                           <div class="tab-pane fade show {{ depo }}" id="depo" role="tabpanel" aria-labelledby="depo-tab">
-                               <form class="form-label-left input_mask"  method="POST" action="depo_add_stf"   enctype="multipart/form-data">
-										{% csrf_token %}
-                                               <div class="col-md-3 col-sm-4 form-group has-feedback">
-                                                   <input type="hidden" id="txtdeposearch1" name="txtdeposearch1"  value="{{ txtDepoId }}"/>
-                                                               <select class="form-control" name="txtDepoId" id="txtDepoId" required>
-                                                    <option value="">Depot</option>
-													{% for data1 in depolist %}
-                            							<option value="{{ data1.id }}">{{ data1.name }}</option>
+                                                        <td>
+                                                            <a class="btn btn-default btn-sm"
+                                                               href="delete_stk_item/{{ all_data.sno }}/"><i
+                                                                    class="fa fa-trash"></i></a>
+                                                            <span class="btn btn-default btn-sm"
+                                                                  data-target="#edit_stk_item"
+                                                                  data-toggle="modal"
+                                                                  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
+                                                                    class="fa fa-edit"></i></span>
+
+                                                        </td>
+                                                    </tbody>
+                                                    <tfoot>
+
+                                                    </tfoot>
+                                                    </tr>
                                                     {% endfor %}
-												</select>
-                                              <input type="hidden" id="txtdeposearch" name="txtdeposearch"  />
 
-                                         </div>
-                                             <div class="col-md-3 col-sm-4 form-group has-feedback">
-                                               <button type="submit" name="search" class="btn btn-primary store">Submit</button>
+
+                                                    <tbody>
+                                                    </tbody>
+                                                    <td colspan="9" style="color:#06911A">
+                                                        <b>Invoice No: {{ taxinvoice }}</b>
+
+                                                        <span style="float:right;"><span class="badge-warning"
+                                                                                         data-target="#complete"
+                                                                                         data-toggle="modal"
+                                                                                         onclick="VerifyClick('{{data.so_number}}')"
+                                                                                         style="padding:  4px !important;">COMPLETE SALE</span></span>
+                                                    </th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+
                                             </div>
-                            </form>
-                     <div class="x_content">
-                                   <form class="form-label-left input_mask"  method="POST" action="depo_item_add"   enctype="multipart/form-data">
-										{% csrf_token %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div aria-labelledby="depo-tab" class="tab-pane fade show {{ depo }}" id="depo"
+                                 role="tabpanel">
+                                <form action="depo_add_stf" class="form-label-left input_mask"
+                                      enctype="multipart/form-data"
+                                      method="POST">
+                                    {% csrf_token %}
+                                    <div class="col-md-3 col-sm-4 form-group has-feedback">
+                                        <input id="txtdeposearch1" name="txtdeposearch1" type="hidden"
+                                               value="{{ txtDepoId }}"/>
+                                        <select class="form-control" id="txtDepoId" name="txtDepoId" required>
+                                            <option value="">Depot</option>
+                                            {% for data1 in depolist %}
+                                            <option value="{{ data1.id }}">{{ data1.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input id="txtdeposearch" name="txtdeposearch" type="hidden"/>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-4 form-group has-feedback">
+                                        <button class="btn btn-primary store" name="search" type="submit">Submit
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="x_content">
+                                    <form action="depo_item_add" class="form-label-left input_mask"
+                                          enctype="multipart/form-data"
+                                          method="POST">
+                                        {% csrf_token %}
 
 
-                                                <div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
-                                            <input type="hidden" name="depoitemname" id="depoitemname" />
-                                                    <label>Select item</label>
-												<select class="form-control select2" name="depo_id" id="depo_id" style="width:400px !important;" required><br>
-                                                    <option value="">Items details</option>
-													{% for data1 in items %}
-                            							<option value="{{ data1.itemcode }}">{{ data1.itemname }}(Batch:{{ data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})</option>
-                                                    {% endfor %}
-												</select>
-										</div>
-                                       	<div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
+                                        <div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
+                                            <input id="depoitemname" name="depoitemname" type="hidden"/>
+                                            <label>Select item</label>
+                                            <select class="form-control select2" id="depo_id" name="depo_id"
+                                                    required style="width:400px !important;"><br>
+                                                <option value="">Items details</option>
+                                                {% for data1 in items %}
+                                                <option value="{{ data1.itemcode }}">{{ data1.itemname }}(Batch:{{
+                                                    data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
 
-                                            <input type="hidden" id="typename1" name="typename1" />
-                                             <label>Select type</label>
-                                            	<select class="form-control items" name="typeid1" id="typeid1"  required>
-                                                    <option value="">Type</option>
-													{% for data1 in type %}
-                            							<option value="{{ data1.type }}">{{ data1.type }}</option>
-                                                    {% endfor %}
-												</select>
-										</div>
+                                            <input id="typename1" name="typename1" type="hidden"/>
+                                            <label>Select type</label>
+                                            <select class="form-control items" id="typeid1" name="typeid1" required>
+                                                <option value="">Type</option>
+                                                {% for data1 in type %}
+                                                <option value="{{ data1.type }}">{{ data1.type }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
                                             <label>Qty(In cases) *</label>
-										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="depoquantity">
-										</div>
+                                            <input class="form-control" id="depoquantity" name="quantity"
+                                                   placeholder="quantity" type="text">
+                                        </div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                               <label>Qty(In bottles) *</label>
-										    <input type="text" class="form-control" placeholder="bottles" name="deponob" id="deponob">
-										</div>
+                                            <label>Qty(In bottles) *</label>
+                                            <input class="form-control" id="deponob" name="deponob"
+                                                   placeholder="bottles"
+                                                   type="text">
+                                        </div>
                                         <!--<div class="col-md-1 col-sm-2  form-group has-feedback">
 										    <input type="text" class="form-control" placeholder="price" name="depoprice" id="depoprice">
 										</div>
@@ -260,138 +314,164 @@
 										    <input type="hidden" class="form-control" name="manufacture"  id="depomanufacture" required>
 										</div>-->
 
-										    <input type="hidden" class="form-control" name="depocpsno" id="depocpsno"  >
-                                             <input type="hidden" class="form-control" name="depocases" id="depocases" />
-                                       <input type="hidden" class="form-control" name="depomrp" id="depomrp" />
+                                        <input class="form-control" id="depocpsno" name="depocpsno" type="hidden">
+                                        <input class="form-control" id="depocases" name="depocases" type="hidden"/>
+                                        <input class="form-control" id="depomrp" name="depomrp" type="hidden"/>
 
-                                       <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                           <button type="submit" name="add" style="margin-top: 30px;" class="btn btn-primary">Add</button>
-                                       </div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                            <button class="btn btn-primary" name="add" style="margin-top: 30px;"
+                                                    type="submit">Add
+                                            </button>
+                                        </div>
 
-                                   </form>
-                     </div>
+                                    </form>
+                                </div>
 
                                 <div class="x_content">
-                  <div class="row">
-                          <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
-                    </p>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card-box table-responsive">
+                                                <p class="text-muted font-13 m-b-30">
+                                                </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
-                      <thead>
-                        <tr>
-                                    <th>S No</th>
-                                    <th>Item Name</th>
-                                    <th>Qty(In Cases)</th>
-                                    <th>Expiry Date</th>
-                                    <!--<th>HSN</th>-->
-                                    <th>Batch</th>
-                                    <!--<th>MRP</th>-->
-                                    <th>Manufacture</th>
-                                    <th>Action</th>
+                                                <table class="display  table-bordered" id="datatable-buttons"
+                                                       style="width:100%">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>S No</th>
+                                                        <th>Item Name</th>
+                                                        <th>Qty(In Cases)</th>
+                                                        <th>Expiry Date</th>
+                                                        <!--<th>HSN</th>-->
+                                                        <th>Batch</th>
+                                                        <!--<th>MRP</th>-->
+                                                        <th>Manufacture</th>
+                                                        <th>Action</th>
 
-                        </tr>
-                      </thead>
-                            <tbody>
-                            {% for all_data in depo_item_list %}
-                       <tr>
-                           <td>{{ forloop.counter }}</td>
-                      <td>{{ all_data.item_name }}</td>
-                       <td> {{ all_data.quantity }} </td>
-                       <td>{{  all_data.expiry_date }}</td>
-                        <!--<td>{{ all_data.hsn }}</td>-->
-                       <td>{{ all_data.batch_no }}</td>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for all_data in depo_item_list %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ all_data.item_name }}</td>
+                                                        <td> {{ all_data.quantity }}</td>
+                                                        <td>{{ all_data.expiry_date }}</td>
+                                                        <!--<td>{{ all_data.hsn }}</td>-->
+                                                        <td>{{ all_data.batch_no }}</td>
 
-                       <!--<td>{{ all_data.mrp }}</td>-->
-                           <td>{{all_data.manufacturer}}</td>
+                                                        <!--<td>{{ all_data.mrp }}</td>-->
+                                                        <td>{{all_data.manufacturer}}</td>
 
-                       <td>
-                           <a href="delete_stkdepo_item/{{ all_data.sno }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                           <span  data-toggle="modal" id="depoedit"  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
+                                                        <td>
+                                                            <a class="btn btn-default btn-sm"
+                                                               href="delete_stkdepo_item/{{ all_data.sno }}/"><i
+                                                                    class="fa fa-trash"></i></a>
+                                                            <span class="btn btn-default btn-sm"
+                                                                  data-target="#edit_stk_item"
+                                                                  data-toggle="modal"
+                                                                  id="depoedit"
+                                                                  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
+                                                                    class="fa fa-edit"></i></span>
 
-                       </td>
-                            </tbody>
-                           <tfoot>
+                                                        </td>
+                                                    </tbody>
+                                                    <tfoot>
 
-                           </tfoot>
-                      </tr>
-                      {% endfor %}
-
-
-                      <tbody>
-                      </tbody>
-                            <td colspan="9" style="color:#06911A" >
-                                  <b> Invoice No: {{ taxinvoice }}</b>
-
-     <span style="float:right;"><span   class="badge-warning"  style="padding:  4px !important;"    data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#depocomplete">COMPLETE SALE</span></span>
-                               </th>
-                          </tr>
-                           </tfoot>
-                      </table>
-  </div>
-                          </div>
-
-
-                </div>
-                </div>
-                      </div>
-
-
-                              <div class="tab-pane fade show  {{ bus }}" id="busstation" role="tabpanel" aria-labelledby="bus-tab">
-                                     <form class="form-label-left input_mask"  method="POST" action="busstation_add_stf"   enctype="multipart/form-data">
-										{% csrf_token %}
-                                               <div class="col-md-3 col-sm-4 form-group has-feedback">
-                                                        <select class="form-control items" name="busname" id="busname" required>
-                                                    <option value="">Bus Station</option>
-													{% for data1 in buslist %}
-                            							<option value="{{ data1.id }}">{{ data1.name }}</option>
+                                                    </tfoot>
+                                                    </tr>
                                                     {% endfor %}
-												</select>
-												</div>
-                                              <input type="hidden" id="txBussearch" name="txtBussearch"  />
-                                          <input type="hidden" name="busstation1" id="busstation1"  value="{{ busstation_name}}"/>
 
-                                             <div class="col-md-3 col-sm-4 form-group has-feedback">
-                                               <button type="submit" name="search" class="btn btn-primary store">Sumbit</button>
+
+                                                    <tbody>
+                                                    </tbody>
+                                                    <td colspan="9" style="color:#06911A">
+                                                        <b> Invoice No: {{ taxinvoice }}</b>
+
+                                                        <span style="float:right;"><span class="badge-warning"
+                                                                                         data-target="#depocomplete"
+                                                                                         data-toggle="modal"
+                                                                                         onclick="VerifyClick('{{data.so_number}}')"
+                                                                                         style="padding:  4px !important;">COMPLETE SALE</span></span>
+                                                    </th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
                                             </div>
-                            </form>
+                                        </div>
 
-                     <div class="x_content">
-                                   <form class="form-label-left input_mask"  method="POST" action="/busstation_item_add"   enctype="multipart/form-data">
-										{% csrf_token %}
 
-										<div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
-                                            <input type="hidden" id="busitemname" name="busitemname" />
-                                             <label>Select item *</label><br>
-                                            	<select class="form-control select2" name="busitem_id" id="busitem_id"  style="width:400px !important;" required>
-                                                    <option value="">Item details</option>
-													{% for data1 in warehouseinventorylist %}
-                            							<option value="{{ data1.itemcode }}">{{data1.itemname}}(Batch:{{ data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}}) </option>
-                                                    {% endfor %}
-												</select>
-										</div>
-                                       	<div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
+                                    </div>
+                                </div>
+                            </div>
 
-                                            <input type="hidden" id="typename2" name="typename2" />
+
+                            <div aria-labelledby="bus-tab" class="tab-pane fade show  {{ bus }}" id="busstation"
+                                 role="tabpanel">
+                                <form action="busstation_add_stf" class="form-label-left input_mask"
+                                      enctype="multipart/form-data"
+                                      method="POST">
+                                    {% csrf_token %}
+                                    <div class="col-md-3 col-sm-4 form-group has-feedback">
+                                        <select class="form-control items" id="busname" name="busname" required>
+                                            <option value="">Bus Station</option>
+                                            {% for data1 in buslist %}
+                                            <option value="{{ data1.id }}">{{ data1.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <input id="txBussearch" name="txtBussearch" type="hidden"/>
+                                    <input id="busstation1" name="busstation1" type="hidden"
+                                           value="{{ busstation_name}}"/>
+
+                                    <div class="col-md-3 col-sm-4 form-group has-feedback">
+                                        <button class="btn btn-primary store" name="search" type="submit">Sumbit
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <div class="x_content">
+                                    <form action="/busstation_item_add" class="form-label-left input_mask"
+                                          enctype="multipart/form-data"
+                                          method="POST">
+                                        {% csrf_token %}
+
+                                        <div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
+                                            <input id="busitemname" name="busitemname" type="hidden"/>
+                                            <label>Select item *</label><br>
+                                            <select class="form-control select2" id="busitem_id" name="busitem_id"
+                                                    required style="width:400px !important;">
+                                                <option value="">Item details</option>
+                                                {% for data1 in warehouseinventorylist %}
+                                                <option value="{{ data1.itemcode }}">{{data1.itemname}}(Batch:{{
+                                                    data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
+
+                                            <input id="typename2" name="typename2" type="hidden"/>
                                             <label>Select type</label>
-                                            	<select class="form-control items" name="typeid2" id="typeid2"  required>
-                                                    <option value="">Type</option>
-													{% for data1 in type %}
-                            							<option value="{{ data1.type }}">{{ data1.type }}</option>
-                                                    {% endfor %}
-												</select>
-										</div>
-                                        <input type="hidden" id="buscpsno" name="buscpsno" />
-                                       <input type="hidden" id="uom22" name="busuom" />
+                                            <select class="form-control items" id="typeid2" name="typeid2" required>
+                                                <option value="">Type</option>
+                                                {% for data1 in type %}
+                                                <option value="{{ data1.type }}">{{ data1.type }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <input id="buscpsno" name="buscpsno" type="hidden"/>
+                                        <input id="uom22" name="busuom" type="hidden"/>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
                                             <label>Qty(In cases)</label>
-										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="busquantity">
-										</div>
-                                       <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                            <input class="form-control" id="busquantity" name="quantity"
+                                                   placeholder="quantity" type="text">
+                                        </div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
                                             <label>Qty(In bottles)</label>
-										    <input type="text" class="form-control" placeholder="bottles" name="busnob" id="busbot">
-										</div>
+                                            <input class="form-control" id="busbot" name="busnob" placeholder="bottles"
+                                                   type="text">
+                                        </div>
                                         <!--<div class="col-md-2 col-sm-2 form-group has-feedback">
                                              <label>Remarks</label>
                                            <input type="text" class="form-control" placeholder="remarks" name="remarks" id="remarksbus">
@@ -407,233 +487,266 @@
 										<div class="col-md-2 col-sm-3  form-group has-feedback">
 										    <input type="hidden" class="form-control" name="cpsno" id="buscpsno"   required>
 										</div>-->
-                                       <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                           <button type="submit" name="add" style="margin-top:30px;" class="btn btn-primary">Add</button>
-                                       </div>
+                                        <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                            <button class="btn btn-primary" name="add" style="margin-top:30px;"
+                                                    type="submit">Add
+                                            </button>
+                                        </div>
 
-                                      <!-- <input type="hidden" id="store_id" name="store_id" />-->
-                                   </form>
-                     </div>
+                                        <!-- <input type="hidden" id="store_id" name="store_id" />-->
+                                    </form>
+                                </div>
                                 <div class="x_content">
-                  <div class="row">
-                          <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
-                    </p>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card-box table-responsive">
+                                                <p class="text-muted font-13 m-b-30">
+                                                </p>
 
-                        <table id="busstock_datatable" class="display  table-bordered" style="width:100%">
-                      <thead>
-                        <tr>
-                                    <th>S No</th>
-                                    <th>Item Name</th>
-                                    <th>Qty(In Cases)</th>
-                            <th>Qty(In bottles)</th>
-                                    <th>Expiry Date</th>
-                                    <!--<th>HSN</th>-->
-                                    <th>Batch</th>
-                                    <!--<th>MRP</th>-->
-                                    <th>Manufacture</th>
-                                    <th>Action</th>
+                                                <table class="display  table-bordered" id="busstock_datatable"
+                                                       style="width:100%">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>S No</th>
+                                                        <th>Item Name</th>
+                                                        <th>Qty(In Cases)</th>
+                                                        <th>Qty(In bottles)</th>
+                                                        <th>Expiry Date</th>
+                                                        <!--<th>HSN</th>-->
+                                                        <th>Batch</th>
+                                                        <!--<th>MRP</th>-->
+                                                        <th>Manufacture</th>
+                                                        <th>Action</th>
 
-                        </tr>
-                      </thead>
-                            <tbody>
-                            {% for all_data in bus_item_list %}
-                       <tr>
-                           <td>{{ forloop.counter }}</td>
-                      <td>{{ all_data.item_name }}</td>
-                       <td> {{ all_data.quantity }} </td>
-                           <td>{{ all_data.noofbottles }}</td>
-                       <td>{{  all_data.expiry_date }}</td>
-                        <!--<td>{{ all_data.hsn }}</td>-->
-                       <td>{{ all_data.batch_no }}</td>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for all_data in bus_item_list %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ all_data.item_name }}</td>
+                                                        <td> {{ all_data.quantity }}</td>
+                                                        <td>{{ all_data.noofbottles }}</td>
+                                                        <td>{{ all_data.expiry_date }}</td>
+                                                        <!--<td>{{ all_data.hsn }}</td>-->
+                                                        <td>{{ all_data.batch_no }}</td>
 
-                       <!--<td>{{ all_data.mrp }}</td>-->
-                           <td>{{all_data.manufacturer}}</td>
+                                                        <!--<td>{{ all_data.mrp }}</td>-->
+                                                        <td>{{all_data.manufacturer}}</td>
 
-                       <td>
-                           <a href="delete_stkbus_item/{{ all_data.sno }}/" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
-                           <span  data-toggle="modal" id="busedit"  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"   data-target="#edit_stk_item"  class="btn btn-default btn-sm"><i class="fa fa-edit"></i></span>
+                                                        <td>
+                                                            <a class="btn btn-default btn-sm"
+                                                               href="delete_stkbus_item/{{ all_data.sno }}/"><i
+                                                                    class="fa fa-trash"></i></a>
+                                                            <span class="btn btn-default btn-sm"
+                                                                  data-target="#edit_stk_item"
+                                                                  data-toggle="modal"
+                                                                  id="busedit"
+                                                                  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
+                                                                    class="fa fa-edit"></i></span>
 
-                       </td>
-                            </tbody>
-                           <tfoot>
+                                                        </td>
+                                                    </tbody>
+                                                    <tfoot>
 
-                           </tfoot>
-                      </tr>
-                      {% endfor %}
+                                                    </tfoot>
+                                                    </tr>
+                                                    {% endfor %}
 
 
-                      <tbody>
-                      </tbody>
-                            <td colspan="9" style="color:#06911A" >
-                                <b>Invoice No: {{ taxinvoice }}</b>
-     <span style="float:right;"><span   class="badge-warning"  style="padding:  4px !important;"    data-toggle="modal"  onclick="VerifyClick('{{data.so_number}}')" data-target="#buscomplete">COMPLETE SALE</span></span>
-                               </th>
-                          </tr>
-                           </tfoot>
-                      </table>
+                                                    <tbody>
+                                                    </tbody>
+                                                    <td colspan="9" style="color:#06911A">
+                                                        <b>Invoice No: {{ taxinvoice }}</b>
+                                                        <span style="float:right;"><span class="badge-warning"
+                                                                                         data-target="#buscomplete"
+                                                                                         data-toggle="modal"
+                                                                                         onclick="VerifyClick('{{data.so_number}}')"
+                                                                                         style="padding:  4px !important;">COMPLETE SALE</span></span>
+                                                    </th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                </div>
-                </div>
-                      </div>
 
-</div>
-                  </div>
-                  </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              </div>
-          </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
- <div class="modal custom-modal fade" id="complete" role="dialog">
-     <div class="modal-dialog modal-dialog-centered" role="document">
-         <div class="modal-content style">
-             <div class="modal-header">
-                             <h4 class="modal-title text-info" id="myModalLabel1"  class="modal-title">Complete Transfer</h4>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-                                </div>
-							<div class="modal-body">
-                                             <form id='wh' method="POST" action="complete_whinv">
-                                                    {% csrf_token %}
-                                                          <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+<div class="modal custom-modal fade" id="complete" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h4 class="modal-title text-info" class="modal-title" id="myModalLabel1">Complete Transfer</h4>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="complete_whinv" id='wh' method="POST">
+                    {% csrf_token %}
+                    <input id="txtHdnId" name="txtHdnId" type="hidden"/>
 
 
-                                                 <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                   <label for="remarks">Delivery date</label>
-										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" >
-										    </div>-->
-                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                   <label for="remarks">Remarks</label>
+                    <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
+                      <label for="remarks">Delivery date</label>
+                   <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" >
+               </div>-->
+                    <div class="col-md-12 col-sm-12  form-group has-feedback">
+                        <label for="remarks">Remarks</label>
 
-										      <textarea class="form-control" name="remarks" id="remarks"  placeholder="remarks" ></textarea>
-                                                      <p></p>
-										    </div>
-                                                  <div class="col-md-6 col-sm-6  offset-md-3">
-                                                  <button type="submit" name="complete" class="btn btn-info">Complete</button>
-                                            </div>
-  </form>
-                                        </div>
+                        <textarea class="form-control" id="remarks" name="remarks" placeholder="remarks"></textarea>
+                        <p></p>
+                    </div>
+                    <div class="col-md-6 col-sm-6  offset-md-3">
+                        <button class="btn btn-info" name="complete" type="submit">Complete</button>
+                    </div>
+                </form>
+            </div>
 
-                                        </div>
-                                    </div>
-                                </div>
+        </div>
+    </div>
+</div>
 <div class="modal custom-modal fade" id="depocomplete" role="dialog">
-     <div class="modal-dialog modal-dialog-centered" role="document">
-         <div class="modal-content style">
-             <div class="modal-header">
-                             <h5 class="modal-title">Complete Transfer</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-                                </div>
-							<div class="modal-body">
-                                             <form method="POST" action="complete_depoinv">
-                                                    {% csrf_token %}
-                                                          <input type="hidden" id="id1" name="id1"  />
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h5 class="modal-title">Complete Transfer</h5>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="complete_depoinv" method="POST">
+                    {% csrf_token %}
+                    <input id="id1" name="id1" type="hidden"/>
 
-                                                 	  <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                   <label for="remarks">Delivery date</label>
-										        <input type="date" class="form-control" name="date" id="date2"  placeholder="remarks" >
-										    </div>-->
-                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                   <label for="remarks">Remarks</label>
-										      <textarea class="form-control" name="remarks" id="remarks2"  placeholder="remarks" ></textarea>
-										    </div>
-                                                  <div class="col-md-6 col-sm-6  offset-md-3">
-                                                  <button type="submit" name="complete" class="btn btn-info">Complete</button>
-                                            </div>
-  </form>
-                                        </div>
+                    <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
+                <label for="remarks">Delivery date</label>
+             <input type="date" class="form-control" name="date" id="date2"  placeholder="remarks" >
+         </div>-->
+                    <div class="col-md-12 col-sm-12  form-group has-feedback">
+                        <label for="remarks">Remarks</label>
+                        <textarea class="form-control" id="remarks2" name="remarks" placeholder="remarks"></textarea>
+                    </div>
+                    <div class="col-md-6 col-sm-6  offset-md-3">
+                        <button class="btn btn-info" name="complete" type="submit">Complete</button>
+                    </div>
+                </form>
+            </div>
 
-                                        </div>
-                                    </div>
-                                </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal custom-modal fade" id="buscomplete" role="dialog">
-     <div class="modal-dialog modal-dialog-centered" role="document">
-         <div class="modal-content style">
-             <div class="modal-header">
-                             <h5 class="modal-title">Complete Transfer</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-                                </div>
-							<div class="modal-body">
-                                             <form method="POST" action="complete_businv">
-                                                    {% csrf_token %}
-                                                          <input type="hidden" id="id" name="id"  />
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h5 class="modal-title">Complete Transfer</h5>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="complete_businv" method="POST">
+                    {% csrf_token %}
+                    <input id="id" name="id" type="hidden"/>
 
 
-                                                 	  <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                   <label for="remarks">Delivery date</label>
-										        <input type="date" class="form-control" name="date" id="date3"  placeholder="remarks" >
-										    </div>-->
-                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                   <label for="remarks">Remarks</label>
-										      <textarea class="form-control" name="remarks" id="remarks3"  placeholder="remarks" ></textarea>
-										    </div>
-                                                  <div class="col-md-6 col-sm-6  offset-md-3">
-                                                  <button type="submit" name="complete" class="btn btn-info">Complete</button>
-                                            </div>
-  </form>
-                                        </div>
+                    <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
+                <label for="remarks">Delivery date</label>
+             <input type="date" class="form-control" name="date" id="date3"  placeholder="remarks" >
+         </div>-->
+                    <div class="col-md-12 col-sm-12  form-group has-feedback">
+                        <label for="remarks">Remarks</label>
+                        <textarea class="form-control" id="remarks3" name="remarks" placeholder="remarks"></textarea>
+                    </div>
+                    <div class="col-md-6 col-sm-6  offset-md-3">
+                        <button class="btn btn-info" name="complete" type="submit">Complete</button>
+                    </div>
+                </form>
+            </div>
 
-                                        </div>
-                                    </div>
-                                </div>
+        </div>
+    </div>
+</div>
 
-<div class="modal custom-modal fade"  id="edit_stk_item" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content style">
-                                                  <div class="modal-header">
-                              <h3 style="text-align:center;">Edit Transfer Item</h3>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-                                </div>
+<div aria-hidden="true" class="modal custom-modal fade" id="edit_stk_item" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h3 style="text-align:center;">Edit Transfer Item</h3>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
-                                        <div class="modal-body">
-                                             <form id="myForm" method="post" action="/edit_stk_item">
-                                                    {% csrf_token %}
+            <div class="modal-body">
+                <form action="/edit_stk_item" id="myForm" method="post">
+                    {% csrf_token %}
 
-                                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                         <label>Item Name </label>
-										            <input type="text" class="form-control"  name="item" id="item" readonly>
-                                            </div>
-                                            <div class="col-md-6 col-sm-6 form-group has-feedback">
-                                                        <label>Qty(In Cases)</label>
-										            <input type="text" class="form-control"  name="qty" id="qty">
-                                            </div>
-                                             <div class="col-md-6 col-sm-6 form-group has-feedback">
-                                                        <label>Qty(In Bottles)</label>
-										            <input type="text" class="form-control"  name="nob1" id="nob1">
-                                            </div>
+                    <div class="col-md-12 col-sm-12  form-group has-feedback">
+                        <label>Item Name </label>
+                        <input class="form-control" id="item" name="item" readonly type="text">
+                    </div>
+                    <div class="col-md-6 col-sm-6 form-group has-feedback">
+                        <label>Qty(In Cases)</label>
+                        <input class="form-control" id="qty" name="qty" type="text">
+                    </div>
+                    <div class="col-md-6 col-sm-6 form-group has-feedback">
+                        <label>Qty(In Bottles)</label>
+                        <input class="form-control" id="nob1" name="nob1" type="text">
+                    </div>
 
-                                                <input type="hidden" name="cases" id="cases" />
+                    <input id="cases" name="cases" type="hidden"/>
 
-                                                  <input type="hidden" id="busuom" name="busuom"  />
-                                            <input type="hidden" id="typebus" name="typebus"  />
-                                                   <input type="hidden" id="sno" name="sno"  />
-                                                 <p></p>
-                                            <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-primary">Update</button>
-                                            </div>
-                                             </form>
-                                        </div>
+                    <input id="busuom" name="busuom" type="hidden"/>
+                    <input id="typebus" name="typebus" type="hidden"/>
+                    <input id="sno" name="sno" type="hidden"/>
+                    <p></p>
+                    <div class="col-md-6 col-sm-6  offset-md-4">
+                        <button class="btn btn-primary" style="margin-bottom: 20px;" type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
 
 
-                                        </div>
-                                    </div>
-                                </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
+window.onload=function(){
+DisplayItems();
+}
+function DisplayItems(){
+var actionname=document.location.href.match(/[^\/]+$/)[0];
+if(actionname=="wh_add_stf")
+{
+$("#divItems").css("display","block");
+}
+if(actionname=="wh_item_add")
+{
+$("#divItemsAdd").css("display","block");
+}
+if(actionname=="wh_item_list")
+{
+$("#divItemsAdd").css("display","block");
+$("#divItems").css("display","block");
+}
+}
 $("#whid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename").val(selectedOptionText);
@@ -904,6 +1017,8 @@ $(document).ready(function() {
       }
     });
 });
+
+
 
 
 </script>

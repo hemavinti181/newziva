@@ -1,0 +1,699 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+<style>
+    .design{
+     color: white;
+        background-color:#329DD6 !important;
+    }
+      .design1{
+     color: white;
+        background-color:#329DD6 !important;
+    }
+</style>
+
+<!-- page content -->
+<div class="right_col" role="main">
+          <div class="">
+<div class="row">
+    <div class="col-md-4 col-sm-4 ">
+<div class="x_panel">
+ <div class="page-title">
+   <div class="title_left">
+        <h3>Stock Available</h3>
+    </div>
+    <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                    <input type="checkbox" id="checked" class="js-switch"  /></label>
+                </div>
+            </div>
+ </div>
+<div class="x_content">
+                <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">228</div>
+                                    <span style="margin-left: 20%;">Qty(In cases)</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>stock on hand</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
+                                <div class="tile-stats">
+                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <span style="margin-left: 20%;">Qty(In bottles)</span>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>stock on hand</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">228</div>
+                                    <span style="margin-left: 20%;">(In Days)</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Available Up to </p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+                                <div class="tile-stats">
+                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <span style="margin-left: 20%;">Qty(In Cases)</span>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Consumption</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+                                <div class="tile-stats">
+                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <span style="margin-left: 20%;">Qty(In bottles)</span>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Consumption</p>
+                                </div>
+                            </div>
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                         <p class="text-muted font-13 m-b-30">
+                    </p>
+                      <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
+                                  <table class="table table-striped jambo_table bulk_action">
+
+                                    <thead>
+                                     <tr>
+                                        <!--<th class="row2" rowspan="2">S NO</th>-->
+                                <!--<th class="row2" rowspan="2">Date</th>-->
+                                         <th  class="design1" rowspan="2">S no</th>
+                                <th class="design1" rowspan="2">Product</th>
+                                <th class="design1" colspan="2">Stock on hand</th>
+                                         <th class="design1" colspan="2">Consumption</th>
+                                <th  class="design1">Days of stock</th>
+                                    </tr>
+                                        <tr>
+                                            <th class="design">Qty(In Cases)</th>
+                                        <th class="design">Qty(In Bottles)</th>
+                                        <th class="design">Qty(In Cases)</th>
+                                         <th class="design">Qty(In Bottles)</th>
+                                            <th class="design">Days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                                <td>1000ml</td>
+                                            <td>150</td>
+                                            <td>2000</td>
+                                            <td>100</td>
+                                            <td>1200</td>
+                                            <td>6</td>
+                                        </tr>
+                                     <tr>
+                                         <td>2</td>
+                                                <td>1000ml</td>
+                                            <td>150</td>
+                                            <td>2000</td>
+                                            <td>100</td>
+                                            <td>1200</td>
+                                            <td>6</td>
+                                        </tr>
+                                    </tbody>
+                                       <tfoot>
+                                            <tr>
+                                                <th class="design" colspan="2">Grand Total</th>
+
+                                                <td>18772</td>
+                                                <td>502</td>
+                                                <td>18772</td>
+                                                <td>502</td>
+                                                <td>12</td>
+                                            </tr>
+                                        </tfoot>
+                                </table>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+
+  </div>
+
+</div>
+</div>
+<div class="col-md-4 col-sm-4 ">
+<div class="x_panel">
+<div class="page-title">
+   <div class="title_left">
+        <h3>Pending sales</h3>
+    </div>
+    <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                    <input type="checkbox" id="checked" class="js-switch"  /></label>
+                </div>
+            </div>
+ </div>
+
+<div class="x_content">
+ <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">228</div>
+                                    <span style="margin-left: 20%;">Qty(In cases)</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>To be delivered</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+                                <div class="tile-stats">
+                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <span style="margin-left: 20%;">Qty(In bottles)</span>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>To be delivered</p>
+                                </div>
+                            </div>
+                             <div class="animated flipInY col-lg-4 col-md- col-sm-14">
+                                <div class="tile-stats">
+                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <span style="margin-left: 20%;">Pending</span>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>To be invoiced</p>
+                                </div>
+                            </div>
+
+             <div class="col-md-12 col-sm-12" style="margin-bottom:49px">
+						<form  method="POST" id="myForm" action="warehouse_stock"  enctype="multipart/form-data">
+									{% csrf_token %}
+                            <div class="col-sm-3 col-md-3 form-group has-feedback">
+								<label class="focus-label">Select  Date</label>
+									<input class="form-control" type="date" name="date"  id="getdate"  value="{{ request.POST.date }}" style="width:250px;margin-left:-10px;margin-bottom:49px" required>
+							</div>
+
+                        </form>
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                         <p class="text-muted font-13 m-b-30">
+                    </p>
+                      <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
+                                  <table class="table table-striped jambo_table bulk_action">
+
+                                    <thead>
+                                     <tr>
+                                        <!--<th class="row2" rowspan="2">S NO</th>-->
+                                <!--<th class="row2" rowspan="2">Date</th>-->
+                                         <th  class="design1" rowspan="2">S no</th>
+                                <th class="design1" rowspan="2">Product</th>
+
+                                <th class="design1" colspan="3">FTD Sales</th>
+                                <th  class="design1" colspan="3">MTD Sales</th>
+                                    </tr>
+                                        <tr>
+                                           <th class="design">Invoice no</th>
+                                            <th class="design">Qty(In Cases)</th>
+                                        <th class="design">Qty(In Bottles)</th>
+                                            <th class="design">Invoice no</th>
+                                        <th class="design">Qty(In Cases)</th>
+                                        <th class="design">Qty(In Bottles)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>ZVS001</td>
+                                            <td>1000ml</td>
+                                            <td>150</td>
+                                            <td>2000</td>
+                                            <td>ZVS001</td>
+                                            <td>100</td>
+                                            <td>1200</td>
+                                        </tr>
+                                     <tr>
+                                         <td>2</td>
+                                         <td>ZVS001</td>
+                                         <td>1000ml</td>
+                                            <td>150</td>
+                                            <td>2000</td>
+                                         <td>ZVS001</td>
+                                            <td>100</td>
+                                            <td>1200</td>
+                                        </tr>
+                                    </tbody>
+                                         <tfoot>
+                                            <tr>
+                                                <th class="design" colspan="2">Grand Total</th>
+                                                <td>18772</td>
+                                                <td>502</td>
+                                                <td>18772</td>
+                                                <td>502</td>
+                                                <td>12</td>
+                                            </tr>
+                                        </tfoot>
+                                </table>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+ <div class="col-md-3 col-sm-3">
+                                    <div id="echart_pies3"></div>
+                                </div>
+     <div class="clearfix"></div>
+  </div>
+
+</div>
+</div>
+          </div>
+   <div class="col-md-4 col-sm-4">
+<div class="x_panel">
+    <div class="page-title">
+   <div class="title_left">
+        <h3>Complete sale</h3>
+    </div>
+    <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                    <input type="checkbox" id="checked" class="js-switch"  /></label>
+                </div>
+            </div>
+ </div>
+<div class="x_content">
+                             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+                                <div class="tile-stats" >
+                                    <div class="count" style="color:green;margin-left: 38%;">10</div>
+                                    <span style="margin-left: 40%;">sales</span>
+                                    <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Amount collected</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">228</div>
+                                    <span style="margin-left: 20%;">Qty(In cases)</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Delivered</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+                                <div class="tile-stats">
+                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <span style="margin-left: 20%;">Qty(In bottles)</span>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Delivered</p>
+                                </div>
+                            </div>
+
+
+             <div class="col-md-12 col-sm-12">
+						<form  method="POST" id="myForm" action="warehouse_stock"  enctype="multipart/form-data">
+									{% csrf_token %}
+                            <div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">Select  Date</label>
+									<input class="form-control" type="date" name="date"  id="getdate"  value="{{ request.POST.date }}" style="width:250px;margin-left:-10px;margin-bottom:49px" required>
+							</div>
+                        </div>
+                        </form>
+</div>
+      <div class="col-sm-12">
+     <div id="graph_bar3"></div></div>
+  </div>
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                         <p class="text-muted font-13 m-b-30">
+                    </p>
+                      <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
+                                  <table class="table table-striped jambo_table bulk_action">
+
+                                    <thead>
+                                     <tr>
+                                        <!--<th class="row2" rowspan="2">S NO</th>-->
+                                <!--<th class="row2" rowspan="2">Date</th>-->
+                                         <th  class="design1" rowspan="2">S no</th>
+                                <th class="design1" rowspan="2">Product</th>
+                                <th class="design1" colspan="3">FTD Sales</th>
+                                <th  class="design1" colspan="3">MTD Sales</th>
+                                    </tr>
+                                        <tr>
+                                                <th class="design">Amount</th>
+                                            <th class="design">Qty(In Cases)</th>
+                                        <th class="design">Qty(In Bottles)</th>
+                                             <th class="design">Amount</th>
+                                        <th class="design">Qty(In Cases)</th>
+                                        <th class="design">Qty(In Bottles)</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>1000ml</td>
+                                            <td>15000.00₹</td>
+                                            <td>150</td>
+                                            <td>2000</td>
+                                             <td>25000.00₹</td>
+                                            <td>100</td>
+                                            <td>1200</td>
+                                        </tr>
+                                     <tr>
+                                         <td>2</td>
+                                                <td>1000ml</td>
+                                           <td>₹1000.00</td>
+                                            <td>150</td>
+                                            <td>2000</td>
+                                          <td>₹4000.00</td>
+                                            <td>100</td>
+                                            <td>1200</td>
+                                        </tr>
+
+                                    </tbody>
+                                       <tfoot>
+                                            <tr>
+                                                <th class="design" colspan="2">Grand Total</th>
+                                                <td>₹16000.00</td>
+                                                <td>18772</td>
+                                                <td>502</td>
+                                                 <td>₹29000.00</td>
+                                                <td>18772</td>
+                                                <td>502</td>
+                                            </tr>
+                                        </tfoot>
+                                </table>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+
+
+</div>
+</div>
+
+  </div>
+
+</div>
+</div>
+</div>
+          </div>
+</div>
+
+
+{% endblock %}
+<script>
+     window.onload=function(){
+
+
+     if (true) {
+
+        var echartPie = echarts.init(document.getElementById('echart_pies1'), "");
+
+        echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['1000ml', '500ml', '250ml']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: [{
+                    value: 335,
+                    name: '1000ml'
+                }, {
+                    value: 310,
+                    name: '500ml'
+                }, {
+                    value: 234,
+                    name: '250ml'
+                }]
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+ if (true) {
+
+        var echartPie = echarts.init(document.getElementById('echart_pies2'), "");
+
+        echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['1000ml', '500ml', '250ml']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: [{
+                    value: 335,
+                    name: '1000ml'
+                }, {
+                    value: 310,
+                    name: '500ml'
+                }, {
+                    value: 234,
+                    name: '250ml'
+                }]
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+ if (true) {
+        var echartPie = echarts.init(document.getElementById('echart_pies3'), "");
+
+        echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['1000ml', '500ml', '250ml']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: [{
+                    value: 335,
+                    name: '1000ml'
+                }, {
+                    value: 310,
+                    name: '500ml'
+                }, {
+                    value: 234,
+                    name: '250ml'
+                }]
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+     if ($('#graph_bar').length) {
+
+        Morris.Bar({
+            element: 'graph_bar',
+            data: [
+                { device: 'Aquafeena 1000ml', geekbench: 200 },
+                { device: 'Aquafeena 500ml', geekbench: 9113 },
+                { device: 'Aquafeena 250ml', geekbench: 250 },
+                { device: 'Sippy Beverages 1000ml', geekbench: 6959 },
+                { device: 'Sippy Beverages 500ml', geekbench: 9659 },
+                { device: 'Sippy Beverages 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar2').length) {
+
+        Morris.Bar({
+            element: 'graph_bar2',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#452754', '#452754', '#452755', '#452754'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar3').length) {
+
+        Morris.Bar({
+            element: 'graph_bar3',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+
+    }
+</script>

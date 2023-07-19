@@ -11338,20 +11338,21 @@ def taxinvoice_list_admin(request):
             else:
                 warehouseid1='All'
             url ="http://13.235.112.1/ziva/mobile-api/tax-invoicelist-new.php"
-            payload = json.dumps({"depoid":request.POST.get('depoid1'),
+            payload = json.dumps(
+                {"depoid":request.POST.get('depoid1'),
                                   "tdate":ldate,
                                   "accesskey":accesskey,
                                   "warehouseid":warehouseid1,
                                   "regionid":request.POST.get('regionid1'),
                                   "fdate":fdate,
-                                  "busstationid":request.POST.get('busstationid1'),"status":"Approved"}),
-
+                                  "busstationid":request.POST.get('busstationid1'),"status":"Approved"
+                })
             headers = {
                 'Content-Type': 'text/plain'
             }
-            response = requests.request("GET", url, headers=headers, data=payload)
-            if response.status_code == 200:
-                data = response.json()
+            response2 = requests.request("GET", url, headers=headers, data=payload)
+            if response2.status_code == 200:
+                data = response2.json()
                 deliverypendinglist = data['deliverypendinglist']
                 return render(request, 'sales/taxinvoice_list_admin.html',
                               {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange,'deliverypendinglist':deliverypendinglist})
@@ -11385,7 +11386,7 @@ def taxinvoice_list_admin(request):
             data = response.json()
             messages.error(request, data['message'])
             return render(request, 'login1.html')
-    return render(request,'sales/taxinvoice_list_admin.html')
+    return render(request,'sales/taxinvoice_list_admin.html',{'menuname':menuname})
 
 
 def ready_toship_admin(request):
@@ -11698,27 +11699,53 @@ def internal_consumption(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         nobot = data['noofbottleslist']
-
-        url = "http://13.235.112.1/ziva/mobile-api/busservicesupplylist.php"
-        payload = json.dumps({"accesskey": accesskey, "date":request.POST.get('date')})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            busservicesupplylist = data['busservicesupplylist']
-            return render(request,'intconsumption/internal_consumption.html',{'nobot':nobot,'busservicesupplylist':busservicesupplylist,"depolist":depolist,'menuname':menuname})
-        elif response.status_code == 400:
-            data = response.json()
-            messages.error(request, data['message'])
-            return redirect('/login')
-        elif response.status_code == 500:
-            messages.error(request, 'Internal server error')
-            return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname})
+        if request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/busservicesupplylist.php"
+                payload = json.dumps({"accesskey": accesskey, "fdate":request.POST.get('fdate'),"tdate":request.POST.get('tdate')})
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    busservicesupplylist = data['busservicesupplylist']
+                    return render(request,'intconsumption/internal_consumption.html',{'nobot':nobot,'busservicesupplylist':busservicesupplylist,"depolist":depolist,'menuname':menuname})
+                elif response.status_code == 400:
+                    data = response.json()
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+                elif response.status_code == 500:
+                    messages.error(request, 'Internal server error')
+                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname})
+                else:
+                    data = response.json()
+                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname})
         else:
-            data = response.json()
-            return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname})
+            url = "http://13.235.112.1/ziva/mobile-api/busservicesupplylist.php"
+            payload = json.dumps(
+                {"accesskey": accesskey, "fdate":"All", "tdate":"All"})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                busservicesupplylist = data['busservicesupplylist']
+                return render(request, 'intconsumption/internal_consumption.html',
+                              {'nobot': nobot, 'busservicesupplylist': busservicesupplylist, "depolist": depolist,
+                               'menuname': menuname})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('/login')
+            elif response.status_code == 500:
+                messages.error(request, 'Internal server error')
+                return render(request, 'intconsumption/internal_consumption.html',
+                              {'nobot': nobot, "depolist": depolist, 'menuname': menuname})
+            else:
+                data = response.json()
+                return render(request, 'intconsumption/internal_consumption.html',
+                              {'nobot': nobot, "depolist": depolist, 'menuname':menuname})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -12167,3 +12194,9 @@ def authorize_staffid(request):
     else:
         return redirect('/internal_consumption')
 
+def depot_dashboard(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    return render(request, 'dashboard/depot_dashboard.html', {"menuname": menuname})
