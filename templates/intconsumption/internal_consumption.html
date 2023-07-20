@@ -45,11 +45,11 @@
 									{% csrf_token %}
                             <div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">from </label>
-									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ request.POST.date }}" required>
+									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ request.POST.fdate }}" required>
 							</div>
                              <div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">To</label>
-									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ request.POST.date }}" required>
+									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ request.POST.tdate }}" required>
 							</div>
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
@@ -96,7 +96,7 @@
                             <td>{{ data.staffname }}</td>
                             <td>
                                  <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
-                             <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" >RETURN</span>
+                             <span class="badge badge-info" style="background-color:#DF6455;display:none;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" >RETURN</span>
                             </td>
                                 </tr>
                             {% endfor %}
@@ -333,7 +333,7 @@
                                             <div class="modal-content style2">
                                                <div class="modal-body">
 
-                                             <form method="POST" action="/authorize_staffid">
+                                             <form method="POST" action=" ">
                                                     {% csrf_token %}
                               <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -349,7 +349,7 @@
 
                                             <p></p>
                                             <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-primary" style="margin-left:-30px;">Authorize</button>
+                                                  <button type="button" class="btn btn-primary" id="authorize1" style="margin-left:-30px;">Authorize</button>
                                             </div>
                                         </div>
                                         </div>
@@ -784,9 +784,37 @@ $('#tickets').on('input', function() {
 
     document.getElementById('fdate').addEventListener('change', function() {
         var form = document.getElementById('myForm');
-
         form.submit();
     });
+     document.getElementById('tdate').addEventListener('change', function() {
+        var form = document.getElementById('myForm');
+        form.submit();
+    });
+  $(document).ready(function () {
+    $("#authorize1").click(function() {
+    		var auth = $('#sno').val();
+            var serviceid1 = $('#serviceid1').val();
+            $.ajax({
+               url: "{% url 'authorize_staffid' %}",
+                type: 'POST',
+                data: {
+                  'auth': auth,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+              success: function (response) {
+              if(response === '200'){
+                 $("#return").show();
+                 $("#bs-example-modal-sm").hide();
+               }
+               else{
+                $("#bs-example-modal-sm").modal("hide");
+               }
+              },
+              error: function (xhr, status, error) {
+                console.error(error);
+              }
+            });
+  });
+  });
 </script>
 {% endblock %}
 

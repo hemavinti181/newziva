@@ -383,23 +383,20 @@ color:#14c38e !important;
 <div class="clearfix"></div>
 
 <div class="profile clearfix" style="background: #14c38e;">
-    <!--
-<div class="profile_pic">
-<img src="{% static 'build/images/logo.jpeg' %}" alt="..." class="img-circle profile_img">
+
+<div class="profile_pic" style="background: #14c38e; margin-top:55px;">
+    <!--<span style="font-size: 9px;"><b>{{ request.session.displayrole }}</b></span>
+<img src="{% static 'build/images/logo.jpeg' %}" alt="..." class="img-circle profile_img" style="margin-top:-12px;" >-->
 </div>
-    -->
-<div class="profile_info">
-    <h2>{{ request.session.name }}</h2>
-         <span style="font-size: 9px;"><b>{{ request.session.displayrole }}</b></span>
 
-
-
+<div class="profile_info" style="background: #14c38e;">
+    <!--<h2>{{ request.session.name }}</h2>-->
 </div>
 </div>
 
 <br/>
 
-<div class="sidebar-footer hidden-small">
+<!--<div class="sidebar-footer hidden-small">
 <a data-toggle="tooltip" data-placement="top" title="Settings">
 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
 </a>
@@ -412,7 +409,7 @@ color:#14c38e !important;
 <a data-toggle="tooltip" data-placement="top" title="Logout" href="/signout">
 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
 </a>
-</div>
+</div>-->
 {% include 'sidebar.html' %}
 </div>
 </div>

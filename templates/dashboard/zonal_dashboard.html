@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+<style>
+    .design{
+     color: white;
+        background-color:#08aca2 !important;
+    }
+</style>
+
+<!-- page content -->
+            <div class="right_col" role="main">
+               <div class="row" style="display: block;">
+                   <div class="x_panel">
+          <div class="page-title">
+            <div class="title_left">
+              <h3>Zonal Stores Stock Available</h3>
+            </div>
+            <div class="title_right">
+              <div class="col-md-8 col-sm-8 offset-md-9">
+                <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
+              </div>
+            </div>
+          </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">228</div>
+                                    <span style="margin-left: 40%;">Qty(In cases)</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock on hand</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
+                                <div class="tile-stats">
+                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <span style="margin-left: 40%;">Qty(In bottles)</span>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Stock on hand</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
+                                <div class="tile-stats" >
+                                    <div class="count" style="color:green;margin-left: 38%;">10</div>
+                                    <span style="margin-left: 40%;">Qty(In cases)</span>
+                                    <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
+                                    <span style="margin-left: 40%;">Qty(In bottles)</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
+                                    <span style="margin-left: 40%;">In Days</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock Available</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                    <div class="x_panel">
+                   <div class="row">
+                       <div class="col-md-4 col-sm-4 echart-depot1">
+                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+                           </div>
+
+                           <div class="col-md-4 col-sm-4 echart-depot1">
+                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+              </div>
+                           <div class="col-md-4 col-sm-4 echart-depot1">
+                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+              </div>
+              </div>
+                   </div>
+                   <div class="x_panel">
+          <div class="page-title">
+            <div class="title_left">
+              <h3>Depot/Unit Wise Stock Available</h3>
+            </div>
+            <div class="title_right">
+                <div class="col-md-5 col-sm-5 offset-md-5">
+											 <input type="hidden" name="deponame1" id="deponame1" />
+												<select class="form-control depot" name="depoid1" id="depoid1" required>
+                                                    <option value=""> depot</option>
+                                                    {% for data in depolist %}
+                                                            {% if data.depoid == 'DEPO0094' %}
+													            <option value="{{ data.depoid  }}" selected>{{  data.deponame  }}</option>
+                                                            {% else %}
+                                                                <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
+                                                            {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+              <div class="col-md-2 col-sm-2">
+                <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
+              </div>
+            </div>
+          </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">228</div>
+                                    <span style="margin-left: 40%;">Qty(In cases)</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock on hand</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
+                                <div class="tile-stats">
+                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <span style="margin-left: 40%;">Qty(In bottles)</span>
+                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Stock on hand</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
+                                <div class="tile-stats" >
+                                    <div class="count" style="color:green;margin-left: 38%;">10</div>
+                                    <span style="margin-left: 40%;">Qty(In cases)</span>
+                                    <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
+                                    <span style="margin-left: 40%;">Qty(In bottles)</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
+                                <div class="tile-stats">
+                                    <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
+                                    <span style="margin-left: 40%;">In Days</span>
+                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock Available</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div></div>
+           <div class="col-md-5 col-sm-5">
+        <div class="x_panel">
+          <div class="page-title">
+            <div class="title_left">
+              <h4 style="color:#14c38e">Depot/Unit Wise Indent </h4>
+            </div>
+            <div class="title_right">
+              <div class="col-md-6 col-sm-7 offset-md-9">
+                <label><input type="checkbox" id="checked2" class="js-switch"  /></label>
+              </div>
+            </div>
+          </div>
+          <div class="x_content">
+            <div class="animated flipInY col-lg-6 col-md-6 col-sm-14">
+              <div class="tile-stats">
+                <div class="count" style="color:red;margin-left: 5%;font-size:30px;">6</div>
+                <!--<span style="margin-left: 20%;">Pending</span>-->
+                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Pending Indent</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-6 col-md-6 col-sm-4">
+              <div class="tile-stats">
+                <div class="count" style="color: #3493fb;margin-left: 5%;font-size:30px;">228</div>
+                <!--<span style="margin-left: 20%;">Qty(In cases)</span>-->
+                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Qty Indented</p>
+              </div>
+            </div>
+          </div>
+        </div>
+           </div>
+               </div>
+            </div>
+{% endblock %}

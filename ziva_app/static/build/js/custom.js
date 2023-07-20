@@ -709,7 +709,7 @@ function init_gauge() {
         limitMax: 'false',
         colorStart: '#1ABC9C',
         colorStop: '#1ABC9C',
-        strokeColor: '#F0F3F3',
+        strokeColor: '#D23939',
         generateGradient: true
     };
 

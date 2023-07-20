@@ -259,7 +259,8 @@ urlpatterns = [
     path('create_depoindent',views.create_depoindent,name='create_depoindent'),
     path('create_busindent',views.create_busindent,name='create_busindent'),
     path('authorize_staffid',views.authorize_staffid,name='authorize_staffid'),
-    path('depot_dashboard',views.depot_dashboard,name='depot_dashboard')
+    path('depot_dashboard',views.depot_dashboard,name='depot_dashboard'),
+    path('zonal_dashboard',views.zonal_dashboard,name='zonal_dashboard')
 
 
 

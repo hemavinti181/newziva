@@ -1,9 +1,14 @@
 
-<div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="margin-top: -32px;">
+<div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="margin-top: -3px;">
 <div class="menu_section">
 <ul class="nav side-menu">
-     {% for  item in menuname %}
-<li><a><i class="{{ item.icon }}"></i>{{ item.name }}<span class="fa fa-chevron-down"></span></a>
+
+        {% for  item in menuname %}
+            {% if item.weblinks != "#" and  item.weblinks != '' %}
+                <li><a href=" {{ item.weblinks }}"><i class="{{ item.icon }}"></i>{{ item.name }}</a></li>
+    {% else %}
+        <li><a><i class="{{ item.icon }}"></i>{{ item.name }}<span class="fa fa-chevron-down"></span></a>
+            {% endif %}
     <ul class="nav child_menu">
         {% for  list in item.list %}
           <li><a  href="{{ list.weblinks }}">{{ list.name }}<span class="{{ list.subicon }}"></span></a>
@@ -17,6 +22,7 @@
     </ul>
 </li>
     {% endfor %}
-</ul>
+    </ul>
+
 </div>
 </div>

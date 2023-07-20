@@ -110,7 +110,7 @@ def login(request):
             if role == 'Admin':
                 return redirect('/dashboard')
             elif displayrole == 'BUS STATION CONTROLLER' or "DEPOT STORE EXECUTIVE" or "UPPAL ZONAL STORES":
-                return redirect('/live_inventory')
+                return redirect('/depot_dashboard')
             elif displayrole == "MARKETING EXECUTIVE":
                 return redirect('/store_master')
         else:
@@ -11721,9 +11721,11 @@ def internal_consumption(request):
                     data = response.json()
                     return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname})
         else:
+            tdate = datetime.date.today()
+            tdate = tdate.strftime("%d-%m-%Y")
             url = "http://13.235.112.1/ziva/mobile-api/busservicesupplylist.php"
             payload = json.dumps(
-                {"accesskey": accesskey, "fdate":"All", "tdate":"All"})
+                {"accesskey": accesskey, "fdate":tdate, "tdate":tdate})
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -12163,19 +12165,22 @@ def authorize_staffid(request):
 
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/driver-authorization.php"
-
-    payload = json.dumps({"accesskey": accesskey,
-                          "service_id": request.POST.get('serviceid1'),
+    serviceid1 = request.POST.get('serviceid1')
+    serviceid1 = base64.b64encode(serviceid1.encode('utf-8'))
+    payload = {"accesskey": accesskey,
+                          "service_id":serviceid1 ,
                           "staffno": request.POST.get('auth')
-                          })
+                          }
+    payload = json.dumps(payload, cls=BytesEncoder)
     headers = {
         'Content-Type': 'application/json'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
+
     if response.status_code == 200:
         data = response.json()
         messages.success(request,data['message'])
-        return redirect('/internal_consumption')
+        return JsonResponse({"response":data})
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
@@ -12187,7 +12192,7 @@ def authorize_staffid(request):
     elif response.status_code == 503:
             data = response.json()
             messages.error(request, data['message'])
-            return redirect('/internal_consumption')
+            return JsonResponse({"response":response})
     elif response.status_code == 500:
         messages.error(request,"Internal Server Error")
         return redirect('/internal_consumption')
@@ -12200,3 +12205,11 @@ def depot_dashboard(request):
         return redirect('/login')
     menuname = request.session['mylist']
     return render(request, 'dashboard/depot_dashboard.html', {"menuname": menuname})
+
+
+def zonal_dashboard(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    return render(request, 'dashboard/zonal_dashboard.html', {"menuname": menuname})
