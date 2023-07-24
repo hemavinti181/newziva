@@ -63,20 +63,40 @@
                         </div>
                     </div>
                 </div>
-                    <div class="x_panel">
-                   <div class="row">
-                       <div class="col-md-4 col-sm-4 echart-depot1">
-                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
-                           </div>
-
-                           <div class="col-md-4 col-sm-4 echart-depot1">
-                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
-              </div>
-                           <div class="col-md-4 col-sm-4 echart-depot1">
-                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
-              </div>
-              </div>
-                   </div>
+                   <div class="x_panel">
+                     <div class="x_content">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="row" style="text-align: center;">
+                                <div class="col-md-3">
+                                    <div id="echart-depot1"   style="width: 300px; height: 200px;margin-top:-40px;"></div>
+                                    <!--<h4 style="margin:18px">Weekly Consumption progress</h4>-->
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="echart-pies2"   style="width: 300px; height: 200px;margin-top:-40px;"></div>
+                                    <!--<h4 style="margin:18px">Weekly Consumption progress</h4>-->
+                                </div>
+                                <div class="col-md-4" style="overflow:hidden;">
+                                    <span class="sparkline_one" style="height: 160px; padding: 10px 25px;margin-left:4px;">
+                                        <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+                                      <h4 style="margin:18px">Weekly Consumption progress</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="sidebar-widget">
+                                <h4></h4>
+                                <canvas id="chart_gauge_03" class="" style="width:225px;height:100px;margin-top:-30px;margin-left:-40px;"></canvas>
+                                <div class="goal-wrapper">
+                                    <span id="gauge-text2" class="gauge-value pull-left" style="margin-left:32px">1</span>
+                                      <span id="goal-text2" class="goal-value pull-right">31days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     </div>
+                     </div>
                    <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
@@ -96,11 +116,13 @@
                                                     {% endfor %}
 												</select>
 										</div>
+
               <div class="col-md-2 col-sm-2">
                 <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
               </div>
             </div>
           </div>
+
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
@@ -129,6 +151,7 @@
                                     <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
                                     <span style="margin-left: 40%;">Qty(In bottles)</span>
                                     <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
+
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
@@ -141,36 +164,447 @@
 
                         </div>
                     </div></div>
-           <div class="col-md-5 col-sm-5">
+
+<div class="x_panel">
+                     <div class="x_content">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="row" style="text-align: center;">
+                                <div class="col-md-3">
+                                    <div id="echart-depot1"   style="width: 300px; height: 200px;margin-top:-40px;"></div>
+                                 <h4 style="margin:18px">Weekly Consumption progress</h4>
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="echart-pies2"   style="width: 300px; height: 200px;margin-top:-40px;"></div>
+                                  <h4 style="margin:18px">Weekly Consumption progress</h4>
+                                </div>
+                                <div class="col-md-6" style="overflow:hidden;">
+                                    <span class="sparkline_one" style="height: 160px; padding: 10px 25px;">
+                                        <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+                                      <h4 style="margin:18px">Weekly Consumption progress</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="sidebar-widget">
+                                <h4>Goal</h4>
+                                <canvas id="chart_gauge_03" class="" style="width:250px;height:100px;margin-top:-50px;"></canvas>
+                                <div class="goal-wrapper">
+                                    <span id="gauge-text2" class="gauge-value pull-left" style="margin-left:32px">1</span>
+                                      <span id="goal-text2" class="goal-value pull-right">31days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     </div>
+</div>
+<div class="row">
+    <div class="col-md-5 col-sm-5">
         <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h4 style="color:#14c38e">Depot/Unit Wise Indent </h4>
+              <h5 style="color:#14c38e">Depots pending indent</h5>
             </div>
             <div class="title_right">
               <div class="col-md-6 col-sm-7 offset-md-9">
-                <label><input type="checkbox" id="checked2" class="js-switch"  /></label>
+                <label><input type="checkbox" id="checked3" class="js-switch"  /></label>
               </div>
             </div>
           </div>
           <div class="x_content">
-            <div class="animated flipInY col-lg-6 col-md-6 col-sm-14">
-              <div class="tile-stats">
-                <div class="count" style="color:red;margin-left: 5%;font-size:30px;">6</div>
-                <!--<span style="margin-left: 20%;">Pending</span>-->
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Pending Indent</p>
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats" >
+                <div class="count" style="color:green;margin-left: 5%;font-size:30px;">10</div>
+                <span style="margin-left: 40%;">sales</span>
+                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Amount collected</p>
               </div>
             </div>
-            <div class="animated flipInY col-lg-6 col-md-6 col-sm-4">
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
                 <div class="count" style="color: #3493fb;margin-left: 5%;font-size:30px;">228</div>
-                <!--<span style="margin-left: 20%;">Qty(In cases)</span>-->
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Qty Indented</p>
+                <span style="margin-left: 20%;">Qty(In cases)</span>
+                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Delivered</p>
               </div>
+            </div>
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats">
+                <div class="count" style="color:red;margin-left: 5%;font-size:30px;">6</div>
+                <span style="margin-left: 20%;">Qty(In bottles)</span>
+                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Delivered</p>
+              </div>
+            </div>
+            <div class="col-md-12 col-sm-12">
+              <form  method="POST" id="myForm2" action="warehouse_stock"  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="col-sm-12 col-md-12 form-group has-feedback">
+                  <label class="focus-label" style="margin-top: 45px;margin-bottom: 9px;">Select  Date</label>
+                  <input class="form-control" type="date" name="date"  id="getdate"  value="{{ request.POST.date }}" style="width:250px;margin-left:-10px;" required>
+                </div>
+              </form>
             </div>
           </div>
         </div>
-           </div>
-               </div>
+    </div>
+    <div class="col-md-7 col-sm-7">
+        <div class="x_panel">
+          <div class="page-title">
+            <div class="title_left">
+              <h5 style="color:#14c38e">Qty Accepted from vendor</h5>
             </div>
+            <div class="title_right">
+              <div class="col-md-6 col-sm-7 offset-md-9">
+                <label><input type="checkbox" id="checked3" class="js-switch"  /></label>
+              </div>
+            </div>
+          </div>
+          <div class="x_content">
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats" >
+                <div class="count" style="color:green;margin-left: 5%;font-size:30px;">10</div>
+                <!--<span style="margin-left: 40%;"></span>-->
+                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Invoiced</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats">
+                <div class="count" style="color: #3493fb;margin-left: 5%;font-size:30px;">228</div>
+                <!--<span style="margin-left: 20%;"></span>-->
+                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Accepted Qty(In cases)</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats">
+                <div class="count" style="color:red;margin-left: 5%;font-size:30px;">6</div>
+                <!--<span style="margin-left: 20%;"></span>-->
+                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Accepted Qty(In bottles)</p>
+              </div>
+            </div>
+            <div class="col-md-12 col-sm-12">
+              <form  method="POST" id="myForm2" action="warehouse_stock"  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="col-sm-12 col-md-12 form-group has-feedback">
+                  <label class="focus-label" style="margin-top: 45px;margin-bottom: 9px;">Select  Date</label>
+                  <input class="form-control" type="date" name="date"  id="getdate"  value="{{ request.POST.date }}" style="width:250px;margin-left:-10px;" required>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+            </div>
+            </div>
+</div>
+</div>
+
+
+<script>
+
+     window.onload=function(){
+
+     var chart_gauge_settings = {
+        lines: 12,
+        angle: 0,
+        lineWidth: 0.4,
+        pointer: {
+            length: 0.75,
+            strokeWidth: 0.042,
+            color: '#1D212A'
+        },
+        limitMax: 'false',
+        colorStart: '#1ABC9C',
+        colorStop: '#1ABC9C',
+        strokeColor: '#D23939',
+        generateGradient: true
+    };
+        var chart_gauge_02_elem = document.getElementById('chart_gauge_03');
+        var chart_gauge_02 = new Gauge(chart_gauge_02_elem).setOptions(chart_gauge_settings);
+
+    if ($('#gauge-text2').length) {
+
+        chart_gauge_02.maxValue = 31;
+        chart_gauge_02.animationSpeed = 32;
+        chart_gauge_02.set(10);
+        chart_gauge_02.setTextField(document.getElementById("gauge-text2"));
+
+    }
+
+
+     if (true) {
+   var echartPie = echarts.init(document.getElementById('echart-depot1'), "");
+
+        echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['1000ml', '500ml', '250ml']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: [{
+                    value: 335,
+                    name: '1000ml'
+                }, {
+                    value: 310,
+                    name: '500ml'
+                }, {
+                    value: 234,
+                    name: '250ml'
+                }]
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+ if (true) {
+
+        var echartPie = echarts.init(document.getElementById('echart-pies2'), "");
+
+        echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['1000ml', '500ml', '250ml']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: [{
+                    value: 335,
+                    name: '1000ml'
+                }, {
+                    value: 310,
+                    name: '500ml'
+                }, {
+                    value: 234,
+                    name: '250ml'
+                }]
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+
+
+     if ($('#graph_bar').length) {
+     var date=new Date(); //$("#getdate").val();
+     var today_date=date.getDate()+"/"+ (parseInt(date.getMonth())+1);
+
+        Morris.Bar({
+            element: 'graph_bar',
+            data: [
+                { device: today_date+' 1000ml', geekbench: 2000 },
+                { device: today_date+' 500ml', geekbench: 9113 },
+                { device: today_date+' 250ml', geekbench: 2500 },
+                { device: 'Total 1000ml', geekbench: 5000 },
+                { device: 'Total 500ml', geekbench: 9113 },
+                { device: 'Total 250ml', geekbench: 2000 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar2').length) {
+
+        Morris.Bar({
+            element: 'graph_bar2',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#452754', '#452754', '#452755', '#452754'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar3').length) {
+
+        Morris.Bar({
+            element: 'graph_bar3',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+
+    }
+    $(document).ready(function() {
+    // When the button with ID "checked1" is clicked
+    $("#checked1").click(function() {
+      if ($(this).is(":checked")) {
+       $("#echart-depot1").hide();
+      $("#stktabel").show();
+    }
+    else{
+     $("#echart-depot1").show();
+      $("#stktabel").hide();
+    }
+    });
+  });
+   $(document).ready(function() {
+    // When the button with ID "checked1" is clicked
+    $("#checked2").click(function() {
+      if ($(this).is(":checked")) {
+      $(".echart-pies2").hide();
+      $('#chart_gauge_sales1').hide();
+      $("#pendingtabel").show();
+    }
+    else{
+     $(".echart-pies2").show();
+      $('#chart_gauge_sales1').show();
+      $("#pendingtabel").hide();
+    }
+    });
+  });
+
+  $(document).ready(function() {
+    // When the button with ID "checked1" is clicked
+    $("#checked3").click(function() {
+      if ($(this).is(":checked")) {
+      $("#graph_bar").hide();
+      $("#completetabel").show();
+    }
+    else{
+     $("#graph_bar").show();
+      $("#completetabel").hide();
+    }
+    });
+  });
+
+</script>
 {% endblock %}

@@ -707,9 +707,9 @@ function init_gauge() {
             color: '#1D212A'
         },
         limitMax: 'false',
-        colorStart: '#1ABC9C',
-        colorStop: '#1ABC9C',
-        strokeColor: '#D23939',
+        colorStart: '#D23939',
+        colorStop: '#D23939',
+        strokeColor: '#1ABC9C',
         generateGradient: true
     };
 
@@ -724,8 +724,8 @@ function init_gauge() {
 
     if ($('#gauge-text').length) {
 
-        chart_gauge_01.maxValue = 6000;
-        chart_gauge_01.animationSpeed = 32;
+        chart_gauge_01.maxValue = 100000;
+        chart_gauge_01.animationSpeed = 100;
         chart_gauge_01.set(3200);
         chart_gauge_01.setTextField(document.getElementById("gauge-text"));
 
@@ -2164,9 +2164,10 @@ function init_charts() {
 
     // Doughnut chart
 
-    if ($('#canvasDoughnut').length) {
+    if ($('.canvasDoughnut').length) {
 
-        var ctx = document.getElementById("canvasDoughnut");
+        var ctx = document.getElementById(".canvasDoughnut");
+        alert('hai')
         var data = {
             labels: [
                 "Dark Grey",

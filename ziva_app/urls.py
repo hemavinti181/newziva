@@ -260,7 +260,10 @@ urlpatterns = [
     path('create_busindent',views.create_busindent,name='create_busindent'),
     path('authorize_staffid',views.authorize_staffid,name='authorize_staffid'),
     path('depot_dashboard',views.depot_dashboard,name='depot_dashboard'),
-    path('zonal_dashboard',views.zonal_dashboard,name='zonal_dashboard')
+    path('zonal_dashboard',views.zonal_dashboard,name='zonal_dashboard'),
+    path('depot_dashboard_data',views.depot_dashboard_data,name='depot_dashboard_data'),
+    path('depot_pendin_sales',views.depot_pendin_sales,name='depot_pendin_sales'),
+    path('complete_sale_report',views.complete_sale_report,name='complete_sale_report')
 
 
 
