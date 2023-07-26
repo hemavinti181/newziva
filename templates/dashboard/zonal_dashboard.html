@@ -2,9 +2,13 @@
 
 {% block htmlbody %}
 <style>
-    .design{
+      .design{
      color: white;
-        background-color:#08aca2 !important;
+        background-color:#329DD6 !important;
+    }
+      .design1{
+     color: white;
+        background-color:#329DD6 !important;
     }
 </style>
 
@@ -26,35 +30,35 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count" style="color: #3493fb;margin-left: 30%;">228</div>
+                                    <div class="count zonalcases" style="color: #3493fb;margin-left: 1%;"></div>
                                     <span style="margin-left: 40%;">Qty(In cases)</span>
                                     <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock on hand</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <div class="count zonalbott" style="color:red;margin-left: 1%;"></div>
                                     <span style="margin-left: 40%;">Qty(In bottles)</span>
                                     <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Stock on hand</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats" >
-                                    <div class="count" style="color:green;margin-left: 38%;">10</div>
+                                    <div class="count avgcases" style="color:green;margin-left: 1%;"></div>
                                     <span style="margin-left: 40%;">Qty(In cases)</span>
                                     <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
                                 <div class="tile-stats">
-                                    <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
+                                    <div class="count avgbott" style="color: #3493fb;margin-left: 1%;"></div>
                                     <span style="margin-left: 40%;">Qty(In bottles)</span>
                                     <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
                                 <div class="tile-stats">
-                                    <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
+                                    <div class="count zonaldays" style="color: #3493fb;margin-left: 30%;"></div>
                                     <span style="margin-left: 40%;">In Days</span>
                                     <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock Available</p>
                                 </div>
@@ -63,40 +67,63 @@
                         </div>
                     </div>
                 </div>
-                   <div class="x_panel">
-                     <div class="x_content">
-                    <div class="row">
-                        <div class="col-md-10">
-                            <div class="row" style="text-align: center;">
-                                <div class="col-md-3">
-                                    <div id="echart-depot1"   style="width: 300px; height: 200px;margin-top:-40px;"></div>
-                                    <!--<h4 style="margin:18px">Weekly Consumption progress</h4>-->
+                   <div class="row">
+                        <div class="col-md-4 col-sm-4" style="overflow:hidden;">
+                        <div class="x_panel Consumption">
+                                    <div id="graph_bar_group1" style="width:100%; height:280px;"></div>
+                                      <h5 class="text-info" style="margin:20px">Qty Available vs Qty Consumption progress</h5>
                                 </div>
-                                <div class="col-md-3">
-                                    <div id="echart-pies2"   style="width: 300px; height: 200px;margin-top:-40px;"></div>
-                                    <!--<h4 style="margin:18px">Weekly Consumption progress</h4>-->
-                                </div>
-                                <div class="col-md-4" style="overflow:hidden;">
-                                    <span class="sparkline_one" style="height: 160px; padding: 10px 25px;margin-left:4px;">
-                                        <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
-                                    </span>
-                                      <h4 style="margin:18px">Weekly Consumption progress</h4>
-                                </div>
-                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="sidebar-widget">
+            <div class="col-md-3 col-sm-3" >
+                        <div class="x_panel days">
+                            <div class="sidebar-widget" style="margin-bottom:40px;">
                                 <h4></h4>
-                                <canvas id="chart_gauge_03" class="" style="width:225px;height:100px;margin-top:-30px;margin-left:-40px;"></canvas>
+                                <canvas id="chart_gauge_03" class="" style="margin-bottom:50px;width:350px;height:200px;margin-left:-10px;margin-top:10px"></canvas>
                                 <div class="goal-wrapper">
-                                    <span id="gauge-text2" class="gauge-value pull-left" style="margin-left:32px">1</span>
-                                      <span id="goal-text2" class="goal-value pull-right">31days</span>
+                                    <span id="gauge-text2" class="gauge-value pull-left" style="margin-top:-60px;margin-left: 20px;">1</span>
+                                      <span id="goal-text2" class="goal-value pull-right" style="margin-top:-60px;margin-right:40px;">100 days</span>
                                 </div>
+                                <h5 class="text-info" style="margin-top:45px;margin-left:50px;">Stock Available in days</h5>
                             </div>
                         </div>
-                    </div>
-                     </div>
-                     </div>
+            </div>
+
+    <div class="col-md-5 col-sm-5">
+<div class="x_panel stktabel">
+            <table class="table table-striped" style="display:block;width=200%"; id="stktabel">
+                        <thead>
+                         <tr>
+                          <th class="design1" rowspan="2">S no</th>
+                          <th class="design1" rowspan="2">Product</th>
+                          <th class="design1" colspan="2">Stock on hand</th>
+                          <th class="design1" colspan="2">Consumption of last 7 days </th>
+                          <th colspan="2" class="design1" rowspan="2" style="padding:1px;">Days of stock Available</th>
+                        </tr>
+                        <tr>
+                          <th class="design">Qty(In Cases)</th>
+                          <th class="design">Qty(In Bottles)</th>
+                          <th class="design">Qty(In Cases)</th>
+                          <th class="design">Qty(In Bottles)</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+
+                      </table>
+
+            </div>
+            </div>
+</div>
+
+
                    <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
@@ -107,18 +134,21 @@
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control depot" name="depoid1" id="depoid1" required>
                                                     <option value=""> depot</option>
+
                                                     {% for data in depolist %}
-                                                            {% if data.depoid == 'DEPO0094' %}
+                                                    {% if data.status == 'Active' %}
+                                                            {% if data.depoid == 'DEPO0089' %}
 													            <option value="{{ data.depoid  }}" selected>{{  data.deponame  }}</option>
                                                             {% else %}
                                                                 <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
                                                             {% endif %}
+                                                    {% endif %}
                                                     {% endfor %}
 												</select>
 										</div>
 
               <div class="col-md-2 col-sm-2">
-                <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
+                <label><input type="checkbox" id="depot_stock" class="js-switch"  /></label>
               </div>
             </div>
           </div>
@@ -127,28 +157,28 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count" style="color: #3493fb;margin-left: 30%;">228</div>
+                                    <div class="count depotstock" style="color: #3493fb;margin-left: 30%;"></div>
                                     <span style="margin-left: 40%;">Qty(In cases)</span>
                                     <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock on hand</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count" style="color:red;margin-left: 42%;">6</div>
+                                    <div class="count depotstock1" style="color:red;margin-left: 42%;"></div>
                                     <span style="margin-left: 40%;">Qty(In bottles)</span>
                                     <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Stock on hand</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats" >
-                                    <div class="count" style="color:green;margin-left: 38%;">10</div>
+                                    <div class="count depotcase" style="color:green;margin-left: 38%;"></div>
                                     <span style="margin-left: 40%;">Qty(In cases)</span>
                                     <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
                                 <div class="tile-stats">
-                                    <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
+                                    <div class="count depotbott" style="color: #3493fb;margin-left: 30%;"></div>
                                     <span style="margin-left: 40%;">Qty(In bottles)</span>
                                     <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
 
@@ -156,7 +186,7 @@
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
                                 <div class="tile-stats">
-                                    <div class="count" style="color: #3493fb;margin-left: 30%;">474</div>
+                                    <div class="count depotdays" style="color: #3493fb;margin-left: 30%;"></div>
                                     <span style="margin-left: 40%;">In Days</span>
                                     <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock Available</p>
                                 </div>
@@ -165,133 +195,282 @@
                         </div>
                     </div></div>
 
-<div class="x_panel">
+<div class="x_panel  depot_stock_chart">
                      <div class="x_content">
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md-12">
                             <div class="row" style="text-align: center;">
-                                <div class="col-md-3">
-                                    <div id="echart-depot1"   style="width: 300px; height: 200px;margin-top:-40px;"></div>
-                                 <h4 style="margin:18px">Weekly Consumption progress</h4>
+                                <div class="col-md-4">
+                                      <h3  class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock">No Stock Available</h3>
+                                    <div id="echart-depot1"   style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+                                 <h4 style="margin:18px">Stock Available</h4>
                                 </div>
                                 <div class="col-md-3">
-                                    <div id="echart-pies2"   style="width: 300px; height: 200px;margin-top:-40px;"></div>
-                                  <h4 style="margin:18px">Weekly Consumption progress</h4>
+                                      <h3 class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock1">No Stock Available</h3>
+                                    <div id="echart-pies2"    style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+                                  <h4 style="margin:18px">Avg consumption of last 7 days</h4>
                                 </div>
-                                <div class="col-md-6" style="overflow:hidden;">
-                                    <span class="sparkline_one" style="height: 160px; padding: 10px 25px;">
-                                        <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
-                                    </span>
-                                      <h4 style="margin:18px">Weekly Consumption progress</h4>
+                                <div class="col-md-5">
+                                   <div class="clearfix"></div>
+                    <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
+                                      <table   class="table table-striped jambo_table bulk_action"  style="display:block;" id="depottabel" >
+                      <thead>
+                        <tr>
+                          <th class="design1" rowspan="2">S no</th>
+                          <th class="design1" rowspan="2">Product</th>
+                          <th class="design1" colspan="2">Stock on hand</th>
+                          <th class="design1" colspan="2">Consumption of last 7 days </th>
+                          <th colspan="2" class="design1" rowspan="2" style="padding:1px;">Days of stock Available</th>
+                        </tr>
+                        <tr>
+                          <th class="design">Qty(In Cases)</th>
+                          <th class="design">Qty(In Bottles)</th>
+                          <th class="design">Qty(In Cases)</th>
+                          <th class="design">Qty(In Bottles)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="sidebar-widget">
-                                <h4>Goal</h4>
-                                <canvas id="chart_gauge_03" class="" style="width:250px;height:100px;margin-top:-50px;"></canvas>
-                                <div class="goal-wrapper">
-                                    <span id="gauge-text2" class="gauge-value pull-left" style="margin-left:32px">1</span>
-                                      <span id="goal-text2" class="goal-value pull-right">31days</span>
-                                </div>
+</div>
+                   <div class="row">
+    <div class="col-md-8 col-sm-8">
+     <div class="x_panel">
+         <div class="page-title">
+            <div class="title_left">
+              <h5 style="color:#14c38e">Qty Accepted from vendor</h5>
+            </div>
+            <div class="title_right">
+                <form  method="POST" id="myForm2" action="warehouse_stock"  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="col-sm-6 col-md-6" style="margin-left:150px;">
+                  <input class="form-control" type="date" name="date"  id="grndate"  value="{{ request.POST.date }}"  required>
+                </div>
+              <div class="col-md-2 col-sm-2">
+                <!--<label><input type="checkbox" id="checked3" class="js-switch"  /></label>-->
+              </div>
+            </div>
+          </div>
+          <div class="x_content">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats" >
+                <div class="count pendinggrn" style="color:green;margin-left: 5%;font-size:30px;"></div>
+                <!--<span style="margin-left: 40%;"></span>-->
+                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending GRN</p>
+              </div>
+            </div>
+               <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats" >
+                <div class="count verifiedgrn" style="color:#9F9D1B;margin-left: 5%;font-size:30px;"></div>
+                <!--<span style="margin-left: 40%;"></span>-->
+                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Verified GRN</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats">
+                <div class="count acceptedqty" style="color: #3493fb;margin-left: 5%;font-size:30px;"></div>
+                <!--<span style="margin-left: 20%;"></span>-->
+                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Accepted Qty(In cases)</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats">
+                <div class="count acceptdbott" style="color:red;margin-left: 5%;font-size:30px;"></div>
+                <!--<span style="margin-left: 20%;"></span>-->
+                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Accepted Qty(In bottles)</p>
+              </div>
+            </div>
+          </div>
+         <div class="col-md-12 col-sm-12">
+            <div class="clearfix"></div>
+
+                      <table class="table table-striped" style="display:block;width=100%";  id="pendingtabel">
+                        <thead>
+                          <tr>
+                            <th class="design1" rowspan="2">S NO</th>
+                            <th class="design1" rowspan="2">Received Date</th>
+                            <th  class="design1" rowspan="2">Manufacture</th>
+                               <!--<th  class="design1" rowspan="2">Warehouse</th>-->
+                            <th class="design1" rowspan="2">Product</th>
+                            <th class="design1" colspan="2">Today</th>
+                            <th  class="design1" colspan="2">This month</th>
+                          </tr>
+                          <tr>
+                            <!--<th class="design">Invoice no</th>-->
+                            <th class="design">Qty(In Cases)</th>
+                            <th class="design">Qty(In Bottles)</th>
+                            <th class="design">Qty(In Cases)</th>
+                            <th class="design">Qty(In Bottles)</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+
+                      </table>
+         </div>
+     </div>
+    </div>
+
+                    <div class="col-md-4 col-sm-4">
+                        <div class="x_panel">
+                                <h3>Grn Details</h3>
+                            <div class="x_content">
+                                   <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="grnstatus">No Pending GRN</h3>
+                                <div id="echart_donut2" style="height:240px;margin-top: -65px;margin-right:10px;"></div>
                             </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                        <div class="x_panel">
+                                <h3>Accepted Quantity</h3>
+                            <div class="x_content">
+                                   <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="lblNoStock2">No Pending GRN</h3>
+                                 <canvas id="mybarChart"></canvas>
+                            </div>
+                        </div>
                         </div>
                     </div>
-                     </div>
-</div>
+                    </div>
 <div class="row">
     <div class="col-md-5 col-sm-5">
         <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h5 style="color:#14c38e">Depots pending indent</h5>
+              <h5 style="color:#14c38e;margin-right:-10px;">Depots pending indent</h5>
             </div>
             <div class="title_right">
-              <div class="col-md-6 col-sm-7 offset-md-9">
-                <label><input type="checkbox" id="checked3" class="js-switch"  /></label>
+                   <div class="col-md-10 col-sm-10">
+											 <input type="hidden" name="deponame1" id="deponame" />
+												<select class="form-control depot" name="depoid" id="depoid" required>
+                                                    <option value=""> depot</option>
+
+                                                    {% for data in depolist %}
+                                                    {% if data.status == 'Active' %}
+                                                            {% if data.depoid == 'DEPO0089' %}
+													            <option value="{{ data.depoid  }}" selected>{{  data.deponame  }}</option>
+                                                            {% else %}
+                                                                <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
+                                                            {% endif %}
+                                                    {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+
+              <div class="col-md-2 col-sm-2">
+                <label><input type="checkbox" id="depots_indent" class="js-switch"  /></label>
               </div>
             </div>
           </div>
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count" style="color:green;margin-left: 5%;font-size:30px;">10</div>
-                <span style="margin-left: 40%;">sales</span>
-                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Amount collected</p>
+                <div class="count pendingind" style="color:green;margin-left: 5%;font-size:20px;"></div>
+                <!--<span style="margin-left: 40%;">Indent</span>-->
+                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending Indents</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count" style="color: #3493fb;margin-left: 5%;font-size:30px;">228</div>
-                <span style="margin-left: 20%;">Qty(In cases)</span>
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Delivered</p>
+                <div class="count indentcases" style="color: #3493fb;margin-left: 5%;font-size:20px;"></div>
+                <!--<span style="margin-left: 20%;">In cases</span>-->
+                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Verified indents</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count" style="color:red;margin-left: 5%;font-size:30px;">6</div>
-                <span style="margin-left: 20%;">Qty(In bottles)</span>
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Delivered</p>
+                <div class="count indbottles" style="color:red;margin-left: 5%;font-size:20px;"></div>
+                <!--<span style="margin-left: 20%;">In bottles</span>-->
+                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty indented(In Cases)</p>
               </div>
             </div>
+
+               <div class="col-md-4">
+                                    <div id="echart-indent"   style="width: 300px; height: 200px;margin-top:-20px;margin-left:100px;"></div>
+                                <!-- <h4 style="margin-left:90px;margin-right:-450px;margin-top:10px;" class="text-info textind">Qty indent versus Qty indented</h4>-->
+                                </div>
+
             <div class="col-md-12 col-sm-12">
-              <form  method="POST" id="myForm2" action="warehouse_stock"  enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="col-sm-12 col-md-12 form-group has-feedback">
-                  <label class="focus-label" style="margin-top: 45px;margin-bottom: 9px;">Select  Date</label>
-                  <input class="form-control" type="date" name="date"  id="getdate"  value="{{ request.POST.date }}" style="width:250px;margin-left:-10px;" required>
-                </div>
+                  <table class="table table-striped" style="display:none;width=200%"; id="pendingind">
+                        <thead>
+                          <tr>
+                            <th class="design1" rowspan="2">S NO</th>
+                              <th class="design1" rowspan="2">Product</th>
+                              <th  class="design1" colspan="2">Pending indent Qty</th>
+                              <th class="design1" colspan="2">Verified indent Qty</th>
+
+                          </tr>
+                            <tr>
+                            <!--<th class="design">Invoice no</th>-->
+                            <th class="design">Qty(In Cases)</th>
+                            <th class="design">Qty(In Bottles)</th>
+                            <th class="design">Qty(In Cases)</th>
+                            <th class="design">Qty(In Bottles)</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+
+                      </table>
+
               </form>
             </div>
           </div>
         </div>
     </div>
     <div class="col-md-7 col-sm-7">
-        <div class="x_panel">
-          <div class="page-title">
+<div class="x_panel">
+           <div class="page-title">
             <div class="title_left">
-              <h5 style="color:#14c38e">Qty Accepted from vendor</h5>
-            </div>
-            <div class="title_right">
-              <div class="col-md-6 col-sm-7 offset-md-9">
-                <label><input type="checkbox" id="checked3" class="js-switch"  /></label>
-              </div>
+              <h5 style="color:#14c38e">Depots holding less stock</h5>
             </div>
           </div>
-          <div class="x_content">
-            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
-              <div class="tile-stats" >
-                <div class="count" style="color:green;margin-left: 5%;font-size:30px;">10</div>
-                <!--<span style="margin-left: 40%;"></span>-->
-                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Invoiced</p>
-              </div>
-            </div>
-            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
-              <div class="tile-stats">
-                <div class="count" style="color: #3493fb;margin-left: 5%;font-size:30px;">228</div>
-                <!--<span style="margin-left: 20%;"></span>-->
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Accepted Qty(In cases)</p>
-              </div>
-            </div>
-            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
-              <div class="tile-stats">
-                <div class="count" style="color:red;margin-left: 5%;font-size:30px;">6</div>
-                <!--<span style="margin-left: 20%;"></span>-->
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Accepted Qty(In bottles)</p>
-              </div>
-            </div>
-            <div class="col-md-12 col-sm-12">
-              <form  method="POST" id="myForm2" action="warehouse_stock"  enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="col-sm-12 col-md-12 form-group has-feedback">
-                  <label class="focus-label" style="margin-top: 45px;margin-bottom: 9px;">Select  Date</label>
-                  <input class="form-control" type="date" name="date"  id="getdate"  value="{{ request.POST.date }}" style="width:250px;margin-left:-10px;" required>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-    </div>
+            <table class="table table-striped" style="display:block;width=200%"; id="depots_less_stock">
+                        <thead>
+                          <tr>
+                            <th class="design1" rowspan="2">S NO</th>
+                            <th class="design1" rowspan="2">Depot name</th>
+                              <th class="design1" rowspan="2">Product</th>
+                              <th  class="design1" rowspan="2">Average requirement</th>
+                                <th class="design1" rowspan="2">Stock Available(In quantity)</th>
+                            <th class="design1" rowspan="2">Stock Available(In days)</th>
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+
+                      </table>
+
             </div>
             </div>
 </div>
@@ -300,9 +479,7 @@
 
 <script>
 
-     window.onload=function(){
-
-     var chart_gauge_settings = {
+  var chart_gauge_settings = {
         lines: 12,
         angle: 0,
         lineWidth: 0.4,
@@ -312,179 +489,486 @@
             color: '#1D212A'
         },
         limitMax: 'false',
-        colorStart: '#1ABC9C',
-        colorStop: '#1ABC9C',
-        strokeColor: '#D23939',
+        colorStart: '#D23939',
+        colorStop: '#D23939',
+        strokeColor: '#1ABC9C',
         generateGradient: true
     };
-        var chart_gauge_02_elem = document.getElementById('chart_gauge_03');
-        var chart_gauge_02 = new Gauge(chart_gauge_02_elem).setOptions(chart_gauge_settings);
+ function updateEchartPieChart(itemslist) {
+        var echartPie = echarts.init(document.getElementById('echart-depot1'), "");
+          var count = 0;
+          var seriesData = [];
+          var legendData = [];
+          for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
+              if(item.stock_botteles!="0"){
+               seriesData.push({
+                 value: item.stock_cases,
+                 name: item.itemname
+               });
+              count++;
+            }
+            legendData.push(item.itemname);
+          }
+          if (count === 0) {
+              $('#echart-depot1').hide();
+              $('#lblNoStock').show();
+          } else {
+              $('#echart-depot1').show();
+              $('#lblNoStock').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
 
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+       var echartPie = echarts.init(document.getElementById('echart-pies2'), "");
+          var count =0;
+          var seriesData = [];
+          var legendData = [];
+
+          for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
+              if(item.consumption_cases!="0"){
+               seriesData.push({
+                 value: item.consumption_cases,
+                 name: item.itemname
+               });
+                count++;
+            }
+            legendData.push(item.itemname);
+          }
+          if (count === 0) {
+              $('#echart-pies2').hide();
+              $('#lblNoStock1').show();
+          } else {
+              $('#echart-pies2').show();
+              $('#lblNoStock1').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+ }
+ function grnchart(total){
+    if ($('#echart_donut2').length) {
+        var echartDonut = echarts.init(document.getElementById('echart_donut2'), "");
+        var seriesData = [];
+        var count = 0;
+          for (var i = 0; i < total.length; i++) {
+            var item = total[i];
+            if(item.pending_grn !="0" ){
+               seriesData.push({
+                 value: item.pending_grn,
+                 name: 'Pending GRN'
+               });
+               count++;
+            }
+             if(item.total_grn !="0" ){
+               seriesData.push({
+                 value: item.total_grn,
+                 name: 'Total GRN'
+               });
+               count++;
+            }
+            if(item.verified_grn !="0" ){
+               seriesData.push({
+                 value: item.verified_grn,
+                 name: 'Verified GRN'
+               });
+            }
+            count++;
+          }
+
+           if (count === 0) {
+              $('#echart_donut2').hide();
+              $('#grnstatus').show();
+          } else {
+              $('#echart_donut2').show();
+              $('#grnstatus').hide();
+          }
+        echartDonut.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            calculable: true,
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['Pending GRN', 'Verified GRN','Total GRN']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'center',
+                                max: 1548
+                            }
+                        }
+                    },
+                    //restore: {
+                    //    show: true,
+                    //    title: "Restore"
+                    //},
+                    //saveAsImage: {
+                    //    show: true,
+                    //    title: "Save Image"
+                    //}
+                }
+            },
+            series: [{
+                name: 'Access to the resource',
+                type: 'pie',
+                radius: ['35%', '55%'],
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: true
+                        },
+                        labelLine: {
+                            show: true
+                        }
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            position: 'center',
+                            textStyle: {
+                                fontSize: '14',
+                                fontWeight: 'normal'
+                            }
+                        }
+                    }
+                },
+                data: seriesData
+            }]
+        });
+
+    }
+  }
+  function stock_days(total){
+        var chart_gauge_sales_elem;
+        var chart_gauge_01;
+        var item_gauge;
+        var chart_gauge_settings = {
+              lines: 12,
+          angle: 0,
+          lineWidth: 0.4,
+          pointer: {
+              length: 0.75,
+              strokeWidth: 0.042,
+              color: '#1D212A'
+          },
+          limitMax: 'false',
+          colorStart: '#D23939',
+          colorStop: '#D23939',
+          strokeColor: '#1ABC9C',
+          generateGradient: true
+      };
+   var item;
+  for (var i = 0; i < total.length; i++) {
+            item = total[i];
+    }
     if ($('#gauge-text2').length) {
+        var indays=parseInt(item.indays);
+          $('#gauge-text2').html(indays);
+          chart_gauge_03.maxValue = 100;
+            if (indays !== 0) {
+                  chart_gauge_03.animationSpeed = 32;
+                  chart_gauge_03.setTextField(indays);
+                  chart_gauge_03.set(indays);
+              } else {
+                  chart_gauge_03.animationSpeed = 32;
+                  chart_gauge_03.setTextField(0.1);
+                  chart_gauge_03.set(0.1);
+              }
 
-        chart_gauge_02.maxValue = 31;
-        chart_gauge_02.animationSpeed = 32;
-        chart_gauge_02.set(10);
-        chart_gauge_02.setTextField(document.getElementById("gauge-text2"));
+      }
+    }
+    function depotindent(total){
+        var seriesData = [];
+        var count=0;
+         var echartPie = echarts.init(document.getElementById('echart-indent'), "");
+           for (var i = 0; i < total.length; i++) {
+            var item = total[i];
+              if(item.indent_count !="0"){
+               seriesData.push({
+                 value: item.indent_count,
+                 name: 'total indent'
+               });
+               count++;
+            }
+            if(item.pending_count !="0"){
+               seriesData.push({
+                 value: item.pending_count,
+                 name: 'pending indent'
+               });
+               count++;
+            }
+            if(item.verified_count !="0"){
+               seriesData.push({
+                 value: item.verified_count,
+                 name: 'verified indent'
+               });
+               count++;
+            }
+
+         }
+    if (count === 0) {
+              $('#echart-indent').hide();
+              $('#lblNoStock1').show();
+          } else {
+              $('#echart-indent').show();
+              $('#lblNoStock1').hide();
+          }
+
+         echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['total indent', 'pending indent', 'verified indent']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: seriesData
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
 
     }
 
+ window.onload=function(){
+     if ($('#mybarChart').length) {
 
+        var ctx = document.getElementById("mybarChart");
+        var mybarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: '# of Votes',
+                    backgroundColor: "#26B99A",
+                    data: [51, 30, 40, 28, 92, 50, 45]
+                }, {
+                    label: '# of Votes',
+                    backgroundColor: "#03586A",
+                    data: [41, 56, 25, 48, 72, 34, 12]
+                }]
+            },
+
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+    }
      if (true) {
-   var echartPie = echarts.init(document.getElementById('echart-depot1'), "");
+     if ($('#graph_bar_group1').length) {
 
-        echartPie.setOption({
-            tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },
-            legend: {
-                x: 'center',
-                y: 'bottom',
-                data: ['1000ml', '500ml', '250ml']
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    magicType: {
-                        show: true,
-                        type: ['pie', 'funnel'],
-                        option: {
-                            funnel: {
-                                x: '25%',
-                                width: '50%',
-                                funnelAlign: 'left',
-                                max: 1548
-                            }
-                        }
-                    },
+        Morris.Bar({
+            element: 'graph_bar_group1',
+            data: [
 
-                }
-            },
-            calculable: true,
-            series: [{
-                name: 'Chart',
-                type: 'pie',
-                radius: '55%',
-                center: ['50%', '48%'],
-                data: [{
-                    value: 335,
-                    name: '1000ml'
-                }, {
-                    value: 310,
-                    name: '500ml'
-                }, {
-                    value: 234,
-                    name: '250ml'
-                }]
-                            }]
+                { "period": "25/07", "licensed": 2246, "sorned": 1461 },
+                { "period": "25/07", "licensed": 2657, "sorned": 1967 },
+                { "period": "25/07", "licensed": 3148, "sorned": 2627 },
+                { "period": "25/07", "licensed": 3471, "sorned": 3740 },
+                { "period": "25/07", "licensed": 2871, "sorned": 2216 },
+                { "period": "25/07", "licensed": 2401, "sorned": 1656 },
+                { "period": "25/07", "licensed": 2115, "sorned": 1022 }
+            ],
+            xkey: 'period',
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            ykeys: ['licensed', 'sorned'],
+            labels: ['Licensed', 'SORN'],
+            hideHover: 'auto',
+            xLabelAngle: 60,
+            resize: true
         });
 
-        var dataStyle = {
-            normal: {
-                label: {
-                    show: false
-                },
-                labelLine: {
-                    show: false
-                }
-            }
-        };
-
-        var placeHolderStyle = {
-            normal: {
-                color: 'rgba(0,0,0,0)',
-                label: {
-                    show: false
-                },
-                labelLine: {
-                    show: false
-                }
-            },
-            emphasis: {
-                color: 'rgba(0,0,0,0)'
-            }
-        };
-
     }
- if (true) {
-
-        var echartPie = echarts.init(document.getElementById('echart-pies2'), "");
-
-        echartPie.setOption({
-            tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },
-            legend: {
-                x: 'center',
-                y: 'bottom',
-                data: ['1000ml', '500ml', '250ml']
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    magicType: {
-                        show: true,
-                        type: ['pie', 'funnel'],
-                        option: {
-                            funnel: {
-                                x: '25%',
-                                width: '50%',
-                                funnelAlign: 'left',
-                                max: 1548
-                            }
-                        }
-                    },
-
-                }
-            },
-            calculable: true,
-            series: [{
-                name: 'Chart',
-                type: 'pie',
-                radius: '55%',
-                center: ['50%', '48%'],
-                data: [{
-                    value: 335,
-                    name: '1000ml'
-                }, {
-                    value: 310,
-                    name: '500ml'
-                }, {
-                    value: 234,
-                    name: '250ml'
-                }]
-                            }]
-        });
-
-        var dataStyle = {
-            normal: {
-                label: {
-                    show: false
-                },
-                labelLine: {
-                    show: false
-                }
-            }
-        };
-
-        var placeHolderStyle = {
-            normal: {
-                color: 'rgba(0,0,0,0)',
-                label: {
-                    show: false
-                },
-                labelLine: {
-                    show: false
-                }
-            },
-            emphasis: {
-                color: 'rgba(0,0,0,0)'
-            }
-        };
-
-    }
+}
 
 
      if ($('#graph_bar').length) {
@@ -559,20 +1043,19 @@
             resize: true
         });
 
-    }
+      }
 
-
-    }
+ }
     $(document).ready(function() {
     // When the button with ID "checked1" is clicked
     $("#checked1").click(function() {
       if ($(this).is(":checked")) {
-       $("#echart-depot1").hide();
+       $("#echart-depot1").show();
       $("#stktabel").show();
     }
     else{
      $("#echart-depot1").show();
-      $("#stktabel").hide();
+      $("#stktabel").show();
     }
     });
   });
@@ -605,6 +1088,473 @@
     }
     });
   });
+$(document).ready(function() {
+$.ajax({
+  type: "GET",
+  url: "{% url 'zonal_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
 
+     var total =  data.data.totallist;
+     var message = data.data.message;
+     var itemslist = data.data.itemwiselist
+      if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+         chart_gauge_sales_elem = document.getElementById('chart_gauge_03');
+         chart_gauge_03 = new Gauge(chart_gauge_sales_elem).setOptions(chart_gauge_settings);
+         for (var i = 0; i < total.length; i++) {
+            item = total[i];
+         }
+         stock_days(total);
+      }
+     var tableBody = $('#stktabel  tbody');
+             for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+            }
+     var tfootdata = $('#stktabel tfoot');
+        tfootdata.empty();
+        for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+
+                $('.zonalcases').text(item.stock_cases);
+                $('.zonalbott').text(item.stock_botteles);
+                $('.avgcases').text(item.consumption_cases);
+                $('.avgbott').text(item.consumption_botteles);
+                $('.zonaldays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$(document).ready(function() {
+$.ajax({
+  type: "GET",
+  url: "{% url 'zonal_grn_report' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+         var total =  data.data.list;
+         var itemslist = data.data.itemlist;
+         if(message != "Data found")
+          {
+           $("#grnstatus").html(data.message);
+           $("#grnstatus").show();
+           $("#echart_donut2").hide();
+         }else{
+           grnchart(total);
+         }
+        var tableBody = $('#pendingtabel  tbody');
+        tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.received_date));
+                row.append($('<td>').text(item.manufacture));
+                row.append($('<td>').text(item.itemname));  // Quantity
+                row.append($('<td>').text(item.FTD_cases));
+                row.append($('<td>').text(item.FTD_botteles));
+                row.append($('<td>').text(item.MTD_cases));
+                row.append($('<td>').text(item.MTD_botteles));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#pendingtabel tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.pendinggrn').text(item.pending_grn);
+                $('.verifiedgrn').text(item.verified_grn);
+                $('.acceptedqty').text(item.ftd_cases);
+                $('.acceptdbott').text(item.ftd_botteles);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 4).addClass('design1'));
+                row.append($('<td>').text(item.ftd_cases));
+                row.append($('<td>').text(item.ftd_botteles));
+                row.append($('<td>').text(item.mtd_cases));
+                row.append($('<td>').text(item.mtd_botteles));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+$('#grndate').change(function() {
+    grndate = $(this).val();
+    $.ajax({
+      type: "POST",
+      url: "{% url 'zonal_grn_report' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+      data: {
+      'fdate':grndate, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      success: function(data) {
+      var total =  data.data.list;
+      var itemslist = data.data.itemlist;
+       if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#grnstatus").show();
+       $("#echart_donut2").hide();
+      }else{
+       grnchart(total);
+      }
+
+            var tableBody = $('#pendingtabel  tbody');
+            tableBody.empty();
+                  for (var i = 0; i < itemslist.length; i++) {
+                    var item = itemslist[i];
+                    var row = $('<tr>');
+                    row.append($('<td>').text(i + 1));  // S No
+                    row.append($('<td>').text(item.received_date));
+                    row.append($('<td>').text(item.manufacture));
+                    row.append($('<td>').text(item.itemname));  // Quantity
+                    row.append($('<td>').text(item.FTD_cases));
+                    row.append($('<td>').text(item.FTD_botteles));
+                    row.append($('<td>').text(item.MTD_cases));
+                    row.append($('<td>').text(item.MTD_botteles));
+                    tableBody.append(row);
+                  }
+           var tfootdata = $('#pendingtabel tfoot');
+           tfootdata.empty();
+             for (var i = 0; i < total.length; i++) {
+                    var item = total[i];
+                    $('.pendinggrn').text(item.pending_grn);
+                    $('.verifiedgrn').text(item.verified_grn);
+                    $('.acceptedqty').text(item.ftd_cases);
+                    $('.acceptdbott').text(item.ftd_botteles);
+                    var row = $('<tr>');
+                    row.append($('<th>').text('Grand Total').attr('colspan', 4).addClass('design1'));
+                    row.append($('<td>').text(item.ftd_cases));
+                    row.append($('<td>').text(item.ftd_botteles));
+                    row.append($('<td>').text(item.mtd_cases));
+                    row.append($('<td>').text(item.mtd_botteles));
+                    tfootdata.append(row);
+              }
+
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error("Error occurred: " + textStatus, errorThrown);
+        // Handle the error case here, if required
+      }
+    });
+});
+
+$(document).ready(function() {
+var deponame = $('#depoid1').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotwise_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemwiselist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+       updateEchartPieChart(itemslist);
+      }
+      var tableBody = $('#depottabel  tbody');
+      tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#depottabel tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.depotstock').text(item.stock_cases);
+                $('.depotstock1').text(item.stock_botteles);
+                $('.depotcase').text(item.consumption_cases);
+                $('.depotbott').text(item.consumption_botteles);
+                $('.depotdays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$('#depoid1').change(function() {
+var deponame = $('#depoid1').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotwise_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemwiselist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+       updateEchartPieChart(itemslist);
+      }
+
+        var tableBody = $('#depottabel  tbody');
+        tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#depottabel tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.depotstock').text(item.stock_cases);
+                $('.depotstock1').text(item.stock_botteles);
+                $('.depotcase').text(item.consumption_cases);
+                $('.depotbott').text(item.consumption_botteles);
+                $('.depotdays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan',2).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+$(document).ready(function() {
+var deponame = $('#depoid').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemlist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+          {
+           $("#lblNoStock2").html(data.message);
+           $("#lblNoStock2").show();
+           $("#echart-indent").hide();
+          }else{
+           depotindent(total);
+      }
+      var tableBody = $('#pendingind  tbody');
+      tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#pendingind tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.pendingind').text(item.pending_count);
+                $('.indentcases').text(item.verified_count);
+                $('.indbottles').text(item.ver_qty_cases);
+                //$('.depotbott').text(item.consumption_botteles);
+                //$('.depotdays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$('#depoid').change(function() {
+var deponame = $('#depoid').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemlist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+          {
+           $("#lblNoStock2").html(data.message);
+           $("#lblNoStock2").show();
+           $("#echart-indent").hide();
+          }else{
+           depotindent(total);
+      }
+        var tableBody = $('#pendingind  tbody');
+        tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                 row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#pendingind tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.pendingind').text(item.pending_count);
+                $('.indentcases').text(item.verified_count);
+                $('.indbottles').text(item.ver_qty_cases);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan',2).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tfootdata.append(row);
+          }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+ $(document).ready(function() {
+    $("#depots_indent").click(function() {
+      if ($(this).is(":checked")) {
+       $("#echart-indent").hide();
+       $('.textind').hide();
+      $("#pendingind").show();
+    }
+    else{
+     $("#echart-indent").show();
+     $('.textind').show();
+      $("#pendingind").hide();
+    }
+    });
+  });
+  $(document).ready(function() {
+    $("#depot_stock").click(function() {
+      if ($(this).is(":checked")) {
+       $(".depot_stock_chart").hide();
+
+    }
+    else{
+     $(".depot_stock_chart").show();
+
+    }
+    });
+  });
+  $(document).ready(function() {
+    $("#checked1").click(function() {
+      if ($(this).is(":checked")) {
+           $(".Consumption").hide();
+           $(".days").hide();
+           $(".stktabel").hide();
+        }
+    else{
+     $(".Consumption").show();
+     $(".days").show();
+     $(".stktabel").show();
+    }
+    });
+  });
+$('#grndate').val(new Date().toJSON().slice(0,10));
 </script>
 {% endblock %}

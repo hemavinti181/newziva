@@ -381,10 +381,14 @@ color:#14c38e !important;
 <div class="col-md-3 left_col menu_fixed">
 <div class="left_col scroll-view">
 <div class="clearfix"></div>
+{% if request.session.displayrole == "MARKETING EXECUTIVE" %}
+<div class="profile clearfix" style="background: #14c38e;margin-right:-50px;">
+  {% else %}
+    <div class="profile clearfix" style="background: #14c38e;">
+ {%  endif %}
 
-<div class="profile clearfix" style="background: #14c38e;">
+    <div class="profile_pic" style="background: #14c38e; margin-top:55px;">
 
-<div class="profile_pic" style="background: #14c38e; margin-top:55px;">
      <h6 style="font-size: 15px;margin-top:-47px;color:white;margin-right:-100px;margin-left:9px"><b></b>{{ request.session.name }}</h6>
 {% if request.session.displayrole == 'BUS STATION CONTROLLER' or "DEPOT STORE EXECUTIVE" %}
       <h5 style="font-size: 12px;margin-top:-3px;color:white;margin-right:-100px;margin-left:9px;">{{ request.session.displayrole }}</h5>
