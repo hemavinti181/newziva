@@ -387,6 +387,7 @@
     var chart_gauge_sales_elem;
     var chart_gauge_01;
     var item_gauge;
+
 var chart_gauge_settings = {
           lines: 12,
           angle: 0,
@@ -710,9 +711,12 @@ var chart_gauge_settings = {
 }
 
  function updateEchartPieChart1(itemslist,total){
-
     var seriesData = [];
     var legendData = [];
+    if($("#checked2").prop('checked')){
+      $(".echart-pies2").show();
+      $("#chart_gauge_sales1").show();
+    }
     var echartPie = echarts.init(document.getElementById('echart-pies2'),"");
     for (var i = 0; i < itemslist.length; i++) {
             var item = itemslist[i];
@@ -795,6 +799,7 @@ var chart_gauge_settings = {
             item = total[i];
     }
   if ($('#gauge-text1').length ) {
+
           var pending=parseInt(item.pending);
           $('#gauge-text1').html(pending);
           chart_gauge_01.maxValue = 100;
@@ -803,13 +808,21 @@ var chart_gauge_settings = {
                   chart_gauge_01.setTextField(pending);
                   chart_gauge_01.set(pending);
               } else {
-                  chart_gauge_01.animationSpeed = 32;
-                  chart_gauge_01.setTextField(0.1);
-                  chart_gauge_01.set(0.1);
+                  chart_gauge_01.gp[0].displayedValue=0;
+                  chart_gauge_01.gp[0].strokeWidth=0;
+                  chart_gauge_01.animationSpeed = 0;
+                  chart_gauge_01.setTextField(0.2);
+                  chart_gauge_01.displayedValue=0.2;
+                  chart_gauge_01.displayScale=0;
+                  chart_gauge_01.set(0.2);
+
               }
 
       }
-
+    if($("#checked2").prop('checked')){
+      $(".echart-pies2").hide();
+      $("#chart_gauge_sales1").hide();
+    }
 
 }
 
@@ -877,11 +890,9 @@ function updateEchartPieChart2(itemslist){
       if ($(this).is(":checked")) {
       $(".echart-pies2").hide();
       $('#chart_gauge_sales1').hide();
-
       $("#pendingtabel").show();
     }
     else{
-
       $(".echart-pies2").show();
       $('#chart_gauge_sales1').show();
       $("#pendingtabel").hide();
@@ -921,11 +932,11 @@ $.ajax({
        $("#lblNoStock").show();
        $("#echart-depot1").hide();
       }else{
-         chart_gauge_sales_elem = document.getElementById('chart_gauge_sales');
-         chart_gauge_01 = new Gauge(chart_gauge_sales_elem).setOptions(chart_gauge_settings);
+
          for (var i = 0; i < itemslist.length; i++) {
             item = itemslist[i];
          }
+
          updateEchartPieChart(itemslist);
       }
      var tableBody = $('#stktabel  tbody');
@@ -984,12 +995,15 @@ $.ajax({
       if(message != "Data found")
       {
         $("#lblNoStock1").html(data.message);
-       $("#lblNoStock1").show();
+        $("#lblNoStock1").show();
         $(".text").hide();
-       $("#echart-pies2").hide();
-       $('#chart_gauge_sales1').hide();
-      }else{
-       updateEchartPieChart1(itemslist,total);
+        $("#echart-pies2").hide();
+        $('#chart_gauge_sales1').hide();
+      }
+      else
+      {
+
+        updateEchartPieChart1(itemslist,total);
       }
      var tableBody = $('#pendingtabel  tbody');
              tableBody.empty();
@@ -1067,6 +1081,12 @@ async function processData(data) {
         $("#echart-pies2").hide();
         $('#chart_gauge_sales1').hide();
     } else {
+       chart_gauge_sales_elem = document.getElementById('chart_gauge_sales');
+       chart_gauge_01 = new Gauge(chart_gauge_sales_elem).setOptions(chart_gauge_settings);
+       chart_gauge_01.animationSpeed = 32;
+       chart_gauge_01.setTextField(0);
+       chart_gauge_01.displayedValue=0;
+       chart_gauge_01.set(0);
         updateEchartPieChart1(itemslist, total);
     }
 
@@ -1423,14 +1443,14 @@ $.ajax({
        $("#lblNoStock").show();
        $("#echart-depot1").hide();
       }else{
-         chart_gauge_sales_elem = document.getElementById('chart_gauge_sales');
-         chart_gauge_01 = new Gauge(chart_gauge_sales_elem).setOptions(chart_gauge_settings);
+
          for (var i = 0; i < itemslist.length; i++) {
             item = itemslist[i];
          }
          updateEchartPieChart(itemslist);
       }
      var tableBody = $('#stktabel  tbody');
+        tableBody.empty();
             for (var i = 0; i < itemslist.length; i++) {
                 var item = itemslist[i];
                 var row = $('<tr>');
@@ -1444,6 +1464,7 @@ $.ajax({
                 tableBody.append(row);
             }
         var tfootdata = $('#stktabel tfoot');
+        tfootdata.empty();
           for (var i = 0; i < itemslist.length; i++) {
                 var item = total[i];
                 $('.stock_cases').text(item.stock_cases);
