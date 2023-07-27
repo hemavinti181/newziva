@@ -15,10 +15,44 @@
 <!-- page content -->
             <div class="right_col" role="main">
                <div class="row" style="display: block;">
+                        <div class="col-md-12 col-sm-12 ">
+
+          <div class="page-title">
+            <div class="title_left">
+              <h3 style="font-size:20px; font-weight:600;">Zonal Dashboard</h3>
+            </div>
+          </div>
+                             <div class="x_panel">
+        {% if request.session.role == 'Admin' %}
+				      	<form  method="POST" action=""   enctype="multipart/form-data">
+											{% csrf_token %}
+									<div  class="col-md-3 col-sm-3  form-group has-feedback">
+													<label> Warehouse</label>
+
+										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.warehousename }}</option>
+												</select>
+											 <input type="hidden" name="warehousename" id="warehousename" />
+
+												<select class="form-control" name="warehouseid" id="warehouseid">
+													<option value="All">All</option>
+													{% for data1 in wh_masterlist %}
+														{% if data1.status == 'Active' %}
+                            		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+										</div>
+                            </form>
+                             </div>
+                        </div>
+
+        {% endif %}
+                     <div class="col-md-12 col-sm-12 ">
                    <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h3>Zonal Stores Stock Available</h3>
+              <h3 style="font-size:20px; font-weight:600;">Zonal Stores Stock Available</h3>
             </div>
             <div class="title_right">
               <div class="col-md-8 col-sm-8 offset-md-9">
@@ -30,37 +64,37 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count zonalcases" style="color: #3493fb;margin-left: 1%;"></div>
-                                    <span style="margin-left: 40%;">Qty(In cases)</span>
-                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock on hand</p>
+                                    <div class="count zonalcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Available Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count zonalbott" style="color:red;margin-left: 1%;"></div>
-                                    <span style="margin-left: 40%;">Qty(In bottles)</span>
-                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Stock on hand</p>
+                                    <div class="count zonalbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Availble Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats" >
-                                    <div class="count avgcases" style="color:green;margin-left: 1%;"></div>
-                                    <span style="margin-left: 40%;">Qty(In cases)</span>
-                                    <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
+                                    <div class="count avgcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
                                 <div class="tile-stats">
-                                    <div class="count avgbott" style="color: #3493fb;margin-left: 1%;"></div>
-                                    <span style="margin-left: 40%;">Qty(In bottles)</span>
-                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
+                                    <div class="count avgbott" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
                                 <div class="tile-stats">
-                                    <div class="count zonaldays" style="color: #3493fb;margin-left: 30%;"></div>
-                                    <span style="margin-left: 40%;">In Days</span>
-                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock Available</p>
+                                    <div class="count zonaldays" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Days</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Stock Available</p>
                                 </div>
                             </div>
 
@@ -93,17 +127,17 @@
             <table class="table table-striped" style="display:block;width=200%"; id="stktabel">
                         <thead>
                          <tr>
-                          <th class="design1" rowspan="2">S no</th>
-                          <th class="design1" rowspan="2">Product</th>
-                          <th class="design1" colspan="2">Stock on hand</th>
-                          <th class="design1" colspan="2">Consumption of last 7 days </th>
-                          <th colspan="2" class="design1" rowspan="2" style="padding:1px;">Days of stock Available</th>
+                          <th class="design1" rowspan="2">#</th>
+                          <th class="design1" rowspan="2">Items</th>
+                          <th class="design1" colspan="2">Available Stock</th>
+                          <th class="design1" colspan="2">Avg Consumption of last 7 days </th>
+                          <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
                         </tr>
                         <tr>
-                          <th class="design">Qty(In Cases)</th>
-                          <th class="design">Qty(In Bottles)</th>
-                          <th class="design">Qty(In Cases)</th>
-                          <th class="design">Qty(In Bottles)</th>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
                         </tr>
 
                         </thead>
@@ -127,7 +161,7 @@
                    <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h3>Depot/Unit Wise Stock Available</h3>
+              <h3 style="font-size:20px; font-weight:600;"> Depot  Available Stock </h3>
             </div>
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 offset-md-5">
@@ -157,44 +191,44 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count depotstock" style="color: #3493fb;margin-left: 30%;"></div>
-                                    <span style="margin-left: 40%;">Qty(In cases)</span>
-                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock on hand</p>
+                                    <div class="count depotstock" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Available Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count depotstock1" style="color:red;margin-left: 42%;"></div>
-                                    <span style="margin-left: 40%;">Qty(In bottles)</span>
-                                    <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Stock on hand</p>
+                                    <div class="count depotstock1" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span> Available Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats" >
-                                    <div class="count depotcase" style="color:green;margin-left: 38%;"></div>
-                                    <span style="margin-left: 40%;">Qty(In cases)</span>
-                                    <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
+                                    <div class="count depotcase" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
                                 <div class="tile-stats">
-                                    <div class="count depotbott" style="color: #3493fb;margin-left: 30%;"></div>
-                                    <span style="margin-left: 40%;">Qty(In bottles)</span>
-                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
+                                    <div class="count depotbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
 
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
                                 <div class="tile-stats">
-                                    <div class="count depotdays" style="color: #3493fb;margin-left: 30%;"></div>
-                                    <span style="margin-left: 40%;">In Days</span>
-                                    <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Stock Available</p>
+                                    <div class="count depotdays" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Days</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Stock Available</p>
                                 </div>
                             </div>
 
                         </div>
                     </div></div>
-
+                     </div>
 <div class="x_panel  depot_stock_chart">
                      <div class="x_content">
                     <div class="row">
@@ -216,17 +250,17 @@
                                       <table   class="table table-striped jambo_table bulk_action"  style="display:block;" id="depottabel" >
                       <thead>
                         <tr>
-                          <th class="design1" rowspan="2">S no</th>
-                          <th class="design1" rowspan="2">Product</th>
-                          <th class="design1" colspan="2">Stock on hand</th>
-                          <th class="design1" colspan="2">Consumption of last 7 days </th>
-                          <th colspan="2" class="design1" rowspan="2" style="padding:1px;">Days of stock Available</th>
+                          <th class="design1" rowspan="2">#</th>
+                          <th class="design1" rowspan="2">Items</th>
+                          <th class="design1" colspan="2">Available Stock</th>
+                          <th class="design1" colspan="2">Avg Consumption of last 7 days </th>
+                          <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
                         </tr>
                         <tr>
-                          <th class="design">Qty(In Cases)</th>
-                          <th class="design">Qty(In Bottles)</th>
-                          <th class="design">Qty(In Cases)</th>
-                          <th class="design">Qty(In Bottles)</th>
+                          <th class="design">Qty(Cases)</th>
+                          <th class="design">Qty(Bottles)</th>
+                          <th class="design">Qty(Cases)</th>
+                          <th class="design">Qty(Bottles)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -247,7 +281,7 @@
      <div class="x_panel">
          <div class="page-title">
             <div class="title_left">
-              <h5 style="color:#14c38e">Qty Accepted from vendor</h5>
+              <h3 style="font-size:20px; font-weight:600;">Qty Accepted from vendor</h3>
             </div>
             <div class="title_right">
                 <form  method="POST" id="myForm2" action="warehouse_stock"  enctype="multipart/form-data">
@@ -263,30 +297,30 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats" >
-                <div class="count pendinggrn" style="color:green;margin-left: 5%;font-size:30px;"></div>
-                <!--<span style="margin-left: 40%;"></span>-->
-                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending GRN</p>
+                <div class="count pendinggrn" style="color:green;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
+                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending GRN</p>
               </div>
             </div>
                <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats" >
-                <div class="count verifiedgrn" style="color:#9F9D1B;margin-left: 5%;font-size:30px;"></div>
-                <!--<span style="margin-left: 40%;"></span>-->
-                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Verified GRN</p>
+                <div class="count verifiedgrn" style="color:#9F9D1B;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+              <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
+                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Verified GRN</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats">
-                <div class="count acceptedqty" style="color: #3493fb;margin-left: 5%;font-size:30px;"></div>
-                <!--<span style="margin-left: 20%;"></span>-->
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Accepted Qty(In cases)</p>
+                <div class="count acceptedqty" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+           <div style="text-align:center;margin-left: auto;margin-right: auto;">Accepted Qty(Cases)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Accepted Qty(Cases)</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats">
-                <div class="count acceptdbott" style="color:red;margin-left: 5%;font-size:30px;"></div>
-                <!--<span style="margin-left: 20%;"></span>-->
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Accepted Qty(In bottles)</p>
+                <div class="count acceptdbott" style="color:red;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+             <div style="text-align:center;margin-left: auto;margin-right: auto;">Accepted Qty(Bottles)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Accepted Qty(In bottles)</p>
               </div>
             </div>
           </div>
@@ -296,7 +330,7 @@
                       <table class="table table-striped" style="display:block;width=100%";  id="pendingtabel">
                         <thead>
                           <tr>
-                            <th class="design1" rowspan="2">S NO</th>
+                            <th class="design1" rowspan="2">#</th>
                             <th class="design1" rowspan="2">Received Date</th>
                             <th  class="design1" rowspan="2">Manufacture</th>
                                <!--<th  class="design1" rowspan="2">Warehouse</th>-->
@@ -341,7 +375,7 @@
                                 <h3>Accepted Quantity</h3>
                             <div class="x_content">
                                    <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="lblNoStock2">No Pending GRN</h3>
-                                 <canvas id="mybarChart"></canvas>
+                                 <canvas id="mybarChart1"></canvas>
                             </div>
                         </div>
                         </div>
@@ -352,7 +386,7 @@
         <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h5 style="color:#14c38e;margin-right:-10px;">Depots pending indent</h5>
+              <h3 style="color:#14c38e;margin-right:-10px;">Depots pending indent</h3>
             </div>
             <div class="title_right">
                    <div class="col-md-10 col-sm-10">
@@ -380,27 +414,28 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count pendingind" style="color:green;margin-left: 5%;font-size:20px;"></div>
-                <!--<span style="margin-left: 40%;">Indent</span>-->
-                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending Indents</p>
+                <div class="count pendingind" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+         <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
+                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending Indents</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indentcases" style="color: #3493fb;margin-left: 5%;font-size:20px;"></div>
-                <!--<span style="margin-left: 20%;">In cases</span>-->
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Verified indents</p>
+                <div class="count indentcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+              <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Verified indents</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indbottles" style="color:red;margin-left: 5%;font-size:20px;"></div>
-                <!--<span style="margin-left: 20%;">In bottles</span>-->
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty indented(In Cases)</p>
+                <div class="count indbottles" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+             <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty Indented(Cases)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty indented(In Cases)</p>
               </div>
             </div>
 
                <div class="col-md-4">
+                   <h5 class="text-danger" style="width: 300px; height: 200px;margin-top:140px;margin-left:170px;"id="lblindent">No data Available</h5>
                                     <div id="echart-indent"   style="width: 300px; height: 200px;margin-top:-20px;margin-left:100px;"></div>
                                 <!-- <h4 style="margin-left:90px;margin-right:-450px;margin-top:10px;" class="text-info textind">Qty indent versus Qty indented</h4>-->
                                 </div>
@@ -409,8 +444,8 @@
                   <table class="table table-striped" style="display:none;width=200%"; id="pendingind">
                         <thead>
                           <tr>
-                            <th class="design1" rowspan="2">S NO</th>
-                              <th class="design1" rowspan="2">Product</th>
+                            <th class="design1" rowspan="2">#</th>
+                              <th class="design1" rowspan="2">Items</th>
                               <th  class="design1" colspan="2">Pending indent Qty</th>
                               <th class="design1" colspan="2">Verified indent Qty</th>
 
@@ -667,40 +702,82 @@
               }
           };
  }
- function grnchart(total){
+ function grnchart(total,itemslist){
+
+ if ($('#mybarChart1').length) {
+        var ctx = document.getElementById("mybarChart1");
+        var mybarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Today", "Current month"],
+                datasets: [{
+                    label: '1000ml',
+                    backgroundColor: "#26B99A",
+                    data: [parseFloat(itemslist[0].FTD_cases), parseFloat(itemslist[0].MTD_cases)]
+
+                },
+                 {
+                    label: '500ml',
+                    backgroundColor: "#26B99A",
+                    data: [parseFloat(itemslist[1].FTD_cases), parseFloat(itemslist[1].MTD_cases)]
+
+                },{
+                    label: '250ml',
+                    backgroundColor: "#03586A",
+                    data: [parseFloat(itemslist[2].FTD_cases), parseFloat(itemslist[2].MTD_cases)]
+
+                }]
+            },
+
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+    }
+
     if ($('#echart_donut2').length) {
         var echartDonut = echarts.init(document.getElementById('echart_donut2'), "");
         var seriesData = [];
-        var count = 0;
+        var count1 = 0;
           for (var i = 0; i < total.length; i++) {
             var item = total[i];
             if(item.pending_grn !="0" ){
+
                seriesData.push({
                  value: item.pending_grn,
                  name: 'Pending GRN'
                });
-               count++;
+               count1++;
             }
              if(item.total_grn !="0" ){
+
                seriesData.push({
                  value: item.total_grn,
                  name: 'Total GRN'
                });
-               count++;
+               count1++;
             }
             if(item.verified_grn !="0" ){
+
                seriesData.push({
                  value: item.verified_grn,
                  name: 'Verified GRN'
                });
             }
-            count++;
+            count1++;
           }
-
-           if (count === 0) {
+        if (count1 === 0) {
               $('#echart_donut2').hide();
               $('#grnstatus').show();
           } else {
+              console.log(count1);
               $('#echart_donut2').show();
               $('#grnstatus').hide();
           }
@@ -769,8 +846,10 @@
         });
 
     }
+
+
   }
-  function stock_days(total){
+  function stock_days(total,itemslist){
         var chart_gauge_sales_elem;
         var chart_gauge_01;
         var item_gauge;
@@ -808,6 +887,35 @@
               }
 
       }
+       var seriesData = [];
+
+     for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
+              if(item.stock_botteles!="0"){
+               seriesData.push({
+                 period: item.itemname,
+                 "Qty(Cases)": item.stock_cases,
+                 "Qty(Bottles)": item.consumption_cases
+               });
+
+            }
+
+          }
+      if ($('#graph_bar_group1').length) {
+
+        Morris.Bar({
+            element: 'graph_bar_group1',
+            data: seriesData,
+            xkey: 'period',
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            ykeys: ["Qty(Cases)","Qty(Bottles)"],
+            labels: ["Qty(Cases)","Qty(Bottles)"],
+            hideHover: 'auto',
+            xLabelAngle: 60,
+            resize: true
+        });
+
+    }
     }
     function depotindent(total){
         var seriesData = [];
@@ -840,10 +948,10 @@
          }
     if (count === 0) {
               $('#echart-indent').hide();
-              $('#lblNoStock1').show();
+              $('#lblindent').show();
           } else {
               $('#echart-indent').show();
-              $('#lblNoStock1').hide();
+              $('#lblindent').hide();
           }
 
          echartPie.setOption({
@@ -913,63 +1021,6 @@
     }
 
  window.onload=function(){
-     if ($('#mybarChart').length) {
-
-        var ctx = document.getElementById("mybarChart");
-        var mybarChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ["January", "February", "March", "April", "May", "June", "July"],
-                datasets: [{
-                    label: '# of Votes',
-                    backgroundColor: "#26B99A",
-                    data: [51, 30, 40, 28, 92, 50, 45]
-                }, {
-                    label: '# of Votes',
-                    backgroundColor: "#03586A",
-                    data: [41, 56, 25, 48, 72, 34, 12]
-                }]
-            },
-
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-        });
-
-    }
-     if (true) {
-     if ($('#graph_bar_group1').length) {
-
-        Morris.Bar({
-            element: 'graph_bar_group1',
-            data: [
-
-                { "period": "25/07", "licensed": 2246, "sorned": 1461 },
-                { "period": "25/07", "licensed": 2657, "sorned": 1967 },
-                { "period": "25/07", "licensed": 3148, "sorned": 2627 },
-                { "period": "25/07", "licensed": 3471, "sorned": 3740 },
-                { "period": "25/07", "licensed": 2871, "sorned": 2216 },
-                { "period": "25/07", "licensed": 2401, "sorned": 1656 },
-                { "period": "25/07", "licensed": 2115, "sorned": 1022 }
-            ],
-            xkey: 'period',
-            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
-            ykeys: ['licensed', 'sorned'],
-            labels: ['Licensed', 'SORN'],
-            hideHover: 'auto',
-            xLabelAngle: 60,
-            resize: true
-        });
-
-    }
-}
-
 
      if ($('#graph_bar').length) {
      var date=new Date(); //$("#getdate").val();
@@ -1046,6 +1097,9 @@
       }
 
  }
+
+
+
     $(document).ready(function() {
     // When the button with ID "checked1" is clicked
     $("#checked1").click(function() {
@@ -1107,12 +1161,13 @@ $.ajax({
        $("#echart-pies2").hide();
        $("#completetabel").hide();
       }else{
+
          chart_gauge_sales_elem = document.getElementById('chart_gauge_03');
          chart_gauge_03 = new Gauge(chart_gauge_sales_elem).setOptions(chart_gauge_settings);
          for (var i = 0; i < total.length; i++) {
             item = total[i];
          }
-         stock_days(total);
+         stock_days(total,itemslist);
       }
      var tableBody = $('#stktabel  tbody');
              for (var i = 0; i < itemslist.length; i++) {
@@ -1166,13 +1221,14 @@ $.ajax({
   success: function(data) {
          var total =  data.data.list;
          var itemslist = data.data.itemlist;
+         var message = data.data.message;
          if(message != "Data found")
           {
            $("#grnstatus").html(data.message);
            $("#grnstatus").show();
            $("#echart_donut2").hide();
          }else{
-           grnchart(total);
+           grnchart(total,itemslist);
          }
         var tableBody = $('#pendingtabel  tbody');
         tableBody.empty();
@@ -1230,9 +1286,8 @@ $('#grndate').change(function() {
        $("#grnstatus").show();
        $("#echart_donut2").hide();
       }else{
-       grnchart(total);
+       grnchart(total,itemslist);
       }
-
             var tableBody = $('#pendingtabel  tbody');
             tableBody.empty();
                   for (var i = 0; i < itemslist.length; i++) {
@@ -1414,8 +1469,8 @@ $.ajax({
      console.log(data);
      if(message != "Data found")
           {
-           $("#lblNoStock2").html(data.message);
-           $("#lblNoStock2").show();
+           $("#lblindent").html(data.message);
+           $("#lblindent").show();
            $("#echart-indent").hide();
           }else{
            depotindent(total);
@@ -1474,8 +1529,8 @@ $.ajax({
      console.log(data);
      if(message != "Data found")
           {
-           $("#lblNoStock2").html(data.message);
-           $("#lblNoStock2").show();
+           $("#lblindent").html(data.message);
+           $("#lblindent").show();
            $("#echart-indent").hide();
           }else{
            depotindent(total);
@@ -1520,9 +1575,11 @@ $.ajax({
       if ($(this).is(":checked")) {
        $("#echart-indent").hide();
        $('.textind').hide();
+       $('#lblindent').hide();
       $("#pendingind").show();
     }
     else{
+    $('#lblindent').show();
      $("#echart-indent").show();
      $('.textind').show();
       $("#pendingind").hide();
@@ -1556,5 +1613,8 @@ $.ajax({
     });
   });
 $('#grndate').val(new Date().toJSON().slice(0,10));
+
+
+
 </script>
 {% endblock %}

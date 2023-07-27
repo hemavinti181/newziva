@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
+
+
 <style>
     .design{
      color: white;
@@ -11,17 +13,86 @@
         background-color:#329DD6 !important;
     }
 </style>
-<!-- page content -->
+
+
 <div class="right_col" role="main">
+<div class="row">
+              <div class="col-md-12 col-sm-12 ">
 
-  <div class="">
-    <div class="row">
+          <div class="page-title">
+            <div class="title_left">
+              <h3 style="font-size:20px; font-weight:600;">Depot Dashboard</h3>
+            </div>
+          </div>
 
+                   {% if request.session.role == 'Admin' %}
+                 <div class="x_panel">
+				      	<form  method="POST" action=""   enctype="multipart/form-data">
+											{% csrf_token %}
+									<div  class="col-md-3 col-sm-3  form-group has-feedback">
+													<label> Warehouse</label>
+
+										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.warehousename }}</option>
+												</select>
+											 <input type="hidden" name="warehousename" id="warehousename" />
+
+												<select class="form-control" name="warehouseid" id="warehouseid">
+													<option value="All">All</option>
+													{% for data1 in wh_masterlist %}
+														{% if data1.status == 'Active' %}
+                            		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+										</div>
+											<div  class="col-md-3 col-sm-3  form-group has-feedback">
+													<label> Region</label>
+												   <select class="form-control" name="regionid2" id="regionid2" hidden>
+                            		                    <option value="{{ request.POST.regionid }}">{{ request.POST.regionname }}</option>
+												</select>
+											 <input type="hidden" name="regionname" id="regionname" />
+												<select class="form-control" name="regionid" id="regionid">
+													<option value="All"> All</option>
+												</select>
+										</div>
+											<div  class="col-md-3 col-sm-3  form-group has-feedback">
+													<label> Depot</label>
+												<select class="form-control" name="depoid2" id="depoid2" hidden>
+                            		                    <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
+												</select>
+											 <input type="hidden" name="deponame" id="deponame" />
+												<select class="form-control" name="depoid" id="depoid">
+													<option value="All"> All</option>
+												</select>
+											</div>
+
+										<!--<div  class="col-md-2 col-sm-2  form-group has-feedback">
+											<select class="form-control" name="busstationid2" id="busstationid2" hidden>
+													<option value="{{ request.POST.busstationid }}">{{ request.POST.busstationname }}</option>
+												</select>
+													<label> Bus Station</label>
+											 <input type="hidden" name="busstationname" id="busstationname" />
+												<select class="form-control" name="busstationid" id="busstationid">
+													<option value="All">All</option>
+												</select>
+										</div>-->
+
+				<div  class="col-md-2 col-sm-2  form-group has-feedback">
+                  <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+				</div>
+						</form>
+
+                 </div>
+              </div>
+
+
+ {% endif %}
       <div class="col-md-4 col-sm-4 ">
         <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h3>Stock Available</h3>
+              <h3 style="font-size:20px; font-weight:600;">Available Stock</h3>
             </div>
             <div class="title_right">
               <div class="col-md-6 col-sm-7 offset-md-9">
@@ -32,37 +103,37 @@
           <div class="x_content stockchart">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count stock_cases" style="color: #3493fb;margin-left: 5%;font-size:30px;"></div>
-                <span style="margin-left: 20%;">Qty(In cases)</span>
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>stock on hand</p>
+                <div class="count stock_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty (Cases)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>stock on hand</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count stock_botteles" style="color:red;margin-left: 5%;font-size:30px;"></div>
-                <span style="margin-left: 20%;">Qty(In bottles)</span>
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>stock on hand</p>
+                <div class="count stock_botteles" style="color:#3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty (Bottles)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>stock on hand</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indays" style="color: #3493fb;margin-left: 5%;font-size:30px;">{{ total. }}</div>
-                <span style="margin-left: 20%;">(In Days)</span>
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Available Up to </p>
+                <div class="count indays" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;">{{ total. }}</div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">(Days)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Available Up to </p>
               </div>
             </div>
             <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
               <div class="tile-stats">
-                <div class="count consumption_cases" style="color:red;margin-left: 5%;font-size:30px;"></div>
-                <span style="margin-left: 20%;">Qty(In Cases)</span>
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Avg consumption of last 7days </p>
+                <div class="count consumption_cases" style="color:#3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty (Cases)</div>
+                <p><span class="fa fa-info" aria-hidden="true"></span> Avg consumption of last 7 days</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
               <div class="tile-stats">
-                <div class="count consumption_botteles" style="color:red;margin-left: 5%;font-size:30px;"></div>
-                <span style="margin-left: 20%;">Qty(In bottles)</span>
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Avg consumption of last 7days</p>
+                <div class="count consumption_botteles" style="color:#3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty (Bottles)</div>
+                <p><span class="fa fa-info" aria-hidden="true"></span>Avg consumption of last 7days</p>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -82,17 +153,17 @@
                                       <table   class="table table-striped jambo_table bulk_action"  style="display:none;" id="stktabel" >
                       <thead>
                         <tr>
-                          <th class="design1" rowspan="2">S no</th>
-                          <th class="design1" rowspan="2">Product</th>
-                          <th class="design1" colspan="2">Stock on hand</th>
-                          <th class="design1" colspan="2">AVG Consumption of last 7 days </th>
-                          <th colspan="2" class="design1" rowspan="2" style="padding:1px;">Days of stock Available</th>
+                          <th class="design1" rowspan="2">#</th>
+                          <th class="design1" rowspan="2">Items</th>
+                          <th class="design1" colspan="2">Available Stock</th>
+                          <th class="design1" colspan="2">Avg Consumption of last 7 days </th>
+                          <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
                         </tr>
                         <tr>
-                          <th class="design">Qty(In Cases)</th>
-                          <th class="design">Qty(In Bottles)</th>
-                          <th class="design">Qty(In Cases)</th>
-                          <th class="design">Qty(In Bottles)</th>
+                          <th class="design">Qty (Cases)</th>
+                          <th class="design">Qty (Bottles)</th>
+                          <th class="design">Qty (Cases)</th>
+                          <th class="design">Qty (Bottles)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -113,7 +184,7 @@
         <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h3>Pending sales</h3>
+              <h3 style="font-size:20px; font-weight:600;">Pending Sales</h3>
             </div>
             <div class="title_right">
               <div class="col-md-6 col-sm-7 offset-md-9">
@@ -121,49 +192,48 @@
               </div>
             </div>
           </div>
-          <div class="x_content" style="margin-bottom:20px;">
-           <div class="col-md-12 col-sm-12">
-              <form  method="POST" id="myForm" action="warehouse_stock"  enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="col-sm-12 col-md-12 form-group has-feedback">
-                  <label class="focus-label" style="margin-top: 2px;margin-bottom: 9px;">Select  Date</label>
-                  <input class="form-control" type="date" name="pdate"  id="pdate"  value="{{ request.POST.pdate }}" style="width:250px;margin-left:-10px;margin-top: 2px;" required>
-                </div>
-              </form>
-              <div class="clearfix"></div>
-           </div>
 
                 <div class="row">
-                  <div class="col-sm-12" style="margin-top:20px;">
+                  <div class="col-sm-12">
                     <div class="card-box table-responsive" style="overflow:hidden;">
                       <p class="text-muted font-13 m-b-30">
                       </p>
 
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-14">
               <div class="tile-stats">
-                <div class="count pending_count" style="color:red;margin-left: 5%;font-size:25px;"></div>
-                <span style="margin-left: 20%;">Pending</span>
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>To be invoiced</p>
+                <div class="count pending_count" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>To be invoiced</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count pending_cases" style="color: #3493fb;margin-left: 5%;font-size:25px;"></div>
-                <span style="margin-left: 20%;">Qty(In cases)</span>
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>To be delivered</p>
+                <div class="count pending_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                <p class="d-none"><span class="fa fa-info" aria-hidden="true"></span>To be delivered</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count pending_qty" style="color:red;margin-left: 5%;font-size:30px;font-size:25px;"></div>
-                <span style="margin-left: 20%;">Qty(In bottles)</span>
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>To be delivered</p>
+                <div class="count pending_qty" style="color:#3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                <p class="d-none"><span class="fa fa-inifo" aria-hidden="true"></span>To be delivered</p>
               </div>
             </div>
           </div>
-
+ <div class="x_content">
+           <div class="col-md-12 col-sm-12">
+              <form  method="POST" id="myForm" action="warehouse_stock"  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="col-sm-12 col-md-12 form-group has-feedback">
+                  <label class="focus-label" style="margin-top: 30px;margin-bottom: 9px;">Select  Date</label>
+                  <input class="form-control" type="date" name="pdate"  id="pdate"  value="{{ request.POST.pdate }}" style="width:250px;margin-left:-10px;margin-top: 2px;" required>
+                </div>
+              </form>
+              <div class="clearfix"></div>
+           </div>
   <div class="col-md-6 col-sm-6 echart-pies2"  style="margin-top:10px;">
-  <h4 class="text-info text">Quantity(In cases)</h4>
+  <h4 class="text-info text">Quantity(Cases)</h4>
     <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="lblNoStock1">No Stock Available</h3>
         <div id="echart-pies2" style="height:350px;margin-top:-80px;margin-left:-30px;"></div>
               </div>
@@ -181,25 +251,21 @@
                 <div class="clearfix"></div>
 
                       <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
-                      <table class="table table-striped jambo_table bulk_action" style="display:none;margin-top:30px;" id="pendingtabel">
+                      <table class="table table-striped jambo_table bulk_action" style="display:none;margin-top:30px;width:auto;" id="pendingtabel">
                         <thead>
                           <tr>
-                            <!--<th class="row2" rowspan="2">S NO</th>-->
-                            <!--<th class="row2" rowspan="2">Date</th>-->
-                            <th  class="design1" rowspan="2">S no</th>
-                            <th class="design1" rowspan="2">Product</th>
+                            <th  class="design1" rowspan="2">#</th>
+                            <th class="design1" rowspan="2">Items</th>
                             <th class="design1" colspan="2">FTD Sales</th>
                             <th  class="design1" colspan="2">MTD Sales</th>
                           </tr>
                           <tr>
-                            <!--<th class="design">Invoice no</th>-->
-                            <th class="design">Qty(In Cases)</th>
-                            <th class="design">Qty(In Bottles)</th>
-                            <th class="design">Qty(In Cases)</th>
-                            <th class="design">Qty(In Bottles)</th>
+                            <th class="design">Qty( Cases)</th>
+                            <th class="design">Qty( Bottles)</th>
+                            <th class="design">Qty( Cases)</th>
+                            <th class="design">Qty( Bottles)</th>
                           </tr>
                         </thead>
-
                         <tbody>
                           <tr>
                           </tr>
@@ -224,7 +290,7 @@
         <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h3>Complete sale</h3>
+              <h3 style="font-size:20px; font-weight:600;">Complete Sales</h3>
             </div>
             <div class="title_right">
               <div class="col-md-6 col-sm-7 offset-md-9">
@@ -235,23 +301,23 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count complete_sale" style="color:green;margin-left: 5%;font-size:30px;"></div>
-                <span style="margin-left: 40%;">sales</span>
-                <p><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Amount collected</p>
+                <div class="count complete_sale" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Sales</div>
+                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Amount collected</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count complete_cases" style="color: #3493fb;margin-left: 5%;font-size:30px;"></div>
-                <span style="margin-left: 20%;">Qty(In cases)</span>
-                <p><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Delivered</p>
+                <div class="count complete_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Delivered</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count complete_bottles" style="color:red;margin-left: 5%;font-size:30px;"></div>
-                <span style="margin-left: 20%;">Qty(In bottles)</span>
-                <p><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Delivered</p>
+                <div class="count complete_bottles" style="color:#3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Delivered</p>
               </div>
             </div>
             <div class="col-md-12 col-sm-12">
@@ -259,7 +325,7 @@
                 {% csrf_token %}
                 <div class="col-sm-12 col-md-12 form-group has-feedback">
                   <label class="focus-label" style="margin-top: 45px;margin-bottom: 9px;">Select  Date</label>
-                  <input class="form-control" type="date" name="cdate"  id="cdate"  value="{{ request.POST.cdate }}" style="width:250px;margin-left:-10px;" required>
+                  <input class="form-control" type="date" name="cdate"  id="cdate"  value="{{ request.POST.cdate }}" style="width:250px;margin-left:-10px;margin-top: 2px;" required>
                 </div>
               </form>
               <div class="clearfix"></div>
@@ -280,18 +346,18 @@
                           <tr>
                             <!--<th class="row2" rowspan="2">S NO</th>-->
                             <!--<th class="row2" rowspan="2">Date</th>-->
-                            <th  class="design1" rowspan="2">S no</th>
-                            <th class="design1" rowspan="2">Product</th>
+                            <th  class="design1" rowspan="2">#</th>
+                            <th class="design1" rowspan="2">Items</th>
                             <th class="design1" colspan="3">FTD Sales</th>
                             <th  class="design1" colspan="3">MTD Sales</th>
                           </tr>
                           <tr>
                             <th class="design">Amount</th>
-                            <th class="design">Qty(In Cases)</th>
-                            <th class="design">Qty(In Bottles)</th>
+                            <th class="design">Qty(Cases)</th>
+                            <th class="design">Qty(Bottles)</th>
                             <th class="design">Amount</th>
-                            <th class="design">Qty(In Cases)</th>
-                            <th class="design">Qty(In Bottles)</th>
+                            <th class="design">Qty(Cases)</th>
+                            <th class="design">Qty(Bottles)</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -336,8 +402,220 @@ var chart_gauge_settings = {
           strokeColor: '#1ABC9C',
           generateGradient: true
       };
+    var theme = {
+        color: [
+            '#04A7A7', '#EC6B56', '#FFEC00', '#3498DB',
+            '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
+        ],
+
+        title: {
+            itemGap: 8,
+            textStyle: {
+                fontWeight: 'normal',
+                color: '#408829'
+            }
+        },
+
+        dataRange: {
+            color: ['#1f610a', '#97b58d']
+        },
+
+        toolbox: {
+            color: ['#408829', '#408829', '#408829', '#408829']
+        },
+
+        tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            axisPointer: {
+                type: 'line',
+                lineStyle: {
+                    color: '#408829',
+                    type: 'dashed'
+                },
+                crossStyle: {
+                    color: '#408829'
+                },
+                shadowStyle: {
+                    color: 'rgba(200,200,200,0.3)'
+                }
+            }
+        },
+
+        dataZoom: {
+            dataBackgroundColor: '#eee',
+            fillerColor: 'rgba(64,136,41,0.2)',
+            handleColor: '#408829'
+        },
+        grid: {
+            borderWidth: 0
+        },
+
+        categoryAxis: {
+            axisLine: {
+                lineStyle: {
+                    color: '#408829'
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: ['#eee']
+                }
+            }
+        },
+
+        valueAxis: {
+            axisLine: {
+                lineStyle: {
+                    color: '#408829'
+                }
+            },
+            splitArea: {
+                show: true,
+                areaStyle: {
+                    color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: ['#eee']
+                }
+            }
+        },
+        timeline: {
+            lineStyle: {
+                color: '#408829'
+            },
+            controlStyle: {
+                normal: { color: '#408829' },
+                emphasis: { color: '#408829' }
+            }
+        },
+
+        k: {
+            itemStyle: {
+                normal: {
+                    color: '#68a54a',
+                    color0: '#a9cba2',
+                    lineStyle: {
+                        width: 1,
+                        color: '#408829',
+                        color0: '#86b379'
+                    }
+                }
+            }
+        },
+        map: {
+            itemStyle: {
+                normal: {
+                    areaStyle: {
+                        color: '#ddd'
+                    },
+                    label: {
+                        textStyle: {
+                            color: '#c12e34'
+                        }
+                    }
+                },
+                emphasis: {
+                    areaStyle: {
+                        color: '#99d2dd'
+                    },
+                    label: {
+                        textStyle: {
+                            color: '#c12e34'
+                        }
+                    }
+                }
+            }
+        },
+        force: {
+            itemStyle: {
+                normal: {
+                    linkStyle: {
+                        strokeColor: '#408829'
+                    }
+                }
+            }
+        },
+        chord: {
+            padding: 4,
+            itemStyle: {
+                normal: {
+                    lineStyle: {
+                        width: 1,
+                        color: 'rgba(128, 128, 128, 0.5)'
+                    },
+                    chordStyle: {
+                        lineStyle: {
+                            width: 1,
+                            color: 'rgba(128, 128, 128, 0.5)'
+                        }
+                    }
+                },
+                emphasis: {
+                    lineStyle: {
+                        width: 1,
+                        color: 'rgba(128, 128, 128, 0.5)'
+                    },
+                    chordStyle: {
+                        lineStyle: {
+                            width: 1,
+                            color: 'rgba(128, 128, 128, 0.5)'
+                        }
+                    }
+                }
+            }
+        },
+        gauge: {
+            startAngle: 225,
+            endAngle: -45,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
+                    width: 8
+                }
+            },
+            axisTick: {
+                splitNumber: 10,
+                length: 12,
+                lineStyle: {
+                    color: 'auto'
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    color: 'auto'
+                }
+            },
+            splitLine: {
+                length: 18,
+                lineStyle: {
+                    color: 'auto'
+                }
+            },
+            pointer: {
+                length: '90%',
+                color: 'auto'
+            },
+            title: {
+                textStyle: {
+                    color: '#333'
+                }
+            },
+            detail: {
+                textStyle: {
+                    color: 'auto'
+                }
+            }
+        },
+        textStyle: {
+            fontFamily: 'Arial, Verdana, sans-serif'
+        }
+    };
+
  function updateEchartPieChart(itemslist) {
-        var echartPie = echarts.init(document.getElementById('echart-depot1'), "");
+        var echartPie = echarts.init(document.getElementById('echart-depot1'),theme);
           var count = 0;
           var seriesData = [];
           var legendData = [];
@@ -577,217 +855,6 @@ function updateEchartPieChart2(itemslist){
 
 
   if(true){
-             var theme = {
-        color: [
-            '#26B99A', '#34495E', '#BDC3C7', '#3498DB',
-            '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
-        ],
-
-        title: {
-            itemGap: 8,
-            textStyle: {
-                fontWeight: 'normal',
-                color: '#408829'
-            }
-        },
-
-        dataRange: {
-            color: ['#1f610a', '#97b58d']
-        },
-
-        toolbox: {
-            color: ['#408829', '#408829', '#408829', '#408829']
-        },
-
-        tooltip: {
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            axisPointer: {
-                type: 'line',
-                lineStyle: {
-                    color: '#408829',
-                    type: 'dashed'
-                },
-                crossStyle: {
-                    color: '#408829'
-                },
-                shadowStyle: {
-                    color: 'rgba(200,200,200,0.3)'
-                }
-            }
-        },
-
-        dataZoom: {
-            dataBackgroundColor: '#eee',
-            fillerColor: 'rgba(64,136,41,0.2)',
-            handleColor: '#408829'
-        },
-        grid: {
-            borderWidth: 0
-        },
-
-        categoryAxis: {
-            axisLine: {
-                lineStyle: {
-                    color: '#408829'
-                }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: ['#eee']
-                }
-            }
-        },
-
-        valueAxis: {
-            axisLine: {
-                lineStyle: {
-                    color: '#408829'
-                }
-            },
-            splitArea: {
-                show: true,
-                areaStyle: {
-                    color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
-                }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: ['#eee']
-                }
-            }
-        },
-        timeline: {
-            lineStyle: {
-                color: '#408829'
-            },
-            controlStyle: {
-                normal: { color: '#408829' },
-                emphasis: { color: '#408829' }
-            }
-        },
-
-        k: {
-            itemStyle: {
-                normal: {
-                    color: '#68a54a',
-                    color0: '#a9cba2',
-                    lineStyle: {
-                        width: 1,
-                        color: '#408829',
-                        color0: '#86b379'
-                    }
-                }
-            }
-        },
-        map: {
-            itemStyle: {
-                normal: {
-                    areaStyle: {
-                        color: '#ddd'
-                    },
-                    label: {
-                        textStyle: {
-                            color: '#c12e34'
-                        }
-                    }
-                },
-                emphasis: {
-                    areaStyle: {
-                        color: '#99d2dd'
-                    },
-                    label: {
-                        textStyle: {
-                            color: '#c12e34'
-                        }
-                    }
-                }
-            }
-        },
-        force: {
-            itemStyle: {
-                normal: {
-                    linkStyle: {
-                        strokeColor: '#408829'
-                    }
-                }
-            }
-        },
-        chord: {
-            padding: 4,
-            itemStyle: {
-                normal: {
-                    lineStyle: {
-                        width: 1,
-                        color: 'rgba(128, 128, 128, 0.5)'
-                    },
-                    chordStyle: {
-                        lineStyle: {
-                            width: 1,
-                            color: 'rgba(128, 128, 128, 0.5)'
-                        }
-                    }
-                },
-                emphasis: {
-                    lineStyle: {
-                        width: 1,
-                        color: 'rgba(128, 128, 128, 0.5)'
-                    },
-                    chordStyle: {
-                        lineStyle: {
-                            width: 1,
-                            color: 'rgba(128, 128, 128, 0.5)'
-                        }
-                    }
-                }
-            }
-        },
-        gauge: {
-            startAngle: 225,
-            endAngle: -45,
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
-                    width: 8
-                }
-            },
-            axisTick: {
-                splitNumber: 10,
-                length: 12,
-                lineStyle: {
-                    color: 'auto'
-                }
-            },
-            axisLabel: {
-                textStyle: {
-                    color: 'auto'
-                }
-            },
-            splitLine: {
-                length: 18,
-                lineStyle: {
-                    color: 'auto'
-                }
-            },
-            pointer: {
-                length: '90%',
-                color: 'auto'
-            },
-            title: {
-                textStyle: {
-                    color: '#333'
-                }
-            },
-            detail: {
-                textStyle: {
-                    color: 'auto'
-                }
-            }
-        },
-        textStyle: {
-            fontFamily: 'Arial, Verdana, sans-serif'
-        }
-    };
 
         }
 
@@ -1167,6 +1234,240 @@ $.ajax({
 });
 $('#cdate').val(new Date().toJSON().slice(0,10));
 $('#pdate').val(new Date().toJSON().slice(0,10));
+
+ $(document).ready(function(){
+  var optionValue = $("#warehouseid2").val();
+  $("#warehouseid").find("option[value='" + optionValue + "']").prop("selected", true);
+})
+$("#warehouseid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#warehousename").val(selectedOptionText);
+});
+$("#regionid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regionname").val(selectedOptionText);
+});
+$("#depoid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame").val(selectedOptionText);
+});
+$("#busstationid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#busstationname").val(selectedOptionText);
+});
+
+$("#button1").click(function() {
+  var selectedOptionText = $('#warehouseid').find(":selected").text();
+  $("#warehousename").val(selectedOptionText);
+   var selectedOptionText = $('#regionid').find(":selected").text();
+  $("#regionname").val(selectedOptionText);
+   var selectedOptionText = $('#depoid').find(":selected").text();
+  $("#deponame").val(selectedOptionText);
+   var selectedOptionText = $('#busstationid').find(":selected").text();
+  $("#bsstationname").val(selectedOptionText);
+});
+
+
+		$("#warehouseid").change(function() {
+        	var warehousename = $(this).find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storeregion" %}',
+            	data: {
+                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#regionid").empty();
+
+                	$.each(obj, function (index, item) {
+                    $("#regionid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#regionid").change(function() {
+    		var warehousename = $('#warehouseid').find(":selected").text();
+        	var regionname = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storedepo" %}',
+            	data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#depoid").empty();
+
+                	$.each(obj, function (index, item) {
+                    $("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#depoid").change(function() {
+    		var warehousename = $('#warehouseid').find(":selected").text();
+        	var regionname = $('#regionid').val();
+        	var depo = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storebus" %}',
+            	data: {
+                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid").empty();
+
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+
+$(document).ready(function() {
+  var warehousename = $("#warehouseid2").find(":selected").text();
+
+    $.ajax({
+        type: "POST",
+        url: '{% url "get_storeregion" %}',
+        data: {
+            'warehouse':warehousename,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+            var obj = data.data.dropdownlist
+            if (obj) {
+                $("#regionid").empty();
+
+                $.each(obj, function(index, item) {
+                $("#regionid").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                });
+				 var optionValue = $("#regionid2").val();
+                $("#regionid").find("option[value='" + optionValue + "']").prop("selected", true);
+            }
+        }
+    });
+  });
+  $(document).ready(function() {
+    // Get the initial warehouse name
+    var warehousename = $("#warehouseid2").find(":selected").text();
+    var regionname = $("#regionid2").val();
+    // Send an AJAX request to get the storeregion dropdown options
+    $.ajax({
+        type: "POST",
+        url: '{% url "get_storedepo" %}',
+      data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+        success: function(data) {
+            var obj = data.data.dropdownlist
+            if (obj) {
+                $("#depoid").empty();
+
+                $.each(obj, function(index, item) {
+                    $("#depoid").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                });
+                 var optionValue = $("#depoid2").val();
+                 $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
+            }
+        }
+      });
+    });
+	$(document).ready(function() {
+    		var warehousename = $('#warehouseid2').find(":selected").text();
+        	var regionname = $('#regionid2').val();
+        	var depo = $('#depoid2').val()
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storebus" %}',
+            	data: {
+                	'depo':depo,'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#busstationid").empty();
+                	$.each(obj, function (index, item) {
+                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+					var optionValue = $("#busstationid2").val();
+                    $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
+                	}
+             	}
+            });
+     });
+
+$(document).ready(function() {
+$.ajax({
+  type: "GET",
+  url: "{% url 'depot_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     message = data.data.message
+      console.log(data);
+      var itemslist = data.data.itemwiselist;
+      if(message != "Data found")
+      {
+       $("#lblNoStock").html(data.message);
+       $("#lblNoStock").show();
+       $("#echart-depot1").hide();
+      }else{
+         chart_gauge_sales_elem = document.getElementById('chart_gauge_sales');
+         chart_gauge_01 = new Gauge(chart_gauge_sales_elem).setOptions(chart_gauge_settings);
+         for (var i = 0; i < itemslist.length; i++) {
+            item = itemslist[i];
+         }
+         updateEchartPieChart(itemslist);
+      }
+     var tableBody = $('#stktabel  tbody');
+            for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+            }
+        var tfootdata = $('#stktabel tfoot');
+          for (var i = 0; i < itemslist.length; i++) {
+                var item = total[i];
+                $('.stock_cases').text(item.stock_cases);
+                $('.stock_botteles').text(item.stock_botteles);
+                $('.consumption_cases').text(item.consumption_cases);
+                $('.consumption_botteles').text(item.consumption_botteles);
+                $('.indays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
 </script>
 
 {% endblock %}

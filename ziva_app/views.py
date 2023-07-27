@@ -108,7 +108,7 @@ def login(request):
             #sidebar_items = {'submenu':submenu,'weblinks':weblinks}
             messages.success(request,data['message'])
             if role == 'Admin':
-                return redirect('/dashboard')
+                return redirect('/depot_dashboard')
             elif displayrole =="UPPAL ZONAL STORES":
                 return redirect('/zonal_dashboard')
             elif displayrole == 'BUS STATION CONTROLLER':
@@ -12208,9 +12208,25 @@ def depot_dashboard(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     menuname = request.session['mylist']
-    return render(request, 'dashboard/depot_dashboard.html', {"menuname": menuname})
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        wh_masterlist = data['warehouselist']
+        return render(request, 'dashboard/depot_dashboard.html', {"menuname": menuname,'wh_masterlist':wh_masterlist})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request,data['message'])
+        return redirect('login')
 def depot_dashboard_data(request):
     accesskey = request.session['accesskey']
+    role = request.session['role']
     url = "http://13.235.112.1/ziva/mobile-api/stock-available-report.php"
     payload = {"accesskey": accesskey,
                }
@@ -12317,11 +12333,27 @@ def complete_sale_report(request):
 
 
 def bust_dashboard(request):
+    accesskey = request.session['accesskey']
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
     menuname = request.session['mylist']
-    return render(request, 'dashboard/bust_dashboard.html', {"menuname": menuname})
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        wh_masterlist = data['warehouselist']
+        return render(request, 'dashboard/bust_dashboard.html', {"menuname": menuname, 'wh_masterlist': wh_masterlist})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request, data['message'])
+        return redirect('login')
+
 
 
 def bust_dashboard_data(request):
@@ -12445,9 +12477,14 @@ def zonal_dashboard(request):
         'Content-Type': 'text/plain'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    depolist = data['depolist']
-    return render(request, 'dashboard/zonal_dashboard.html', {"menuname": menuname,'depolist':depolist})
+    if response.status_code == 200:
+        data = response.json()
+        depolist = data['depolist']
+        return render(request, 'dashboard/zonal_dashboard.html', {"menuname": menuname,'depolist':depolist})
+    elif response.status_code == 400:
+        data = response.json()
+        messages.error(request,data['message'])
+        return redirect('/login')
 
 
 def zonal_dashboard_data(request):
