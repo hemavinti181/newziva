@@ -66,18 +66,6 @@
 													<option value="All"> All</option>
 												</select>
 											</div>
-
-										<!--<div  class="col-md-2 col-sm-2  form-group has-feedback">
-											<select class="form-control" name="busstationid2" id="busstationid2" hidden>
-													<option value="{{ request.POST.busstationid }}">{{ request.POST.busstationname }}</option>
-												</select>
-													<label> Bus Station</label>
-											 <input type="hidden" name="busstationname" id="busstationname" />
-												<select class="form-control" name="busstationid" id="busstationid">
-													<option value="All">All</option>
-												</select>
-										</div>-->
-
 				<div  class="col-md-2 col-sm-2  form-group has-feedback">
                   <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
 				</div>
@@ -85,7 +73,6 @@
 
                  </div>
               </div>
-
 
  {% endif %}
       <div class="col-md-4 col-sm-4 ">
@@ -95,7 +82,21 @@
               <h3 style="font-size:20px; font-weight:600;">Available Stock</h3>
             </div>
             <div class="title_right">
-              <div class="col-md-6 col-sm-7 offset-md-9">
+              <div class="col-md-9 col-sm-9  form-group has-feedback">
+
+										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+                                                    {% for data in item_masterlist %}
+                                                        {% if data.status == "Active" %}
+                                                           {% if data.itemcode == "PHA0002" %}
+                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
+                                                            {% else %}
+                                                                <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+										</div>
+              <div class="col-md-2 col-sm-2">
                 <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
               </div>
             </div>
@@ -405,7 +406,7 @@ var chart_gauge_settings = {
       };
     var theme = {
         color: [
-            '#04A7A7', '#EC6B56', '#FFEC00', '#3498DB',
+            '#12B1AF', '#ff8566', '#D8DB06', '#3498DB',
             '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
         ],
 
@@ -915,59 +916,25 @@ function updateEchartPieChart2(itemslist){
   });
 
 $(document).ready(function() {
+var itemcode =  $('#itemcode').val();
+alert(itemcode)
 $.ajax({
-  type: "GET",
+  type: "POST",
   url: "{% url 'depot_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-    'csrfmiddlewaretoken': '{{ csrf_token }}'
+      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
      var total =  data.data.totallist;
      message = data.data.message
       console.log(data);
-      var itemslist = data.data.itemwiselist;
-      if(message != "Data found")
-      {
-       $("#lblNoStock").html(data.message);
-       $("#lblNoStock").show();
-       $("#echart-depot1").hide();
-      }else{
-
-         for (var i = 0; i < itemslist.length; i++) {
-            item = itemslist[i];
-         }
-
-         updateEchartPieChart(itemslist);
-      }
-     var tableBody = $('#stktabel  tbody');
-            for (var i = 0; i < itemslist.length; i++) {
-                var item = itemslist[i];
-                var row = $('<tr>');
-                row.append($('<td>').text(i + 1));  // S No
-                row.append($('<td>').text(item.itemname));
-                row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));  // Quantity
-                row.append($('<td>').text(item.consumption_cases));
-                row.append($('<td>').text(item.consumption_botteles));
-                row.append($('<td>').text(item.indays));
-                tableBody.append(row);
-            }
-        var tfootdata = $('#stktabel tfoot');
-          for (var i = 0; i < itemslist.length; i++) {
+          for (var i = 0; i < total.length; i++) {
                 var item = total[i];
                 $('.stock_cases').text(item.stock_cases);
                 $('.stock_botteles').text(item.stock_botteles);
                 $('.consumption_cases').text(item.consumption_cases);
                 $('.consumption_botteles').text(item.consumption_botteles);
                 $('.indays').text(item.indays);
-                var row = $('<tr>');
-                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-                row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));
-                row.append($('<td>').text(item.consumption_cases));
-                row.append($('<td>').text(item.consumption_botteles));
-                row.append($('<td>').text(item.indays));
-                tfootdata.append(row);
           }
 
   },
@@ -977,6 +944,37 @@ $.ajax({
   }
 });
 });
+
+$('#itemcode').change(function() {
+var itemcode =  $('#itemcode').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'depot_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+
+          for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.stock_cases').text(item.stock_cases);
+                $('.stock_botteles').text(item.stock_botteles);
+                $('.consumption_cases').text(item.consumption_cases);
+                $('.consumption_botteles').text(item.consumption_botteles);
+                $('.indays').text(item.indays);
+
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+
 $('#pdate').change(function() {
 fdate = $('#pdate').val();
 $.ajax({
@@ -1428,7 +1426,7 @@ $(document).ready(function() {
 $(document).ready(function() {
 $.ajax({
   type: "GET",
-  url: "{% url 'depot_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  url: "{% url 'depot_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
     'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
@@ -1447,10 +1445,10 @@ $.ajax({
          for (var i = 0; i < itemslist.length; i++) {
             item = itemslist[i];
          }
+
          updateEchartPieChart(itemslist);
       }
      var tableBody = $('#stktabel  tbody');
-        tableBody.empty();
             for (var i = 0; i < itemslist.length; i++) {
                 var item = itemslist[i];
                 var row = $('<tr>');
@@ -1464,7 +1462,6 @@ $.ajax({
                 tableBody.append(row);
             }
         var tfootdata = $('#stktabel tfoot');
-        tfootdata.empty();
           for (var i = 0; i < itemslist.length; i++) {
                 var item = total[i];
                 $('.stock_cases').text(item.stock_cases);

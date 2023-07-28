@@ -36,11 +36,9 @@
 												<select class="form-control" name="warehouseid" id="warehouseid">
 													<option value="All">All</option>
 													{% for data1 in wh_masterlist %}
-														{% if data.itemcode == "PHA0002" %}
-                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
-                                                            {% else %}
-                                                                <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
-                                                            {% endif %}
+														{% if data1.status == 'Active' %}
+                            		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif %}
 													{% endfor %}
 												</select>
 										</div>
@@ -75,9 +73,9 @@
 													<option value="All">All</option>
 												</select>
 										</div>
-				<!--<div  class="col-md-2 col-sm-2  form-group has-feedback">
+				<div  class="col-md-2 col-sm-2  form-group has-feedback">
                   <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-				</div>-->
+				</div>
 
 						</form>
      </div>
@@ -91,21 +89,7 @@
               <h3 style="font-size:20px; font-weight:600;">Available Stock </h3>
             </div>
             <div class="title_right">
-               <div class="col-md-9 col-sm-9  form-group has-feedback">
-
-										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
-                                                    {% for data in item_masterlist %}
-                                                       {% if data.status == "Active" %}
-                                                           {% if data.itemcode == "PHA0002" %}
-                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
-                                                            {% else %}
-                                                                <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-										</div>
-              <div class="col-md-2 col-sm-2">
+              <div class="col-md-6 col-sm-7 offset-md-9">
                 <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
               </div>
             </div>
@@ -170,10 +154,10 @@
                           <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
                         </tr>
                         <tr>
-                          <th class="design">Qty( Cases)</th>
-                          <th class="design">Qty( Bottles)</th>
-                          <th class="design">Qty( Cases)</th>
-                          <th class="design">Qty( Bottles)</th>
+                          <th class="design">Qty(Cases)</th>
+                          <th class="design">Qty(Bottles)</th>
+                          <th class="design">Qty(Cases)</th>
+                          <th class="design">Qty(Bottles)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -244,8 +228,7 @@
   <div class="col-md-6 col-sm-6"  style="margin-top:10px;">
   <h4 class="text-info text">Quantity(Cases)</h4>
     <h5 style="margin-top: 100px;margin-bottom: 130px;margin-left: 10px;margin-right: 100px;display:none;" class="text-danger" id="lblNoStock1">No  Sales Available</h5>
-        <div id="echart-pies2" style="
-        height:350px;margin-top:-80px;margin-left:-30px;"></div>
+        <div id="echart-pies2" style="height:350px;margin-top:-80px;margin-left:-30px;"></div>
               </div>
                       <div class="col-md-5 col-sm-5" id="chart_gauge_sales1" style="margin-top:10px;">
                        <div>
@@ -418,7 +401,7 @@
       };
  function updateEchartPieChart(itemslist) {
         var echartPie = echarts.init(document.getElementById('echart-depot1'), "");
-          var count=0;
+
           var seriesData = [];
           var legendData = [];
 
@@ -431,14 +414,11 @@
                  value: item.stock_cases,
                  name: item.itemname
                });
-                count++;
+
             }
             legendData.push(item.itemname);
           }
-          if(count == 0){
-          $("#echart-depot1").hide();
-           $("#lblNoStock").show();
-          }
+
           echartPie.setOption({
               tooltip: {
                   trigger: 'item',
@@ -508,10 +488,7 @@
     var count = 0;
     var seriesData = [];
     var legendData = [];
-    if($("#checked2").prop('checked')){
-      $(".echart-pies2").show();
-      $("#chart_gauge_sales1").show();
-    }
+
     var echartPie = echarts.init(document.getElementById('echart-pies2'),"");
     for (var i = 0; i < itemslist.length; i++) {
             var item = itemslist[i];
@@ -524,11 +501,11 @@
             }
             legendData.push(item.itemname);
     }
-        if (count === 0) {
-              $('.echart-pies2').hide();
+    if (count === 0) {
+              $('#echart-pies2').hide();
               $('#lblNoStock1').show();
           } else {
-              $('.echart-pies2').show();
+              $('#echart-pies2').show();
               $('#lblNoStock1').hide();
           }
 
@@ -615,10 +592,7 @@
                   chart_gauge_sales.set(0.1);
               }
       }
-    if($("#checked2").prop('checked')){
-      $(".echart-pies2").hide();
-      $("#chart_gauge_sales1").hide();
-    }
+
 }
 
 function updateEchartPieChart2(itemslist){
@@ -664,8 +638,8 @@ function updateEchartPieChart2(itemslist){
 
   if(true){
              var theme = {
-       color: [
-            '#12B1AF', '#ff8566', '#D8DB06', '#3498DB',
+        color: [
+            '#26B99A', '#34495E', '#BDC3C7', '#3498DB',
             '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
         ],
 
@@ -927,7 +901,7 @@ $.ajax({
   type: "GET",
   url: "{% url 'bust_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-   'csrfmiddlewaretoken': '{{ csrf_token }}'
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
      var total =  data.data.totallist;
@@ -943,7 +917,6 @@ $.ajax({
        updateEchartPieChart(itemslist);
       }
      var tableBody = $('#stktabel  tbody');
-            tableBody.empty();
             for (var i = 0; i < itemslist.length; i++) {
                 var item = itemslist[i];
                 var row = $('<tr>');
@@ -958,10 +931,13 @@ $.ajax({
                 tableBody.append(row);
             }
         var tfootdata = $('#stktabel tfoot');
-          tfootdata.empty();
           for (var i = 0; i < itemslist.length; i++) {
                 var item = total[i];
-
+                $('.stock_cases').text(item.stock_cases);
+                $('.stock_botteles').text(item.stock_botteles);
+                $('.consumption_cases').text(item.consumption_cases);
+                $('.consumption_botteles').text(item.consumption_botteles);
+                $('.indays').text(item.indays);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
                 row.append($('<td>').text(item.stock_cases));
@@ -1368,7 +1344,6 @@ $(document).ready(function() {
 					if(obj) {
 			 		$("#busstationid").empty();
                 	$.each(obj, function (index, item) {
-                	var optionValue = $("#busstationid").val();
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
 					var optionValue = $("#busstationid2").val();
@@ -1377,64 +1352,6 @@ $(document).ready(function() {
              	}
             });
      });
-
-$('#itemcode').change(function() {
-var itemcode =  $('#itemcode').val();
-
-$.ajax({
-  type: "POST",
-  url: "{% url 'bust_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
-  data: {
-     'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
-  },
-  success: function(data) {
-     var total =  data.data.totallist;
-
-          for (var i = 0; i < total.length; i++) {
-                var item = total[i];
-                $('.stock_cases').text(item.stock_cases);
-                $('.stock_botteles').text(item.stock_botteles);
-                $('.consumption_cases').text(item.consumption_cases);
-                $('.consumption_botteles').text(item.consumption_botteles);
-                $('.indays').text(item.indays);
-
-          }
-
-  },
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.error("Error occurred: " + textStatus, errorThrown);
-    // Handle the error case here, if required
-  }
-});
-});
-$(document).ready(function() {
-var itemcode =  $('#itemcode').val();
-$.ajax({
-  type: "POST",
-  url: "{% url 'bust_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
-  data: {
-     'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
-  },
-  success: function(data) {
-     var total =  data.data.totallist;
-
-          for (var i = 0; i < total.length; i++) {
-                var item = total[i];
-                $('.stock_cases').text(item.stock_cases);
-                $('.stock_botteles').text(item.stock_botteles);
-                $('.consumption_cases').text(item.consumption_cases);
-                $('.consumption_botteles').text(item.consumption_botteles);
-                $('.indays').text(item.indays);
-
-          }
-
-  },
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.error("Error occurred: " + textStatus, errorThrown);
-    // Handle the error case here, if required
-  }
-});
-});
 
 </script>
 

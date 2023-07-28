@@ -22,8 +22,9 @@
               <h3 style="font-size:20px; font-weight:600;">Zonal Dashboard</h3>
             </div>
           </div>
+                            {% if request.session.role == 'Admin' %}
                              <div class="x_panel">
-        {% if request.session.role == 'Admin' %}
+
 				      	<form  method="POST" action=""   enctype="multipart/form-data">
 											{% csrf_token %}
 									<div  class="col-md-3 col-sm-3  form-group has-feedback">
@@ -44,9 +45,9 @@
 												</select>
 										</div>
                             </form>
+
                              </div>
                         </div>
-
         {% endif %}
                      <div class="col-md-12 col-sm-12 ">
                    <div class="x_panel">
@@ -55,7 +56,19 @@
               <h3 style="font-size:20px; font-weight:600;">Zonal Stores Stock Available</h3>
             </div>
             <div class="title_right">
-              <div class="col-md-8 col-sm-8 offset-md-9">
+                 <div class="col-md-4 col-sm-4  offset-md-7">
+
+										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+                                                    {% for data in item_masterlist %}
+                                                        {% if data.itemcode == "PHA0002" %}
+                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
+                                                            {% else %}
+                                                                <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                     {% endif %}
+                                                    {% endfor %}
+                                                </select>
+										</div>
+              <div class="col-md-1 col-sm-1">
                 <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
               </div>
             </div>
@@ -108,20 +121,12 @@
                                       <h5 class="text-info" style="margin:20px">Qty Available vs Qty Consumption progress</h5>
                                 </div>
                         </div>
-            <div class="col-md-3 col-sm-3" >
-                        <div class="x_panel days">
-                            <div class="sidebar-widget" style="margin-bottom:40px;">
-                                <h4></h4>
-                                <canvas id="chart_gauge_03" class="" style="margin-bottom:50px;width:350px;height:200px;margin-left:-10px;margin-top:10px"></canvas>
-                                <div class="goal-wrapper">
-                                    <span id="gauge-text2" class="gauge-value pull-left" style="margin-top:-60px;margin-left: 20px;">1</span>
-                                      <span id="goal-text2" class="goal-value pull-right" style="margin-top:-60px;margin-right:40px;">100 days</span>
-                                </div>
-                                <h5 class="text-info" style="margin-top:45px;margin-left:50px;">Stock Available in days</h5>
-                            </div>
-                        </div>
+            <div class="col-md-3 col-sm-3">
+                 <div class="x_panel">
+                  <h3 style="margin: 125px 3px 149px 100px;display:none;" id="depotstock">No Stock Available</h3>
+                       <div id="echart-zonal1" style="height:350px;margin-top:-4px;margin-left:-60px;"></div>
             </div>
-
+              </div>
     <div class="col-md-5 col-sm-5">
 <div class="x_panel stktabel">
             <table class="table table-striped" style="display:block;width=200%"; id="stktabel">
@@ -156,8 +161,10 @@
             </div>
             </div>
 </div>
+                     </div>
 
-
+                        </div>
+            </div>
                    <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
@@ -228,7 +235,7 @@
 
                         </div>
                     </div></div>
-                     </div>
+
 <div class="x_panel  depot_stock_chart">
                      <div class="x_content">
                     <div class="row">
@@ -513,6 +520,217 @@
 
 
 <script>
+var theme = {
+        color: [
+            '#12B1AF', '#ff8566', '#D8DB06', '#3498DB',
+            '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
+        ],
+
+        title: {
+            itemGap: 8,
+            textStyle: {
+                fontWeight: 'normal',
+                color: '#408829'
+            }
+        },
+
+        dataRange: {
+            color: ['#1f610a', '#97b58d']
+        },
+
+        toolbox: {
+            color: ['#408829', '#408829', '#408829', '#408829']
+        },
+
+        tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            axisPointer: {
+                type: 'line',
+                lineStyle: {
+                    color: '#408829',
+                    type: 'dashed'
+                },
+                crossStyle: {
+                    color: '#408829'
+                },
+                shadowStyle: {
+                    color: 'rgba(200,200,200,0.3)'
+                }
+            }
+        },
+
+        dataZoom: {
+            dataBackgroundColor: '#eee',
+            fillerColor: 'rgba(64,136,41,0.2)',
+            handleColor: '#408829'
+        },
+        grid: {
+            borderWidth: 0
+        },
+
+        categoryAxis: {
+            axisLine: {
+                lineStyle: {
+                    color: '#408829'
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: ['#eee']
+                }
+            }
+        },
+
+        valueAxis: {
+            axisLine: {
+                lineStyle: {
+                    color: '#408829'
+                }
+            },
+            splitArea: {
+                show: true,
+                areaStyle: {
+                    color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: ['#eee']
+                }
+            }
+        },
+        timeline: {
+            lineStyle: {
+                color: '#408829'
+            },
+            controlStyle: {
+                normal: { color: '#408829' },
+                emphasis: { color: '#408829' }
+            }
+        },
+
+        k: {
+            itemStyle: {
+                normal: {
+                    color: '#68a54a',
+                    color0: '#a9cba2',
+                    lineStyle: {
+                        width: 1,
+                        color: '#408829',
+                        color0: '#86b379'
+                    }
+                }
+            }
+        },
+        map: {
+            itemStyle: {
+                normal: {
+                    areaStyle: {
+                        color: '#ddd'
+                    },
+                    label: {
+                        textStyle: {
+                            color: '#c12e34'
+                        }
+                    }
+                },
+                emphasis: {
+                    areaStyle: {
+                        color: '#99d2dd'
+                    },
+                    label: {
+                        textStyle: {
+                            color: '#c12e34'
+                        }
+                    }
+                }
+            }
+        },
+        force: {
+            itemStyle: {
+                normal: {
+                    linkStyle: {
+                        strokeColor: '#408829'
+                    }
+                }
+            }
+        },
+        chord: {
+            padding: 4,
+            itemStyle: {
+                normal: {
+                    lineStyle: {
+                        width: 1,
+                        color: 'rgba(128, 128, 128, 0.5)'
+                    },
+                    chordStyle: {
+                        lineStyle: {
+                            width: 1,
+                            color: 'rgba(128, 128, 128, 0.5)'
+                        }
+                    }
+                },
+                emphasis: {
+                    lineStyle: {
+                        width: 1,
+                        color: 'rgba(128, 128, 128, 0.5)'
+                    },
+                    chordStyle: {
+                        lineStyle: {
+                            width: 1,
+                            color: 'rgba(128, 128, 128, 0.5)'
+                        }
+                    }
+                }
+            }
+        },
+        gauge: {
+            startAngle: 225,
+            endAngle: -45,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
+                    width: 8
+                }
+            },
+            axisTick: {
+                splitNumber: 10,
+                length: 12,
+                lineStyle: {
+                    color: 'auto'
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    color: 'auto'
+                }
+            },
+            splitLine: {
+                length: 18,
+                lineStyle: {
+                    color: 'auto'
+                }
+            },
+            pointer: {
+                length: '90%',
+                color: 'auto'
+            },
+            title: {
+                textStyle: {
+                    color: '#333'
+                }
+            },
+            detail: {
+                textStyle: {
+                    color: 'auto'
+                }
+            }
+        },
+        textStyle: {
+            fontFamily: 'Arial, Verdana, sans-serif'
+        }
+    };
 
   var chart_gauge_settings = {
         lines: 12,
@@ -849,53 +1067,18 @@
 
 
   }
-  function stock_days(total,itemslist){
-        var chart_gauge_sales_elem;
-        var chart_gauge_01;
-        var item_gauge;
-        var chart_gauge_settings = {
-              lines: 12,
-          angle: 0,
-          lineWidth: 0.4,
-          pointer: {
-              length: 0.75,
-              strokeWidth: 0.042,
-              color: '#1D212A'
-          },
-          limitMax: 'false',
-          colorStart: '#D23939',
-          colorStop: '#D23939',
-          strokeColor: '#1ABC9C',
-          generateGradient: true
-      };
-   var item;
-  for (var i = 0; i < total.length; i++) {
-            item = total[i];
-    }
-    if ($('#gauge-text2').length) {
-        var indays=parseInt(item.indays);
-          $('#gauge-text2').html(indays);
-          chart_gauge_03.maxValue = 100;
-            if (indays !== 0) {
-                  chart_gauge_03.animationSpeed = 32;
-                  chart_gauge_03.setTextField(indays);
-                  chart_gauge_03.set(indays);
-              } else {
-                  chart_gauge_03.animationSpeed = 32;
-                  chart_gauge_03.setTextField(0.1);
-                  chart_gauge_03.set(0.1);
-              }
 
-      }
+  function stock_days(itemslist){
+
        var seriesData = [];
 
      for (var i = 0; i < itemslist.length; i++) {
             var item = itemslist[i];
-              if(item.stock_botteles!="0"){
+              if( item.stock_botteles!="0"){
                seriesData.push({
                  period: item.itemname,
-                 "Qty(Cases)": item.stock_cases,
-                 "Qty(Bottles)": item.consumption_cases
+                 "Available": item.stock_cases,
+                 "Avg consumption": item.consumption_cases
                });
 
             }
@@ -908,14 +1091,106 @@
             data: seriesData,
             xkey: 'period',
             barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
-            ykeys: ["Qty(Cases)","Qty(Bottles)"],
-            labels: ["Qty(Cases)","Qty(Bottles)"],
+            ykeys: ["Available","Avg consumption"],
+            labels: ["Available","Avg consumption"],
             hideHover: 'auto',
             xLabelAngle: 60,
             resize: true
         });
 
     }
+    var echartPie = echarts.init(document.getElementById('echart-zonal1'),theme);
+    alert('echart-zonal1')
+          var count = 0;
+          var seriesData = [];
+          var legendData = [];
+
+          // Process 'itemslist' data and populate 'seriesData' and 'legendData'
+
+          for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
+              if(item.stock_botteles!="0"){
+               seriesData.push({
+                 value: item.stock_cases,
+                 name: item.itemname
+               });
+               count++;
+            }
+            legendData.push(item.itemname);
+
+          }
+           if (count === 0) {
+              $('#echart-zonal1').hide();
+              $('#depotstock').show();
+          } else {
+              $('#echart-zonal1').show();
+              $('#depotstock').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+
+
     }
     function depotindent(total){
         var seriesData = [];
@@ -1150,10 +1425,9 @@ $.ajax({
     'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
-
-     var total =  data.data.totallist;
-     var message = data.data.message;
-     var itemslist = data.data.itemwiselist
+    var total =  data.data.totallist;
+    var itemslist = data.data.itemwiselist;
+     message = data.data.message
       if(message != "Data found")
       {
        $("#lblNoStock2").html(data.message);
@@ -1161,15 +1435,12 @@ $.ajax({
        $("#echart-pies2").hide();
        $("#completetabel").hide();
       }else{
-
-         chart_gauge_sales_elem = document.getElementById('chart_gauge_03');
-         chart_gauge_03 = new Gauge(chart_gauge_sales_elem).setOptions(chart_gauge_settings);
          for (var i = 0; i < total.length; i++) {
             item = total[i];
          }
-         stock_days(total,itemslist);
+         stock_days(itemslist);
       }
-     var tableBody = $('#stktabel  tbody');
+    var tableBody = $('#stktabel  tbody');
              for (var i = 0; i < itemslist.length; i++) {
                 var item = itemslist[i];
 
@@ -1186,13 +1457,7 @@ $.ajax({
      var tfootdata = $('#stktabel tfoot');
         tfootdata.empty();
         for (var i = 0; i < total.length; i++) {
-                var item = total[i];
-
-                $('.zonalcases').text(item.stock_cases);
-                $('.zonalbott').text(item.stock_botteles);
-                $('.avgcases').text(item.consumption_cases);
-                $('.avgbott').text(item.consumption_botteles);
-                $('.zonaldays').text(item.indays);
+                var item = total[i]
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
                 row.append($('<td>').text(item.stock_cases));
@@ -1602,17 +1867,75 @@ $.ajax({
     $("#checked1").click(function() {
       if ($(this).is(":checked")) {
            $(".Consumption").hide();
-           $(".days").hide();
+           $("#echart-zonal1").hide();
            $(".stktabel").hide();
         }
     else{
      $(".Consumption").show();
-     $(".days").show();
+     $("#echart-zonal1").show();
      $(".stktabel").show();
     }
     });
   });
 $('#grndate').val(new Date().toJSON().slice(0,10));
+
+$(document).ready(function() {
+    var itemcode =  $('#itemcode').val();
+    alert(itemcode)
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+    success: function(data) {
+
+    var total =  data.data.totallist;
+          for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+               $('.zonalcases').text(item.stock_cases);
+                $('.zonalbott').text(item.stock_botteles);
+                $('.avgcases').text(item.consumption_cases);
+                $('.avgbott').text(item.consumption_botteles);
+                $('.zonaldays').text(item.indays);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$('#itemcode').change(function() {
+var itemcode =  $('#itemcode').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+
+     var total =  data.data.totallist;
+          for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+
+                $('.zonalcases').text(item.stock_cases);
+                $('.zonalbott').text(item.stock_botteles);
+                $('.avgcases').text(item.consumption_cases);
+                $('.avgbott').text(item.consumption_botteles);
+                $('.zonaldays').text(item.indays);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
 
 
 

@@ -269,10 +269,14 @@ urlpatterns = [
     path('bust_pendin_sales', views.bust_pendin_sales, name='bust_pendin_sales'),
     path('bust_complete_sale_report', views.bust_complete_sale_report, name='bust_complete_sale_report'),
     path('zonal_dashboard_data', views.zonal_dashboard_data, name='zonal_dashboard_data'),
+    path('zonal_dashboard_data1', views.zonal_dashboard_data1, name='zonal_dashboard_data1'),
     path('zonal_grn_report', views.zonal_grn_report, name='zonal_grn_report'),
     path('zonal_depotwise_data', views.zonal_depotwise_data, name='zonal_depotwise_data'),
     path('admin_dashboard',views.admin_dashboard,name='admin_dashboard'),
-    path('zonal_depotindent_data',views.zonal_depotindent_data,name='zonal_depotindent_data')
+    path('zonal_depotindent_data',views.zonal_depotindent_data,name='zonal_depotindent_data'),
+    path('depot_dashboard_data1',views.depot_dashboard_data1,name='depot_dashboard_data1'),
+    path('bust_dashboard_data1',views.bust_dashboard_data1,name='bust_dashboard_data1'),
+
 
 
 
