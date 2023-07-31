@@ -1,0 +1,1943 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+<style>
+      .design{
+     color: white;
+        background-color:#329DD6 !important;
+    }
+      .design1{
+     color: white;
+        background-color:#329DD6 !important;
+    }
+</style>
+
+<!-- page content -->
+            <div class="right_col" role="main">
+               <div class="row" style="display: block;">
+                        <div class="col-md-12 col-sm-12 ">
+
+          <div class="page-title">
+            <div class="title_left">
+              <h3 style="font-size:20px; font-weight:600;">Zonal Dashboard</h3>
+            </div>
+          </div>
+                            {% if request.session.role == 'Admin' %}
+                             <div class="x_panel">
+
+				      	<form  method="POST" action=""   enctype="multipart/form-data">
+											{% csrf_token %}
+									<div  class="col-md-3 col-sm-3  form-group has-feedback">
+													<label> Warehouse</label>
+
+										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.warehousename }}</option>
+												</select>
+											 <input type="hidden" name="warehousename" id="warehousename" />
+
+												<select class="form-control" name="warehouseid" id="warehouseid">
+													<option value="All">All</option>
+													{% for data1 in wh_masterlist %}
+														{% if data1.status == 'Active' %}
+                            		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+										</div>
+                            </form>
+
+                             </div>
+                        </div>
+        {% endif %}
+                     <div class="col-md-12 col-sm-12 ">
+                   <div class="x_panel">
+          <div class="page-title">
+            <div class="title_left">
+              <h3 style="font-size:20px; font-weight:600;">Zonal Stores Stock Available</h3>
+            </div>
+            <div class="title_right">
+                 <div class="col-md-4 col-sm-4  offset-md-7">
+
+										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+                                                    {% for data in item_masterlist %}
+                                                        {% if data.itemcode == "PHA0002" %}
+                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
+                                                            {% else %}
+                                                                <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                     {% endif %}
+                                                    {% endfor %}
+                                                </select>
+										</div>
+
+              <div class="col-md-1 col-sm-1">
+                <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
+              </div>
+            </div>
+          </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
+                                <div class="tile-stats">
+                                    <div class="count zonalcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Available Stock</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
+                                <div class="tile-stats">
+                                    <div class="count zonalbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Availble Stock</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
+                                <div class="tile-stats" >
+                                    <div class="count avgcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
+                                <div class="tile-stats">
+                                    <div class="count avgbott" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
+                                <div class="tile-stats">
+                                    <div class="count zonaldays" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Days</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Stock Available</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                   <div class="row">
+                        <div class="col-md-4 col-sm-4" style="overflow:hidden;">
+                        <div class="x_panel Consumption">
+                                    <div id="graph_bar_group1" style="width:100%; height:280px;"></div>
+                                      <h5 class="text-info" style="margin:20px">Qty Available vs Qty Consumption progress</h5>
+                                </div>
+                        </div>
+            <div class="col-md-3 col-sm-3">
+                 <div class="x_panel">
+                  <h3 style="margin: 125px 3px 149px 100px;display:none;" id="depotstock">No Stock Available</h3>
+                       <div id="echart-zonal1" style="height:350px;margin-top:-4px;margin-left:-60px;"></div>
+            </div>
+              </div>
+    <div class="col-md-5 col-sm-5">
+<div class="x_panel stktabel">
+            <table class="table table-striped" style="display:block;width=200%"; id="stktabel">
+                        <thead>
+                         <tr>
+                          <th class="design1" rowspan="2">#</th>
+                          <th class="design1" rowspan="2">Items</th>
+                          <th class="design1" colspan="2">Available Stock</th>
+                          <th class="design1" colspan="2">Avg Consumption of last 7 days </th>
+                          <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
+                        </tr>
+                        <tr>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+
+                      </table>
+
+            </div>
+            </div>
+</div>
+                     </div>
+
+                        </div>
+
+                   <div class="x_panel">
+          <div class="page-title">
+            <div class="title_left">
+              <h3 style="font-size:20px; font-weight:600;"> Depot  Available Stock </h3>
+            </div>
+            <div class="title_right">
+                                           <div class="col-md-5 col-sm-5"  style="margin-left:10px;">
+											 <input type="hidden" name="deponame1" id="deponame1" />
+												<select class="form-control depot" name="depoid1" id="depoid1" required>
+                                                   	<option value="All">All</option>
+                                                    {% for data in depolist %}
+                                                        {% if data.status == 'Active' %}
+                                                                <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+
+                                         <div class="col-md-5 col-sm-5">
+										    	 <select class="form-control items" name="itemcode1" id="itemcode1" required>
+                                                    {% for data in item_masterlist %}
+                                                        {% if data.itemcode == "PHA0002" %}
+                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
+                                                            {% else %}
+                                                                <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                     {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                        </div>
+              <div class="col-md-1 col-sm-1">
+                <label><input type="checkbox" id="depot_stock" class="js-switch"  /></label>
+              </div>
+            </div>
+          </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
+                                <div class="tile-stats">
+                                    <div class="count depotstock" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Available Stock</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
+                                <div class="tile-stats">
+                                    <div class="count depotstock1" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span> Available Stock</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
+                                <div class="tile-stats" >
+                                    <div class="count depotcase" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
+                                <div class="tile-stats">
+                                    <div class="count depotbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
+
+                                </div>
+                            </div>
+                            <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
+                                <div class="tile-stats">
+                                    <div class="count depotdays" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div style="text-align:center;margin-left: auto;margin-right: auto;">Days</div>
+                                    <p><span class="fa fa-info" aria-hidden="true"></span>Stock Available</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div></div>
+
+<div class="x_panel  depot_stock_chart">
+                     <div class="x_content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row" style="text-align: center;">
+                                <div class="col-md-4">
+                                      <h3  class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock">No Stock Available</h3>
+                                    <div id="echart-depot1"   style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+                                 <h4 style="margin:18px">Stock Available</h4>
+                                </div>
+                                <div class="col-md-3">
+                                      <h3 class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock1">No Stock Available</h3>
+                                    <div id="echart-pies2"    style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+                                  <h4 style="margin:18px">Avg consumption of last 7 days</h4>
+                                </div>
+                                <div class="col-md-5">
+                                   <div class="clearfix"></div>
+                    <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
+                                      <table   class="table table-striped jambo_table bulk_action"  style="display:block;" id="depottabel" >
+                      <thead>
+                        <tr>
+                          <th class="design1" rowspan="2">#</th>
+                          <th class="design1" rowspan="2">Items</th>
+                          <th class="design1" colspan="2">Available Stock</th>
+                          <th class="design1" colspan="2">Avg Consumption of last 7 days </th>
+                          <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
+                        </tr>
+                        <tr>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+                                </div>
+                            </div>
+                        </div>
+</div>
+                   <div class="row">
+    <div class="col-md-8 col-sm-8">
+     <div class="x_panel">
+         <div class="page-title">
+            <div class="title_left">
+              <h3 style="font-size:20px; font-weight:600;">Qty Accepted from vendor</h3>
+            </div>
+            <div class="title_right">
+                <form  method="POST" id="myForm2" action="warehouse_stock"  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="col-sm-6 col-md-6" style="margin-left:150px;">
+                  <input class="form-control" type="date" name="date"  id="grndate"  value="{{ request.POST.date }}"  required>
+                </div>
+              <div class="col-md-2 col-sm-2">
+                <!--<label><input type="checkbox" id="checked3" class="js-switch"  /></label>-->
+              </div>
+            </div>
+          </div>
+          <div class="x_content">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats" >
+                <div class="count pendinggrn" style="color:green;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
+                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending GRN</p>
+              </div>
+            </div>
+               <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats" >
+                <div class="count verifiedgrn" style="color:#9F9D1B;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+              <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
+                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Verified GRN</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats">
+                <div class="count acceptedqty" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+           <div style="text-align:center;margin-left: auto;margin-right: auto;">Accepted Qty(Cases)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Accepted Qty(Cases)</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats">
+                <div class="count acceptdbott" style="color:red;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+             <div style="text-align:center;margin-left: auto;margin-right: auto;">Accepted Qty(Bottles)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Accepted Qty(In bottles)</p>
+              </div>
+            </div>
+          </div>
+         <div class="col-md-12 col-sm-12">
+            <div class="clearfix"></div>
+
+                      <table class="table table-striped" style="display:block;width=100%";  id="pendingtabel">
+                        <thead>
+                          <tr>
+                            <th class="design1" rowspan="2">#</th>
+                            <th class="design1" rowspan="2">Received Date</th>
+                            <th  class="design1" rowspan="2">Manufacture</th>
+                               <!--<th  class="design1" rowspan="2">Warehouse</th>-->
+                            <th class="design1" rowspan="2">Product</th>
+                            <th class="design1" colspan="2">Current day</th>
+                            <th  class="design1" colspan="2">Current month</th>
+                          </tr>
+                          <tr>
+                            <!--<th class="design">Invoice no</th>-->
+                            <th class="design">Qty(Cases)</th>
+                            <th class="design">Qty(Bottles)</th>
+                            <th class="design">Qty(Cases)</th>
+                            <th class="design">Qty(Bottles)</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+
+                      </table>
+         </div>
+     </div>
+    </div>
+
+                    <div class="col-md-4 col-sm-4">
+                        <div class="x_panel">
+                                <h3>Grn Details</h3>
+                            <div class="x_content">
+                                   <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="grnstatus">No Pending GRN</h3>
+                                <div id="echart_donut2" style="height:240px;margin-top: -65px;margin-right:10px;"></div>
+                            </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                        <div class="x_panel">
+                                <h3>Accepted Quantity</h3>
+                            <div class="x_content">
+                                   <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="lblNoStock2">No Pending GRN</h3>
+                                 <canvas id="mybarChart1"></canvas>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+<div class="row">
+    <div class="col-md-5 col-sm-5">
+        <div class="x_panel">
+          <div class="page-title">
+            <div class="title_left">
+              <h3>Depots pending indent</h3>
+            </div>
+            <div class="title_right">
+                   <div class="col-md-10 col-sm-10">
+											 <input type="hidden" name="deponame1" id="deponame" />
+												<select class="form-control depot" name="depoid" id="depoid" required>
+                                                    <option value="All">All</option>
+                                                    {% for data in depolist %}
+                                                        {% if data.status == 'Active' %}
+                                                                <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+
+              <div class="col-md-2 col-sm-2">
+                <label><input type="checkbox" id="depots_indent" class="js-switch"  /></label>
+              </div>
+            </div>
+          </div>
+          <div class="x_content">
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats" >
+                <div class="count pendingind" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+         <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
+                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending Indents</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats">
+                <div class="count indentcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+              <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Verified indents</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats">
+                <div class="count indbottles" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+             <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty Indented(Cases)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty indented(In Cases)</p>
+              </div>
+            </div>
+
+               <div class="col-md-4">
+                   <h5 class="text-danger" style="width: 300px; height: 200px;margin-top:140px;margin-left:170px;"id="lblindent">No data Available</h5>
+                                    <div id="echart-indent"   style="width: 300px; height: 200px;margin-top:-20px;margin-left:100px;"></div>
+                                <!-- <h4 style="margin-left:90px;margin-right:-450px;margin-top:10px;" class="text-info textind">Qty indent versus Qty indented</h4>-->
+                                </div>
+
+            <div class="col-md-12 col-sm-12">
+                  <table class="table table-striped" style="display:none;width=200%"; id="pendingind">
+                        <thead>
+                          <tr>
+                            <th class="design1" rowspan="2">#</th>
+                              <th class="design1" rowspan="2">Items</th>
+                              <th  class="design1" colspan="2">Pending indent Qty</th>
+                              <th class="design1" colspan="2">Verified indent Qty</th>
+
+                          </tr>
+                            <tr>
+                            <!--<th class="design">Invoice no</th>-->
+                            <th class="design">Qty(In Cases)</th>
+                            <th class="design">Qty(In Bottles)</th>
+                            <th class="design">Qty(In Cases)</th>
+                            <th class="design">Qty(In Bottles)</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+
+                      </table>
+
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-7 col-sm-7">
+<div class="x_panel">
+           <div class="page-title">
+            <div class="title_left">
+              <h5 style="color:#14c38e">Depots holding less stock</h5>
+            </div>
+          </div>
+            <table class="table table-striped" style="display:block;width=200%"; id="depots_less_stock">
+                        <thead>
+                          <tr>
+                            <th class="design1" rowspan="2">S NO</th>
+                            <th class="design1" rowspan="2">Depot name</th>
+                              <th class="design1" rowspan="2">Product</th>
+                              <th  class="design1" rowspan="2">Average requirement</th>
+                                <th class="design1" rowspan="2">Stock Available(In quantity)</th>
+                            <th class="design1" rowspan="2">Stock Available(In days)</th>
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                      </tfoot>
+
+                      </table>
+
+            </div>
+            </div>
+</div>
+</div>
+
+
+<script>
+var theme = {
+        color: [
+            '#12B1AF', '#ff8566', '#D8DB06', '#3498DB',
+            '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
+        ],
+
+        title: {
+            itemGap: 8,
+            textStyle: {
+                fontWeight: 'normal',
+                color: '#408829'
+            }
+        },
+
+        dataRange: {
+            color: ['#1f610a', '#97b58d']
+        },
+
+        toolbox: {
+            color: ['#408829', '#408829', '#408829', '#408829']
+        },
+
+        tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            axisPointer: {
+                type: 'line',
+                lineStyle: {
+                    color: '#408829',
+                    type: 'dashed'
+                },
+                crossStyle: {
+                    color: '#408829'
+                },
+                shadowStyle: {
+                    color: 'rgba(200,200,200,0.3)'
+                }
+            }
+        },
+
+        dataZoom: {
+            dataBackgroundColor: '#eee',
+            fillerColor: 'rgba(64,136,41,0.2)',
+            handleColor: '#408829'
+        },
+        grid: {
+            borderWidth: 0
+        },
+
+        categoryAxis: {
+            axisLine: {
+                lineStyle: {
+                    color: '#408829'
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: ['#eee']
+                }
+            }
+        },
+
+        valueAxis: {
+            axisLine: {
+                lineStyle: {
+                    color: '#408829'
+                }
+            },
+            splitArea: {
+                show: true,
+                areaStyle: {
+                    color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: ['#eee']
+                }
+            }
+        },
+        timeline: {
+            lineStyle: {
+                color: '#408829'
+            },
+            controlStyle: {
+                normal: { color: '#408829' },
+                emphasis: { color: '#408829' }
+            }
+        },
+
+        k: {
+            itemStyle: {
+                normal: {
+                    color: '#68a54a',
+                    color0: '#a9cba2',
+                    lineStyle: {
+                        width: 1,
+                        color: '#408829',
+                        color0: '#86b379'
+                    }
+                }
+            }
+        },
+        map: {
+            itemStyle: {
+                normal: {
+                    areaStyle: {
+                        color: '#ddd'
+                    },
+                    label: {
+                        textStyle: {
+                            color: '#c12e34'
+                        }
+                    }
+                },
+                emphasis: {
+                    areaStyle: {
+                        color: '#99d2dd'
+                    },
+                    label: {
+                        textStyle: {
+                            color: '#c12e34'
+                        }
+                    }
+                }
+            }
+        },
+        force: {
+            itemStyle: {
+                normal: {
+                    linkStyle: {
+                        strokeColor: '#408829'
+                    }
+                }
+            }
+        },
+        chord: {
+            padding: 4,
+            itemStyle: {
+                normal: {
+                    lineStyle: {
+                        width: 1,
+                        color: 'rgba(128, 128, 128, 0.5)'
+                    },
+                    chordStyle: {
+                        lineStyle: {
+                            width: 1,
+                            color: 'rgba(128, 128, 128, 0.5)'
+                        }
+                    }
+                },
+                emphasis: {
+                    lineStyle: {
+                        width: 1,
+                        color: 'rgba(128, 128, 128, 0.5)'
+                    },
+                    chordStyle: {
+                        lineStyle: {
+                            width: 1,
+                            color: 'rgba(128, 128, 128, 0.5)'
+                        }
+                    }
+                }
+            }
+        },
+        gauge: {
+            startAngle: 225,
+            endAngle: -45,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
+                    width: 8
+                }
+            },
+            axisTick: {
+                splitNumber: 10,
+                length: 12,
+                lineStyle: {
+                    color: 'auto'
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    color: 'auto'
+                }
+            },
+            splitLine: {
+                length: 18,
+                lineStyle: {
+                    color: 'auto'
+                }
+            },
+            pointer: {
+                length: '90%',
+                color: 'auto'
+            },
+            title: {
+                textStyle: {
+                    color: '#333'
+                }
+            },
+            detail: {
+                textStyle: {
+                    color: 'auto'
+                }
+            }
+        },
+        textStyle: {
+            fontFamily: 'Arial, Verdana, sans-serif'
+        }
+    };
+
+  var chart_gauge_settings = {
+        lines: 12,
+        angle: 0,
+        lineWidth: 0.4,
+        pointer: {
+            length: 0.75,
+            strokeWidth: 0.042,
+            color: '#1D212A'
+        },
+        limitMax: 'false',
+        colorStart: '#D23939',
+        colorStop: '#D23939',
+        strokeColor: '#1ABC9C',
+        generateGradient: true
+    };
+ function updateEchartPieChart(itemslist) {
+        var echartPie = echarts.init(document.getElementById('echart-depot1'), "");
+          var count = 0;
+          var seriesData = [];
+          var legendData = [];
+          for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
+              if(item.stock_botteles!="0"){
+               seriesData.push({
+                 value: item.stock_cases,
+                 name: item.itemname
+               });
+              count++;
+            }
+            legendData.push(item.itemname);
+          }
+          if (count === 0) {
+              $('#echart-depot1').hide();
+              $('#lblNoStock').show();
+          } else {
+              $('#echart-depot1').show();
+              $('#lblNoStock').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+       var echartPie = echarts.init(document.getElementById('echart-pies2'), "");
+          var count =0;
+          var seriesData = [];
+          var legendData = [];
+
+          for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
+              if(item.consumption_cases!="0"){
+               seriesData.push({
+                 value: item.consumption_cases,
+                 name: item.itemname
+               });
+                count++;
+            }
+            legendData.push(item.itemname);
+          }
+          if (count === 0) {
+              $('#echart-pies2').hide();
+              $('#lblNoStock1').show();
+          } else {
+              $('#echart-pies2').show();
+              $('#lblNoStock1').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+ }
+ function grnchart(total,itemslist){
+
+ if ($('#mybarChart1').length) {
+        var ctx = document.getElementById("mybarChart1");
+        var mybarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Today", "Current month"],
+                datasets: [{
+                    label: '1000ml',
+                    backgroundColor: "#26B99A",
+                    data: [parseFloat(itemslist[0].FTD_cases), parseFloat(itemslist[0].MTD_cases)]
+
+                },
+                 {
+                    label: '500ml',
+                    backgroundColor: "#26B99A",
+                    data: [parseFloat(itemslist[1].FTD_cases), parseFloat(itemslist[1].MTD_cases)]
+
+                },{
+                    label: '250ml',
+                    backgroundColor: "#03586A",
+                    data: [parseFloat(itemslist[2].FTD_cases), parseFloat(itemslist[2].MTD_cases)]
+
+                }]
+            },
+
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+    }
+
+    if ($('#echart_donut2').length) {
+        var echartDonut = echarts.init(document.getElementById('echart_donut2'), "");
+        var seriesData = [];
+        var count1 = 0;
+          for (var i = 0; i < total.length; i++) {
+            var item = total[i];
+            if(item.pending_grn !="0" ){
+
+               seriesData.push({
+                 value: item.pending_grn,
+                 name: 'Pending GRN'
+               });
+               count1++;
+            }
+             if(item.total_grn !="0" ){
+               seriesData.push({
+                 value: item.total_grn,
+                 name: 'Total GRN'
+               });
+               count1++;
+            }
+            if(item.verified_grn !="0" ){
+
+               seriesData.push({
+                 value: item.verified_grn,
+                 name: 'Verified GRN'
+               });
+            }
+            count1++;
+          }
+        if (count1 === 0) {
+              $('#echart_donut2').hide();
+              $('#grnstatus').show();
+          } else {
+              console.log(count1);
+              $('#echart_donut2').show();
+              $('#grnstatus').hide();
+          }
+        echartDonut.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            calculable: true,
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['Pending GRN', 'Verified GRN','Total GRN']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'center',
+                                max: 1548
+                            }
+                        }
+                    },
+                    //restore: {
+                    //    show: true,
+                    //    title: "Restore"
+                    //},
+                    //saveAsImage: {
+                    //    show: true,
+                    //    title: "Save Image"
+                    //}
+                }
+            },
+            series: [{
+                name: 'Access to the resource',
+                type: 'pie',
+                radius: ['35%', '55%'],
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: true
+                        },
+                        labelLine: {
+                            show: true
+                        }
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            position: 'center',
+                            textStyle: {
+                                fontSize: '14',
+                                fontWeight: 'normal'
+                            }
+                        }
+                    }
+                },
+                data: seriesData
+            }]
+        });
+
+    }
+
+
+  }
+
+  function stock_days(itemslist){
+
+       var seriesData = [];
+
+     for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
+              if( item.stock_botteles!="0"){
+               seriesData.push({
+                 period: item.itemname,
+                 "Available": item.stock_cases,
+                 "Avg consumption": item.consumption_cases
+               });
+
+            }
+
+          }
+      if ($('#graph_bar_group1').length) {
+
+        Morris.Bar({
+            element: 'graph_bar_group1',
+            data: seriesData,
+            xkey: 'period',
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            ykeys: ["Available","Avg consumption"],
+            labels: ["Available","Avg consumption"],
+            hideHover: 'auto',
+            xLabelAngle: 60,
+            resize: true
+        });
+
+    }
+    var echartPie = echarts.init(document.getElementById('echart-zonal1'),theme);
+
+          var count = 0;
+          var seriesData = [];
+          var legendData = [];
+
+          // Process 'itemslist' data and populate 'seriesData' and 'legendData'
+
+          for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
+              if(item.stock_botteles!="0"){
+               seriesData.push({
+                 value: item.stock_cases,
+                 name: item.itemname
+               });
+               count++;
+            }
+            legendData.push(item.itemname);
+
+          }
+           if (count === 0) {
+              $('#echart-zonal1').hide();
+              $('#depotstock').show();
+          } else {
+              $('#echart-zonal1').show();
+              $('#depotstock').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+
+
+    }
+    function depotindent(total){
+        var seriesData = [];
+        var count=0;
+         var echartPie = echarts.init(document.getElementById('echart-indent'), "");
+           for (var i = 0; i < total.length; i++) {
+            var item = total[i];
+              if(item.indent_count !="0"){
+               seriesData.push({
+                 value: item.indent_count,
+                 name: 'total indent'
+               });
+               count++;
+            }
+            if(item.pending_count !="0"){
+               seriesData.push({
+                 value: item.pending_count,
+                 name: 'pending indent'
+               });
+               count++;
+            }
+            if(item.verified_count !="0"){
+               seriesData.push({
+                 value: item.verified_count,
+                 name: 'verified indent'
+               });
+               count++;
+            }
+
+         }
+    if (count === 0) {
+              $('#echart-indent').hide();
+              $('#lblindent').show();
+          } else {
+              $('#echart-indent').show();
+              $('#lblindent').hide();
+          }
+
+         echartPie.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['total indent', 'pending indent', 'verified indent']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'Chart',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '48%'],
+                data: seriesData
+                            }]
+        });
+
+        var dataStyle = {
+            normal: {
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+
+        var placeHolderStyle = {
+            normal: {
+                color: 'rgba(0,0,0,0)',
+                label: {
+                    show: false
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+
+    }
+
+ window.onload=function(){
+
+     if ($('#graph_bar').length) {
+     var date=new Date(); //$("#getdate").val();
+     var today_date=date.getDate()+"/"+ (parseInt(date.getMonth())+1);
+
+        Morris.Bar({
+            element: 'graph_bar',
+            data: [
+                { device: today_date+' 1000ml', geekbench: 2000 },
+                { device: today_date+' 500ml', geekbench: 9113 },
+                { device: today_date+' 250ml', geekbench: 2500 },
+                { device: 'Total 1000ml', geekbench: 5000 },
+                { device: 'Total 500ml', geekbench: 9113 },
+                { device: 'Total 250ml', geekbench: 2000 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar2').length) {
+
+        Morris.Bar({
+            element: 'graph_bar2',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#452754', '#452754', '#452755', '#452754'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+    }
+
+    if($('#graph_bar3').length) {
+
+        Morris.Bar({
+            element: 'graph_bar3',
+            data: [
+                { device: 'Karimnagar 1000ml', geekbench: 200 },
+                { device: 'Karimnagar 500ml', geekbench: 9113 },
+                { device: 'Karimnagar 250ml', geekbench: 250 },
+                { device: 'Uppal 1000ml', geekbench: 6959 },
+                { device: 'Uppal 500ml', geekbench: 9659 },
+                { device: 'Uppal 250ml', geekbench: 252 },
+            ],
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
+
+      }
+
+ }
+
+
+
+    $(document).ready(function() {
+    // When the button with ID "checked1" is clicked
+    $("#checked1").click(function() {
+      if ($(this).is(":checked")) {
+       $("#echart-depot1").show();
+      $("#stktabel").show();
+    }
+    else{
+     $("#echart-depot1").show();
+      $("#stktabel").show();
+    }
+    });
+  });
+   $(document).ready(function() {
+    // When the button with ID "checked1" is clicked
+    $("#checked2").click(function() {
+      if ($(this).is(":checked")) {
+      $(".echart-pies2").hide();
+      $('#chart_gauge_sales1').hide();
+      $("#pendingtabel").show();
+    }
+    else{
+     $(".echart-pies2").show();
+      $('#chart_gauge_sales1').show();
+      $("#pendingtabel").hide();
+    }
+    });
+  });
+
+  $(document).ready(function() {
+    // When the button with ID "checked1" is clicked
+    $("#checked3").click(function() {
+      if ($(this).is(":checked")) {
+      $("#graph_bar").hide();
+      $("#completetabel").show();
+    }
+    else{
+     $("#graph_bar").show();
+      $("#completetabel").hide();
+    }
+    });
+  });
+$(document).ready(function() {
+$.ajax({
+  type: "GET",
+  url: "{% url 'zonal_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+    var total =  data.data.totallist;
+    var itemslist = data.data.itemwiselist;
+     message = data.data.message
+      if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+         for (var i = 0; i < total.length; i++) {
+            item = total[i];
+         }
+         stock_days(itemslist);
+      }
+    var tableBody = $('#stktabel  tbody');
+             for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+            }
+     var tfootdata = $('#stktabel tfoot');
+        tfootdata.empty();
+        for (var i = 0; i < total.length; i++) {
+                var item = total[i]
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$(document).ready(function() {
+$.ajax({
+  type: "GET",
+  url: "{% url 'zonal_grn_report' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+  'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+         var total =  data.data.list;
+         var itemslist = data.data.itemlist;
+         var message = data.data.message;
+         if(message != "Data found")
+          {
+           $("#grnstatus").html(data.message);
+           $("#grnstatus").show();
+           $("#echart_donut2").hide();
+         }else{
+           grnchart(total,itemslist);
+         }
+        var tableBody = $('#pendingtabel  tbody');
+        tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.received_date));
+                row.append($('<td>').text(item.manufacture));
+                row.append($('<td>').text(item.itemname));  // Quantity
+                row.append($('<td>').text(item.FTD_cases));
+                row.append($('<td>').text(item.FTD_botteles));
+                row.append($('<td>').text(item.MTD_cases));
+                row.append($('<td>').text(item.MTD_botteles));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#pendingtabel tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.pendinggrn').text(item.pending_grn);
+                $('.verifiedgrn').text(item.verified_grn);
+                $('.acceptedqty').text(item.ftd_cases);
+                $('.acceptdbott').text(item.ftd_botteles);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 4).addClass('design1'));
+                row.append($('<td>').text(item.ftd_cases));
+                row.append($('<td>').text(item.ftd_botteles));
+                row.append($('<td>').text(item.mtd_cases));
+                row.append($('<td>').text(item.mtd_botteles));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+$('#grndate').change(function() {
+    grndate = $(this).val();
+    $.ajax({
+      type: "POST",
+      url: "{% url 'zonal_grn_report' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+      data: {
+      'fdate':grndate, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      success: function(data) {
+      var total =  data.data.list;
+      var itemslist = data.data.itemlist;
+       if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#grnstatus").show();
+       $("#echart_donut2").hide();
+      }else{
+       grnchart(total,itemslist);
+      }
+            var tableBody = $('#pendingtabel  tbody');
+            tableBody.empty();
+                  for (var i = 0; i < itemslist.length; i++) {
+                    var item = itemslist[i];
+                    var row = $('<tr>');
+                    row.append($('<td>').text(i + 1));  // S No
+                    row.append($('<td>').text(item.received_date));
+                    row.append($('<td>').text(item.manufacture));
+                    row.append($('<td>').text(item.itemname));  // Quantity
+                    row.append($('<td>').text(item.FTD_cases));
+                    row.append($('<td>').text(item.FTD_botteles));
+                    row.append($('<td>').text(item.MTD_cases));
+                    row.append($('<td>').text(item.MTD_botteles));
+                    tableBody.append(row);
+                  }
+           var tfootdata = $('#pendingtabel tfoot');
+           tfootdata.empty();
+             for (var i = 0; i < total.length; i++) {
+                    var item = total[i];
+                    $('.pendinggrn').text(item.pending_grn);
+                    $('.verifiedgrn').text(item.verified_grn);
+                    $('.acceptedqty').text(item.ftd_cases);
+                    $('.acceptdbott').text(item.ftd_botteles);
+                    var row = $('<tr>');
+                    row.append($('<th>').text('Grand Total').attr('colspan', 4).addClass('design1'));
+                    row.append($('<td>').text(item.ftd_cases));
+                    row.append($('<td>').text(item.ftd_botteles));
+                    row.append($('<td>').text(item.mtd_cases));
+                    row.append($('<td>').text(item.mtd_botteles));
+                    tfootdata.append(row);
+              }
+
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error("Error occurred: " + textStatus, errorThrown);
+        // Handle the error case here, if required
+      }
+    });
+});
+
+$(document).ready(function() {
+var deponame = $('#depoid1').val();
+var itemcode = $('#itemcode').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotwise_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+   'deponame':deponame,'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemwiselist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+       updateEchartPieChart(itemslist);
+      }
+      var tableBody = $('#depottabel  tbody');
+      tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#depottabel tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.depotstock').text(item.stock_cases);
+                $('.depotstock1').text(item.stock_botteles);
+                $('.depotcase').text(item.consumption_cases);
+                $('.depotbott').text(item.consumption_botteles);
+                $('.depotdays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$('#depoid1').change(function() {
+var deponame = $('#depoid1').val();
+var itemcode = $('#itemcode1').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotwise_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+  'itemcode':itemcode, 'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     message = data.data.message
+     console.log(data);
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.depotstock').text(item.stock_cases);
+                $('.depotstock1').text(item.stock_botteles);
+                $('.depotcase').text(item.consumption_cases);
+                $('.depotbott').text(item.consumption_botteles);
+                $('.depotdays').text(item.indays);
+
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+
+$('#itemcode1').change(function() {
+var deponame = $('#depoid1').val();
+var itemcode = $('#itemcode1').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotwise_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+  'itemcode':itemcode, 'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemwiselist;
+     message = data.data.message
+     console.log(data);
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                 var item = total[i];
+                $('.depotstock').text(item.stock_cases);
+                $('.depotstock1').text(item.stock_botteles);
+                $('.depotcase').text(item.consumption_cases);
+                $('.depotbott').text(item.consumption_botteles);
+               $('.depotdays').text(item.indays);
+
+          }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$(document).ready(function() {
+var deponame = $('#depoid').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemlist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+          {
+           $("#lblindent").html(data.message);
+           $("#lblindent").show();
+           $("#echart-indent").hide();
+          }else{
+           depotindent(total);
+      }
+      var tableBody = $('#pendingind  tbody');
+      tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#pendingind tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.pendingind').text(item.pending_count);
+                $('.indentcases').text(item.verified_count);
+                $('.indbottles').text(item.ver_qty_cases);
+                //$('.depotbott').text(item.consumption_botteles);
+                //$('.depotdays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tfootdata.append(row);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$('#depoid').change(function() {
+var deponame = $('#depoid').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemlist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+          {
+           $("#lblindent").html(data.message);
+           $("#lblindent").show();
+           $("#echart-indent").hide();
+          }else{
+           depotindent(total);
+      }
+        var tableBody = $('#pendingind  tbody');
+        tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                 row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#pendingind tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.pendingind').text(item.pending_count);
+                $('.indentcases').text(item.verified_count);
+                $('.indbottles').text(item.ver_qty_cases);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan',2).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tfootdata.append(row);
+          }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+ $(document).ready(function() {
+    $("#depots_indent").click(function() {
+      if ($(this).is(":checked")) {
+       $("#echart-indent").hide();
+       $('.textind').hide();
+       $('#lblindent').hide();
+      $("#pendingind").show();
+    }
+    else{
+    $('#lblindent').show();
+     $("#echart-indent").show();
+     $('.textind').show();
+      $("#pendingind").hide();
+    }
+    });
+  });
+  $(document).ready(function() {
+    $("#depot_stock").click(function() {
+      if ($(this).is(":checked")) {
+       $(".depot_stock_chart").hide();
+
+    }
+    else{
+     $(".depot_stock_chart").show();
+
+    }
+    });
+  });
+  $(document).ready(function() {
+    $("#checked1").click(function() {
+      if ($(this).is(":checked")) {
+           $(".Consumption").hide();
+           $("#echart-zonal1").hide();
+           $(".stktabel").hide();
+        }
+    else{
+     $(".Consumption").show();
+     $("#echart-zonal1").show();
+     $(".stktabel").show();
+    }
+    });
+  });
+$('#grndate').val(new Date().toJSON().slice(0,10));
+
+$(document).ready(function() {
+    var itemcode =  $('#itemcode').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+    success: function(data) {
+
+    var total =  data.data.totallist;
+          for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+               $('.zonalcases').text(item.stock_cases);
+                $('.zonalbott').text(item.stock_botteles);
+                $('.avgcases').text(item.consumption_cases);
+                $('.avgbott').text(item.consumption_botteles);
+                $('.zonaldays').text(item.indays);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$('#itemcode').change(function() {
+var itemcode =  $('#itemcode').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+
+     var total =  data.data.totallist;
+          for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+
+                $('.zonalcases').text(item.stock_cases);
+                $('.zonalbott').text(item.stock_botteles);
+                $('.avgcases').text(item.consumption_cases);
+                $('.avgbott').text(item.consumption_botteles);
+                $('.zonaldays').text(item.indays);
+          }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+</script>
+{% endblock %}

@@ -29,7 +29,17 @@
                  <div class="x_panel">
 				      	<form  method="POST" action=""   enctype="multipart/form-data">
 											{% csrf_token %}
-									<div  class="col-md-3 col-sm-3  form-group has-feedback">
+                            	<div  class="col-md-3 col-sm-3  form-group has-feedback">
+													<label> Depot</label>
+												<select class="form-control" name="depoid2" id="depoid2" hidden>
+                            		                    <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
+												</select>
+											 <input type="hidden" name="deponame" id="deponame" />
+												<select class="form-control" name="depoid" id="depoid">
+													<option value="All"> All</option>
+												</select>
+                                </div>
+									<!--<div  class="col-md-3 col-sm-3  form-group has-feedback">
 													<label> Warehouse</label>
 
 										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
@@ -68,7 +78,7 @@
 											</div>
 				<div  class="col-md-2 col-sm-2  form-group has-feedback">
                   <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-				</div>
+				</div>-->
 						</form>
 
                  </div>
@@ -85,9 +95,10 @@
               <div class="col-md-9 col-sm-9  form-group has-feedback">
 
 										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+                                                     <option value="">items</option>
                                                     {% for data in item_masterlist %}
                                                         {% if data.status == "Active" %}
-                                                           {% if data.itemcode == "PHA0002" %}
+                                                        {% if data.itemcode == "PHA0002" %}
                                                                 <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
                                                             {% else %}
                                                                 <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
@@ -161,10 +172,10 @@
                           <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
                         </tr>
                         <tr>
-                          <th class="design">Qty (Cases)</th>
-                          <th class="design">Qty (Bottles)</th>
-                          <th class="design">Qty (Cases)</th>
-                          <th class="design">Qty (Bottles)</th>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1010,6 +1021,36 @@ $.ajax({
 });
 
 
+$('#depoid').change(function() {
+var itemcode =  $('#itemcode').val();
+var depoid = $('#depoid').val();
+alert(depoid)
+$.ajax({
+  type: "POST",
+  url: "{% url 'depot_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+     'depoid':depoid, 'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.itemlist;
+
+          for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.stock_cases').text(item.stock_cases);
+                $('.stock_botteles').text(item.stock_botteles);
+                $('.consumption_cases').text(item.consumption_cases);
+                $('.consumption_botteles').text(item.consumption_botteles);
+                $('.indays').text(item.indays);
+
+          }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
 $('#pdate').change(function() {
 depoid=$('#depoid').val();
 fdate = $('#pdate').val();
@@ -1498,7 +1539,6 @@ $("#button1").click(function() {
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid").empty();
-
                 	$.each(obj, function (index, item) {
                     $("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});

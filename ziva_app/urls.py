@@ -276,6 +276,7 @@ urlpatterns = [
     path('zonal_depotindent_data',views.zonal_depotindent_data,name='zonal_depotindent_data'),
     path('depot_dashboard_data1',views.depot_dashboard_data1,name='depot_dashboard_data1'),
     path('bust_dashboard_data1',views.bust_dashboard_data1,name='bust_dashboard_data1'),
+    path('zonal_depotwise_data1',views.zonal_depotwise_data1,name='zonal_depotwise_data1')
 
 
 

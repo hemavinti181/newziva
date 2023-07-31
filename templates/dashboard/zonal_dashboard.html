@@ -68,6 +68,7 @@
                                                     {% endfor %}
                                                 </select>
 										</div>
+
               <div class="col-md-1 col-sm-1">
                 <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
               </div>
@@ -77,35 +78,35 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count zonalcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count zonalcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Available Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count zonalbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count zonalbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Availble Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats" >
-                                    <div class="count avgcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count avgcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
                                 <div class="tile-stats">
-                                    <div class="count avgbott" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count avgbott" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
                                 <div class="tile-stats">
-                                    <div class="count zonaldays" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count zonaldays" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Days</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Stock Available</p>
                                 </div>
@@ -164,31 +165,38 @@
                      </div>
 
                         </div>
-            </div>
+
                    <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
               <h3 style="font-size:20px; font-weight:600;"> Depot  Available Stock </h3>
             </div>
             <div class="title_right">
-                <div class="col-md-5 col-sm-5 offset-md-5">
+                                        <div class="col-md-4 col-sm-4">
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control depot" name="depoid1" id="depoid1" required>
-                                                    <option value=""> depot</option>
-
+                                                   	<option value="All">All</option>
                                                     {% for data in depolist %}
                                                     {% if data.status == 'Active' %}
-                                                            {% if data.depoid == 'DEPO0089' %}
-													            <option value="{{ data.depoid  }}" selected>{{  data.deponame  }}</option>
-                                                            {% else %}
                                                                 <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
-                                                            {% endif %}
                                                     {% endif %}
                                                     {% endfor %}
 												</select>
 										</div>
 
-              <div class="col-md-2 col-sm-2">
+                                        <div class="col-md-4 col-sm-4">
+
+										    	 <select class="form-control items" name="itemcode1" id="itemcode1" required>
+                                                    {% for data in item_masterlist %}
+                                                        {% if data.itemcode == "PHA0002" %}
+                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
+                                                            {% else %}
+                                                                <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                     {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                        </div>
+              <div class="col-md-1 col-sm-1">
                 <label><input type="checkbox" id="depot_stock" class="js-switch"  /></label>
               </div>
             </div>
@@ -198,28 +206,28 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count depotstock" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count depotstock" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Available Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count depotstock1" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count depotstock1" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span> Available Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats" >
-                                    <div class="count depotcase" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count depotcase" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
                                 <div class="tile-stats">
-                                    <div class="count depotbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count depotbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
 
@@ -227,7 +235,7 @@
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
                                 <div class="tile-stats">
-                                    <div class="count depotdays" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                                    <div class="count depotdays" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Days</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Stock Available</p>
                                 </div>
@@ -264,10 +272,10 @@
                           <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
                         </tr>
                         <tr>
-                          <th class="design">Qty(Cases)</th>
-                          <th class="design">Qty(Bottles)</th>
-                          <th class="design">Qty(Cases)</th>
-                          <th class="design">Qty(Bottles)</th>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
+                          <th class="design">Qty( Cases)</th>
+                          <th class="design">Qty( Bottles)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -304,28 +312,28 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats" >
-                <div class="count pendinggrn" style="color:green;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count pendinggrn" style="color:green;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending GRN</p>
               </div>
             </div>
                <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats" >
-                <div class="count verifiedgrn" style="color:#9F9D1B;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count verifiedgrn" style="color:#9F9D1B;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
               <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Verified GRN</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats">
-                <div class="count acceptedqty" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count acceptedqty" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
            <div style="text-align:center;margin-left: auto;margin-right: auto;">Accepted Qty(Cases)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Accepted Qty(Cases)</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats">
-                <div class="count acceptdbott" style="color:red;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count acceptdbott" style="color:red;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
              <div style="text-align:center;margin-left: auto;margin-right: auto;">Accepted Qty(Bottles)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Accepted Qty(In bottles)</p>
               </div>
@@ -342,15 +350,15 @@
                             <th  class="design1" rowspan="2">Manufacture</th>
                                <!--<th  class="design1" rowspan="2">Warehouse</th>-->
                             <th class="design1" rowspan="2">Product</th>
-                            <th class="design1" colspan="2">Today</th>
-                            <th  class="design1" colspan="2">This month</th>
+                            <th class="design1" colspan="2">Current day</th>
+                            <th  class="design1" colspan="2">Current month</th>
                           </tr>
                           <tr>
                             <!--<th class="design">Invoice no</th>-->
-                            <th class="design">Qty(In Cases)</th>
-                            <th class="design">Qty(In Bottles)</th>
-                            <th class="design">Qty(In Cases)</th>
-                            <th class="design">Qty(In Bottles)</th>
+                            <th class="design">Qty(Cases)</th>
+                            <th class="design">Qty(Bottles)</th>
+                            <th class="design">Qty(Cases)</th>
+                            <th class="design">Qty(Bottles)</th>
                           </tr>
                         </thead>
 
@@ -393,22 +401,17 @@
         <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
-              <h3 style="color:#14c38e;margin-right:-10px;">Depots pending indent</h3>
+              <h3>Depots pending indent</h3>
             </div>
             <div class="title_right">
                    <div class="col-md-10 col-sm-10">
 											 <input type="hidden" name="deponame1" id="deponame" />
 												<select class="form-control depot" name="depoid" id="depoid" required>
-                                                    <option value=""> depot</option>
-
+                                                    <option value="All">All</option>
                                                     {% for data in depolist %}
-                                                    {% if data.status == 'Active' %}
-                                                            {% if data.depoid == 'DEPO0089' %}
-													            <option value="{{ data.depoid  }}" selected>{{  data.deponame  }}</option>
-                                                            {% else %}
+                                                        {% if data.status == 'Active' %}
                                                                 <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
-                                                            {% endif %}
-                                                    {% endif %}
+                                                        {% endif %}
                                                     {% endfor %}
 												</select>
 										</div>
@@ -421,21 +424,21 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count pendingind" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count pendingind" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
          <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending Indents</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indentcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count indentcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
               <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Verified indents</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indbottles" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count indbottles" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
              <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty Indented(Cases)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty indented(In Cases)</p>
               </div>
@@ -975,7 +978,6 @@ var theme = {
                count1++;
             }
              if(item.total_grn !="0" ){
-
                seriesData.push({
                  value: item.total_grn,
                  name: 'Total GRN'
@@ -1100,7 +1102,7 @@ var theme = {
 
     }
     var echartPie = echarts.init(document.getElementById('echart-zonal1'),theme);
-    alert('echart-zonal1')
+
           var count = 0;
           var seriesData = [];
           var legendData = [];
@@ -1481,7 +1483,7 @@ $.ajax({
   type: "GET",
   url: "{% url 'zonal_grn_report' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
          var total =  data.data.list;
@@ -1595,11 +1597,12 @@ $('#grndate').change(function() {
 
 $(document).ready(function() {
 var deponame = $('#depoid1').val();
+var itemcode = $('#itemcode').val();
 $.ajax({
   type: "POST",
   url: "{% url 'zonal_depotwise_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+   'deponame':deponame,'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
      var total =  data.data.totallist;
@@ -1658,43 +1661,17 @@ $.ajax({
 
 $('#depoid1').change(function() {
 var deponame = $('#depoid1').val();
+var itemcode = $('#itemcode1').val();
 $.ajax({
   type: "POST",
-  url: "{% url 'zonal_depotwise_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  url: "{% url 'zonal_depotwise_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  'itemcode':itemcode, 'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
      var total =  data.data.totallist;
-     var itemslist = data.data.itemwiselist;
      message = data.data.message
      console.log(data);
-     if(message != "Data found")
-      {
-       $("#lblNoStock2").html(data.message);
-       $("#lblNoStock2").show();
-       $("#echart-pies2").hide();
-       $("#completetabel").hide();
-      }else{
-       updateEchartPieChart(itemslist);
-      }
-
-        var tableBody = $('#depottabel  tbody');
-        tableBody.empty();
-              for (var i = 0; i < itemslist.length; i++) {
-                var item = itemslist[i];
-                var row = $('<tr>');
-                row.append($('<td>').text(i + 1));  // S No
-                row.append($('<td>').text(item.itemname));
-                row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));  // Quantity
-                row.append($('<td>').text(item.consumption_cases));
-                row.append($('<td>').text(item.consumption_botteles));
-                row.append($('<td>').text(item.indays));
-                tableBody.append(row);
-              }
-       var tfootdata = $('#depottabel tfoot');
-       tfootdata.empty();
          for (var i = 0; i < total.length; i++) {
                 var item = total[i];
                 $('.depotstock').text(item.stock_cases);
@@ -1702,14 +1679,7 @@ $.ajax({
                 $('.depotcase').text(item.consumption_cases);
                 $('.depotbott').text(item.consumption_botteles);
                 $('.depotdays').text(item.indays);
-                var row = $('<tr>');
-                row.append($('<th>').text('Grand Total').attr('colspan',2).addClass('design1'));
-                row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));
-                row.append($('<td>').text(item.consumption_cases));
-                row.append($('<td>').text(item.consumption_botteles));
-                row.append($('<td>').text(item.indays));
-                tfootdata.append(row);
+
           }
 
   },
@@ -1719,6 +1689,40 @@ $.ajax({
   }
 });
 });
+
+
+$('#itemcode1').change(function() {
+var deponame = $('#depoid1').val();
+var itemcode = $('#itemcode1').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotwise_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+  'itemcode':itemcode, 'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemwiselist;
+     message = data.data.message
+     console.log(data);
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                 var item = total[i];
+                $('.depotstock').text(item.stock_cases);
+                $('.depotstock1').text(item.stock_botteles);
+                $('.depotcase').text(item.consumption_cases);
+                $('.depotbott').text(item.consumption_botteles);
+               $('.depotdays').text(item.indays);
+
+          }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
 $(document).ready(function() {
 var deponame = $('#depoid').val();
 $.ajax({
@@ -1881,7 +1885,6 @@ $('#grndate').val(new Date().toJSON().slice(0,10));
 
 $(document).ready(function() {
     var itemcode =  $('#itemcode').val();
-    alert(itemcode)
 $.ajax({
   type: "POST",
   url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint

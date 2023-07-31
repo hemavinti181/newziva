@@ -25,7 +25,24 @@
       <div class="x_panel">
 				      	<form  method="POST" action=""   enctype="multipart/form-data">
 											{% csrf_token %}
-									<div  class="col-md-2 col-sm-2  form-group has-feedback">
+									  <div  class="col-md-3 col-sm-3  form-group has-feedback">
+													<label> Bus Station</label>
+
+											<select class="form-control" name="busstationid2" id="busstationid2" hidden>
+													<option value="{{ request.POST.busstationid }}">{{ request.POST.busstationname }}</option>
+												</select>
+											 <input type="hidden" name="busstationname" id="busstationname" />
+												<select class="form-control" name="busstationid" id="busstationid">
+														<option value="All">All</option>
+                                                    {% for data1 in bus %}
+														{% if data1.status == 'Active' %}
+                            		                    	<option value="{{ data1.busstaionid }}">{{ data1.busstationname }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+										</div>
+
+									<!--<div  class="col-md-2 col-sm-2  form-group has-feedback">
 													<label> Warehouse</label>
 
 										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
@@ -34,8 +51,8 @@
 											 <input type="hidden" name="warehousename" id="warehousename" />
 
 												<select class="form-control" name="warehouseid" id="warehouseid">
-													<option value="All">All</option>{{ wh_masterlist }}
-                                                   {% for data1 in wh_masterlist %}
+													<option value="All">All</option>
+                                                    {% for data1 in wh_masterlist %}
 														{% if data1.status == 'Active' %}
                             		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
 														{% endif %}
@@ -64,7 +81,6 @@
 											</div>
 
 										<div  class="col-md-2 col-sm-2  form-group has-feedback">
-                                          <input type="hidden" name="bust2" id="bust2" />
 											<select class="form-control" name="busstationid2" id="busstationid2" hidden>
 													<option value="{{ request.POST.busstationid }}">{{ request.POST.busstationname }}</option>
 												</select>
@@ -74,9 +90,9 @@
 													<option value="All">All</option>
 												</select>
 										</div>
-				<div  class="col-md-2 col-sm-2  form-group has-feedback">
+			<div  class="col-md-2 col-sm-2  form-group has-feedback">
                   <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-				</div>
+				</div>-->
 
 						</form>
      </div>
@@ -93,7 +109,6 @@
                <div class="col-md-9 col-sm-9  form-group has-feedback">
 
 										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
-                                                   <option value="All">All</option>{{ wh_masterlist }}
                                                    {% for data in item_masterlist %}
                                                        {% if data.status == "Active" %}
                                                            {% if data.itemcode == "PHA0002" %}
@@ -113,35 +128,35 @@
           <div class="x_content stockchart">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count stock_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count stock_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <span style="margin-left: 20%;">Qty(Cases)</span>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>stock on hand</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count stock_botteles" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count stock_botteles" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <span style="margin-left: 20%;">Qty(Bottles)</span>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>stock on hand</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indays" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count indays" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <span style="margin-left: 20%;">(Days)</span>
                 <p class="d-none"><span class="fa fa-info" aria-hidden="true"></span>Available Up to </p>
               </div>
             </div>
             <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
               <div class="tile-stats">
-                <div class="count consumption_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count consumption_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <span style="margin-left: 20%;">Qty(Cases)</span>
                 <p><span class="fa fa-info" aria-hidden="true"></span>Avg consumption of last 7days </p>
               </div>
             </div>
             <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
               <div class="tile-stats">
-                <div class="count consumption_botteles" style="color:#3493fb;margin-left: 5%;font-size:30px;"></div>
+                <div class="count consumption_botteles" style="color:#3493fb;margin-left: 5%;font-size:20px;"></div>
                 <span style="margin-left: 20%;">Qty(Bottles)</span>
                 <p><span class="fa fa-info" aria-hidden="true"></span>Avg consumption of last 7days</p>
               </div>

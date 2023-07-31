@@ -25,7 +25,24 @@
       <div class="x_panel">
 				      	<form  method="POST" action=""   enctype="multipart/form-data">
 											{% csrf_token %}
-									<div  class="col-md-2 col-sm-2  form-group has-feedback">
+                          <div  class="col-md-2 col-sm-2  form-group has-feedback">
+													<label> Bus Station</label>
+
+										 <select class="form-control" name="busatationid2" id="busatationid2" hidden>
+                            		                    <option value="{{ request.POST.busatationid }}">{{ request.POST.warehousename }}</option>
+												</select>
+											 <input type="hidden" name="busstationname" id="busstationname" />
+
+												<select class="form-control" name="busatationid" id="busatationid">
+													<option value="All">All</option>
+                                                    {% for data1 in bus %}
+														{% if data1.status == 'Active' %}
+                            		                    	<option value="{{ data1.busatationid }}">{{ data1.busstationname }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+										</div>
+									<!--<div  class="col-md-2 col-sm-2  form-group has-feedback">
 													<label> Warehouse</label>
 
 										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
@@ -73,7 +90,7 @@
 													<option value="All">All</option>
 												</select>
 										</div>
-				<!--<div  class="col-md-2 col-sm-2  form-group has-feedback">
+			<div  class="col-md-2 col-sm-2  form-group has-feedback">
                   <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
 				</div>-->
 

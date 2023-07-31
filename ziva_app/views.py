@@ -12220,6 +12220,17 @@ def depot_dashboard(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         item_masterlist = data['itemmasterlist']
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        depolist = data['depolist']
 
         menuname = request.session['mylist']
 
@@ -12234,7 +12245,7 @@ def depot_dashboard(request):
             data = response.json()
             wh_masterlist = data['warehouselist']
             if role == 'Admin':
-                    return render(request, 'dashboard/depot_admin_dashboard.html', {"menuname": menuname,'wh_masterlist':wh_masterlist,'item_masterlist':item_masterlist})
+                    return render(request, 'dashboard/depot_admin_dashboard.html', {'depolist':depolist,"menuname": menuname,'wh_masterlist':wh_masterlist,'item_masterlist':item_masterlist})
             else:
                 return render(request, 'dashboard/depot_dashboard.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
@@ -12529,6 +12540,17 @@ def bust_dashboard(request):
             return redirect('/login')
         role = request.session['role']
         menuname = request.session['mylist']
+        url = "http://13.235.112.1/ziva/mobile-api/bus-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        bus = data['buslist']
 
         url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
 
@@ -12550,10 +12572,10 @@ def bust_dashboard(request):
             data = response.json()
             wh_masterlist = data['warehouselist']
             if role == 'Admin':
-                return render(request, 'dashboard/bust_admin_dashboard.html', {"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_masterlist':item_masterlist})
+                return render(request, 'dashboard/bust_admin_dashboard.html', {"menuname": menuname, 'wh_masterlist': wh_masterlist,'item_masterlist':item_masterlist,'bus':bus})
             else:
                 return render(request, 'dashboard/bust_dashboard.html',
-                              {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_masterlist': item_masterlist})
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist, 'item_masterlist': item_masterlist,'bus':bus})
         elif response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
@@ -12854,6 +12876,17 @@ def zonal_dashboard(request):
                 return redirect('/login')
             menuname = request.session['mylist']
 
+            url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            data = response.json()
+            wh_masterlist = data['warehouselist']
+
             url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
 
             payload = json.dumps({"accesskey": accesskey})
@@ -12874,7 +12907,12 @@ def zonal_dashboard(request):
             if response.status_code == 200:
                 data = response.json()
                 depolist = data['depolist']
-                return render(request, 'dashboard/zonal_dashboard.html', {"menuname": menuname,'depolist':depolist,'item_masterlist':item_masterlist})
+                if role == 'Admin':
+                    return render(request, 'dashboard/zonal_dashboard_admin.html', {'wh_masterlist':wh_masterlist,"menuname": menuname,'depolist':depolist,'item_masterlist':item_masterlist})
+                else:
+                    return render(request, 'dashboard/zonal_dashboard.html',
+                                  {'wh_masterlist': wh_masterlist, "menuname": menuname, 'depolist': depolist,
+                                   'item_masterlist': item_masterlist})
             elif response.status_code == 400:
                 data = response.json()
                 messages.error(request,data['message'])
@@ -12896,8 +12934,6 @@ def zonal_dashboard_data1(request):
         'Content-Type': 'application/json'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-
-
     if response.status_code == 200:
         data = response.json()
         return JsonResponse({'data':data})
@@ -12952,6 +12988,7 @@ def zonal_dashboard_data(request):
 
 def zonal_grn_report(request):
     accesskey = request.session['accesskey']
+    warehouseid = request.session['warehouseid']
     url = "http://13.235.112.1/ziva/mobile-api/grn-report.php"
     fdate = request.POST.get('fdate')
     tdate = datetime.date.today()
@@ -12961,7 +12998,7 @@ def zonal_grn_report(request):
     else:
         date = tdate
     payload = {
-        "accesskey": accesskey,"date":date
+        "accesskey": accesskey,"date":date,"warehouseid":warehouseid
 
     }
     payload = json.dumps(payload, cls=BytesEncoder)
@@ -12988,6 +13025,45 @@ def zonal_grn_report(request):
     elif response.status_code == 500:
         messages.error(request, "Internal Server Error")
         return JsonResponse({'data': "Internal Server Error"})
+
+
+def zonal_depotwise_data1(request):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/depo-stock-available-new.php"
+    fdate = request.POST.get('cdate')
+    tdate = datetime.date.today()
+    tdate = tdate.strftime("%Y-%m-%d")
+    if fdate:
+        date = fdate
+    else:
+        date = tdate
+    payload = {"accesskey": accesskey,"depoid": request.POST.get('deponame'), "itemcode": request.POST.get('itemcode')
+               }
+    payload = json.dumps(payload, cls=BytesEncoder)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('\login')
+    elif response.status_code == 503:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        messages.error(request, "Internal Server Error")
+        return JsonResponse({'data': "Internal Server Error"})
+
 
 
 def zonal_depotwise_data(request):
@@ -13026,9 +13102,12 @@ def zonal_depotwise_data(request):
     elif response.status_code == 500:
         messages.error(request, "Internal Server Error")
         return JsonResponse({'data': "Internal Server Error"})
+
+
+
 def zonal_depotindent_data(request):
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/depo-pending-indent.php"
+    url = "http://13.235.112.1/ziva/mobile-api/depo-pending-indent-new.php"
     fdate = request.POST.get('cdate')
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
@@ -13062,6 +13141,8 @@ def zonal_depotindent_data(request):
     elif response.status_code == 500:
         messages.error(request, "Internal Server Error")
         return JsonResponse({'data': "Internal Server Error"})
+
+
 def admin_dashboard(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
