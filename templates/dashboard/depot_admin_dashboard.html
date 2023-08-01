@@ -246,7 +246,7 @@
            </div>
   <div class="col-md-6 col-sm-6 echart-pies2"  style="margin-top:10px;">
   <h4 class="text-info text">Quantity(Cases)</h4>
-    <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="lblNoStock1">No Stock Available</h3>
+   <h5 style="margin-top: 80px; margin-bottom: 140px;margin-left: 10px;margin-right: 100px;display:none;" class="text-danger" id="lblNoStock1">No Sales Pending</h5>
         <div id="echart-pies2" style="height:350px;margin-top:-80px;margin-left:-30px;"></div>
               </div>
                       <div class="col-md-5 col-sm-5" id="chart_gauge_sales1" style="margin-top:10px;">
@@ -630,6 +630,9 @@ var chart_gauge_settings = {
  function updateEchartPieChart(itemslist) {
         var echartPie = echarts.init(document.getElementById('echart-depot1'),theme);
           var count = 0;
+          if($("#checked2").prop('checked')){
+              $(".echart-depot1").show();
+          }
           var seriesData = [];
           var legendData = [];
 
@@ -717,14 +720,17 @@ var chart_gauge_settings = {
                   color: 'rgba(0,0,0,0)'
               }
           };
-
-
+ if($("#checked2").prop('checked')){
+              $(".echart-depot1").hide();
+          }
 
 }
 
  function updateEchartPieChart1(itemslist,total){
     var seriesData = [];
     var legendData = [];
+    var count = 0;
+
     if($("#checked2").prop('checked')){
       $(".echart-pies2").show();
       $("#chart_gauge_sales1").show();
@@ -738,9 +744,17 @@ var chart_gauge_settings = {
                  value: item.MTD_cases,
                  name: item.itemname
                });
+               count++;
             }
             legendData.push(item.itemname);
     }
+        if(count == 0){
+        $('#echart-pies2').hide();
+              $('#lblNoStock1').show();
+          } else {
+              $('#echart-pies2').show();
+              $('#lblNoStock1').hide();
+          }
 
                 echartPie.setOption({
                             tooltip: {
@@ -875,6 +889,108 @@ function updateEchartPieChart2(itemslist){
       }
 
 }
+
+function updateEchartPieChart_depot(total) {
+        var echartPie = echarts.init(document.getElementById('echart-depot1'),theme);
+          var count = 0;
+          if($("#checked2").prop('checked')){
+              $(".echart-depot1").show();
+
+          }
+          var seriesData = [];
+          var legendData = [];
+
+          // Process 'itemslist' data and populate 'seriesData' and 'legendData'
+
+          for (var i = 0; i < total.length; i++) {
+            var item = total[i];
+              if(item.stock_botteles!="0"){
+               seriesData.push({
+                 value: item.stock_cases,
+                 name: item.itemname
+               });
+               count++;
+            }
+            legendData.push(item.itemname);
+
+          }
+           if (count === 0) {
+              $('#echart-depot1').hide();
+              $('#lblNoStock').show();
+          } else {
+              $('#echart-depot1').show();
+              $('#lblNoStock').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+
+        if($("#checked2").prop('checked')){
+              $(".echart-depot1").show();
+
+          }
+
+}
     window.onload=function(){
 
 
@@ -887,11 +1003,11 @@ function updateEchartPieChart2(itemslist){
     $(document).ready(function() {
     $("#checked1").click(function() {
       if ($(this).is(":checked")) {
-       $("#echart-depot1").hide();
+       $(".echart-depot1").hide();
       $("#stktabel").show();
     }
     else{
-     $("#echart-depot1").show();
+     $(".echart-depot1").show();
       $("#stktabel").hide();
     }
     });
@@ -1001,17 +1117,42 @@ $.ajax({
   },
   success: function(data) {
      var total =  data.data.itemlist;
+     var message = data.data.message;
 
-          for (var i = 0; i < total.length; i++) {
+      if(message != "Data found")
+      {
+       $("#lblNoStock").html(data.message);
+       $("#lblNoStock").show();
+       $("#echart-depot1").hide();
+      }else{
+          var total =  data.data.itemlist;
+         for (var i = 0; i < total.length; i++) {
+            item = total[i];
+         }
+
+         updateEchartPieChart_depot(total);
+      }
+     var tableBody = $('#stktabel  tbody');
+        tableBody.empty();
+            for (var i = 0; i < total.length; i++) {
                 var item = total[i];
-                $('.stock_cases').text(item.stock_cases);
+                 $('.stock_cases').text(item.stock_cases);
                 $('.stock_botteles').text(item.stock_botteles);
                 $('.consumption_cases').text(item.consumption_cases);
                 $('.consumption_botteles').text(item.consumption_botteles);
                 $('.indays').text(item.indays);
-
-          }
-
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+            }
+         var tfootdata = $('#stktabel tfoot');
+      tfootdata.empty();
   },
   error: function(jqXHR, textStatus, errorThrown) {
     console.error("Error occurred: " + textStatus, errorThrown);
@@ -1024,7 +1165,6 @@ $.ajax({
 $('#depoid').change(function() {
 var itemcode =  $('#itemcode').val();
 var depoid = $('#depoid').val();
-alert(depoid)
 $.ajax({
   type: "POST",
   url: "{% url 'depot_dashboard_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
@@ -1033,16 +1173,43 @@ $.ajax({
   },
   success: function(data) {
      var total =  data.data.itemlist;
+     var message = data.data.message;
 
-          for (var i = 0; i < total.length; i++) {
+      if(message != "Data found")
+      {
+       $("#lblNoStock").html(data.message);
+       $("#lblNoStock").show();
+       $("#echart-depot1").hide();
+      }else{
+          var total =  data.data.itemlist;
+         for (var i = 0; i < total.length; i++) {
+            item = total[i];
+         }
+
+         updateEchartPieChart_depot(total);
+      }
+     var tableBody = $('#stktabel  tbody');
+        tableBody.empty();
+            for (var i = 0; i < total.length; i++) {
                 var item = total[i];
-                $('.stock_cases').text(item.stock_cases);
+                 $('.stock_cases').text(item.stock_cases);
                 $('.stock_botteles').text(item.stock_botteles);
                 $('.consumption_cases').text(item.consumption_cases);
                 $('.consumption_botteles').text(item.consumption_botteles);
                 $('.indays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+            }
 
-          }
+         var tfootdata = $('#stktabel tfoot');
+          tfootdata.empty();
   },
   error: function(jqXHR, textStatus, errorThrown) {
     console.error("Error occurred: " + textStatus, errorThrown);
@@ -1050,6 +1217,10 @@ $.ajax({
   }
 });
 });
+
+
+
+
 
 $('#pdate').change(function() {
 depoid=$('#depoid').val();

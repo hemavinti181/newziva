@@ -12322,11 +12322,12 @@ def depot_dashboard_data(request):
             return JsonResponse({'data': "Internal Server Error"})
 
 def depot_dashboard_data1(request):
+
     accesskey = request.session['accesskey']
     role = request.session['role']
     if role == 'Admin':
         url = "http://13.235.112.1/ziva/mobile-api/stock-available-admin-report.php"
-        payload = {"accesskey": accesskey, "depoid":request.POST.get('depoid')
+        payload = {"accesskey": accesskey,'depoid':request.POST.get('depoid')
                    }
         payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
@@ -12356,6 +12357,7 @@ def depot_dashboard_data1(request):
     else:
             url = "http://13.235.112.1/ziva/mobile-api/stock-available-report.php"
             payload = {"accesskey": accesskey
+
                        }
             payload = json.dumps(payload, cls=BytesEncoder)
             headers = {
@@ -12875,7 +12877,7 @@ def zonal_dashboard(request):
                 messages.error(request, 'Access denied!')
                 return redirect('/login')
             menuname = request.session['mylist']
-
+            role  = request.session['role']
             url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
             payload = json.dumps({"accesskey": accesskey})
@@ -12925,106 +12927,208 @@ def zonal_dashboard(request):
     return render(request, 'dashboard/zonal_dashboard.html', {"menuname": menuname})
 
 def zonal_dashboard_data1(request):
+
+    role = request.session['role']
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/warehouse-stock-report-new.php"
-    payload = {"accesskey": accesskey,'itemcode':request.POST.get('itemcode')
-               }
-    payload = json.dumps(payload, cls=BytesEncoder)
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data':data})
-    elif response.status_code == 400:
-        data = response.json()
-        if data['message'] == 'Sorry! some details are missing':
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-stock-admin-report-new.php"
+        payload = {"accesskey": accesskey,'itemcode':request.POST.get('itemcode'),
+                        "warehouseid":request.POST.get('warehouseid')
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data':data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data':data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
             return JsonResponse({'data':data})
-        else:
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data':"Internal Server Error"})
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-stock-report-new.php"
+        payload = {"accesskey": accesskey, 'itemcode': request.POST.get('itemcode')
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
-            return redirect('\login')
-    elif response.status_code == 503:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'data':data})
-    elif response.status_code == 500:
-        messages.error(request, "Internal Server Error")
-        return JsonResponse({'data':"Internal Server Error"})
-
-
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
 
 def zonal_dashboard_data(request):
+
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/warehouse-stock-report.php"
-    payload = {"accesskey": accesskey,
-               }
-    payload = json.dumps(payload, cls=BytesEncoder)
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+    role = request.session['role']
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-stock-admin-report.php"
+        payload = {"accesskey": accesskey,  "warehouseid":request.POST.get('warehouseid')
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
 
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data':data})
-    elif response.status_code == 400:
-        data = response.json()
-        if data['message'] == 'Sorry! some details are missing':
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data':data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data':data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
             return JsonResponse({'data':data})
-        else:
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data':"Internal Server Error"})
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-stock-report.php"
+        payload = {"accesskey": accesskey,
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
-            return redirect('\login')
-    elif response.status_code == 503:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'data':data})
-    elif response.status_code == 500:
-        messages.error(request, "Internal Server Error")
-        return JsonResponse({'data':"Internal Server Error"})
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
+
+
 
 def zonal_grn_report(request):
     accesskey = request.session['accesskey']
     warehouseid = request.session['warehouseid']
-    url = "http://13.235.112.1/ziva/mobile-api/grn-report.php"
-    fdate = request.POST.get('fdate')
-    tdate = datetime.date.today()
-    tdate = tdate.strftime("%Y-%m-%d")
-    if fdate:
-        date=fdate
-    else:
-        date = tdate
-    payload = {
-        "accesskey": accesskey,"date":date,"warehouseid":warehouseid
+    role = request.session['role']
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/grn-report.php"
+        fdate = request.POST.get('fdate')
+        tdate = datetime.date.today()
+        tdate = tdate.strftime("%Y-%m-%d")
+        if fdate:
+            date=fdate
+        else:
+            date = tdate
+        payload = {
+            "accesskey": accesskey,"date":date,"warehouseid":request.POST.get('warehouseid')
 
-    }
-    payload = json.dumps(payload, cls=BytesEncoder)
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data': data})
-    elif response.status_code == 400:
-        data = response.json()
-        if data['message'] == 'Sorry! some details are missing':
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
             return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/grn-report.php"
+        fdate = request.POST.get('fdate')
+        tdate = datetime.date.today()
+        tdate = tdate.strftime("%Y-%m-%d")
+        if fdate:
+            date = fdate
         else:
+            date = tdate
+        payload = {
+            "accesskey": accesskey, "date": date, "warehouseid": warehouseid
+
+        }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
-            return redirect('\login')
-    elif response.status_code == 503:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'data': data})
-    elif response.status_code == 500:
-        messages.error(request, "Internal Server Error")
-        return JsonResponse({'data': "Internal Server Error"})
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
 
 
 def zonal_depotwise_data1(request):
