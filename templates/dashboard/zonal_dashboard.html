@@ -58,7 +58,7 @@
             <div class="title_right">
                  <div class="col-md-4 col-sm-4  offset-md-7">
 
-										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+										    	 <select class="form-control items" name="itemcode" id="whitemcode" required>
                                                     {% for data in item_masterlist %}
                                                         {% if data.itemcode == "PHA0002" %}
                                                                 <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
@@ -78,35 +78,35 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count zonalcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count zonalcases" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Available Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count zonalbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count zonalbott" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Availble Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats" >
-                                    <div class="count avgcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count avgcases" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
                                 <div class="tile-stats">
-                                    <div class="count avgbott" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count avgbott" style="color: #14c38e;color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
                                 <div class="tile-stats">
-                                    <div class="count zonaldays" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count zonaldays" style="color: #14c38e;color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Days</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Stock Available</p>
                                 </div>
@@ -118,14 +118,15 @@
                    <div class="row">
                         <div class="col-md-4 col-sm-4" style="overflow:hidden;">
                         <div class="x_panel Consumption">
+                             <h3 style="margin: 168px 3px 149px 80px;display:none;" id="depotstock1">No Stock Available</h3>
                                     <div id="graph_bar_group1" style="width:100%; height:280px;"></div>
-                                      <h5 class="text-info" style="margin:20px">Qty Available vs Qty Consumption progress</h5>
+                                      <h5 class="text-info textqty" style="margin:20px">Qty Available vs Qty Consumption progress</h5>
                                 </div>
                         </div>
             <div class="col-md-3 col-sm-3">
                  <div class="x_panel">
-                  <h3 style="margin: 125px 3px 149px 100px;display:none;" id="depotstock">No Stock Available</h3>
-                       <div id="echart-zonal1" style="height:350px;margin-top:-4px;margin-left:-60px;"></div>
+                  <h3 style="margin: 168px 3px 149px 80px;display:none;" id="depotstock">No Stock Available</h3>
+                       <div id="echart-zonal1" style="height:350px;margin-top:-5px;margin-left:-150px;width:600px;"></div>
             </div>
               </div>
     <div class="col-md-5 col-sm-5">
@@ -206,7 +207,7 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count depotstock" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count depotstock" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Available Stock</p>
                                 </div>
@@ -227,7 +228,7 @@
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7">
                                 <div class="tile-stats">
-                                    <div class="count depotbott" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count depotbott" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span> Avg Consumption of last 7 days</p>
 
@@ -235,7 +236,7 @@
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-">
                                 <div class="tile-stats">
-                                    <div class="count depotdays" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count depotdays" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Days</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Stock Available</p>
                                 </div>
@@ -251,12 +252,12 @@
                             <div class="row" style="text-align: center;">
                                 <div class="col-md-4">
                                       <h3  class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock">No Stock Available</h3>
-                                    <div id="echart-depot1"   style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+                                    <div id="echart-depot1"   style="height:350px;margin-top:-60px;margin-left:-100px;width:600px"></div>
                                  <h4 style="margin:18px">Stock Available</h4>
                                 </div>
                                 <div class="col-md-3">
-                                      <h3 class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock1">No Stock Available</h3>
-                                    <div id="echart-pies2"    style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+                                      <h3 class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock1">No Consumption Available</h3>
+                                    <div id="echart-pies2"    style="height:350px;margin-top:-60px;margin-left:-100px;width:600px"></div>
                                   <h4 style="margin:18px">Avg consumption of last 7 days</h4>
                                 </div>
                                 <div class="col-md-5">
@@ -312,28 +313,28 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats" >
-                <div class="count pendinggrn" style="color:green;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count pendinggrn" style="color:green;color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending GRN</p>
               </div>
             </div>
                <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats" >
-                <div class="count verifiedgrn" style="color:#9F9D1B;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count verifiedgrn" style="color:#9F9D1B;color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
               <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Verified GRN</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats">
-                <div class="count acceptedqty" style="color: #3493fb;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count acceptedqty" style="color: #14c38e;color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
            <div style="text-align:center;margin-left: auto;margin-right: auto;">Accepted Qty(Cases)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Accepted Qty(Cases)</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats">
-                <div class="count acceptdbott" style="color:red;color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count acceptdbott" style="color:red;color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
              <div style="text-align:center;margin-left: auto;margin-right: auto;">Accepted Qty(Bottles)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Accepted Qty(In bottles)</p>
               </div>
@@ -342,7 +343,7 @@
          <div class="col-md-12 col-sm-12">
             <div class="clearfix"></div>
 
-                      <table class="table table-striped" style="display:block;width=100%";  id="pendingtabel">
+                      <table class="table table-striped" style="display:block;width:100%;"  id="pendingtabel">
                         <thead>
                           <tr>
                             <th class="design1" rowspan="2">#</th>
@@ -380,8 +381,8 @@
                         <div class="x_panel">
                                 <h3>Grn Details</h3>
                             <div class="x_content">
-                                   <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="grnstatus">No Pending GRN</h3>
-                                <div id="echart_donut2" style="height:240px;margin-top: -65px;margin-right:10px;"></div>
+                                 <h3 class="text-danger" style="margin: 65px 3px 70px 110px;display:none;" id="grnstatus">No Pending GRN</h3>
+                                <div id="echart_donut2" style="height:240px;margin-top: -65px;margin-right:10px;width:400px"></div>
                             </div>
                         </div>
                     <div class="row">
@@ -389,7 +390,7 @@
                         <div class="x_panel">
                                 <h3>Accepted Quantity</h3>
                             <div class="x_content">
-                                   <h3 style="margin-top: 100px;margin-bottom: 200px;margin-left: 90px;margin-right: -1000px;display:none;" id="lblNoStock2">No Pending GRN</h3>
+                                 <h3 class="text-danger" style="margin: 65px 3px 70px 110px;display:none;" id="lblNoStock2">No Data Available</h3>
                                  <canvas id="mybarChart1"></canvas>
                             </div>
                         </div>
@@ -404,7 +405,7 @@
               <h3>Depots pending indent</h3>
             </div>
             <div class="title_right">
-                   <div class="col-md-10 col-sm-10">
+                  <div class="col-md-5 col-sm-5">
 											 <input type="hidden" name="deponame1" id="deponame" />
 												<select class="form-control depot" name="depoid" id="depoid" required>
                                                     <option value="All">All</option>
@@ -415,7 +416,9 @@
                                                     {% endfor %}
 												</select>
 										</div>
-
+                <div class="col-md-5 col-sm-5">
+                    <input class="form-control" type="date" name="date"  id="inddate"  value="{{ request.POST.date }}"  required>
+                </div>
               <div class="col-md-2 col-sm-2">
                 <label><input type="checkbox" id="depots_indent" class="js-switch"  /></label>
               </div>
@@ -431,7 +434,7 @@
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indentcases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count indentcases" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
               <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Verified indents</p>
               </div>
@@ -455,6 +458,7 @@
                         <thead>
                           <tr>
                             <th class="design1" rowspan="2">#</th>
+                               <th  class="design1" rowspan="2">Depot </th>
                               <th class="design1" rowspan="2">Items</th>
                               <th  class="design1" colspan="2">Pending indent Qty</th>
                               <th class="design1" colspan="2">Verified indent Qty</th>
@@ -462,10 +466,11 @@
                           </tr>
                             <tr>
                             <!--<th class="design">Invoice no</th>-->
-                            <th class="design">Qty(In Cases)</th>
-                            <th class="design">Qty(In Bottles)</th>
-                            <th class="design">Qty(In Cases)</th>
-                            <th class="design">Qty(In Bottles)</th>
+
+                            <th class="design">Qty( Cases)</th>
+                            <th class="design">Qty( Bottles)</th>
+                            <th class="design">Qty( Cases)</th>
+                            <th class="design">Qty( Bottles)</th>
                           </tr>
                         </thead>
 
@@ -751,7 +756,7 @@ var theme = {
         generateGradient: true
     };
  function updateEchartPieChart(itemslist) {
-        var echartPie = echarts.init(document.getElementById('echart-depot1'), "");
+        var echartPie = echarts.init(document.getElementById('echart-depot1'),"");
           var count = 0;
           var seriesData = [];
           var legendData = [];
@@ -836,7 +841,7 @@ var theme = {
                   color: 'rgba(0,0,0,0)'
               }
           };
-       var echartPie = echarts.init(document.getElementById('echart-pies2'), "");
+       var echartPie = echarts.init(document.getElementById('echart-pies2'),theme);
           var count =0;
           var seriesData = [];
           var legendData = [];
@@ -923,9 +928,202 @@ var theme = {
               }
           };
  }
+
+ function updateEchartPieChart_depot(total) {
+        var echartPie = echarts.init(document.getElementById('echart-depot1'),"");
+          var count = 0;
+          var seriesData = [];
+          var legendData = [];
+          for (var i = 0; i < total.length; i++) {
+            var item = total[i];
+              if(item.stock_botteles!="0"){
+               seriesData.push({
+                 value: item.stock_cases,
+                 name: item.itemname
+               });
+              count++;
+            }
+            legendData.push(item.itemname);
+          }
+          if (count === 0) {
+              $('#echart-depot1').hide();
+              $('#lblNoStock').show();
+          } else {
+              $('#echart-depot1').show();
+              $('#lblNoStock').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+       var echartPie = echarts.init(document.getElementById('echart-pies2'), "");
+          var count =0;
+          var seriesData = [];
+          var legendData = [];
+
+          for (var i = 0; i < total.length; i++) {
+            var item = total[i];
+            var item = total[i];
+              if(item.consumption_cases!="0"){
+               seriesData.push({
+                 value: item.consumption_cases,
+                 name: item.itemname
+               });
+                count++;
+            }
+            legendData.push(item.itemname);
+          }
+          if (count === 0) {
+              $('#echart-pies2').hide();
+              $('#lblNoStock1').show();
+          } else {
+              $('#echart-pies2').show();
+              $('#lblNoStock1').hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+ }
+
+
  function grnchart(total,itemslist){
 
  if ($('#mybarChart1').length) {
+         var count = 0;
+         for (var i = 0; i < total.length; i++) {
+            var item = total[i];
+              if( item.total_grn !="0"){
+                     count++;
+            }
+
+         }
+
+        if (count === 0) {
+              $('#mybarChart1').hide();
+              $('#lblNoStock2').show();
+          } else {
+              $('#mybarChart1').show();
+              $('#lblNoStock2').hide();
+          }
         var ctx = document.getElementById("mybarChart1");
         var mybarChart = new Chart(ctx, {
             type: 'bar',
@@ -933,18 +1131,18 @@ var theme = {
                 labels: ["Today", "Current month"],
                 datasets: [{
                     label: '1000ml',
-                    backgroundColor: "#26B99A",
+                    backgroundColor:"#CD142A",
                     data: [parseFloat(itemslist[0].FTD_cases), parseFloat(itemslist[0].MTD_cases)]
 
                 },
                  {
                     label: '500ml',
-                    backgroundColor: "#26B99A",
+                    backgroundColor: "#1271D0",
                     data: [parseFloat(itemslist[1].FTD_cases), parseFloat(itemslist[1].MTD_cases)]
 
                 },{
                     label: '250ml',
-                    backgroundColor: "#03586A",
+                    backgroundColor: "#F86A1E",
                     data: [parseFloat(itemslist[2].FTD_cases), parseFloat(itemslist[2].MTD_cases)]
 
                 }]
@@ -964,7 +1162,7 @@ var theme = {
     }
 
     if ($('#echart_donut2').length) {
-        var echartDonut = echarts.init(document.getElementById('echart_donut2'), "");
+        var echartDonut = echarts.init(document.getElementById('echart_donut2'),theme);
         var seriesData = [];
         var count1 = 0;
           for (var i = 0; i < total.length; i++) {
@@ -990,9 +1188,11 @@ var theme = {
                  value: item.verified_grn,
                  name: 'Verified GRN'
                });
+                count1++;
             }
-            count1++;
+
           }
+
         if (count1 === 0) {
               $('#echart_donut2').hide();
               $('#grnstatus').show();
@@ -1066,14 +1266,12 @@ var theme = {
         });
 
     }
-
-
   }
 
-  function stock_days(itemslist){
+  function stock_days1(itemslist){
 
        var seriesData = [];
-
+       var count1 = 0;
      for (var i = 0; i < itemslist.length; i++) {
             var item = itemslist[i];
               if( item.stock_botteles!="0"){
@@ -1082,17 +1280,28 @@ var theme = {
                  "Available": item.stock_cases,
                  "Avg consumption": item.consumption_cases
                });
-
+                count1++;
             }
 
-          }
+     }
+     if (count1 === 0) {
+              $('#graph_bar_group1').hide();
+              $('.textqty').hide();
+              $('#depotstock1').show();
+
+     } else {
+              $('#graph_bar_group1').show();
+              $('.textqty').show();
+              $('#depotstock1').hide();
+     }
+
       if ($('#graph_bar_group1').length) {
 
         Morris.Bar({
             element: 'graph_bar_group1',
             data: seriesData,
             xkey: 'period',
-            barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+            barColors: ['#D9BA1C', '#34495E', '#ACADAC', '#3498DB'],
             ykeys: ["Available","Avg consumption"],
             labels: ["Available","Avg consumption"],
             hideHover: 'auto',
@@ -1194,10 +1403,16 @@ var theme = {
 
 
     }
+
+
+
     function depotindent(total){
         var seriesData = [];
         var count=0;
-         var echartPie = echarts.init(document.getElementById('echart-indent'), "");
+         if($("#depots_indent").prop('checked')){
+              $("#echart-depot1").show();
+          }
+         var echartPie = echarts.init(document.getElementById('echart-indent'),theme);
            for (var i = 0; i < total.length; i++) {
             var item = total[i];
               if(item.indent_count !="0"){
@@ -1294,6 +1509,10 @@ var theme = {
                 color: 'rgba(0,0,0,0)'
             }
         };
+         if($("#depots_indent").prop('checked')){
+              $("#echart-indent").hide();
+
+          }
 
     }
 
@@ -1419,6 +1638,8 @@ var theme = {
     }
     });
   });
+
+
 $(document).ready(function() {
 $.ajax({
   type: "GET",
@@ -1440,7 +1661,7 @@ $.ajax({
          for (var i = 0; i < total.length; i++) {
             item = total[i];
          }
-         stock_days(itemslist);
+         stock_days1(itemslist);
       }
     var tableBody = $('#stktabel  tbody');
              for (var i = 0; i < itemslist.length; i++) {
@@ -1460,6 +1681,11 @@ $.ajax({
         tfootdata.empty();
         for (var i = 0; i < total.length; i++) {
                 var item = total[i]
+                $('.zonalcases').text(item.stock_cases);
+                $('.zonalbott').text(item.stock_botteles);
+                $('.avgcases').text(item.consumption_cases);
+                $('.avgbott').text(item.consumption_botteles);
+                $('.zonaldays').text(item.indays);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
                 row.append($('<td>').text(item.stock_cases));
@@ -1477,6 +1703,65 @@ $.ajax({
   }
 });
 });
+
+
+$('#whitemcode').change(function() {
+var itemcode =  $('#whitemcode').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+
+     var itemslist =  data.data.totallist;
+        message = data.data.message
+      if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+       $("#graph_bar_group1").empty();
+        $("#echart-zonal1").empty();
+
+       for (var i = 0; i < itemslist.length; i++) {
+            item = itemslist[i];
+       }
+         stock_days1(itemslist);
+      }
+    var tableBody = $('#stktabel  tbody');
+    tableBody.empty();
+             for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                $('.zonalcases').text(item.stock_cases);
+                $('.zonalbott').text(item.stock_botteles);
+                $('.avgcases').text(item.consumption_cases);
+                $('.avgbott').text(item.consumption_botteles);
+                $('.zonaldays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+            }
+     var tfootdata = $('#stktabel tfoot');
+        tfootdata.empty();
+   },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+
 
 $(document).ready(function() {
 $.ajax({
@@ -1595,9 +1880,11 @@ $('#grndate').change(function() {
     });
 });
 
+
+
 $(document).ready(function() {
 var deponame = $('#depoid1').val();
-var itemcode = $('#itemcode').val();
+var itemcode = $('#whitemcode').val();
 $.ajax({
   type: "POST",
   url: "{% url 'zonal_depotwise_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
@@ -1669,18 +1956,39 @@ $.ajax({
   'itemcode':itemcode, 'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
-     var total =  data.data.totallist;
-     message = data.data.message
+    var total =  data.data.totallist;
+    message = data.data.message
      console.log(data);
-         for (var i = 0; i < total.length; i++) {
+     if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+       updateEchartPieChart_depot(total);
+      }
+      var tableBody = $('#depottabel  tbody');
+      tableBody.empty();
+              for (var i = 0; i < total.length; i++) {
                 var item = total[i];
                 $('.depotstock').text(item.stock_cases);
                 $('.depotstock1').text(item.stock_botteles);
                 $('.depotcase').text(item.consumption_cases);
                 $('.depotbott').text(item.consumption_botteles);
                 $('.depotdays').text(item.indays);
-
-          }
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#depottabel tfoot');
+       tfootdata.empty();
 
   },
   error: function(jqXHR, textStatus, errorThrown) {
@@ -1702,19 +2010,40 @@ $.ajax({
   },
   success: function(data) {
      var total =  data.data.totallist;
-     var itemslist = data.data.itemwiselist;
-     message = data.data.message
+   message = data.data.message
      console.log(data);
-         for (var i = 0; i < total.length; i++) {
+     if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+       updateEchartPieChart_depot(total);
+      }
+      var tableBody = $('#depottabel  tbody');
+      tableBody.empty();
+              for (var i = 0; i < total.length; i++) {
                 var item = total[i];
-                 var item = total[i];
+
                 $('.depotstock').text(item.stock_cases);
                 $('.depotstock1').text(item.stock_botteles);
                 $('.depotcase').text(item.consumption_cases);
                 $('.depotbott').text(item.consumption_botteles);
-               $('.depotdays').text(item.indays);
+                $('.depotdays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#depottabel tfoot');
+       tfootdata.empty();
 
-          }
   },
   error: function(jqXHR, textStatus, errorThrown) {
     console.error("Error occurred: " + textStatus, errorThrown);
@@ -1750,9 +2079,10 @@ $.ajax({
                 var item = itemslist[i];
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.deponame));
                 row.append($('<td>').text(item.itemname));
                 row.append($('<td>').text(item.pen_qty_cases));
-                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
+                row.append($('<td>').text(item.pen_qty_bottles));
                 row.append($('<td>').text(item.ver_qty_cases));
                 row.append($('<td>').text(item.ver_qty_bottles));
                 tableBody.append(row);
@@ -1764,8 +2094,7 @@ $.ajax({
                 $('.pendingind').text(item.pending_count);
                 $('.indentcases').text(item.verified_count);
                 $('.indbottles').text(item.ver_qty_cases);
-                //$('.depotbott').text(item.consumption_botteles);
-                //$('.depotdays').text(item.indays);
+
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_cases));
@@ -1782,6 +2111,7 @@ $.ajax({
   }
 });
 });
+
 
 $('#depoid').change(function() {
 var deponame = $('#depoid').val();
@@ -1883,62 +2213,7 @@ $.ajax({
   });
 $('#grndate').val(new Date().toJSON().slice(0,10));
 
-$(document).ready(function() {
-    var itemcode =  $('#itemcode').val();
-$.ajax({
-  type: "POST",
-  url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
-  data: {
-      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
-  },
-    success: function(data) {
 
-    var total =  data.data.totallist;
-          for (var i = 0; i < total.length; i++) {
-                var item = total[i];
-               $('.zonalcases').text(item.stock_cases);
-                $('.zonalbott').text(item.stock_botteles);
-                $('.avgcases').text(item.consumption_cases);
-                $('.avgbott').text(item.consumption_botteles);
-                $('.zonaldays').text(item.indays);
-          }
-
-  },
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.error("Error occurred: " + textStatus, errorThrown);
-    // Handle the error case here, if required
-  }
-});
-});
-
-$('#itemcode').change(function() {
-var itemcode =  $('#itemcode').val();
-$.ajax({
-  type: "POST",
-  url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
-  data: {
-      'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
-  },
-  success: function(data) {
-
-     var total =  data.data.totallist;
-          for (var i = 0; i < total.length; i++) {
-                var item = total[i];
-
-                $('.zonalcases').text(item.stock_cases);
-                $('.zonalbott').text(item.stock_botteles);
-                $('.avgcases').text(item.consumption_cases);
-                $('.avgbott').text(item.consumption_botteles);
-                $('.zonaldays').text(item.indays);
-          }
-
-  },
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.error("Error occurred: " + textStatus, errorThrown);
-    // Handle the error case here, if required
-  }
-});
-});
 
 
 

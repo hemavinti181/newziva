@@ -76,8 +76,8 @@
                                     <th>No Of Bottles</th>
                                     <th>OPRS</th>
                                     <th>Vehical No</th>
-                                    <th>Driver Id</th>
-                                    <th>Driver Name</th>
+                                    <th>Staff Name(1)</th>
+                                    <th>staff Name(2)</th>
                                     <th>Action</th>
 
                         </tr>
@@ -92,11 +92,11 @@
                               <td>{{ data.noofbottles_recieve }}</td>
                               <td>{{ data.oprs }}</td>
                                 <td>{{ data.vehicleno  }}</td>
-                                <td>{{ data.staffnumber }}</td>
-                            <td>{{ data.staffname }}</td>
+                                <td>{{ data.staffname }}</td>
+                            <td>{{ data.staffnumbertwoname }}</td>
                             <td>
-                                 <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
-                             <span class="badge badge-info" style="background-color:#DF6455;display:none;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" >RETURN</span>
+                                <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+                                <span class="badge badge-info" style="background-color:#DF6455;display:none;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" id="returnButton">RETURN</span>
                             </td>
                                 </tr>
                             {% endfor %}
@@ -339,11 +339,8 @@
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-
                                     <h3  id="myModalLabel4" style="text-align:center;">Authorization</h3>
-
-
-                                                      <label for="sno">Employee id *</label>
+                                                 <label for="sno">Employee id *</label>
                                                   <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="sno">
                                                  <input type="hidden" name="serviceid1" id="serviceid1" />
 
@@ -358,8 +355,8 @@
 
 <div class="inner-fabs">
 
-                                  <div class="fab bg-green round" id="fab3"><a href="returnsconsumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -145px !important;">completed</span></div>
-                                 <div class="fab bg-yellow round" id="fab2"><a href="internal_consumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Return</span></div>
+                                  <div class="fab bg-green round" id="fab3"><a href="returnsconsumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Return items</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="internal_consumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Supply items</span></div>
                               </div>
                                <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 
@@ -426,7 +423,7 @@ $(document).ready(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-                    console.log(obj[0].oprs);
+
 					if(obj) {
 			 		$("#oprs").val(obj[0].oprs);
                 	$("#departure").val(obj[0].depot);
@@ -449,7 +446,7 @@ $(document).ready(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-                    console.log(obj[0].st_no);
+
 					if(obj) {
 			 		$("#staffnumb").empty();
 			 		$("#staffnumb").append("<option  value=''> staff number</option>");
@@ -472,7 +469,7 @@ $(document).ready(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-                    console.log(obj[0].st_no);
+
 					if(obj) {
 			 		$("#staffnumb1").empty();
 			 		$("#staffnumb1").append("<option  value=''> staff number</option>");
@@ -494,7 +491,7 @@ $(document).ready(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-                    console.log(obj[0].st_no);
+
 					if(obj) {
 			 		$("#staffnumret2").empty();
 			 		$("#staffnumret2").append("<option  value=''> driver id</option>");
@@ -516,7 +513,7 @@ $(document).ready(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-                    console.log(obj[0].st_no);
+
 					if(obj) {
 			 		$("#staffnumret1").empty();
 			 		$("#staffnumret1").append("<option  value=''>driver id</option>");
@@ -540,7 +537,7 @@ $(document).ready(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-                    console.log(obj[0].st_no);
+
 					if(obj) {
 			 		$("#vehicalnumb").empty();
 			 		$("#vehicalnumb").append("<option  value=''> vehical number</option>");
@@ -564,7 +561,7 @@ $(document).ready(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data
-                        console.log(obj[0].product_type)
+
 
 					if(obj) {
 			 		$("#product").val(obj[0].product_type);
@@ -713,10 +710,36 @@ $(document).ready(function() {
       });
     });
   });
-  function VerifyClick(id,id1){
-$("#sno").val(id);
-$("#serviceid1").val(id1)
-}
+
+  function VerifyClick(id, id1) {
+
+        var auth = $("#sno").val(id);
+        var serviceid1 = $("#serviceid1").val(id1)
+
+        $.ajax({
+            url: 'authorize_staffid', // Replace with the actual server endpoint URL
+            type: 'POST', // Use the appropriate HTTP method (GET/POST/PUT/DELETE) as per your server endpoint
+            data: {
+               'auth':auth,'serviceid1 ':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                alert('hai')
+                alert(data.response)
+                alert(response)
+                console.log(data.response)
+                if (response.status_code === 503) {
+                    $('#returnButton').show();
+                } else {
+                    $('#returnButton').hide();
+                }
+            },
+            error: function() {
+                // Handle error here, e.g., display an error message or hide the button
+                $('#returnButton').hide();
+            }
+        });
+    }
+
  function VerifyClick1(id){
 $("#id1").val(id);
 }

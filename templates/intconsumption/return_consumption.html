@@ -19,8 +19,25 @@
             </div>
               </div>
             <div class="clearfix"></div>
-
-            <div class="row">
+             <div class="row">
+              <div class="col-md-12 col-sm-12">
+                               			<!-- Search Filter -->
+						<form  method="POST" action="/returnsconsumption"  id="myForm" enctype="multipart/form-data">
+									{% csrf_token %}
+                            <div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">from </label>
+									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
+                                   <input type="hidden" name="fdate_hidden" id="fdate_hidden">
+							</div>
+                             <div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">To</label>
+									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
+                                   <input type="hidden" name="tdate_hidden" id="tdate_hidden">
+							</div>
+                             <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>-->
+                        </form>
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_content">
@@ -39,17 +56,16 @@
                                     <th>Depot</th>
                                     <th>Date</th>
                                     <th>Service No</th>
+                                    <th>OPRS</th>
                                     <th>Received</th>
                                     <th>Consumed</th>
                                     <th>Actual Return</th>
-                                    <th>To be Return</th>
+                                    <!--<th>To be Return</th>-->
                                     <th>Shortage</th>
                                     <th>Vehical no</th>
-                                    <th>Driver Id1</th>
-                                    <th>Driver Name1</th>
-                             <th>Status</th>
-                                    <th>Driver Id2</th>
-                                     <th>Driver Name2</th>
+                                    <th>Staff Name(1)</th>
+                                     <th>Staff Name(2)</th>
+                            <th>Taken From</th>
 
 
                         </tr>
@@ -59,21 +75,18 @@
                             <tr>
                               <td>{{ forloop.counter }}</td>
                               <td>{{ data.deponame }}</td>
-                              <td>{{ data.created_on }}</td>
+                              <td>{{ data.return_authorized_on }}</td>
                                 <td>{{ data.bus_service_no }}</td>
+                                <td>{{ data.oprs }}</td>
                               <td>{{ data.noofbottles_recieve }}</td>
                               <td>{{ data.no_of_tickets_consumed }}</td>
                               <td>{{ data.return_no_of_bottles }}</td>
-                                <td>{{ data.to_be_returned }}</td>
+                                <!--<td>{{ data.to_be_returned }}</td>-->
                                 <td>{{ data.shortage }}</td>
-                                <td>{{ data.Vehicleno }}</td>
-                                <td>{{ data.staffnumber }}</td>
-                            <td>{{ data.staffname }}</td>
-                                 <td>
-                                  <span class="badge badge-info" style="background-color:#DC88C2;">{{ data.status }}</span>
-                            </td>
-                                 <td>{{ data.staffnumber2 }}</td>
-                            <td>{{ data.staffnumber2name }}</td>
+                                <td>{{ data.vehicleno }}</td>
+                              <td>{{ data.return_drivername }}</td>
+                                <td>{{ data.return_drivername_two }}</td>
+                                <td>{{ data.return_authorized_staffname }}</td>
 
                                 </tr>
                             {% endfor %}
@@ -90,9 +103,19 @@
 </div>
 <div class="inner-fabs">
 
-                                  <div class="fab bg-green round" id="fab3"><a href="returnsconsumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -145px !important;">completed</span></div>
-                                 <div class="fab bg-yellow round" id="fab2"><a href="internal_consumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Return</span></div>
+                                  <div class="fab bg-green round" id="fab3"><a href="returnsconsumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Return items</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="internal_consumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Supply items</span></div>
                               </div>
                                <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+<script>
 
+      document.getElementById('fdate').addEventListener('change', function() {
+        var form = document.getElementById('myForm');
+        form.submit();
+    });
+     document.getElementById('tdate').addEventListener('change', function() {
+        var form = document.getElementById('myForm');
+        form.submit();
+    });
+</script>
 {% endblock %}

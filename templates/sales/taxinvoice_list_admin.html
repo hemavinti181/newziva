@@ -154,11 +154,11 @@
                                     <th>Sales From</th>
                                      <th>Sales To</th>
                                     <th>Item Count</th>
-                                    <th>Total</th>
+
                                     <th>Payment mode</th>
                                     <th>Payment Status</th>
                                     <th>Created on</th>
-                                    <th>Date</th>
+                                    <th>Amount</th>
                                    <!-- <th>Action</th>-->
                         </tr>
                       </thead>
@@ -172,7 +172,7 @@
                                     <td> {{ all_data.fromname }} </td>
                                         <td>{{ all_data.storename }}</td>
                                    <td style="text-align:center;">{{ all_data.itemcount }}</td>
-                                        <td>{{ all_data.total }}</td>
+
                                             <td>{{ all_data.paymentmode }}</td>
                                         <td>{{ all_data.transactionstatus }}</td>
                                         <td>{{ all_data.createdon }}</td>
@@ -447,8 +447,7 @@ $(document).ready(function(){
       var regionValue = document.getElementById("regionid1").value;
       var depotValue = document.getElementById("depoid1").value;
       var busstationValue = document.getElementById("busstationid1").value;
-      var startDateValue = document.getElementById("start-date").value;
-      var endDateValue = document.getElementById("end-date").value;
+
 
       // Check if any of the fields have a non-"All" value
      if (
@@ -461,13 +460,25 @@ $(document).ready(function(){
          busstationValue == "All"
 
       ) {
-        // Submit the form programmatically
-        form.submit();
-      } else if (startDateValue !== "" || endDateValue !== "") {
-        // Submit the form programmatically if either start date or end date is filled
         form.submit();
       }
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
 
+            console.log
+            startDateInput.addEventListener('change', handleFormSubmit);
+            endDateInput.addEventListener('change', handleFormSubmit);
+
+
+            function handleFormSubmit() {
+
+                if (startDateInput.value && endDateInput.value) {
+
+                    const form = document.getElementById('date-form');
+
+                    form.submit();
+                }
+            }
     });
     form.addEventListener("change", function() {
       // Set the hidden input values before submitting the form

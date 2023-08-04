@@ -115,7 +115,7 @@
           <div class="x_content stockchart">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count stock_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count stock_cases" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty (Cases)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>stock on hand</p>
               </div>
@@ -143,7 +143,7 @@
             </div>
             <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
               <div class="tile-stats">
-                <div class="count consumption_botteles" style="color:#3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count consumption_botteles" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty (Bottles)</div>
                 <p><span class="fa fa-info" aria-hidden="true"></span>Avg consumption of last 7days</p>
               </div>
@@ -158,7 +158,7 @@
                     </p>
                 <div class="col-md-12 col-sm-12 echart-depot1" style="margin-bottom:10px;">
                   <h3 style="margin: 125px 3px 149px 100px;display:none;" id="lblNoStock">No Stock Available</h3>
-                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-60px;"></div>
+                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-100px;width:600px"></div>
               </div>
                 <div class="clearfix"></div>
                     <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
@@ -220,14 +220,14 @@
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count pending_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count pending_cases" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                 <p class="d-none"><span class="fa fa-info" aria-hidden="true"></span>To be delivered</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count pending_qty" style="color:#3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count pending_qty" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                 <p class="d-none"><span class="fa fa-inifo" aria-hidden="true"></span>To be delivered</p>
               </div>
@@ -246,7 +246,7 @@
            </div>
   <div class="col-md-6 col-sm-6 echart-pies2"  style="margin-top:10px;">
   <h4 class="text-info text">Quantity(Cases)</h4>
-   <h5 style="margin-top: 80px; margin-bottom: 140px;margin-left: 10px;margin-right: 100px;display:none;" class="text-danger" id="lblNoStock1">No Sales Pending</h5>
+   <h3 style="margin-top: 80px; margin-bottom: 140px;margin-left: 10px;margin-right: 100px;display:none;" class="text-danger" id="lblNoStock1">No Sales Pending</h3>
         <div id="echart-pies2" style="height:350px;margin-top:-80px;margin-left:-30px;"></div>
               </div>
                       <div class="col-md-5 col-sm-5" id="chart_gauge_sales1" style="margin-top:10px;">
@@ -320,14 +320,14 @@
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count complete_cases" style="color: #3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count complete_cases" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Delivered</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count complete_bottles" style="color:#3493fb;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count complete_bottles" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Delivered</p>
               </div>
@@ -412,7 +412,7 @@ var chart_gauge_settings = {
           limitMax: 'false',
           colorStart: '#D23939',
           colorStop: '#D23939',
-          strokeColor: '#1ABC9C',
+          strokeColor: '#E6BC20',
           generateGradient: true
       };
     var theme = {
@@ -869,9 +869,9 @@ function updateEchartPieChart2(itemslist){
         }
 
         // Add the Total data objects
-        data.push({ device: 'Total 1000ml', geekbench: parseInt(itemslist[0].MTD_amount) });
-        data.push({ device: 'Total 500ml', geekbench: parseInt(itemslist[1].MTD_amount) });
-        data.push({ device: 'Total 250ml', geekbench: parseInt(itemslist[2].MTD_amount) });
+        data.push({ device: 'current month 1000ml', geekbench: parseInt(itemslist[0].MTD_amount) });
+        data.push({ device: 'current month 500ml', geekbench: parseInt(itemslist[1].MTD_amount) });
+        data.push({ device: 'current month 250ml', geekbench: parseInt(itemslist[2].MTD_amount) });
 
           Morris.Bar({
               element: 'graph_bar',
@@ -880,7 +880,7 @@ function updateEchartPieChart2(itemslist){
               ykeys: ['geekbench'],
               labels: [''],
               barRatio: 0.4,
-              barColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+              barColors: ['#E64120', '#26B99A', '#ACADAC', '#3498DB'],
               xLabelAngle: 35,
               hideHover: 'auto',
               resize: true
