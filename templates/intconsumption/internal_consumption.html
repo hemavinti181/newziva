@@ -45,11 +45,11 @@
 									{% csrf_token %}
                             <div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">from </label>
-									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ request.POST.fdate }}" required>
+									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
 							</div>
                              <div class="col-sm-3 col-md-3 form-group has-feedback">
 									<label class="focus-label">To</label>
-									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ request.POST.tdate }}" required>
+									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
 							</div>
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
@@ -80,6 +80,7 @@
                                     <th>staff Name(2)</th>
                                     <th>Action</th>
 
+
                         </tr>
                       </thead>
                             <tbody>
@@ -94,9 +95,13 @@
                                 <td>{{ data.vehicleno  }}</td>
                                 <td>{{ data.staffname }}</td>
                             <td>{{ data.staffnumbertwoname }}</td>
+
                             <td>
-                                <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
-                                <span class="badge badge-info" style="background-color:#DF6455;display:none;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return" id="returnButton">RETURN</span>
+                                {% if data.status == 'Pending' %}
+                                    <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+                                {% else %}
+                                    <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return">RETURN</span>
+                                {% endif %}
                             </td>
                                 </tr>
                             {% endfor %}
@@ -218,6 +223,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal custom-modal fade" id="item-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
@@ -248,6 +254,7 @@
 						</div>
 					</div>
 </div>
+
 <div class="modal custom-modal fade"  id="return" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style1">

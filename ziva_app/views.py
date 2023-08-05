@@ -111,8 +111,10 @@ def login(request):
                 return redirect('/depot_dashboard')
             elif displayrole =="UPPAL ZONAL STORES":
                 return redirect('/zonal_dashboard')
-            elif role == 'Bus Station':
+            elif displayrole == 'BUS STATION CONTROLLER':
                 return redirect('/bust_dashboard')
+            elif displayrole == 'DC CONTROLLER':
+                return redirect('/internal_consumption')
             elif displayrole ==  "DEPOT STORE EXECUTIVE":
                 return redirect('/depot_dashboard')
             elif displayrole == "MARKETING EXECUTIVE":
@@ -11709,8 +11711,10 @@ def internal_consumption(request):
         data = response.json()
         nobot = data['noofbottleslist']
         if request.method == 'POST':
+                fdate = request.POST.get('fdate')
+                tdate = request.POST.get('tdate')
                 url = "http://13.235.112.1/ziva/mobile-api/busservicesupplylist.php"
-                payload = json.dumps({"accesskey": accesskey, "fdate":request.POST.get('fdate'),"tdate":request.POST.get('tdate')})
+                payload = json.dumps({"accesskey": accesskey, "fdate":fdate,"tdate":tdate})
                 headers = {
                     'Content-Type': 'text/plain'
                 }
@@ -11718,23 +11722,27 @@ def internal_consumption(request):
                 if response.status_code == 200:
                     data = response.json()
                     busservicesupplylist = data['busservicesupplylist']
-                    return render(request,'intconsumption/internal_consumption.html',{'nobot':nobot,'busservicesupplylist':busservicesupplylist,"depolist":depolist,'menuname':menuname})
+                    return render(request,'intconsumption/internal_consumption.html',{'nobot':nobot,'busservicesupplylist':busservicesupplylist,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate})
                 elif response.status_code == 400:
                     data = response.json()
                     messages.error(request, data['message'])
                     return redirect('/login')
                 elif response.status_code == 500:
                     messages.error(request, 'Internal server error')
-                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname})
+                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate})
                 else:
                     data = response.json()
-                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname})
+                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate})
         else:
+            current_date = datetime.date.today()
+            fdate = current_date - timedelta(days=current_date.weekday() + 7)
+            fdate = fdate.strftime("%Y-%m-%d")
             tdate = datetime.date.today()
-            tdate = tdate.strftime("%d-%m-%Y")
+            tdate = tdate.strftime("%Y-%m-%d")
+
             url = "http://13.235.112.1/ziva/mobile-api/busservicesupplylist.php"
             payload = json.dumps(
-                {"accesskey": accesskey, "fdate":tdate, "tdate":tdate})
+                {"accesskey": accesskey, "fdate":fdate, "tdate":tdate})
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -11744,7 +11752,7 @@ def internal_consumption(request):
                 busservicesupplylist = data['busservicesupplylist']
                 return render(request, 'intconsumption/internal_consumption.html',
                               {'nobot': nobot, 'busservicesupplylist': busservicesupplylist, "depolist": depolist,
-                               'menuname': menuname})
+                               'menuname': menuname,'fdate':fdate,'tdate':tdate})
             elif response.status_code == 400:
                 data = response.json()
                 messages.error(request, data['message'])
@@ -11752,11 +11760,11 @@ def internal_consumption(request):
             elif response.status_code == 500:
                 messages.error(request, 'Internal server error')
                 return render(request, 'intconsumption/internal_consumption.html',
-                              {'nobot': nobot, "depolist": depolist, 'menuname': menuname})
+                              {'nobot': nobot, "depolist": depolist, 'menuname': menuname,'fdate':fdate,'tdate':tdate})
             else:
                 data = response.json()
                 return render(request, 'intconsumption/internal_consumption.html',
-                              {'nobot': nobot, "depolist": depolist, 'menuname':menuname})
+                              {'nobot': nobot, "depolist": depolist, 'menuname':menuname,'fdate':fdate,'tdate':tdate})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -11823,6 +11831,8 @@ def add_bussupply(request):
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
+                data = response.json()
+                messages.error(request, data['message'])
                 return redirect('/internal_consumption')
     except:
         return render(request, 'intconsumption/internal_consumption.html', {'menuname': menuname})
@@ -11982,14 +11992,17 @@ def returnsconsumption(request):
         else:
             return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname})
     else:
-        today = datetime.date.today();
-        today = today.strftime("%Y-%m-%d")
+        current_date = datetime.date.today()
+        fdate = current_date - timedelta(days=current_date.weekday() + 7)
+        fdate = fdate.strftime("%Y-%m-%d")
+        tdate = datetime.date.today()
+        tdate = tdate.strftime("%Y-%m-%d")
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist.php"
 
         payload = json.dumps({
-            "accesskey": accesskey,"fdate":today,"tdate":today})
+            "accesskey": accesskey,"fdate":fdate,"tdate":tdate})
         headers = {
             'Content-Type': 'text/plain'
         }
@@ -11998,7 +12011,7 @@ def returnsconsumption(request):
             data = response.json()
             busservicesupplylist = data['busservicesupplylist']
             return render(request, 'intconsumption/return_consumption.html',
-                          {'menuname': menuname, 'data': busservicesupplylist,'fdate':today,'tdate':today})
+                          {'menuname': menuname, 'data': busservicesupplylist,'fdate':fdate,'tdate':tdate})
         elif response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
@@ -12006,7 +12019,7 @@ def returnsconsumption(request):
         elif response.status_code == 503:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname,'fdate':today,'tdate':today})
+            return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname,'fdate':fdate,'tdate':tdate})
         else:
             return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname})
 def vehicallist(request):
@@ -12227,7 +12240,7 @@ def authorize_staffid(request):
             if response.status_code == 200:
                 data = response.json()
                 messages.success(request,data['message'])
-                return JsonResponse({"response":response})
+                return redirect('/internal_consumption')
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
@@ -12239,7 +12252,7 @@ def authorize_staffid(request):
             elif response.status_code == 503:
                     data = response.json()
                     messages.error(request, data['message'])
-                    return JsonResponse({"response": response})
+                    return redirect('/internal_consumption')
             elif response.status_code == 500:
                 messages.error(request,"Internal Server Error")
                 return redirect('/internal_consumption')
@@ -13299,15 +13312,15 @@ def zonal_depotindent_data(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/depo-pending-indent-new.php"
-    fdate = request.POST.get('cdate')
+    url = "http://13.235.112.1/ziva/mobile-api/depo-pending-indent-new-backup.php.php"
+    fdate = request.POST.get('inddate')
     tdate = datetime.date.today()
     tdate = tdate.strftime("%Y-%m-%d")
     if fdate:
         date = fdate
     else:
         date = tdate
-    payload = {"accesskey": accesskey,"date":date, "depoid": "All",
+    payload = {"accesskey": accesskey,"date":date, "depoid": request.POST.get('depoid'),
                }
     payload = json.dumps(payload, cls=BytesEncoder)
     headers = {
