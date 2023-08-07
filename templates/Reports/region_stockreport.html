@@ -79,8 +79,8 @@
                   <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-              <div class="col-md-12 col-sm-12 ">
+                            <div class="card-box table-responsive" style="overflow:hidden">
+              <div class="col-md-12 col-sm-12">
                                			<!-- Search Filter -->
 						<form  method="POST" id="myForm" action="warehouse_stock"  enctype="multipart/form-data">
 									{% csrf_token %}
@@ -133,7 +133,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display table-striped  table-bordered" style="width:100%">
 
                      <thead>
                             <tr>
@@ -150,7 +150,7 @@
                                        <th>1000ml</th>
                                         <th>500ml</th>
                                         <th>250ml</th>
-                                  <th>1000ml</th>
+                                        <th>1000ml</th>
                                         <th>500ml</th>
                                         <th>250ml</th>
 
@@ -165,52 +165,15 @@
 
                                     {% for item_quantity in item_quantities %}
                                         <tr>
-                                          <td>{{ forloop.counter }}</td>
-                                          <td>{{ item_quantity.createdon__date }}</td>
-                                          <td><a href="/depot_stock/{{ item_quantity.regionname }}" style="color:#075ab3;">{{ item_quantity.regionname }}</a></td>
-
-                                            <td>
-                                              {% for item in item_quantity.items %}
-                                                {% if item.itemcode == 'PHA0002' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items %}
-                                                {% if item.itemcode == 'PHA0001' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items %}
-                                                {% if item.itemcode == 'PHA0004' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items1 %}
-                                                {% if item.itemcode == 'PHA0002' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items1 %}
-                                                {% if item.itemcode == 'PHA0001' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items1 %}
-                                                {% if item.itemcode == 'PHA0004' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
+                                                <td>{{ forloop.counter }}</td>
+                                                    <td>{{ item_quantity.date }}</td>
+                                                <td><a href="/depot_stock/{{ item_quantity.region_id }}" style="color:#075ab3;">{{ item_quantity.regionname }}</a></td>
+                                                <td>{{ item_quantity.inv_1000ML }}</td>
+                                                <td>{{ item_quantity.inv_500ML }}</td >
+                                                  <td>{{ item_quantity.inv_250ML }}</td>
+                                                  <td>{{ item_quantity.con_1000ML }}</td>
+                                                  <td>{{ item_quantity.con_500ML }}</td>
+                                                   <td>{{ item_quantity.con_250ML }}</td>
                                           </tr>
                                         {% endfor %}
                                   </tbody>
@@ -279,6 +242,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!-- Add these lines in your <head> section -->
+
+
 
 <script>
 
@@ -422,6 +388,10 @@ function filterFunction3() {
     }
   }
 }
+
+
+
+
  </script>
 {% endblock %}
 

@@ -218,7 +218,7 @@
             </div>
           </div>
           <div class="x_content">
-                <div class="row">
+                <div class="row" style="margin-top:-10px">
                   <div class="col-sm-12">
                     <div class="card-box table-responsive" style="overflow:hidden;">
                       <p class="text-muted font-13 m-b-30">
@@ -331,7 +331,7 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count complete_sale" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count complete_sale" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Amount</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Amount collected</p>
               </div>
@@ -345,7 +345,7 @@
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count complete_bottles" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count complete_bottles" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Delivered</p>
               </div>
@@ -368,7 +368,7 @@
                       </p>
                         <div class="col-sm-12">
                            <h3 style="margin-top: 100px;margin-bottom: -50px;margin-left: 70px;display:none;" id="lblNoStock2">No Stock Available</h3>
-              <div id="graph_bar" style="height:285px !important"></div>
+              <div id="graph_bar" style="height:269px !important"></div>
             </div>
                       <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
                       <table class="table table-striped jambo_table bulk_action" style="display:none;" id="completetabel">
@@ -657,6 +657,106 @@ var theme = {
 
           for (var i = 0; i < itemslist.length; i++) {
             var item = itemslist[i];
+              if(item.stock_botteles!="0" && item.itemname === "1000ml"){
+               seriesData.push({
+                 value: item.stock_cases,
+                 name: item.itemname
+               });
+                count++;
+            }
+            legendData.push(item.itemname);
+          }
+          if(count === 0){
+          $("#echart-depot1").hide();
+           $("#lblNoStock").show();
+          }
+
+          else{
+           $("#echart-depot1").show();
+           $("#lblNoStock").hide();
+          }
+          echartPie.setOption({
+              tooltip: {
+                  trigger: 'item',
+                  formatter: "{a} <br/>{b} : {c} ({d}%)"
+              },
+              legend: {
+                  x: 'center',
+                  y: 'bottom',
+                  data: legendData
+              },
+              toolbox: {
+                  show: true,
+                  feature: {
+                      magicType: {
+                          show: true,
+                          type: ['pie', 'funnel'],
+                          option: {
+                              funnel: {
+                                  x: '25%',
+                                  width: '50%',
+                                  funnelAlign: 'left',
+                                  max: 1548
+                              }
+                          }
+                      },
+
+                  }
+              },
+              calculable: true,
+                series: [{
+                  name: 'Chart',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '48%'],
+                  data: seriesData // Use the processed 'seriesData' array
+                }]
+          });
+
+          var dataStyle = {
+              normal: {
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              }
+          };
+
+          var placeHolderStyle = {
+              normal: {
+                  color: 'rgba(0,0,0,0)',
+                  label: {
+                      show: false
+                  },
+                  labelLine: {
+                      show: false
+                  }
+              },
+              emphasis: {
+                  color: 'rgba(0,0,0,0)'
+              }
+          };
+          if($("#checked2").prop('checked')){
+              $(".echart-depot1").hide();
+          }
+
+ }
+
+function updateEchartPieChart_bust(itemslist) {
+        var echartPie = echarts.init(document.getElementById('echart-depot1'),theme);
+          var count=0;
+           if($("#checked2").prop('checked')){
+              $(".echart-depot1").show();
+          }
+          var seriesData = [];
+          var legendData = [];
+
+          // Process 'itemslist' data and populate 'seriesData' and 'legendData'
+
+          for (var i = 0; i < itemslist.length; i++) {
+            var item = itemslist[i];
               if(item.stock_botteles!="0"){
                seriesData.push({
                  value: item.stock_cases,
@@ -743,6 +843,7 @@ var theme = {
           }
 
  }
+
 
 
  function updateEchartPieChart1(itemslist,total){
@@ -1022,7 +1123,7 @@ $.ajax({
        $("#lblNoStock").show();
        $("#echart-depot1").hide();
       }else{
-       updateEchartPieChart(itemslist);
+       updateEchartPieChart_bust(itemslist);
       }
      var tableBody = $('#stktabel  tbody');
             tableBody.empty();

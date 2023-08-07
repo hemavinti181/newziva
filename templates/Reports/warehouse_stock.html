@@ -23,7 +23,7 @@
       <input type="search" placeholder="search" id="myInput" class="form-control"  onkeyup="filterFunction()">
           <a class="dropdown-item" href="/region_stock1/All">All</a>
           {% for data in regionlist %}
-            <a class="dropdown-item" href="/region_stock1/{{ data.regionname }}">{{ data.regionname }}</a>
+            <a class="dropdown-item" href="/region_stock1/{{ data.region_id }}">{{ data.regionname }}</a>
           {% endfor %}
         </div>
       </div>
@@ -117,7 +117,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display  table-striped table-bordered" style="width:100%">
 
                      <thead>
                             <tr>
@@ -134,64 +134,26 @@
                                        <th>1000ml</th>
                                         <th>500ml</th>
                                         <th>250ml</th>
-                                  <th>1000ml</th>
+                                        <th>1000ml</th>
                                         <th>500ml</th>
                                         <th>250ml</th>
 
                                   </tr>
                                </thead>
                                   <tbody>
-
-                                    {% for item_quantity in item_quantities %}
-                                        <tr>
-                                          <td>{{ forloop.counter }}</td>
-                                          <td>{{ item_quantity.createdon__date }}</td>
-                                          <td><a href="/region_stock/{{ item_quantity.warehousename }}" style="color:#075ab3;">{{ item_quantity.warehousename }}</a></td>
-
-                                            <td>
-                                              {% for item in item_quantity.items %}
-                                                {% if item.itemcode == 'PHA0002' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items %}
-                                                {% if item.itemcode == 'PHA0001' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items %}
-                                                {% if item.itemcode == 'PHA0004' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items1 %}
-                                                {% if item.itemcode == 'PHA0002' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items1 %}
-                                                {% if item.itemcode == 'PHA0001' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in item_quantity.items1 %}
-                                                {% if item.itemcode == 'PHA0004' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                          </tr>
+                                  <tr>
+                                        {% for inventorylist in inventorylist %}
+                                              <td>{{ forloop.counter }}</td>
+                                              <td>{{ inventorylist.date }}</td>
+                                              <td><a  href="/region_stock/{{ inventorylist.warehousename }}" style="color:#075ab3;">{{ inventorylist.warehousename }}</a></td>
+                                              <td>{{ inventorylist.inv_1000ML }}</td>
+                                               <td>{{ inventorylist.inv_500ML }}</td>
+                                              <td>{{ inventorylist.inv_250ML }}</td>
+                                              <td>{{ inventorylist.con_1000ML }}</td>
+                                              <td>{{ inventorylist.con_500ML }}</td>
+                                               <td>{{ inventorylist.con_250ML }}</td>
                                         {% endfor %}
+                                  </tr>
                                   </tbody>
                       </table>
                   </div>

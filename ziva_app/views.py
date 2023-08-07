@@ -9056,6 +9056,7 @@ def depot_stock(request,id):
             return redirect('/login')
         try:
             accesskey = request.session['accesskey']
+            menuname = request.session['mylist']
             payload = json.dumps({"accesskey": accesskey})
             headers = {
                 'Content-Type': 'application/json'
@@ -9102,51 +9103,37 @@ def depot_stock(request,id):
             data = response.json()
             bus = data['buslist']
 
-            menuname = request.session['mylist']
-            current_date = datetime.date.today()
-            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-            # warehouse_id = ['WDP0002', 'WDP0001']
-            item_sum_qty = DepoInventory.objects.using('auth').filter(
-                 itemcode__in=filtered_itemcodes,is_active=1,
-                expiry_date__gte=current_date
-            ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
+            url = "http://13.235.112.1/ziva/mobile-api/regionwise-report.php"
+            payload = json.dumps({
+                "accesskey": accesskey,"regionid":id
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
 
-            depo_info = DepoMaster.objects.using('auth').filter(regionname=id).values('deponame', 'depoid')
-            grouped_data = []
-            sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
-
-            for depo_id, group in groupby(sorted_data, key=lambda x: x['region_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
-                grouped_data.append({'region_id': depo_id, 'items': items})
-
-            merged_data1 = []
-            for d in depo_info:
-                depo_id = d['depoid']
-                deponame = d['deponame']
-                for depo in grouped_data:
-                    if depo['region_id'] == depo_id:
-                        deponame = deponame
-                        createdon__date = current_date
-                        date_createdon = createdon__date.strftime("%d-%b-%Y")
-                        items = depo['items']
-                        merged_dict = {
-                                'depoid': depo_id,
-                                'deponame': deponame,
-                                'createdon__date': date_createdon,
-                                'items': items,
-
-                            }
-                        merged_data1.append(merged_dict)
-                        break
-
-            return render(request, 'Reports/depo_stockreport.html',
-                          {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantities': merged_data1})
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                item_quantities = data['regioninventorylist']
+                return render(request, 'Reports/depo_stockreport.html',
+                              {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantities': item_quantities})
+            elif response.status_code == 500:
+                messages.error(request,'Internal server  error')
+                return render(request, 'Reports/depo_stockreport.html',
+                              {"regionlist": regionlist, 'bus': bus, 'depolist': depolist,
+                               "wh_masterlist": wh_masterlist, "menuname": menuname})
+            else:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'Reports/depo_stockreport.html',
+                              {"regionlist": regionlist, 'bus': bus, 'depolist': depolist,
+                               "wh_masterlist": wh_masterlist, "menuname": menuname})
         except:
             if response.status_code == 400:
                 data = response.json()
                 messages.error(request, data['message'])
                 return render(request, 'login1.html')
-        return render(request, 'Reports/depo_stockreport.html')
+        return render(request, 'Reports/depo_stockreport.html',{'menuname':menuname})
 
 def depot_stock_new(request, id):
     if 'accesskey' not in request.session:
@@ -10032,9 +10019,7 @@ def busstation_stock(request,id):
         if 'accesskey' not in request.session:
             messages.error(request, 'Access denied!')
             return redirect('/login')
-        if 'accesskey' not in request.session:
-            messages.error(request, 'Access denied!')
-            return redirect('/login')
+
         try:
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
@@ -10085,43 +10070,32 @@ def busstation_stock(request,id):
             data = response.json()
             buslist = data['buslist']
 
-            busstation_id = request.POST.get('busstationid1')
-            current_date = datetime.date.today()
-            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-            # warehouse_id = ['WDP0002', 'WDP0001']
-            item_sum_qty = BusstationInventory.objects.using('auth').filter(is_active=1,
-                expiry_date__gte=current_date).values('itemcode', 'busstation_id').annotate(total_qty=Sum('sale_qty'))
+            url = "http://13.235.112.1/ziva/mobile-api/depowise-inventory-report.php"
+            payload = json.dumps({
+                "accesskey": accesskey,"depoid":id
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
 
-            bus_info = BusstationMaster.objects.using('auth').filter(deponame=id).values('busstationname', 'busatation_id')
-            grouped_data = []
-            sorted_data = sorted(item_sum_qty, key=lambda x: x['busstation_id'])
-
-            for busatation_id, group in groupby(sorted_data, key=lambda x: x['busstation_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
-                grouped_data.append({'busstation_id': busatation_id, 'items': items})
-
-            merged_data1 = []
-            for d in grouped_data:
-                busstation_id = d['busstation_id']
-                createdon__date = current_date
-                date_createdon = createdon__date.strftime("%d-%b-%Y")
-                items = d['items']
-
-                for bus in bus_info:
-                    if bus['busatation_id'] == busstation_id:
-                        busstationname = bus['busstationname']
-                        merged_dict = {
-                            'busatation_id': busatation_id,
-                            'busstationname': busstationname,
-                            'createdon__date': date_createdon,
-                            'items': items,
-
-                        }
-
-                        merged_data1.append(merged_dict)
-            return render(request, 'Reports/busstation_stock.html',
-                          {"regionlist": regionlist, 'bus': buslist, 'depolist': depolist, "menuname": menuname,
-                           'wh_masterlist': wh_masterlist, 'item_quantities': merged_data1})
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                item_quantities = data['list']
+                return render(request, 'Reports/busstation_stock.html',
+                              {"regionlist": regionlist, 'bus': buslist, 'depolist': depolist, "menuname": menuname,
+                               'wh_masterlist': wh_masterlist, 'item_quantities': item_quantities})
+            elif response.status_code == 500:
+                messages.error(request,'Internal server error')
+                return render(request, 'Reports/busstation_stock.html',
+                              {"regionlist": regionlist, 'bus': buslist, 'depolist': depolist, "menuname": menuname,
+                               'wh_masterlist': wh_masterlist})
+            else:
+                data = response.json()
+                messages.error(request,data['message'])
+                return render(request, 'Reports/busstation_stock.html',
+                              {"regionlist": regionlist, 'bus': buslist, 'depolist': depolist, "menuname": menuname,
+                               'wh_masterlist': wh_masterlist})
         except:
             if response.status_code == 400:
                 data = response.json()
@@ -10609,126 +10583,34 @@ def warehouse_stock(request):
             data = response.json()
             bus = data['buslist']
             menuname = request.session['mylist']
-            current_date = datetime.date.today()
-            queryset = OutpassItem.objects.using('auth').extra(
-                tables=['outpass_item', 'outpass_generate', 'warehouse_master'],
-                where=[
-                    'outpass_item.outpass_number = outpass_generate.outpass_number',
-                    'outpass_generate.warehouseid = warehouse_master.warehouseid',
-                    "outpass_generate.status = 'Accepted'"
-                ],
-                select={
-                    'warehouse_id': 'outpass_generate.warehouseid',
-                    'outpass_generate_regionid': 'outpass_generate.regionid',
-                    'warehouse_id1': 'warehouse_master.warehouseid',
-                    'created_on': "DATE_FORMAT(outpass_generate.modified_on, '%%d-%%b-%%Y')",
-                    'outpass_item_item_code': 'outpass_item.item_code',
-                    'grn_item_quantity': 'outpass_item.qty',
-                    'warehouse_name': 'outpass_generate.warehouse_name',
-                }
 
-            ).values(
-                'warehouse_id1', 'outpass_generate_regionid', 'warehouse_id', 'created_on', 'item_code',
-                'grn_item_quantity', 'warehouse_name'
-            )
-            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-            queryset1 = queryset.filter(
-                modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-            ).values('outpass_generate_regionid',
-                     'item_code').annotate(total_qty=Sum('qty'))
-            queryset2 = queryset.filter(
-                modifiedon__lte=current_date, item_code__in=filtered_itemcodes,
-            ).values('warehouse_id', 'warehouse_name', 'item_code').annotate(total_sum=Sum('qty'))
-            sorted_data = sorted(queryset2, key=lambda x: x['warehouse_id'])
-            grouped_data1 = []
-            for (warehouse_id, warehouse_name), group in groupby(sorted_data,
-                                                                 key=lambda x: (x['warehouse_id'], x['warehouse_name'])):
-                items1 = [{'itemcode': item['item_code'], 'total_sum': item['total_sum']} for item in group]
-                grouped_data1.append({'warehouse_id': warehouse_id, 'warehouse_name': warehouse_name, 'items1': items1})
 
-            filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-            warehouse_id = ['WDP0002', 'WDP0001']
-            item_sum_qty = WarehouseInventory.objects.using('auth').filter(
-                createdon__lte=current_date, itemcode__in=filtered_itemcodes, warehouse_id__in=warehouse_id,is_active=1,
-                expiry_date__gte=current_date
-            ).values('itemcode', 'warehouse_id').annotate(
-                total_qty=(Sum('sale_qty'))
-            )
+            url = "http://13.235.112.1/ziva/mobile-api/warehouse-inventory-report.php"
 
-            warehouse_info = WarehouseMaster.objects.using('auth').all().values('warehousename', 'warehouseid')
-            grouped_data = []
-            sorted_data = sorted(item_sum_qty, key=lambda x: x['warehouse_id'])
-
-            for warehouse_id, group in groupby(sorted_data, key=lambda x: x['warehouse_id']):
-                items = [{'itemcode': item['itemcode'], 'total_qty':int(item['total_qty'])} for item in group]
-                grouped_data.append({'warehouse_id': warehouse_id, 'items': items})
-
-            merged_data1 = []
-            for d in grouped_data:
-                warehouse_id = d['warehouse_id']
-                createdon__date = current_date
-                date_createdon = createdon__date.strftime("%d-%b-%Y")
-                items = d['items']
-
-                for warehouse in warehouse_info:
-                    if warehouse['warehouseid'] == warehouse_id:
-                        warehousename = warehouse['warehousename']
-                        break
-                    else:
-                        warehousename = None
-
-                merged_dict = {
-                    'warehouse_id': warehouse_id,
-                    'warehousename': warehousename,
-                    'createdon__date': date_createdon,
-                    'items': items,
-                }
-
-                merged_data1.append(merged_dict)
-            merged_data2 = []
-            for d in merged_data1:
-                warehouse_id = d['warehouse_id']
-                warehousename = d['warehousename']
-                createdon__date = d['createdon__date']
-                items = d['items']
-
-                for data in grouped_data1:
-                    if data['warehouse_id'] == warehouse_id:
-                        items1 = data['items1']
-                        createdon__date = current_date
-                        date_createdon = createdon__date.strftime("%d-%b-%Y")
-                        merged_dict = {
-                            'warehouse_id': warehouse_id,
-                            'warehousename': warehousename,
-                            'createdon__date': date_createdon,
-                            'items': items,
-                            'items1': items1
-                        }
-                        break
-                    else:
-                        items1 = ''
-                        merged_dict = {
-                            'warehouse_id': d['warehouse_id'],
-                            'warehousename': d['warehousename'],
-                            'createdon__date': createdon__date,
-                            'items': items,
-                            'items1': items1
-                        }
-
-                merged_data2.append(merged_dict)
-            url = "http://13.235.112.1/ziva/mobile-api/stock-on-hand-report.php"
-            payload = json.dumps({"accesskey": accesskey})
+            payload = json.dumps({"accesskey": accesskey, "warehouseid":"WDP0002"})
             headers = {
                 'Content-Type': 'text/plain'
             }
             response = requests.request("GET", url, headers=headers, data=payload)
-            data = response.json()
-            consumption = data['stockitemreport']
+            if response.status_code == 200:
+                    data = response.json()
+                    warehouseinventorylist = data['warehouseinventorylist']
 
-            return render(request, 'Reports/warehouse_stock.html',
-                          {"bus":bus,"depolist":depolist,"regionlist":regionlist,"menuname": menuname,'merged_data2': merged_data2,
-                           'item_quantities': merged_data2
-                           })
+                    return render(request, 'Reports/warehouse_stock.html',
+                                  {"bus":bus,"depolist":depolist,"regionlist":regionlist,"menuname": menuname,'inventorylist':warehouseinventorylist,
+
+                                   })
+            elif response.status_code == 500:
+                    messages.error(request, 'Internal server  error')
+                    return render(request, 'Reports/warehouse_stock.html',
+                                  {"regionlist": regionlist, 'bus': bus, 'depolist': depolist,
+                                   "wh_masterlist": wh_masterlist, "menuname": menuname})
+            else:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'Reports/warehouse_stock.html',
+                              {"regionlist": regionlist, 'bus': bus, 'depolist': depolist,
+                               "wh_masterlist": wh_masterlist, "menuname": menuname})
         except:
             if response.status_code == 400:
                 data = response.json()
@@ -10789,76 +10671,31 @@ def region_stock1(request,id):
         data = response.json()
         bus = data['buslist']
 
-        regionname1 = id
+        url = "http://13.235.112.1/ziva/mobile-api/region-inventory-report.php"
+        payload = json.dumps({
+            "accesskey": accesskey,"regionid":id
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-        current_date = datetime.date.today()
-        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        item_sum_qty = DepoInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,is_active=1,
-                expiry_date__gte=current_date
-        ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
-        if regionname1=='All':
-            depo_info = DepoMaster.objects.using('auth').all().values('deponame', 'depoid','regionname')
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            regiondata = data['regioninventorylist']
+            return render(request, 'Reports/region_stockreport.html',
+                          {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantities':regiondata})
+        elif response.status_code == 500:
+            messages.error(request, 'Internal server  error')
+            return render(request, 'Reports/region_stockreport.html',
+                          {"regionlist": regionlist, 'bus': bus, 'depolist': depolist,
+                           "wh_masterlist": wh_masterlist, "menuname": menuname})
         else:
-            depo_info = DepoMaster.objects.using('auth').filter(regionname=regionname1).values('deponame', 'depoid',
-                                                                                              'regionname')
-        grouped_data = []
-        sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
-
-        for depoid, group in groupby(sorted_data, key=lambda x: x['region_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
-            grouped_data.append({'region_id': depoid, 'items': items})
-
-        merged_data1 = []
-        grouped_data1 = []
-        for d in grouped_data:
-            depo_id = d['region_id']
-            createdon__date = current_date
-            date_createdon = createdon__date.strftime("%d-%b-%Y")
-            items = d['items']
-
-            for depo in depo_info:
-                if depo['depoid'] == depo_id:
-                    deponame = depo['deponame']
-                    regionname = depo['regionname']
-
-                    merged_dict = {
-                        'depoid': depo_id,
-                        'deponame': deponame,
-                        'regionname': regionname,
-                        'createdon__date': date_createdon,
-                        'items': items,
-
-                    }
-                    merged_data1.append(merged_dict)
-                    break
-            region_item_totals = defaultdict(float)
-
-            for entry in merged_data1:
-                region = entry['regionname']
-                items = entry['items']
-
-                for item in items:
-                    itemcode = item['itemcode']
-                    total_qty = item['total_qty']
-                    region_item_totals[(region, itemcode)] += total_qty
-
-            result_list = []
-
-            for (region, itemcode), total_qty in region_item_totals.items():
-                result_list.append({
-                    'regionname': region,
-                    'itemcode': itemcode,
-                    'total_qty': total_qty,
-                    'createdon__date': merged_data1[0]['createdon__date'],  #
-                })
-            grouped_data1 = []
-            for regionname, group in groupby(result_list, key=lambda x: x['regionname']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
-                grouped_data1.append(
-                    {'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
-        return render(request, 'Reports/region_stockreport.html',
-                      {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'Reports/region_stockreport.html',
+                          {"regionlist": regionlist, 'bus': bus, 'depolist': depolist,
+                           "wh_masterlist": wh_masterlist, "menuname": menuname})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -10918,73 +10755,32 @@ def region_stock(request,id):
         data = response.json()
         bus = data['buslist']
 
-        regionname1=id
-        current_date = datetime.date.today()
-        filtered_itemcodes = ['PHA0004', 'PHA0002', 'PHA0001']
-        item_sum_qty = DepoInventory.objects.using('auth').filter(
-            createdon__lte=current_date, itemcode__in=filtered_itemcodes,is_active=1,
-                expiry_date__gte=current_date
-        ).values('itemcode', 'region_id').annotate(total_qty=Sum('sale_qty'))
+        url = "http://13.235.112.1/ziva/mobile-api/warehousewise-inventory-report.php"
+        payload = json.dumps({
+            "accesskey": accesskey,  "warehouseid":"WDP0002"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-        depo_info = DepoMaster.objects.using('auth').filter(warehouse=regionname1).values('deponame', 'depoid', 'regionname')
-        grouped_data = []
-        sorted_data = sorted(item_sum_qty, key=lambda x: x['region_id'])
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            regiondata = data['warehouseinventorylist']
 
-        for depoid, group in groupby(sorted_data, key=lambda x: x['region_id']):
-            items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
-            grouped_data.append({'region_id': depoid, 'items': items})
-
-        merged_data1 = []
-        grouped_data1 = []
-        for d in grouped_data:
-            depo_id = d['region_id']
-            createdon__date = current_date
-            date_createdon = createdon__date.strftime("%d-%b-%Y")
-            items = d['items']
-
-            for depo in depo_info:
-                if depo['depoid'] == depo_id:
-                    deponame = depo['deponame']
-                    regionname = depo['regionname']
-
-                    merged_dict = {
-                        'depoid': depo_id,
-                        'deponame': deponame,
-                        'regionname': regionname,
-                        'createdon__date': date_createdon,
-                        'items': items,
-
-                    }
-                    merged_data1.append(merged_dict)
-                    break
-            region_item_totals = defaultdict(float)
-
-            for entry in merged_data1:
-                region = entry['regionname']
-                items = entry['items']
-
-
-                for item in items:
-                    itemcode = item['itemcode']
-                    total_qty = item['total_qty']
-                    region_item_totals[(region,itemcode)] += total_qty
-
-
-            result_list = []
-
-            for (region, itemcode), total_qty in region_item_totals.items():
-                    result_list.append({
-                        'regionname': region,
-                        'itemcode': itemcode,
-                        'total_qty': total_qty,
-                        'createdon__date': merged_data1[0]['createdon__date'],  #
-                    })
-            grouped_data1=[]
-            for regionname, group in groupby(result_list, key=lambda x: x['regionname']):
-                items = [{'itemcode': item['itemcode'], 'total_qty': int(item['total_qty'])} for item in group]
-                grouped_data1.append({'regionname': regionname, 'items': items, 'createdon__date': result_list[0]['createdon__date']})
-        return render(request, 'Reports/region_stockreport.html',
-                      {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': grouped_data1})
+            return render(request, 'Reports/region_stockreport.html',
+                          {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname, 'item_quantities': regiondata})
+        elif response.status_code == 500:
+            messages.error(request, 'Internal server  error')
+            return render(request, 'Reports/region_stockreport.html',
+                          {"regionlist": regionlist, 'bus': bus, 'depolist': depolist,
+                           "wh_masterlist": wh_masterlist, "menuname": menuname})
+        else:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'Reports/region_stockreport.html',
+                          {"regionlist": regionlist, 'bus': bus, 'depolist': depolist,
+                           "wh_masterlist": wh_masterlist, "menuname": menuname})
     except:
         if response.status_code == 400:
             data = response.json()

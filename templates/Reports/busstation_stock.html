@@ -171,7 +171,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display  table-striped table-bordered" style="width:100%">
                             <thead>
                                  <tr>
                                   <th rowspan="2">S NO</th>
@@ -196,55 +196,17 @@
                             </thead>
 
                                   <tbody>
-                                        {% for data in item_quantities %}
+                                        {% for item_quantity in item_quantities %}
                                         <tr>
-                                          <td>{{ forloop.counter }}</td>
-                                          <td>{{ data.createdon__date }}</td>
-                                          <td>{{ data.busstationname }}</td>
-                                        <td>
-                                              {% for item in data.items %}
-                                                {% if item.itemcode == 'PHA0002' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in data.items %}
-                                                {% if item.itemcode == 'PHA0001' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in data.items %}
-                                                {% if item.itemcode == 'PHA0004' %}
-                                                  {{ item.total_qty }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-
-                                        <td>
-                                              {% for item in data.items1 %}
-                                                {% if item.itemcode == 'PHA0002' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in data.items1 %}
-                                                {% if item.itemcode == 'PHA0001' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-                                            <td>
-                                              {% for item in data.items1 %}
-                                                {% if item.itemcode == 'PHA0004' %}
-                                                  {{ item.total_sum }}
-                                                {% endif %}
-                                              {% endfor %}
-                                            </td>
-
+                                              <td>{{ forloop.counter }}</td>
+                                              <td>{{ item_quantity.date }}</td>
+                                              <td>{{ item_quantity.busstationname }}</td>
+                                              <td>{{ item_quantity.inv_1000ML }}</td>
+                                              <td>{{ item_quantity.inv_500ML }}</td >
+                                              <td>{{ item_quantity.inv_250ML }}</td>
+                                              <td>{{ item_quantity.con_1000ML }}</td>
+                                              <td>{{ item_quantity.con_500ML }}</td>
+                                              <td>{{ item_quantity.con_250ML }}</td>
                                           </tr>
 
                                     {% endfor %}

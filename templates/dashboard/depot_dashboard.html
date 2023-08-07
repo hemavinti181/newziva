@@ -25,57 +25,6 @@
               <h3 style="font-size:20px; font-weight:600;">Depot Dashboard</h3>
             </div>
           </div>
-
-                   {% if request.session.role == 'Admin' %}
-                 <div class="x_panel">
-				      	<form  method="POST" action=""   enctype="multipart/form-data">
-											{% csrf_token %}
-									<div  class="col-md-3 col-sm-3  form-group has-feedback">
-													<label> Warehouse</label>
-
-										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
-                            		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.warehousename }}</option>
-												</select>
-											 <input type="hidden" name="warehousename" id="warehousename" />
-
-												<select class="form-control" name="warehouseid" id="warehouseid">
-													<option value="All">All</option>
-													{% for data1 in wh_masterlist %}
-														{% if data1.status == 'Active' %}
-                            		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
-														{% endif %}
-													{% endfor %}
-												</select>
-										</div>
-											<div  class="col-md-3 col-sm-3  form-group has-feedback">
-													<label> Region</label>
-												   <select class="form-control" name="regionid2" id="regionid2" hidden>
-                            		                    <option value="{{ request.POST.regionid }}">{{ request.POST.regionname }}</option>
-												</select>
-											 <input type="hidden" name="regionname" id="regionname" />
-												<select class="form-control" name="regionid" id="regionid">
-													<option value="All"> All</option>
-												</select>
-										</div>
-											<div  class="col-md-3 col-sm-3  form-group has-feedback">
-													<label> Depot</label>
-												<select class="form-control" name="depoid2" id="depoid2" hidden>
-                            		                    <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
-												</select>
-											 <input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
-													<option value="All"> All</option>
-												</select>
-											</div>
-				<div  class="col-md-2 col-sm-2  form-group has-feedback">
-                  <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-				</div>
-						</form>
-
-                 </div>
-              </div>
-
- {% endif %}
       <div class="col-md-4 col-sm-4 ">
         <div class="x_panel">
           <div class="page-title">
@@ -180,9 +129,11 @@
               </div>
             </div>
           </div>
+           <div class="clearfix"></div>
         </div>
       </div>
-      <div class="col-md-4 col-sm-4 ">
+
+      <div class="col-md-4 col-sm-4">
         <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
@@ -195,7 +146,7 @@
             </div>
           </div>
 
-                <div class="row">
+                <div class="row" style="margin-top:-10px">
                   <div class="col-sm-12">
                     <div class="card-box table-responsive" style="overflow:hidden;">
                       <p class="text-muted font-13 m-b-30">
@@ -335,12 +286,12 @@
                 <div class="row">
                   <div class="col-sm-12">
                     <div class="card-box table-responsive">
-                       <!-- <div class="card-box table-responsive" style="overflow:hidden">-->
+                 <div class="card-box table-responsive" style="overflow:hidden">
                       <p class="text-muted font-13 m-b-30">
                       </p>
                         <div class="col-sm-12">
                            <h3 style="margin-top: 100px;margin-bottom: -50px;margin-left: 70px;display:none;" id="lblNoStock2">No Stock Available</h3>
-              <div id="graph_bar" style="height:285px !important"></div>
+              <div id="graph_bar" style="height:272px !important"></div>
             </div>
                       <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
                       <table class="table table-striped jambo_table bulk_action" style="display:none;" id="completetabel">
@@ -928,6 +879,7 @@ function updateEchartPieChart2(itemslist){
     }
     });
   });
+
 $(document).ready(function() {
 $.ajax({
   type: "GET",

@@ -12,6 +12,7 @@
      color: white;
         background-color:#329DD6 !important;
     }
+
 </style>
 
 
@@ -153,13 +154,14 @@
             <div class="x_content">
               <div class="row">
                 <div class="col-sm-12">
-                  <div class="card-box table-responsive" style="overflow:hidden">
+                     <div class="col-md-12 col-sm-12 echart-depot1" style="margin-bottom:10px;">
+                  <h3 style="margin: 125px 3px 149px 100px;display:none;" id="lblNoStock">No Stock Available</h3>
+                       <div id="echart-depot1" style="height:365px;margin-top:-60px;margin-left:-100px;width:600px"></div>
+              </div>
+                  <div class="card-box table-responsive" style="overflow:auto">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-                <div class="col-md-12 col-sm-12 echart-depot1" style="margin-bottom:10px;">
-                  <h3 style="margin: 125px 3px 149px 100px;display:none;" id="lblNoStock">No Stock Available</h3>
-                       <div id="echart-depot1" style="height:350px;margin-top:-60px;margin-left:-100px;width:600px"></div>
-              </div>
+
                 <div class="clearfix"></div>
                     <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
                                       <table   class="table table-striped jambo_table bulk_action"  style="display:none;" id="stktabel" >
@@ -192,6 +194,7 @@
           </div>
         </div>
       </div>
+
       <div class="col-md-4 col-sm-4 ">
         <div class="x_panel">
           <div class="page-title">
@@ -205,7 +208,7 @@
             </div>
           </div>
 
-                <div class="row">
+                <div class="row" style="margin-top:-10px">
                   <div class="col-sm-12">
                     <div class="card-box table-responsive" style="overflow:hidden;">
                       <p class="text-muted font-13 m-b-30">
@@ -298,6 +301,7 @@
 
           </div>
 
+
       <div class="col-md-4 col-sm-4">
         <div class="x_panel">
           <div class="page-title">
@@ -313,7 +317,7 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count complete_sale" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
+                <div class="count complete_sale" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:30px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">Sales</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Amount collected</p>
               </div>
@@ -350,7 +354,7 @@
                       </p>
                         <div class="col-sm-12">
                            <h3 style="margin-top: 100px;margin-bottom: -50px;margin-left: 70px;display:none;" id="lblNoStock2">No Stock Available</h3>
-              <div id="graph_bar" style="height:285px !important"></div>
+              <div id="graph_bar" style="height:265px !important"></div>
             </div>
                       <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
                       <table class="table table-striped jambo_table bulk_action" style="display:none;" id="completetabel">
@@ -640,7 +644,7 @@ var chart_gauge_settings = {
 
           for (var i = 0; i < itemslist.length; i++) {
             var item = itemslist[i];
-              if(item.stock_botteles!="0"){
+              if(item.stock_botteles!="0" && item.itemname === "1000ML"){
                seriesData.push({
                  value: item.stock_cases,
                  name: item.itemname
@@ -1043,6 +1047,7 @@ function updateEchartPieChart_depot(total) {
   });
 
 $(document).ready(function() {
+var itemcode =  $('#itemcode').val();
 var depoid = $('#depoid').val();
 $.ajax({
   type: "POST",
@@ -1071,6 +1076,13 @@ $.ajax({
      var tableBody = $('#stktabel  tbody');
             for (var i = 0; i < itemslist.length; i++) {
                 var item = itemslist[i];
+                  if ( item.itemname === '1000ML'){
+                        $('.stock_cases').text(item.stock_cases);
+                        $('.stock_botteles').text(item.stock_botteles);
+                        $('.consumption_cases').text(item.consumption_cases);
+                        $('.consumption_botteles').text(item.consumption_botteles);
+                        $('.indays').text(item.indays);
+                  }
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));  // S No
                 row.append($('<td>').text(item.itemname));
@@ -1084,11 +1096,6 @@ $.ajax({
         var tfootdata = $('#stktabel tfoot');
           for (var i = 0; i < itemslist.length; i++) {
                 var item = total[i];
-                $('.stock_cases').text(item.stock_cases);
-                $('.stock_botteles').text(item.stock_botteles);
-                $('.consumption_cases').text(item.consumption_cases);
-                $('.consumption_botteles').text(item.consumption_botteles);
-                $('.indays').text(item.indays);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
                 row.append($('<td>').text(item.stock_cases));
