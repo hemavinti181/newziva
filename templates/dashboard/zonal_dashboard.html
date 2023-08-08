@@ -4,11 +4,11 @@
 <style>
       .design{
      color: white;
-        background-color:#329DD6 !important;
+        background-color:#0876A2 !important;
     }
       .design1{
      color: white;
-        background-color:#329DD6 !important;
+        background-color:#0876A2 !important;
     }
 </style>
 
@@ -56,22 +56,19 @@
               <h3 style="font-size:20px; font-weight:600;">Zonal Stores Stock Available</h3>
             </div>
             <div class="title_right">
-                 <div class="col-md-4 col-sm-4  offset-md-7">
+                 <div class="col-md-4 col-sm-4  offset-md-8">
 
 										    	 <select class="form-control items" name="itemcode" id="whitemcode" required>
+                                                                <option value="All">All</option>
                                                     {% for data in item_masterlist %}
-                                                        {% if data.itemcode == "PHA0002" %}
-                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
-                                                            {% else %}
                                                                 <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
-                                                     {% endif %}
                                                     {% endfor %}
                                                 </select>
 										</div>
 
-              <div class="col-md-1 col-sm-1">
+              <!--<div class="col-md-1 col-sm-1">
                 <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
-              </div>
+              </div>-->
             </div>
           </div>
                     <div class="row">
@@ -134,11 +131,11 @@
             <table class="table table-striped" style="display:block;width=200%"; id="stktabel">
                         <thead>
                          <tr>
-                          <th class="design1" rowspan="2">#</th>
-                          <th class="design1" rowspan="2">Items</th>
-                          <th class="design1" colspan="2">Available Stock</th>
-                          <th class="design1" colspan="2">Avg Consumption of last 7 days </th>
-                          <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
+                          <th class="design" rowspan="2">#</th>
+                          <th class="design" rowspan="2">Items</th>
+                          <th class="design" colspan="2">Available Stock</th>
+                          <th class="design" colspan="2">Avg Consumption of last 7 days </th>
+                          <th colspan="2" class="design" rowspan="2">Days of stock Available</th>
                         </tr>
                         <tr>
                           <th class="design">Qty( Cases)</th>
@@ -166,14 +163,13 @@
                      </div>
 
                         </div>
-
                    <div class="x_panel">
           <div class="page-title">
             <div class="title_left">
               <h3 style="font-size:20px; font-weight:600;"> Depot  Available Stock </h3>
             </div>
             <div class="title_right">
-                                        <div class="col-md-4 col-sm-4">
+                                        <div class="col-md-4 col-sm-4 offset-md-5">
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control depot" name="depoid1" id="depoid1" required>
                                                    	<option value="All">All</option>
@@ -185,21 +181,17 @@
 												</select>
 										</div>
 
-                                        <div class="col-md-4 col-sm-4">
-
+                                        <div class="col-md-3 col-sm-3">
 										    	 <select class="form-control items" name="itemcode1" id="itemcode1" required>
+                                                     <option value="All">All</option>
                                                     {% for data in item_masterlist %}
-                                                        {% if data.itemcode == "PHA0002" %}
-                                                                <option value="{{ data.itemcode }}" selected>{{ data.itemname }}</option>
-                                                            {% else %}
                                                                 <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
-                                                     {% endif %}
                                                     {% endfor %}
                                                 </select>
                                         </div>
-              <div class="col-md-1 col-sm-1">
+              <!--<div class="col-md-1 col-sm-1">
                 <label><input type="checkbox" id="depot_stock" class="js-switch"  /></label>
-              </div>
+              </div>-->
             </div>
           </div>
 
@@ -266,11 +258,11 @@
                                       <table   class="table table-striped jambo_table bulk_action"  style="display:block;" id="depottabel" >
                       <thead>
                         <tr>
-                          <th class="design1" rowspan="2">#</th>
-                          <th class="design1" rowspan="2">Items</th>
-                          <th class="design1" colspan="2">Available Stock</th>
-                          <th class="design1" colspan="2">Avg Consumption of last 7 days </th>
-                          <th colspan="2" class="design1" rowspan="2">Days of stock Available</th>
+                          <th class="design" rowspan="2">#</th>
+                          <th class="design" rowspan="2">Items</th>
+                          <th class="design" colspan="2">Available Stock</th>
+                          <th class="design" colspan="2">Avg Consumption of last 7 days </th>
+                          <th colspan="2" class="design" rowspan="2">Days of stock Available</th>
                         </tr>
                         <tr>
                           <th class="design">Qty( Cases)</th>
@@ -302,7 +294,7 @@
             <div class="title_right">
                 <form  method="POST" id="myForm2" action="warehouse_stock"  enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="col-sm-6 col-md-6" style="margin-left:150px;">
+                <div class="col-sm-5 col-md-5 offset-md-7">
                   <input class="form-control" type="date" name="date"  id="grndate"  value="{{ request.POST.date }}"  required>
                 </div>
               <div class="col-md-2 col-sm-2">
@@ -343,16 +335,16 @@
          <div class="col-md-12 col-sm-12">
             <div class="clearfix"></div>
 
-                      <table class="table table-striped" style="display:block;width:100%;"  id="pendingtabel">
+                      <table class="table table-striped" style="display:block;width:100%;margin-bottom:90px"  id="pendingtabel">
                         <thead>
                           <tr>
-                            <th class="design1" rowspan="2">#</th>
-                            <th class="design1" rowspan="2">Received Date</th>
-                            <th  class="design1" rowspan="2">Manufacture</th>
-                               <!--<th  class="design1" rowspan="2">Warehouse</th>-->
-                            <th class="design1" rowspan="2">Product</th>
-                            <th class="design1" colspan="2">Current day</th>
-                            <th  class="design1" colspan="2">Current month</th>
+                            <th class="design" rowspan="2">#</th>
+                            <th class="design" rowspan="2">Received Date</th>
+                            <th  class="design" rowspan="2">Manufacture</th>
+                               <!--<th  class="design" rowspan="2">Warehouse</th>-->
+                            <th class="design" rowspan="2">Product</th>
+                            <th class="design" colspan="2">Current day</th>
+                            <th  class="design" colspan="2">Current month</th>
                           </tr>
                           <tr>
                             <!--<th class="design">Invoice no</th>-->
@@ -457,11 +449,11 @@
                   <table class="table table-striped" style="display:none;width=200%"; id="pendingind">
                         <thead>
                           <tr>
-                            <th class="design1" rowspan="2">#</th>
-                               <th  class="design1" rowspan="2">Depot </th>
-                              <th class="design1" rowspan="2">Items</th>
-                              <th  class="design1" colspan="2">Pending indent Qty</th>
-                              <th class="design1" colspan="2">Verified indent Qty</th>
+                            <th class="design" rowspan="2">#</th>
+                               <th  class="design" rowspan="2">Depot </th>
+                              <th class="design" rowspan="2">Items</th>
+                              <th  class="design" colspan="2">Pending indent Qty</th>
+                              <th class="design" colspan="2">Verified indent Qty</th>
 
                           </tr>
                             <tr>
@@ -500,12 +492,12 @@
             <table class="table table-striped" style="display:block;width=200%"; id="depots_less_stock">
                         <thead>
                           <tr>
-                            <th class="design1" rowspan="2">S NO</th>
-                            <th class="design1" rowspan="2">Depot name</th>
-                              <th class="design1" rowspan="2">Product</th>
-                              <th  class="design1" rowspan="2">Average requirement</th>
-                                <th class="design1" rowspan="2">Stock Available(In quantity)</th>
-                            <th class="design1" rowspan="2">Stock Available(In days)</th>
+                            <th class="design" rowspan="2">S NO</th>
+                            <th class="design" rowspan="2">Depot name</th>
+                              <th class="design" rowspan="2">Product</th>
+                              <th  class="design" rowspan="2">Average requirement</th>
+                                <th class="design" rowspan="2">Stock Available(In quantity)</th>
+                            <th class="design" rowspan="2">Stock Available(In days)</th>
                           </tr>
 
                         </thead>
@@ -530,7 +522,7 @@
 <script>
 var theme = {
         color: [
-            '#12B1AF', '#ff8566', '#D8DB06', '#3498DB',
+            '#0876A2 ', '#FFC300 ', '#14c38e', '#bfd3b7',
             '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
         ],
 
@@ -1111,7 +1103,7 @@ var theme = {
          var count = 0;
          for (var i = 0; i < total.length; i++) {
             var item = total[i];
-              if( item.total_grn !="0"){
+              if( item.MTD_cases !="0"){
                      count++;
             }
 
@@ -1301,7 +1293,7 @@ var theme = {
             element: 'graph_bar_group1',
             data: seriesData,
             xkey: 'period',
-            barColors: ['#D9BA1C', '#34495E', '#ACADAC', '#3498DB'],
+            barColors: ['#CD142A', '#1271D0', '#F86A1E', '#3498DB'],
             ykeys: ["Available","Avg consumption"],
             labels: ["Available","Avg consumption"],
             hideHover: 'auto',
@@ -1688,11 +1680,11 @@ $.ajax({
                 $('.zonaldays').text(item.indays);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-                row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));
-                row.append($('<td>').text(item.consumption_cases));
-                row.append($('<td>').text(item.consumption_botteles));
-                row.append($('<td>').text(item.indays));
+                row.append($('<td>').text(item.stock_cases).addClass('design1'));
+                row.append($('<td>').text(item.stock_botteles).addClass('design1'));
+                row.append($('<td>').text(item.consumption_cases).addClass('design1'));
+                row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
+                row.append($('<td>').text(item.indays).addClass('design1'));
                 tfootdata.append(row);
           }
 
@@ -1707,13 +1699,64 @@ $.ajax({
 
 $('#whitemcode').change(function() {
 var itemcode =  $('#whitemcode').val();
+var url = itemcode === 'All' ? '{% url "zonal_dashboard_data" %}' : '{% url "zonal_dashboard_data1" %}';
 $.ajax({
   type: "POST",
-  url: "{% url 'zonal_dashboard_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  url: url, // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
       'itemcode':itemcode, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
+     if (url === "/zonal_dashboard_data") {
+
+      var total = data.data.totallist;
+      var itemslist = data.data.itemwiselist;
+      message = data.data.message;
+      if (message != "Data found") {
+        $("#lblNoStock2").html(data.message);
+        $("#lblNoStock2").show();
+        $("#echart-pies2").hide();
+        $("#completetabel").hide();
+      } else {
+        for (var i = 0; i < total.length; i++) {
+          item = total[i];
+        }
+         $("#graph_bar_group1").empty();
+        stock_days1(itemslist);
+      }
+      var tableBody = $('#stktabel  tbody');
+      tableBody.empty();
+      for (var i = 0; i < itemslist.length; i++) {
+        var item = itemslist[i];
+        var row = $('<tr>');
+        row.append($('<td>').text(i + 1)); // S No
+        row.append($('<td>').text(item.itemname));
+        row.append($('<td>').text(item.stock_cases));
+        row.append($('<td>').text(item.stock_botteles)); // Quantity
+        row.append($('<td>').text(item.consumption_cases));
+        row.append($('<td>').text(item.consumption_botteles));
+        row.append($('<td>').text(item.indays));
+        tableBody.append(row);
+      }
+      var tfootdata = $('#stktabel tfoot');
+      tfootdata.empty();
+      for (var i = 0; i < total.length; i++) {
+        var item = total[i];
+        $('.zonalcases').text(item.stock_cases);
+        $('.zonalbott').text(item.stock_botteles);
+        $('.avgcases').text(item.consumption_cases);
+        $('.avgbott').text(item.consumption_botteles);
+        $('.zonaldays').text(item.indays);
+        var row = $('<tr>');
+        row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+        row.append($('<td>').text(item.stock_cases));
+        row.append($('<td>').text(item.stock_botteles));
+        row.append($('<td>').text(item.consumption_cases));
+        row.append($('<td>').text(item.consumption_botteles));
+        row.append($('<td>').text(item.indays));
+        tfootdata.append(row);
+      }
+    } else if ( url === "/zonal_dashboard_data1") {
 
      var itemslist =  data.data.totallist;
         message = data.data.message
@@ -1753,6 +1796,7 @@ $.ajax({
             }
      var tfootdata = $('#stktabel tfoot');
         tfootdata.empty();
+        }
    },
   error: function(jqXHR, textStatus, errorThrown) {
     console.error("Error occurred: " + textStatus, errorThrown);
@@ -1949,13 +1993,64 @@ $.ajax({
 $('#depoid1').change(function() {
 var deponame = $('#depoid1').val();
 var itemcode = $('#itemcode1').val();
+var url = itemcode === 'All' ? '{% url "zonal_depotwise_data" %}' : '{% url "zonal_depotwise_data1" %}';
 $.ajax({
   type: "POST",
-  url: "{% url 'zonal_depotwise_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  url: url, // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
   'itemcode':itemcode, 'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
+  if( url === '/zonal_depotwise_data'){
+        var total =  data.data.totallist;
+     var itemslist = data.data.itemwiselist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+       updateEchartPieChart(itemslist);
+      }
+      var tableBody = $('#depottabel  tbody');
+      tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#depottabel tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.depotstock').text(item.stock_cases);
+                $('.depotstock1').text(item.stock_botteles);
+                $('.depotcase').text(item.consumption_cases);
+                $('.depotbott').text(item.consumption_botteles);
+                $('.depotdays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tfootdata.append(row);
+          }
+
+
+  }
+  else if( url === '/zonal_depotwise_data1'){
     var total =  data.data.totallist;
     message = data.data.message
      console.log(data);
@@ -1990,6 +2085,8 @@ $.ajax({
        var tfootdata = $('#depottabel tfoot');
        tfootdata.empty();
 
+  }
+
   },
   error: function(jqXHR, textStatus, errorThrown) {
     console.error("Error occurred: " + textStatus, errorThrown);
@@ -2002,15 +2099,66 @@ $.ajax({
 $('#itemcode1').change(function() {
 var deponame = $('#depoid1').val();
 var itemcode = $('#itemcode1').val();
+var url = itemcode === 'All' ? '{% url "zonal_depotwise_data" %}' : '{% url "zonal_depotwise_data1" %}';
 $.ajax({
   type: "POST",
-  url: "{% url 'zonal_depotwise_data1' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  url: url, // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
   'itemcode':itemcode, 'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
-     var total =  data.data.totallist;
-   message = data.data.message
+  if( url === '/zonal_depotwise_data'){
+        var total =  data.data.totallist;
+     var itemslist = data.data.itemwiselist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+      {
+       $("#lblNoStock2").html(data.message);
+       $("#lblNoStock2").show();
+       $("#echart-pies2").hide();
+       $("#completetabel").hide();
+      }else{
+       updateEchartPieChart(itemslist);
+      }
+      var tableBody = $('#depottabel  tbody');
+      tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#depottabel tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.depotstock').text(item.stock_cases);
+                $('.depotstock1').text(item.stock_botteles);
+                $('.depotcase').text(item.consumption_cases);
+                $('.depotbott').text(item.consumption_botteles);
+                $('.depotdays').text(item.indays);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
+                tfootdata.append(row);
+          }
+
+
+  }
+  else if( url === '/zonal_depotwise_data1'){
+    var total =  data.data.totallist;
+    message = data.data.message
      console.log(data);
      if(message != "Data found")
       {
@@ -2025,7 +2173,6 @@ $.ajax({
       tableBody.empty();
               for (var i = 0; i < total.length; i++) {
                 var item = total[i];
-
                 $('.depotstock').text(item.stock_cases);
                 $('.depotstock1').text(item.stock_botteles);
                 $('.depotcase').text(item.consumption_cases);
@@ -2044,6 +2191,8 @@ $.ajax({
        var tfootdata = $('#depottabel tfoot');
        tfootdata.empty();
 
+  }
+
   },
   error: function(jqXHR, textStatus, errorThrown) {
     console.error("Error occurred: " + textStatus, errorThrown);
@@ -2051,6 +2200,7 @@ $.ajax({
   }
 });
 });
+
 
 $(document).ready(function() {
 var deponame = $('#depoid').val();

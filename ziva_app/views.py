@@ -10369,7 +10369,6 @@ def warehouse_stock1(request,id):
             messages.error(request, 'Access denied!')
             return redirect('/login')
         try:
-
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
 

@@ -39,7 +39,7 @@
       <input type="search" placeholder="search" id="myInput" class="form-control"  onkeyup="filterFunction()">
           <a class="dropdown-item" href="/region_stock1/All">All</a>
           {% for data in regionlist %}
-            <a class="dropdown-item" href="/region_stock1/{{ data.regionname }}">{{ data.regionname }}</a>
+            <a class="dropdown-item" href="/region_stock1/{{ data.region_id }}">{{ data.regionname }}</a>
           {% endfor %}
         </div>
       </div>
