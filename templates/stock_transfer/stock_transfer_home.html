@@ -80,7 +80,6 @@
                                           enctype="multipart/form-data"
                                           method="POST">
                                         {% csrf_token %}
-
                                         <div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
                                             <input id="itemname" name="itemname" type="hidden"/>
                                             <label>Select Items</label>
@@ -88,8 +87,8 @@
                                                     required style="width:400px !important;"><br>
                                                 <option value="">Item details</option>
                                                 {% for data1 in warehouseinventorylist %}
-                                                <option value="{{ data1.itemcode }}">{{ data1.itemname }}(Batch:{{
-                                                    data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
+                                                <option value="{{ data1.itemcode }}">{{ data1.itemname }}(Batch:
+                                                    {{ data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
                                                 </option>
                                                 {% endfor %}
                                             </select>
@@ -105,13 +104,13 @@
                                             </select>
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
-                                            <label>Qty(In Cases) </label>
+                                            <label>Qty(Cases) </label>
                                             <input class="form-control" id="quantity" name="quantity"
                                                    placeholder="cases"
                                                    type="text">
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
-                                            <label>Qty(In bottles)</label>
+                                            <label>Qty(Bottles)</label>
                                             <input class="form-control" id="nob" name="nob" placeholder="bottles"
                                                    type="text">
                                         </div>
@@ -136,7 +135,7 @@
                                             <input class="form-control" id="cpsno" name="cpsno" required type="hidden">
                                         </div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                            <button class="btn btn-primary" name="add" style="margin-top: 10px;"
+                                            <button class="btn btn-primary" name="add" style="margin-top: -15px;"
                                                     type="submit">Add
                                             </button>
                                         </div>
@@ -162,8 +161,8 @@
                                                     <tr>
                                                         <th>S No</th>
                                                         <th>Item Name</th>
-                                                        <th>Qty(In Cases)</th>
-                                                        <th>Qty(In bottles)</th>
+                                                        <th>Qty(Cases)</th>
+                                                        <th>Qty(Bottles)</th>
                                                         <th>Expiry Date</th>
                                                         <!--<th>HSN</th>-->
                                                         <th>Batch</th>
@@ -207,14 +206,16 @@
 
                                                     <tbody>
                                                     </tbody>
+                                                     {% if status == 'ok' %}
                                                     <td colspan="9" style="color:#06911A">
                                                         <b>Invoice No: {{ taxinvoice }}</b>
 
-                                                        <span style="float:right;"><span class="badge-warning"
-                                                                                         data-target="#complete"
-                                                                                         data-toggle="modal"
-                                                                                         onclick="VerifyClick('{{data.so_number}}')"
-                                                                                         style="padding:  4px !important;">COMPLETE SALE</span></span>
+                                                            <span style="float:right;"><span class="badge-warning"
+                                                                                             data-target="#complete"
+                                                                                             data-toggle="modal"
+                                                                                             onclick="VerifyClick('{{data.so_number}}')"
+                                                                                             style="padding:  4px !important;">COMPLETE SALE</span></span>
+                                                        {% endif %}
                                                     </th>
                                                     </tr>
                                                     </tfoot>
@@ -263,8 +264,8 @@
                                                     required style="width:400px !important;"><br>
                                                 <option value="">Items details</option>
                                                 {% for data1 in items %}
-                                                <option value="{{ data1.itemcode }}">{{ data1.itemname }}(Batch:{{
-                                                    data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
+                                                <option value="{{ data1.itemcode }}">{{ data1.itemname }}(Batch:
+                                                    {{ data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
                                                 </option>
                                                 {% endfor %}
                                             </select>
@@ -430,7 +431,7 @@
                                     </div>
                                 </form>
 
-                                <div class="x_content">
+                                <div class="x_content" id="busitemsadd" style="display:none;">
                                     <form action="/busstation_item_add" class="form-label-left input_mask"
                                           enctype="multipart/form-data"
                                           method="POST">
@@ -443,8 +444,8 @@
                                                     required style="width:400px !important;">
                                                 <option value="">Item details</option>
                                                 {% for data1 in warehouseinventorylist %}
-                                                <option value="{{ data1.itemcode }}">{{data1.itemname}}(Batch:{{
-                                                    data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
+                                                <option value="{{ data1.itemcode }}">{{data1.itemname}}(Batch:
+                                                   {{ data1.batchcode }},Expiry:{{data1.expirydate}},MRP:{{data1.mrp}})
                                                 </option>
                                                 {% endfor %}
                                             </select>
@@ -496,7 +497,7 @@
                                         <!-- <input type="hidden" id="store_id" name="store_id" />-->
                                     </form>
                                 </div>
-                                <div class="x_content">
+                                <div class="x_content" id="busitemslist" style="display:none;">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="card-box table-responsive">
@@ -747,6 +748,7 @@ $("#divItemsAdd").css("display","block");
 $("#divItems").css("display","block");
 }
 }
+
 $("#whid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename").val(selectedOptionText);
@@ -935,7 +937,7 @@ $('#qty').on('input', function()  {
 $(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busname").find("option[value='" + optionValue + "']").prop("selected", true);
-})
+})/
 $('#busedit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkbus_item" %}'); // set the new action URL
 // submit the form

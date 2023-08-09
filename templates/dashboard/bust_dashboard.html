@@ -10,6 +10,12 @@
      color: white;
         background-color:#0876A2 !important;
     }
+      #completetabel:hover{
+    overflow-x:scroll !important;
+    }
+    #stktabel:hover{
+    overflow-x:scroll !important;
+    }
 </style>
 <!-- page content -->
 <div class="right_col" role="main">
@@ -172,7 +178,7 @@
               </div>
                 <div class="clearfix"></div>
                     <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
-                                      <table   class="table table-striped jambo_table bulk_action"  style="display:none;" id="stktabel" >
+                                      <table   class="table table-responsive table-striped jambo_table bulk_action"  style="display:none;overflow:hidden;" id="stktabel" >
                       <thead>
                         <tr>
                           <th class="design1" rowspan="2">#</th>
@@ -367,7 +373,7 @@
               <div id="graph_bar" style="height:269px !important"></div>
             </div>
                       <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
-                      <table class="table table-striped jambo_table bulk_action" style="display:none;" id="completetabel">
+                      <table class="table table-striped table-responsive jambo_table bulk_action" style="display:none;overflow:hidden;" id="completetabel">
                         <thead>
                           <tr>
                             <!--<th class="row2" rowspan="2">S NO</th>-->
@@ -1087,7 +1093,7 @@ $.ajax({
                 row.append($('<td>').text(item.stock_botteles).addClass('design1'));
                 row.append($('<td>').text(item.consumption_cases).addClass('design1'));
                 row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
-                row.append($('<td>').text(item.indays));
+                row.append($('<td>').text(item.indays).addClass('design1'));
                 tfootdata.append(row);
           }
 

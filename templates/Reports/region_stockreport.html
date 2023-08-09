@@ -52,7 +52,7 @@
           <input type="search" class="form-control" id="myInput1" placeholder="search" onkeyup="filterFunction1()">
           <a class="dropdown-item" href="/depot_stock_new/All">All</a>
           {% for data in depolist %}
-            <a class="dropdown-item depo" href="/depot_stock_new/{{ data.deponame }}">{{ data.deponame }}</a>
+            <a class="dropdown-item depo" href="/depot_stock_new/{{ data.depoid }}">{{ data.deponame }}</a>
           {% endfor %}
         </div>
       </div>
@@ -65,7 +65,7 @@
         <input type="search" id="myInput2" class="form-control" placeholder="search" onkeyup="filterFunction2()">
               <a class="dropdown-item" href="/busstation_stock1/All">All</a>
           {% for data in bus %}
-            <a class="dropdown-item" href="/busstation_stock1/{{ data.busstationname }}/">{{ data.busstationname }}</a>
+            <a class="dropdown-item" href="/busstation_stock1/{{ data.busatationid }}/">{{ data.busstationname }}</a>
           {% endfor %}
         </div>
       </div>
@@ -388,9 +388,6 @@ function filterFunction3() {
     }
   }
 }
-
-
-
 
  </script>
 {% endblock %}

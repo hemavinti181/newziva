@@ -12,6 +12,12 @@
      color: white;
         background-color:#0876A2 !important;
     }
+    #completetabel:hover{
+    overflow-x:scroll !important;
+    }
+    #stktabel:hover{
+    overflow-x:scroll !important;
+    }
 
 </style>
 
@@ -150,17 +156,17 @@
             <div class="x_content">
               <div class="row">
                 <div class="col-sm-12">
-                     <div class="col-md-12 col-sm-12 echart-depot1" style="margin-bottom:10px;">
+                     <div class="col-md-12 col-sm-12 echart-depot1" style="margin-bottom:-5px;">
                   <h3 style="margin: 125px 3px 149px 100px;display:none;" id="lblNoStock">No Stock Available</h3>
                        <div id="echart-depot1" style="height:365px;margin-top:-60px;margin-left:-100px;width:600px"></div>
               </div>
-                  <div class="card-box table-responsive" style="overflow:auto">
+                  <div class="card-box table-responsive" style="overflow:hidden">
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
                 <div class="clearfix"></div>
                     <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
-                                      <table   class="table table-striped jambo_table bulk_action"  style="display:none;" id="stktabel" >
+                                      <table   class="table table-striped table-responsive jambo_table bulk_action"  style="display:none;overflow:hidden;" id="stktabel" >
                       <thead>
                         <tr>
                           <th class="design1" rowspan="2">#</th>
@@ -260,9 +266,7 @@
                     </div>
                       </div>
                 <div class="clearfix"></div>
-
-                      <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
-                      <table class="table table-striped jambo_table bulk_action" style="display:none;margin-top:30px;width:auto;" id="pendingtabel">
+                      <table class="table table-striped table-responsive jambo_table bulk_action" style="display:none;margin-top:30px;width:auto;overflow:hidden;" id="pendingtabel">
                         <thead>
                           <tr>
                             <th  class="design1" rowspan="2">#</th>
@@ -344,16 +348,16 @@
               <div class="x_content">
                 <div class="row">
                   <div class="col-sm-12">
-                    <div class="card-box table-responsive">
+                    <div class="card-box">
                        <!-- <div class="card-box table-responsive" style="overflow:hidden">-->
                       <p class="text-muted font-13 m-b-30">
                       </p>
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 table-responsive">
                            <h3 style="margin-top: 100px;margin-bottom: -50px;margin-left: 70px;display:none;" id="lblNoStock2">No Stock Available</h3>
               <div id="graph_bar" style="height:265px !important"></div>
             </div>
                       <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
-                      <table class="table table-striped jambo_table bulk_action" style="display:none;" id="completetabel">
+                      <table class="table table-striped table-responsive jambo_table bulk_action" style="display:none;overflow:hidden;" id="completetabel">
                         <thead>
                           <tr>
                             <!--<th class="row2" rowspan="2">S NO</th>-->

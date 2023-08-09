@@ -9,8 +9,14 @@
         background-color:#0876A2 !important;
     }
       .design1{
-     color: white;
+        color: white;
         background-color:#0876A2 !important;
+    }
+     #completetabel:hover{
+    overflow-x:scroll !important;
+    }
+    #stktabel:hover{
+    overflow-x:scroll !important;
     }
 
 </style>
@@ -98,7 +104,7 @@
               </div>
                 <div class="clearfix"></div>
                     <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
-                                      <table   class="table table-striped jambo_table bulk_action"  style="display:none;" id="stktabel" >
+                                      <table   class="table table-striped table-responsive jambo_table bulk_action"  style="display:none;overflow:hidden;" id="stktabel" >
                       <thead>
                         <tr>
                           <th class="design" rowspan="2">#</th>
@@ -291,7 +297,7 @@
               <div id="graph_bar" style="height:272px !important"></div>
             </div>
                       <!--<table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">-->
-                      <table class="table table-striped jambo_table bulk_action" style="display:none;" id="completetabel">
+                      <table class="table table-striped table-responsive jambo_table bulk_action" style="display:none;overflow:hidden;" id="completetabel">
                         <thead>
                           <tr>
                             <!--<th class="row2" rowspan="2">S NO</th>-->
@@ -1019,11 +1025,11 @@ $.ajax({
                 $('.indays').text(item.indays);
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));  // S No
-                row.append($('<td>').text(item.itemname).addClass('design1'));
-                row.append($('<td>').text(item.stock_cases).addClass('design1'));
-                row.append($('<td>').text(item.stock_botteles).addClass('design1'));
-                row.append($('<td>').text(item.consumption_cases).addClass('design1'));
-                row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
+                row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
                 row.append($('<td>').text(item.indays).addClass('design1'));
                 tableBody.append(row);
                    }

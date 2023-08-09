@@ -736,6 +736,7 @@ $(document).ready(function() {
                 console.log(data.response)
                 if (response.status_code === 503) {
                     $('#returnButton').show();
+                    window.reaload();
                 } else {
                     $('#returnButton').hide();
                 }
