@@ -63,7 +63,7 @@
         </button>
         <div class="dropdown-menu"  id="myDropdown2" style="max-height: 400px; overflow-y: auto;">
         <input type="search" id="myInput2" class="form-control" placeholder="search" onkeyup="filterFunction2()">
-              <a class="dropdown-item" href="/busstation_stock1">All</a>
+              <a class="dropdown-item" href="/busstation_stock1/All">All</a>
           {% for data in bus %}
             <a class="dropdown-item" href="/busstation_stock1/{{ data.busatationid }}/">{{ data.busstationname }}</a>
           {% endfor %}

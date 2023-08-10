@@ -20,7 +20,7 @@
   font-family: 'Poppins',sans-serif;
 }
 body{
-  background: #C1BFB9 ;
+  background: white ;
   overflow: hidden;
 }
 ::selection{
@@ -121,11 +121,14 @@ form .button input:hover{
 form .signup-link a:hover{
   text-decoration: underline;
 }
+.border{
+  border: 2px solid #14c38e;
+  }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="wrapper">
+      <div class="wrapper border">
         <!--<img src="{% static 'build/images/logo2.jpeg' %}" alt="..." class="img-circle profile_img">-->
         <div class="title"><span>Sign In</span></div>
       <form class="form-label-left input_mask" method="POST" action="/login"   enctype="multipart/form-data">
@@ -138,10 +141,12 @@ form .signup-link a:hover{
           </div>
           <div class="row">
             <i class="fas fa-lock"></i>
-            <input type="password" class="form-control" name="Password"  placeholder="Password" required>
+            <input type="password" class="form-control" name="Password"  placeholder="Password" style = "margin-bottom: 30px;" required>
           </div>
-        <p></p>
-          <div class="pass"><a href="#">Forgot password?</a></div>
+          <input type="checkbox" class="form-control" id="showPasswordCheckbox" style = "margin-bottom: 40px;">
+          <label for="showPasswordCheckbox" class="show-password-label" style="color: #14c38e;">Show Password</label>
+          <!--<div class="pass"><a href="#">Show Password</a></div>-->
+
           <div class="row button">
             <input type="submit" value="Login">
           </div>
@@ -152,6 +157,7 @@ form .signup-link a:hover{
 
   </body>
 </html>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script>
 function preventBack() {
@@ -183,5 +189,17 @@ setTimeout("preventBack()", 0);
 $('.message a').click(function(){
    $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
 });
+
+    const passwordInput = document.querySelector('input[name="Password"]');
+    const showPasswordCheckbox = document.getElementById('showPasswordCheckbox');
+
+    showPasswordCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+
+            passwordInput.setAttribute('type', 'text');
+        } else {
+            passwordInput.setAttribute('type', 'password');
+        }
+    });
 
   </script>

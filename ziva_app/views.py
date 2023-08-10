@@ -13013,7 +13013,7 @@ def zonal_depotindent_data(request):
         date = fdate
     else:
         date = tdate
-    payload = {"accesskey": accesskey,"date":date, "depoid": request.POST.get('depoid'),
+    payload = {"accesskey": accesskey,"date":date, "depoid": request.POST.get('deponame'),
                }
     payload = json.dumps(payload, cls=BytesEncoder)
     headers = {
@@ -13047,3 +13047,11 @@ def admin_dashboard(request):
         return redirect('/login')
     menuname = request.session['mylist']
     return render(request, 'dashboard/admin_dashboard.html', {"menuname": menuname})
+
+
+def stock_tranfer_admin(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    return render(request,'stock_transfer/stock_transfer_admin.html',{"menuname": menuname})

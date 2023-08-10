@@ -36,7 +36,7 @@
 					<form id="myForm" method="POST" action=" "  enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-md-2  form-group has-feedback">
-                              <!--<label for="daterangeselect">Frequency</label>-->
+                         <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
 												</select>
@@ -49,16 +49,16 @@
                               </select>
                             </div>
                              <div class="col-md-2  form-group has-feedback" id="fdate" style="display:none">
-                              <!--<label for="start-date">From Date</label>-->
+                            <label for="start-date">From Date</label>
                               <input type="date" id="start-date"  name="fdate" class="form-control" value="{{ request.POST.fdate }}" />
                             </div>
                               <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
-                                  <!--<label  for="end-date">To Date</label>-->
+                                <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="tdate" class="form-control" value="{{ request.POST.tdate }}">
                             </div>
 
 
-                            	<!--<div  class="col-md-2  form-group has-feedback">
+                            <div  class="col-md-2  form-group has-feedback">
 											<label> Warehouse</label>
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
@@ -74,7 +74,7 @@
 												</select>
                                 </div>
 											<div  class="col-md-2  form-group has-feedback">
-
+                                            	<label> Region</label>
                                                     <select class="form-control" name="regionid2" id="regionid2" hidden>
                             		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
 												</select>
@@ -84,10 +84,10 @@
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
+                                                	<label> Depot</label>
                                                  <select class="form-control" name="depoid2" id="depoid2" hidden>
                             		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
 												</select>
-
 											 <input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
 													<option value="All">All</option>
@@ -96,26 +96,27 @@
                             </div>
 
 										<div  class="col-md-2  form-group has-feedback">
+                                            	<label> Bus station</label>
                                               <select class="form-control" name="busstationid2" id="busstationid2" hidden>
                             		                    <option value="{{ request.POST.busstationid1 }}">{{ request.POST.busstationname1 }}</option>
 												</select>
-
-
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
 												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value="All">All</option>
 												</select>
-										</div>-->
+										</div>
                                <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                           <button type="submit" id="button1" name="add" style="margin-top: px;" class="btn btn-primary">Search</button>
+                                           <button type="submit" id="button1" name="add" style="margin-top: 30px;" class="btn btn-primary">Search</button>
                                        </div>
-                        </form>
+
+                    </form>
 
 
-                   <div style="display: block;">
+
+                   <!--<div style="display: block;">
                        <div class="row" style="display: block;">
     <div class="top_tiles" style="width: auto;">
-    <div class="animated flipInY  col-md-4 col-sm-4">
+    <div class="animated flipInY  col-md-2 col-sm-2">
         <div class="tile-stats">
             <div class="icon1"><i class="fa fa-bar-chart"></i></div>
                 <h1 class="text-warning" style="margin-left: 10px;">
@@ -129,7 +130,7 @@
            </div>
         </div>
 
-                           <div class="animated flipInY  col-md-4 col-sm-4">
+                           <div class="animated flipInY  col-md-2 col-sm-2">
         <div class="tile-stats">
             <div class="icon1"><i class="fa fa-bar-chart"></i></div>
                 <h1 class="text-warning" style="margin-left: 10px;">
@@ -141,7 +142,7 @@
                 <p class="text-info" style="font-size: 12px;">500ml</p>
            </div>
         </div>
-        <div class="animated flipInY  col-md-4 col-sm-4">
+        <div class="animated flipInY  col-md-2 col-sm-2">
         <div class="tile-stats">
             <div class="icon1"><i class="fa fa-bar-chart"></i></div>
                 <h1 class="text-warning" style="margin-left: 10px;">
@@ -158,8 +159,8 @@
 
               </div>
 
-</div>
-
+</div>-->
+ <div class="col-md-12 col-sm-12">
                 <div class="x_panel">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -169,7 +170,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display  table-striped table-bordered" style="width:100%">
 
                      <thead>
                                     <tr>
@@ -198,6 +199,7 @@
               </div>
             </div>
                 </div>
+ </div>
 <div class="x_panel items" style="display:none">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -511,11 +513,8 @@ $(document).ready(function(){
 })
 
 
-
-
 	$(document).ready(function() {
-    // Get the initial warehouse name
-  var warehousename = $("#warehouseid2").find(":selected").text();
+    var warehousename = $("#warehouseid2").find(":selected").text();
     console.log(warehousename);
     $.ajax({
         type: "POST",

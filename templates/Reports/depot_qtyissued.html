@@ -114,20 +114,20 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
 
                      <thead>
 
                                   <tr>
                                       <th>S No</th>
                                       <th>Date</th>
-                                      <th>Region Name </th>
-                                      <th>Depot Name</th>
+                                      <th>Region </th>
+                                      <th>Depot </th>
                                       <th>Bus Station</th>
                                       <th>Item</th>
-                                      <th>Indent Number</th>
-                                        <th>Qty(In Cases) Indented</th>
-                                      <th>Qty Supplied</th>
+                                     <!-- <th>Indent Number</th>-->
+                                        <th>Qty  Indented(Cases)</th>
+                                      <th>Qty Supplied(Cases)</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -139,7 +139,7 @@
                                       <td>{{ data.depo_master_deponame }}</td>
                                         <td>{{ data.generate_indent_fromname }}</td>
                                           <td>{{ data.indent_item_item_name }}</td>
-                                      <td>{{ data.indent_item_indent_no }}</td>
+                                     <!-- <td>{{ data.indent_item_indent_no }}</td>-->
                                       <td>{{ data.indent_sum_item }}</td>
                                         <td>{{ data.outpass_sum_item }}</td>
                                     </tr>
@@ -362,7 +362,6 @@ $(document).ready(function(){
     	$("#regionid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
-        	alert(warehousename)
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storedepo" %}',

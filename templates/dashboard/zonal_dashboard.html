@@ -206,14 +206,14 @@
                             </div>
                             <div class="animated flipInY col-lg-3 col-md-3 col-sm-7 ">
                                 <div class="tile-stats">
-                                    <div class="count depotstock1" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count depotstock1" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Bottles)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span> Available Stock</p>
                                 </div>
                             </div>
                             <div class="animated flipInY col-lg-2 col-md-2 col-sm-7 ">
                                 <div class="tile-stats" >
-                                    <div class="count depotcase" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                                    <div class="count depotcase" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                                     <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty(Cases)</div>
                                     <p><span class="fa fa-info" aria-hidden="true"></span>Avg Consumption of last 7 days</p>
                                 </div>
@@ -389,7 +389,6 @@
                         </div>
                     </div>
                     </div>
-<div class="row">
     <div class="col-md-5 col-sm-5">
         <div class="x_panel">
           <div class="page-title">
@@ -419,7 +418,7 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count pendingind" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count pendingind" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
          <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending Indents</p>
               </div>
@@ -433,8 +432,8 @@
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indbottles" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
-             <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty Indented(Cases)</div>
+                <div class="count indbottles" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+             <div style="text-align:center;margin-left: auto;margin-right: auto;">Supply Qty(Cases)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty indented(In Cases)</p>
               </div>
             </div>
@@ -1402,7 +1401,8 @@ var theme = {
         var seriesData = [];
         var count=0;
          if($("#depots_indent").prop('checked')){
-              $("#echart-depot1").show();
+              $("#echart-indent").show();
+               $("#lblindent").hide();
           }
          var echartPie = echarts.init(document.getElementById('echart-indent'),theme);
            for (var i = 0; i < total.length; i++) {
@@ -1430,6 +1430,7 @@ var theme = {
             }
 
          }
+     
     if (count === 0) {
               $('#echart-indent').hide();
               $('#lblindent').show();
@@ -1503,6 +1504,7 @@ var theme = {
         };
          if($("#depots_indent").prop('checked')){
               $("#echart-indent").hide();
+              $("#lblindent").hide();
 
           }
 
@@ -1749,11 +1751,11 @@ $.ajax({
         $('.zonaldays').text(item.indays);
         var row = $('<tr>');
         row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-        row.append($('<td>').text(item.stock_cases));
-        row.append($('<td>').text(item.stock_botteles));
-        row.append($('<td>').text(item.consumption_cases));
-        row.append($('<td>').text(item.consumption_botteles));
-        row.append($('<td>').text(item.indays));
+        row.append($('<td>').text(item.stock_cases).addClass('design1'));
+        row.append($('<td>').text(item.stock_botteles).addClass('design1'));
+        row.append($('<td>').text(item.consumption_cases).addClass('design1'));
+        row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
+        row.append($('<td>').text(item.indays).addClass('design1'));
         tfootdata.append(row);
       }
     } else if ( url === "/zonal_dashboard_data1") {
@@ -1851,10 +1853,10 @@ $.ajax({
                 $('.acceptdbott').text(item.ftd_botteles);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 4).addClass('design1'));
-                row.append($('<td>').text(item.ftd_cases));
-                row.append($('<td>').text(item.ftd_botteles));
-                row.append($('<td>').text(item.mtd_cases));
-                row.append($('<td>').text(item.mtd_botteles));
+                row.append($('<td>').text(item.ftd_cases).addClass('design1'));
+                row.append($('<td>').text(item.ftd_botteles).addClass('design1'));
+                row.append($('<td>').text(item.mtd_cases).addClass('design1'));
+                row.append($('<td>').text(item.mtd_botteles).addClass('design1'));
                 tfootdata.append(row);
           }
 
@@ -1889,10 +1891,10 @@ $('#grndate').change(function() {
                   for (var i = 0; i < itemslist.length; i++) {
                     var item = itemslist[i];
                     var row = $('<tr>');
-                    row.append($('<td>').text(i + 1));  // S No
+                    row.append($('<td>').text(i + 1));
                     row.append($('<td>').text(item.received_date));
                     row.append($('<td>').text(item.manufacture));
-                    row.append($('<td>').text(item.itemname));  // Quantity
+                    row.append($('<td>').text(item.itemname));
                     row.append($('<td>').text(item.FTD_cases));
                     row.append($('<td>').text(item.FTD_botteles));
                     row.append($('<td>').text(item.MTD_cases));
@@ -1909,10 +1911,10 @@ $('#grndate').change(function() {
                     $('.acceptdbott').text(item.ftd_botteles);
                     var row = $('<tr>');
                     row.append($('<th>').text('Grand Total').attr('colspan', 4).addClass('design1'));
-                    row.append($('<td>').text(item.ftd_cases));
-                    row.append($('<td>').text(item.ftd_botteles));
-                    row.append($('<td>').text(item.mtd_cases));
-                    row.append($('<td>').text(item.mtd_botteles));
+                    row.append($('<td>').text(item.ftd_cases).addClass('design1'));
+                    row.append($('<td>').text(item.ftd_botteles).addClass('design1'));
+                    row.append($('<td>').text(item.mtd_cases).addClass('design1'));
+                    row.append($('<td>').text(item.mtd_botteles).addClass('design1'));
                     tfootdata.append(row);
               }
 
@@ -1974,11 +1976,11 @@ $.ajax({
                 $('.depotdays').text(item.indays);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-                row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));
-                row.append($('<td>').text(item.consumption_cases));
-                row.append($('<td>').text(item.consumption_botteles));
-                row.append($('<td>').text(item.indays));
+                row.append($('<td>').text(item.stock_cases).addClass('design1'));
+                row.append($('<td>').text(item.stock_botteles).addClass('design1'));
+                row.append($('<td>').text(item.consumption_cases).addClass('design1'));
+                row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
+                row.append($('<td>').text(item.indays).addClass('design1'));
                 tfootdata.append(row);
           }
 
@@ -2040,11 +2042,11 @@ $.ajax({
                 $('.depotdays').text(item.indays);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-                row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));
-                row.append($('<td>').text(item.consumption_cases));
-                row.append($('<td>').text(item.consumption_botteles));
-                row.append($('<td>').text(item.indays));
+                row.append($('<td>').text(item.stock_cases).addClass('design1'));
+                row.append($('<td>').text(item.stock_botteles).addClass('design1'));
+                row.append($('<td>').text(item.consumption_cases).addClass('design1'));
+                row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
+                row.append($('<td>').text(item.indays).addClass('design1'));
                 tfootdata.append(row);
           }
 
@@ -2146,10 +2148,10 @@ $.ajax({
                 $('.depotdays').text(item.indays);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-                row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));
-                row.append($('<td>').text(item.consumption_cases));
-                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.stock_cases).addClass('design1'));
+                row.append($('<td>').text(item.stock_botteles).addClass('design1'));
+                row.append($('<td>').text(item.consumption_cases).addClass('design1'));
+                row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
                 row.append($('<td>').text(item.indays));
                 tfootdata.append(row);
           }
@@ -2243,14 +2245,14 @@ $.ajax({
                 var item = total[i];
                 $('.pendingind').text(item.pending_count);
                 $('.indentcases').text(item.verified_count);
-                $('.indbottles').text(item.ver_qty_cases);
+                $('.indbottles').text(item.pen_qty_cases);
 
                 var row = $('<tr>');
-                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-                row.append($('<td>').text(item.pen_qty_cases));
-                row.append($('<td>').text(item.pen_qty_bottles));
-                row.append($('<td>').text(item.ver_qty_cases));
-                row.append($('<td>').text(item.ver_qty_bottles));
+                row.append($('<th>').text('Grand Total').attr('colspan', 3).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
+                row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
+                row.append($('<td>').text(item.ver_qty_bottles).addClass('design1'));
                 tfootdata.append(row);
           }
 
@@ -2269,7 +2271,7 @@ $.ajax({
   type: "POST",
   url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-   'depoid':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
      var total =  data.data.totallist;
@@ -2304,13 +2306,13 @@ $.ajax({
                 var item = total[i];
                 $('.pendingind').text(item.pending_count);
                 $('.indentcases').text(item.verified_count);
-                $('.indbottles').text(item.ver_qty_cases);
+                $('.indbottles').text(item.pen_qty_cases);
                 var row = $('<tr>');
-                row.append($('<th>').text('Grand Total').attr('colspan',2).addClass('design1'));
-                row.append($('<td>').text(item.pen_qty_cases));
-                row.append($('<td>').text(item.pen_qty_bottles));
-                row.append($('<td>').text(item.ver_qty_cases));
-                row.append($('<td>').text(item.ver_qty_bottles));
+                row.append($('<th>').text('Grand Total').attr('colspan',3).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
+                row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
+                row.append($('<td>').text(item.ver_qty_bottles).addClass('design1'));
                 tfootdata.append(row);
           }
   },
@@ -2322,13 +2324,13 @@ $.ajax({
 });
 
 $('#inddate').change(function() {
+var deponame = $('#depoid').val();
 var inddate = $('#inddate').val();
-var depoid = $('#depoid').val();
 $.ajax({
   type: "POST",
   url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-   'depoid':depoid,'inddate':inddate, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+   'deponame':deponame,'inddate':inddate, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
      var total =  data.data.totallist;
@@ -2363,13 +2365,13 @@ $.ajax({
                 var item = total[i];
                 $('.pendingind').text(item.pending_count);
                 $('.indentcases').text(item.verified_count);
-                $('.indbottles').text(item.ver_qty_cases);
+                $('.indbottles').text(item.pen_qty_cases);
                 var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan',3).addClass('design1'));
-                row.append($('<td>').text(item.pen_qty_cases));
-                row.append($('<td>').text(item.pen_qty_bottles));
-                row.append($('<td>').text(item.ver_qty_cases));
-                row.append($('<td>').text(item.ver_qty_bottles));
+                row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
+                row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
+                row.append($('<td>').text(item.ver_qty_bottles).addClass('design1'));
                 tfootdata.append(row);
           }
   },
@@ -2389,7 +2391,7 @@ $.ajax({
       $("#pendingind").show();
     }
     else{
-    $('#lblindent').show();
+    $('#lblindent').hide();
      $("#echart-indent").show();
      $('.textind').show();
       $("#pendingind").hide();
@@ -2423,7 +2425,7 @@ $.ajax({
     });
   });
 $('#grndate').val(new Date().toJSON().slice(0,10));
-
+$('#inddate').val(new Date().toJSON().slice(0,10));
 
 
 
