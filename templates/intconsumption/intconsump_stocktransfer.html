@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba"> <b>Stock Transfer</b></h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+					<a href="indent_list"><button type="submit" class="btn btn-primary">Stock List</button></a>
+                </div>
+
+            </div>
+              </div>
+
+            <div class="clearfix"></div>
+             <div class="row">
+              <div class="col-md-12 col-sm-12 ">
+                 <div class="x_content">
+                     <div class="">
+
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel depot-div">
+
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="/create_busindent"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                                             <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label> From *</label>
+                                                                 <input type="text" class="form-control" name="quantity1" id="depoid" value="{{ request.session.deponame }}" readonly>
+                                        </div>
+                                        	<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>To   *</label>
+										      <input type="hidden" name="deponame" id="deponame" />
+                                            <select class="form-control items" name="depocode" id="depocode" required>
+                                                     <option value="">select depot</option>
+                                                    {% for data in depo %}
+                                                        {% if data.status == "Active" %}
+                                                            <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                        {% endif %}
+                                                     {% endfor %}
+
+                                                </select>
+										</div>
+
+
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Select Items *</label>
+										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+													<option value="">Items</option>
+                                                    {% for data in item_masterlist %}
+                                                        {% if data.status == "Active" %}
+                                                            <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+										</div>
+                                        	<!--<div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label"> Date</label>
+									<input class="form-control" type="date" name="date" id="getdate" required>
+							</div>-->
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Quantity( Cases) *</label>
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity1" id="quantity1" required>
+										</div>
+                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Quantity( Bottles) *</label>
+										    <input type="text" class="form-control" placeholder="quantity in bottles" name="nob1" id="nob1" readonly>
+										</div>
+                                        <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Total Price *</label>
+										    <input type="text" class="form-control" placeholder="total price" id="mrp2" name="mrp2" readonly>
+										</div>-->
+
+										<div class="col-md-2 col-sm-2 form-group has-feedback">
+												<button type="submit"  style="margin-top: 25px;"  class="btn btn-primary">Transfer</button>
+											</div>
+
+										  <input type="hidden" class="form-control"  name="itemname2" id="itemname2">
+                                        <input type="hidden" class="form-control"  name="whname" id="whname2">
+                                        <input type="hidden" class="form-control"  name="cases2" id="cases2">
+
+
+                                 </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+<script>
+$("#itemcode").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#itemname2").val(selectedOptionText);
+});
+$("#buscode").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#busname").val(selectedOptionText);
+});
+$("#depocode").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame").val(selectedOptionText);
+});
+
+$("#itemcode1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#itemname1").val(selectedOptionText);
+});
+$("#wh1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#whname1").val(selectedOptionText);
+});
+$("#depocode1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
+});
+$("#itemcode1").change(function() {
+        	var itemname = $('#itemcode1').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_indentitem"  %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].mrp);
+                        if(obj.length>0){
+                            $("#mrp1").val(obj[0].mrp);
+                            $("#cases1").val(obj[0].uom);
+                            $("#quantity").val(" ");
+                            $("#nob").val(" ");
+                             $("#mrp").val(obj[0].mrp);
+
+					}
+             	}
+        	});
+    	});
+    	$('#quantity').on('input', function()  {
+    	    val  = $("#quantity").val();
+            val1 = $("#cases1").val();
+            mrp2 = $("#mrp1").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp2)
+            $("#nob").val(val2);
+            $("#mrp").val(val3);
+         });
+         $("#itemcode").change(function() {
+        	var itemname = $('#itemcode').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_indentitem"  %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].mrp);
+                        if(obj.length>0){
+                            $("#mrp2").val(obj[0].mrp);
+                            $("#cases2").val(obj[0].uom);
+                            $("#quantity").val(" ");
+                            $("#nob").val(" ");
+                             $("#mrp").val(obj[0].mrp);
+
+					}
+             	}
+        	});
+    	});
+    	$('#quantity1').on('input', function()  {
+    	    val  = $("#quantity1").val();
+            val1 = $("#cases2").val();
+            mrp2 = $("#mrp2").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp2)
+            $("#nob1").val(val2);
+            $("#mrp2").val(val3);
+         });
+         $('#getdate').val(new Date().toJSON().slice(0,10));
+$('.form-control').change(function() {
+    console.log('Dropdown value changed');
+    if($(this).val() === '') {
+      alert('Please select an option');
+    }
+  });
+  $(document).ready(function() {
+    $("#wh").on("change", function() {
+      var selectedOption = $(this).val();
+
+      // Hide all the divs initially
+      $(".warehouse-div").hide();
+      $(".depot-div").hide();
+
+      if (selectedOption === "Depot") {
+        // Show the Warehouse-specific div
+        $(".warehouse-div").show();
+        $(".depot-div").hide();
+      } else if (selectedOption === "Busstation") {
+        // Show the Depot-specific div
+        $(".depot-div").show();
+         $(".warehouse-div").hide();
+      }
+    });
+  });
+   $('#getdate1').val(new Date().toJSON().slice(0,10));
+</script>
+{% endblock %}

@@ -76,7 +76,9 @@
                                     <th>No Of Bottles</th>
                                     <th>OPRS</th>
                                     <th>Vehical No</th>
+                                    <th>Staff Id(1)</th>
                                     <th>Staff Name(1)</th>
+                                    <th>Staff Id(2)</th>
                                     <th>staff Name(2)</th>
                                     <th>Action</th>
 
@@ -93,7 +95,9 @@
                               <td>{{ data.noofbottles_recieve }}</td>
                               <td>{{ data.oprs }}</td>
                                 <td>{{ data.vehicleno  }}</td>
+                                <td>{{ data.staffnumber }}</td>
                                 <td>{{ data.staffname }}</td>
+                                <td>{{  data.staffnumbertwo }}</td>
                             <td>{{ data.staffnumbertwoname }}</td>
 
                             <td>
@@ -734,9 +738,9 @@ $(document).ready(function() {
                 alert(data.response)
                 alert(response)
                 console.log(data.response)
-                if (response.status_code === 503) {
+                if (response.status_code === 200) {
                     $('#returnButton').show();
-                    window.reaload();
+                     window.reaload();
                 } else {
                     $('#returnButton').hide();
                 }

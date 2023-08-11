@@ -13055,3 +13055,10 @@ def stock_tranfer_admin(request):
         return redirect('/login')
     menuname = request.session['mylist']
     return render(request,'stock_transfer/stock_transfer_admin.html',{"menuname": menuname})
+
+def intconsump_stocktransfer(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    return render(request, 'intconsumption/intconsump_stocktransfer.html', {"menuname": menuname})

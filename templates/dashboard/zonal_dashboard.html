@@ -450,18 +450,23 @@
                           <tr>
                             <th class="design" rowspan="2">#</th>
                                <th  class="design" rowspan="2">Depot </th>
-                              <th class="design" rowspan="2">Items</th>
-                              <th  class="design" colspan="2">Pending indent Qty</th>
-                              <th class="design" colspan="2">Verified indent Qty</th>
+                              <th class="design" colspan="1">1000ml</th>
+                               <th class="design" colspan="1">500ml</th>
+                               <th class="design" colspan="1">250ml</th>
+                              <th  class="design" colspan="1">Pending indent Qty</th>
 
                           </tr>
                             <tr>
                             <!--<th class="design">Invoice no</th>-->
 
                             <th class="design">Qty( Cases)</th>
-                            <th class="design">Qty( Bottles)</th>
+                           <!-- <th class="design">Qty( Bottles)</th>-->
                             <th class="design">Qty( Cases)</th>
-                            <th class="design">Qty( Bottles)</th>
+                           <!-- <th class="design">Qty( Bottles)</th>-->
+                                <th class="design">Qty( Cases)</th>
+                            <!--<th class="design">Qty( Bottles)</th>-->
+                                <th class="design">Qty( Cases)</th>
+                           <!-- <th class="design">Qty( Bottles)</th>-->
                           </tr>
                         </thead>
 
@@ -1401,8 +1406,8 @@ var theme = {
         var seriesData = [];
         var count=0;
          if($("#depots_indent").prop('checked')){
-              $("#echart-indent").show();
-               $("#lblindent").hide();
+            $('#echart-indent').show();
+              $('#lblindent').show();
           }
          var echartPie = echarts.init(document.getElementById('echart-indent'),theme);
            for (var i = 0; i < total.length; i++) {
@@ -1503,9 +1508,8 @@ var theme = {
             }
         };
          if($("#depots_indent").prop('checked')){
-              $("#echart-indent").hide();
-              $("#lblindent").hide();
-
+              $('#echart-indent').show();
+              $('#lblindent').show();
           }
 
     }
@@ -2075,10 +2079,10 @@ $.ajax({
                 $('.depotbott').text(item.consumption_botteles);
                 $('.depotdays').text(item.indays);
                 var row = $('<tr>');
-                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(i + 1));
                 row.append($('<td>').text(item.itemname));
                 row.append($('<td>').text(item.stock_cases));
-                row.append($('<td>').text(item.stock_botteles));  // Quantity
+                row.append($('<td>').text(item.stock_botteles));
                 row.append($('<td>').text(item.consumption_cases));
                 row.append($('<td>').text(item.consumption_botteles));
                 row.append($('<td>').text(item.indays));
@@ -2266,12 +2270,13 @@ $.ajax({
 
 
 $('#depoid').change(function() {
+var inddate = $('#inddate').val();
 var deponame = $('#depoid').val();
 $.ajax({
   type: "POST",
   url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+   'deponame':deponame,'inddate':inddate, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
      var total =  data.data.totallist;

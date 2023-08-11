@@ -418,9 +418,9 @@
 											 <input type="hidden" name="deponame1" id="deponame" />
 												<select class="form-control depot" name="depoid" id="depoid" required>
                                                     <option value="All">All</option>
-                                                    {% for data in wh_masterlist %}
+                                                    {% for data in depolist %}
                                                         {% if data.status == 'Active' %}
-                                                                <option value="{{ data.warehouseid  }}">{{  data.warehousename  }}</option>
+                                                                <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
                                                         {% endif %}
                                                     {% endfor %}
 												</select>
@@ -436,7 +436,7 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count pendingind" style="color:green;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count pendingind" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
          <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
                 <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending Indents</p>
               </div>
@@ -450,13 +450,13 @@
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indbottles" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div class="count indbottles" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
              <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty Indented(Cases)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty indented(In Cases)</p>
               </div>
             </div>
 
-               <div class="col-md-4">
+               <div class="col-md-4 echart-indent">
                    <h3 class="text-danger" style="width: 300px; height: 200px;margin-top:140px;margin-left:170px;"id="lblindent">No data Available</h3>
                                     <div id="echart-indent"   style="width: 300px; height: 200px;margin-top:-20px;margin-left:100px;"></div>
                                 <!-- <h4 style="margin-left:90px;margin-right:-450px;margin-top:10px;" class="text-info textind">Qty indent versus Qty indented</h4>-->
@@ -467,6 +467,7 @@
                         <thead>
                           <tr>
                             <th class="design1" rowspan="2">#</th>
+                                <th class="design1" rowspan="2">Depot</th>
                               <th class="design1" rowspan="2">Items</th>
                               <th  class="design1" colspan="2">Pending indent Qty</th>
                               <th class="design1" colspan="2">Verified indent Qty</th>
@@ -1134,7 +1135,7 @@ var theme = {
             element: 'graph_bar_group1',
             data: seriesData,
             xkey: 'period',
-            barColors: ['#E12609', '#34495E', '#ACADAC', '#3498DB'],
+            barColors: ['#CD142A', '#1271D0', '#F86A1E', '#3498DB'],
             ykeys: ["Available","Avg consumption"],
             labels: ["Available","Avg consumption"],
             hideHover: 'auto',
@@ -1237,10 +1238,14 @@ var theme = {
 
     }
 
-    function depotindent(total){
+   function depotindent(total){
         var seriesData = [];
         var count=0;
-         var echartPie = echarts.init(document.getElementById('echart-indent'), "");
+         if($("#depots_indent").prop('checked')){
+              $('#echart-indent').show();
+              $('#lblindent').show();
+          }
+         var echartPie = echarts.init(document.getElementById('echart-indent'),theme);
            for (var i = 0; i < total.length; i++) {
             var item = total[i];
               if(item.indent_count !="0"){
@@ -1266,6 +1271,7 @@ var theme = {
             }
 
          }
+
     if (count === 0) {
               $('#echart-indent').hide();
               $('#lblindent').show();
@@ -1337,6 +1343,13 @@ var theme = {
                 color: 'rgba(0,0,0,0)'
             }
         };
+         if($("#depots_indent").prop('checked')){
+               $('#echart-indent').show();
+              $('#lblindent').show();
+
+          }
+
+
 
     }
 
@@ -2018,7 +2031,8 @@ $.ajax({
               for (var i = 0; i < itemslist.length; i++) {
                 var item = itemslist[i];
                 var row = $('<tr>');
-                row.append($('<td>').text(i + 1));
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.deponame));
                 row.append($('<td>').text(item.itemname));
                 row.append($('<td>').text(item.pen_qty_cases));
                 row.append($('<td>').text(item.pen_qty_bottles));
@@ -2032,12 +2046,11 @@ $.ajax({
                 var item = total[i];
                 $('.pendingind').text(item.pending_count);
                 $('.indentcases').text(item.verified_count);
-                $('.indbottles').text(item.ver_qty_cases);
-                //$('.depotbott').text(item.consumption_botteles);
-                //$('.depotdays').text(item.indays);
+                $('.indbottles').text(item.pen_qty_cases);
+
                 var row = $('<tr>');
-                row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-                 row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
+                row.append($('<th>').text('Grand Total').attr('colspan', 3).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_bottles).addClass('design1'));
@@ -2052,13 +2065,15 @@ $.ajax({
 });
 });
 
+
 $('#depoid').change(function() {
+var inddate = $('#inddate').val();
 var deponame = $('#depoid').val();
 $.ajax({
   type: "POST",
   url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
   data: {
-   'deponame':deponame, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+   'deponame':deponame,'inddate':inddate, 'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function(data) {
      var total =  data.data.totallist;
@@ -2079,9 +2094,10 @@ $.ajax({
                 var item = itemslist[i];
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));
+                row.append($('<td>').text(item.deponame));// S No
                 row.append($('<td>').text(item.itemname));
                  row.append($('<td>').text(item.pen_qty_cases));
-                row.append($('<td>').text(item.pen_qty_bottles));
+                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
                 row.append($('<td>').text(item.ver_qty_cases));
                 row.append($('<td>').text(item.ver_qty_bottles));
                 tableBody.append(row);
@@ -2092,9 +2108,9 @@ $.ajax({
                 var item = total[i];
                 $('.pendingind').text(item.pending_count);
                 $('.indentcases').text(item.verified_count);
-                $('.indbottles').text(item.ver_qty_cases);
+                $('.indbottles').text(item.pen_qty_cases);
                 var row = $('<tr>');
-                row.append($('<th>').text('Grand Total').attr('colspan',2).addClass('design1'));
+                row.append($('<th>').text('Grand Total').attr('colspan',3).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
@@ -2108,22 +2124,81 @@ $.ajax({
   }
 });
 });
- $(document).ready(function() {
+
+$('#inddate').change(function() {
+var deponame = $('#depoid').val();
+var inddate = $('#inddate').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'zonal_depotindent_data' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+   'deponame':deponame,'inddate':inddate, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     var itemslist = data.data.itemlist;
+     message = data.data.message
+     console.log(data);
+     if(message != "Data found")
+          {
+           $("#lblindent").html(data.message);
+           $("#lblindent").show();
+           $("#echart-indent").hide();
+          }else{
+           depotindent(total);
+      }
+        var tableBody = $('#pendingind  tbody');
+        tableBody.empty();
+              for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));
+                row.append($('<td>').text(item.deponame));// S No
+                row.append($('<td>').text(item.itemname));
+                 row.append($('<td>').text(item.pen_qty_cases));
+                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
+                row.append($('<td>').text(item.ver_qty_cases));
+                row.append($('<td>').text(item.ver_qty_bottles));
+                tableBody.append(row);
+              }
+       var tfootdata = $('#pendingind tfoot');
+       tfootdata.empty();
+         for (var i = 0; i < total.length; i++) {
+                var item = total[i];
+                $('.pendingind').text(item.pending_count);
+                $('.indentcases').text(item.verified_count);
+                $('.indbottles').text(item.pen_qty_cases);
+                var row = $('<tr>');
+                row.append($('<th>').text('Grand Total').attr('colspan',3).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
+                row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
+                row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
+                row.append($('<td>').text(item.ver_qty_bottles).addClass('design1'));
+                tfootdata.append(row);
+          }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+
+$(document).ready(function() {
     $("#depots_indent").click(function() {
       if ($(this).is(":checked")) {
-       $("#echart-indent").hide();
-       $('.textind').hide();
-       $('#lblindent').hide();
-      $("#pendingind").show();
+       $(".echart-indent").hide();
+         $("#pendingind").show();
     }
     else{
-    $('#lblindent').show();
-     $("#echart-indent").show();
+     $(".echart-indent").show();
      $('.textind').show();
       $("#pendingind").hide();
     }
     });
   });
+
   $(document).ready(function() {
     $("#depot_stock").click(function() {
       if ($(this).is(":checked")) {
@@ -2151,6 +2226,7 @@ $.ajax({
     });
   });
 $('#grndate').val(new Date().toJSON().slice(0,10));
+$('#inddate').val(new Date().toJSON().slice(0,10));
 
 
 
