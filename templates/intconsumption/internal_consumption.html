@@ -104,7 +104,7 @@
                                 {% if data.status == 'Pending' %}
                                     <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
                                 {% else %}
-                                    <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}')"  data-target="#return">RETURN</span>
+                                    <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}')"  data-target="#return">RETURN</span>
                                 {% endif %}
                             </td>
                                 </tr>
@@ -278,6 +278,7 @@
 										    <input type="text" class="form-control" placeholder="tickets" name="tickets" id="tickets" required>
 										</div>
                                             <input type="hidden" name="service_id" id="service_id" />
+                                                 <input type="hidden" name="count" id="count" />
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>To be return  *</label>
 										    <input type="text" class="form-control" placeholder="bottles" name="bottlesreturn" id="bottlesreturn" readonly>
@@ -775,8 +776,7 @@ $("#id1").val(id);
         $("#staffname4").hide();
       }
     });
-  });
-
+});
 
 
 //$("#depoid1").change(function() {
@@ -785,17 +785,35 @@ $("#id1").val(id);
   $("#deponame1").val(selectedOptionText);
 });
 
-function VerifyClick1(id,id1){
+
+function VerifyClick1(id,id1,id2){
+$("#tickets").val(" ");
+$("#bottlesreturn").val(" ");
+$("#actbottlesreturn").val(" ");
+$("#shortbottlesreturn").val(" ");
+$("#staffname3").val(" ");
+$("#staffnameret2").val(" ");
 $("#service_id").val(id);
 $("#bott").val(id1);
+$("#count").val(id2);
 }
+
 $('#tickets').on('input', function() {
     var val = parseInt($("#tickets").val());
-    var val1 =parseInt($("#bott").val());
-    var val = val + 2;
-    var sum = val1 - val;
-    $("#bottlesreturn").val(sum); // Set the result in #bottlesreturn
+    var val1 = parseInt($("#bott").val());
+    var val2 = parseInt($("#count").val());
+
+    var updatedCount = val + val2;
+    var remainingBottles = val1 - updatedCount;
+
+    if (remainingBottles < 0) {
+        $("#bottlesreturn").val("0");
+    } else {
+        $("#bottlesreturn").val(remainingBottles);
+    }
 });
+
+
  $('#actbottlesreturn').on('input', function()  {
             val2  = parseInt($("#bottlesreturn").val());
             val3  = $("#actbottlesreturn").val();
@@ -817,6 +835,7 @@ $('#tickets').on('input', function() {
     });
   });
 
+
     document.getElementById('fdate').addEventListener('change', function() {
         var form = document.getElementById('myForm');
         form.submit();
@@ -825,6 +844,8 @@ $('#tickets').on('input', function() {
         var form = document.getElementById('myForm');
         form.submit();
     });
+
+
   $(document).ready(function () {
     $("#authorize1").click(function() {
     		var auth = $('#sno').val();
