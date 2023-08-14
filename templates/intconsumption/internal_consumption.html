@@ -152,7 +152,7 @@
                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Select Service</label>
 											 <input type="hidden" name="servicename" id="servicename" />
-												<select class="form-control select2" name="service" id="service" style="width:180px !important;">
+												<select class="form-control select2" name="service" id="service" style="width:180px !important;" required>
 													<option value=""> service</option>
 												</select>
 										</div>
@@ -172,7 +172,7 @@
                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label> Driver Id1 *</label>
 										     <input type="hidden" name="staffnum" id="staffnum" />
-												<select class="form-control select2" name="staffnumb" id="staffnumb" style="width:180px !important;">
+												<select class="form-control select2 items" name="staffnumb" id="staffnumb" style="width:180px !important;" required>
 													<option value="">driver id</option>
 												</select>
 										</div>
@@ -183,7 +183,7 @@
                                          <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label> Driver Id2 </label>
 										     <input type="hidden" name="staffnum" id="staffnum1" />
-												<select class="form-control select2" name="staffnumb1" id="staffnumb1" style="width:180px !important;">
+												<select class="form-control select2" name="staffnumb1" id="staffnumb1" style="width:180px !important;" required>
 													<option value="">driver id</option>
 												</select>
 										</div>
@@ -195,7 +195,7 @@
 										<div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label> Vehical Number *</label>
 										     <input type="hidden" name="vehicalname" id="vehicalname" />
-												<select class="form-control select2" name="vehicalnumb" id="vehicalnumb" style="width:180px !important;">
+												<select class="form-control select2" name="vehicalnumb" id="vehicalnumb" style="width:180px !important;" required>
 													<option value=""> Vehical number</option>
 												</select>
 										</div>
@@ -211,7 +211,7 @@
                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Select No Of Bottles *</label>
 										     <input type="hidden" name="nob" id="nob" />
-												<select class="form-control" name="nobt" id="nobt">
+												<select class="form-control" name="nobt" id="nobt" required>
 													<option value="">bottles</option>
                                                     	{% for data in nobot %}
                                                             	<option value="{{ data.noofbottles }}">{{ data.noofbottles}}</option>

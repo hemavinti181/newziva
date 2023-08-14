@@ -278,27 +278,8 @@ urlpatterns = [
     path('bust_dashboard_data1',views.bust_dashboard_data1,name='bust_dashboard_data1'),
     path('zonal_depotwise_data1',views.zonal_depotwise_data1,name='zonal_depotwise_data1'),
     path('stock_tranfer_admin',views.stock_tranfer_admin,name='stock_tranfer_admin'),
-    path('intconsump_stocktransfer',views.intconsump_stocktransfer,name='intconsump_stocktransfer')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    path('intconsump_stocktransfer',views.intconsump_stocktransfer,name='intconsump_stocktransfer'),
+    path('intconsump_report',views.intconsump_report,name='intconsump_report'),
+    path('intconsump_dashboard',views.intconsump_dashboard,name='intconsump_dashboard'),
+    path('intconsump_dashboard_data',views.intconsump_dashboard_data,name='intconsump_dashboard_data'),
 ]

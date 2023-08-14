@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
-
-
-
+<style>
+#datatable-buttons {
+    overflow-x: scroll !important;
+}
+</style>
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -43,13 +44,13 @@
                   <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
-                            <div class="card-box table-responsive">
+            <div class="card-box table-responsive" style="overflow:hidden;">
                     <p class="text-muted font-13 m-b-30">
                     </p>
                                 <p></p>
                         <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">
                                 <table id="datatable" class="display table-striped table-bordered" style="width:100%">-->
-                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
+                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%;overflow:hidden;">
                       <thead>
                         <tr>
                                     <th>S No</th>
@@ -57,15 +58,17 @@
                                     <th>Date</th>
                                     <th>Service No</th>
                                     <th>OPRS</th>
-                                    <th>Received</th>
-                                    <th>Consumed</th>
-                                    <th>Actual Return</th>
-                                    <!--<th>To be Return</th>-->
-                                    <th>Shortage</th>
+                                    <th>Bottles Issued</th>
+                                    <th>No Of Tickets</th>
+                                    <th>Bottles Returned</th>
+                                    <th>Shortage/Excess</th>
                                     <th>Vehical no</th>
-                                    <th>Staff Name(1)</th>
+                                     <th>Staff Name(1)</th>
+                                      <th>Staff Id(1)</th>
                                      <th>Staff Name(2)</th>
-                            <th>Taken From</th>
+                                      <th>Staff Id(2)</th>
+                                     <th>Taken From</th>
+
 
 
                         </tr>
@@ -85,6 +88,7 @@
                                 <td>{{ data.shortage }}</td>
                                 <td>{{ data.vehicleno }}</td>
                               <td>{{ data.return_drivername }}</td>
+                                <td></td>
                                 <td>{{ data.return_drivername_two }}</td>
                                 <td>{{ data.return_authorized_staffname }}</td>
 
@@ -100,6 +104,7 @@
               </div>
             </div>
           </div>
+</div>
 </div>
 <div class="inner-fabs">
 

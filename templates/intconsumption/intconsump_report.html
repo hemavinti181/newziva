@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Internal consumption</h3>
+              </div>
+
+              <div class="title_right">
+                <!--<div class="col-md-6 col-sm-6 offset-md-10">
+                    <a href="#"><button type="submit" data-toggle="modal" data-target="#add_consumption" class="btn btn-primary"  >Add </button></a>
+                </div>-->
+            </div>
+              </div>
+            <div class="clearfix"></div>
+             <div class="row">
+              <div class="col-md-12 col-sm-12">
+                               			<!-- Search Filter -->
+						<form  method="POST" action="/returnsconsumption"  id="myForm" enctype="multipart/form-data">
+									{% csrf_token %}
+                            <div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">from </label>
+									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
+                                   <input type="hidden" name="fdate_hidden" id="fdate_hidden">
+							</div>
+                             <div class="col-sm-3 col-md-3 form-group has-feedback">
+									<label class="focus-label">To</label>
+									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
+                                   <input type="hidden" name="tdate_hidden" id="tdate_hidden">
+							</div>
+                             <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>-->
+                        </form>
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+                                <p></p>
+                        <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">
+                                <table id="datatable" class="display table-striped table-bordered" style="width:100%">-->
+                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <!--<th>Depot</th>-->
+                                    <th>Date</th>
+                                    <th>Service No</th>
+                                    <th>Route</th>
+                                     <th>Type Of Bus</th>
+                                    <th>Staff Name(1)</th>
+                                    <th>Staff Id(1)</th>
+                                    <th>Staff Name(2)</th>
+                                    <th>Staff Id(2)</th>
+                                    <th>Bootles Issued</th>
+                                    <th>No of tickets</th>
+                                    <th>Bottles Returned</th>
+                                    <th>Shortage/Excess</th>
+
+                        </tr>
+                      </thead>
+                            <tbody>
+                            {% for data in data %}
+                            <tr>
+                              <td>{{ forloop.counter }}</td>
+                              <td>{{ data.created_on }}</td>
+                              <td>{{ data.service_id }}</td>
+                                <td>{{ data.route }}</td>
+                                <td> {{ data.product_type }}</td>
+                                <td>{{ data.bus_service_no }}</td>
+                              <td>{{ data.return_drivername }}</td>
+                                    <td>{{ data.staffname }}</td>
+                              <td>{{ data.return_drivername_two }}</td>
+                              <td>{{ data.staffnumber2 }}</td>
+                                <td>{{ data.noofbottles_recieve}}</td>
+                                <td>{{ data.no_of_tickets}}</td>
+                              <td>{{ data.no_of_tickets_consumed }}</td>
+                                <td>{{ data.return_no_of_bottles }}</td>
+                                <td>{{ data.shortage }}</td>
+
+                                </tr>
+                            {% endfor %}
+                      </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+</div>
+<script>
+      document.getElementById('fdate').addEventListener('change', function() {
+        var form = document.getElementById('myForm');
+        form.submit();
+    });
+     document.getElementById('tdate').addEventListener('change', function() {
+        var form = document.getElementById('myForm');
+        form.submit();
+    });
+</script>
+{% endblock %}

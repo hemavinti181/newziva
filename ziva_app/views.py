@@ -109,13 +109,13 @@ def login(request):
             messages.success(request,data['message'])
             if role == 'Admin':
                 return redirect('/depot_dashboard')
-            elif displayrole =="UPPAL ZONAL STORES":
+            elif role == "Warehouse":
                 return redirect('/zonal_dashboard')
-            elif displayrole == 'BUS STATION CONTROLLER':
+            elif role == 'Bus Station':
                 return redirect('/bust_dashboard')
-            elif displayrole == 'DC CONTROLLER':
+            elif role == 'Bus Station' and  displayrole == 'DC CONTROLLER':
                 return redirect('/internal_consumption')
-            elif displayrole ==  "DEPOT STORE EXECUTIVE":
+            elif role ==  "Depo":
                 return redirect('/depot_dashboard')
             elif displayrole == "MARKETING EXECUTIVE":
                 return redirect('/store_master')
@@ -11558,8 +11558,12 @@ def return_bussupply(request):
             return redirect('internal_consumption')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return redirect('/login')
+            if data['message']  == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/internal_consumption')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
             return redirect('internal_consumption')
     except:
@@ -11715,6 +11719,71 @@ def returnsconsumption(request):
             return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname,'fdate':fdate,'tdate':tdate})
         else:
             return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname})
+
+
+
+def intconsump_report(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    if request.method == 'POST':
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        fdate = request.POST.get('fdate')
+        tdate = request.POST.get('tdate')
+        url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey, "fdate": fdate,
+            "tdate": tdate
+        })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            busservicesupplylist = data['busservicesupplylist']
+            return render(request, 'intconsumption/intconsump_report.html',
+                          {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        else:
+            return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname})
+    else:
+        current_date = datetime.date.today()
+        fdate = current_date - timedelta(days=current_date.weekday() + 7)
+        fdate = fdate.strftime("%Y-%m-%d")
+        tdate = datetime.date.today()
+        tdate = tdate.strftime("%Y-%m-%d")
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey, "fdate": fdate, "tdate": tdate})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            busservicesupplylist = data['busservicesupplylist']
+            return render(request, 'intconsumption/intconsump_report.html',
+                          {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'intconsumption/intconsump_report.html',
+                          {'menuname': menuname, 'fdate': fdate, 'tdate': tdate})
+        else:
+            return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname})
 def vehicallist(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13062,3 +13131,57 @@ def intconsump_stocktransfer(request):
         return redirect('/login')
     menuname = request.session['mylist']
     return render(request, 'intconsumption/intconsump_stocktransfer.html', {"menuname": menuname})
+
+def intconsump_dashboard(request):
+    if 'mylist' not in request.session:
+
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    return render(request, 'intconsumption/intconsump_dashboard.html', {"menuname": menuname})
+def intconsump_dashboard_data(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
+    fdate = request.POST.get('fdate')
+    cdate = request.POST.get('cdate')
+    tdate = datetime.date.today()
+    tdate = tdate.strftime("%Y-%m-%d")
+    if fdate:
+        date = fdate
+    else:
+        date = tdate
+    if cdate:
+        todate = cdate
+    else:
+        todate = tdate
+    payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame": "MIYAPUR-I",
+               }
+    payload = json.dumps(payload, cls=BytesEncoder)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('\login')
+    elif response.status_code == 503:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        messages.error(request, "Internal Server Error")
+        return JsonResponse({'data': "Internal Server Error"})
+
