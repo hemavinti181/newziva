@@ -38,28 +38,28 @@
               <h6 style="color:#14c38e;font-weight:600;font-size:18px;">Stock Issues To Services</h6>
             </div>
             <div class="title_right">
-              <div class="col-md-2 col-sm-2 offset-md-10">
+              <!--<div class="col-md-2 col-sm-2 offset-md-10">
                 <label><input type="checkbox" id="checked1" class="js-switch"  /></label>
-              </div>
+              </div>-->
             </div>
           </div>
           <div class="x_content stockchart">
         <form  method="POST" action="/intconsump_dashboard_data"  id="myForm" enctype="multipart/form-data">
 									{% csrf_token %}
              <div class="col-md-4 col-sm-4  form-group has-feedback">
-                 <input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ request.POST.fdate }}" style="font-size:15px;" required>
+                 <input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ request.POST.fdate }}" style="font-size:14px;" required>
              </div>
              <div class="col-md-4 col-sm-4  form-group has-feedback">
-                 <input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ request.POST.tdate }}" style="font-size:15px;"required>
+                 <input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ request.POST.tdate }}" style="font-size:14px;" required>
              </div>
 
             <div class="col-md-4 col-sm-4  form-group has-feedback">
 
-										    	 <select class="form-control items" name="itemcode" id="itemcode" required>
+										    	 <select class="form-control items" name="depoid" id="depoid" required>
                                                      <option value="All">All</option>
-                                                    {% for data in item_masterlist %}
+                                                    {% for data in depolist %}
                                                         {% if data.status == "Active" %}
-                                                                <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                                <option value="{{ data.depoid }}">{{ data.deponame }}</option>
                                                         {% endif %}
                                                     {% endfor %}
                                                 </select>
@@ -396,30 +396,29 @@ function updateEchartPieChart(itemslist) {
 
 
             var item = itemslist;
-              if(item.issued!="0" ){
+              if(item[0].issued!="0" ){
                seriesData.push({
-                 value: item.issued,
+                 value: item[0].issued,
                  name: 'Issued'
                });
                  count++;
                }
-               if(item.consumed!="0" ){
+               if(item[0].consumed!="0" ){
                seriesData.push({
-                 value: item.consumed,
+                 value: item[0].consumed,
                  name: 'Consumed'
                });
                  count++;
                }
-                if(item.shortage!="0" ){
+                if(item[0].shortage!="0" ){
                seriesData.push({
-                    value: item.shortage,
-                    name: 'Shorage'
+                    value: item[0].shortage,
+                    name: 'Shortage'
                 });
                   count++;
                }
 
             legendData.push('Issued','Consumed','Shortage');
-          alert(count)
           if(count === 0){
           $("#echart-depot1").hide();
            $("#lblNoStock").show();
@@ -499,17 +498,20 @@ function updateEchartPieChart(itemslist) {
  }
 
 $(document).ready(function() {
+depoid = $('#depoid').find(":selected").text();
+alert(depoid)
 $.ajax({
-  type: "GET",
+  type: "POST",
   url: "{% url 'intconsump_dashboard_data' %}",
   data: {
-   'csrfmiddlewaretoken': '{{ csrf_token }}'
+   'csrfmiddlewaretoken': '{{ csrf_token }}','depoid':depoid,
   },
   success: function(data) {
      var itemslist =  data.data.consumptionlist;
      message = data.data.message
-     console.log(itemslist.issued);
-      if(message != "Data found")
+     console.log(itemslist);
+     console.log(itemslist[0].issued)
+      if(message != "data found")
       {
        $("#lblNoStock").show();
        $("#echart-depot1").hide();
@@ -517,13 +519,11 @@ $.ajax({
        updateEchartPieChart(itemslist);
       }
 
-                    $('.issued_bottles').text(itemslist.issued);
-                    $('.consumed_botteles').text(itemslist.consumed);
-                    $('.shortage').text(itemslist.shortage);
-                    $('.tobe_return').text(itemslist.no_of_tickets);
-                    $('.passenger').text(itemslist.no_of_tickets);
-
-
+                    $('.issued_bottles').text(itemslist[0].issued);
+                    $('.consumed_botteles').text(itemslist[0].consumed);
+                    $('.shortage').text(itemslist[0].shortage);
+                    $('.tobe_return').text(itemslist[0].no_of_tickets);
+                    $('.passenger').text(itemslist[0].no_of_tickets);
 
   },
   error: function(jqXHR, textStatus, errorThrown) {
@@ -536,19 +536,58 @@ $.ajax({
 
 
  $("#fdate, #tdate").change(function() {
+ depoid = $('#depoid').find(":selected").text();
  fdate = $('#fdate').val();
  tdate = $('#tdate').val();
   $.ajax({
   type: "POST",
   url: "{% url 'intconsump_dashboard_data' %}",
   data: {
-  'fdate':fdate,'cdate':tdate, 'csrfmiddlewaretoken': '{{ csrf_token }}','fdate':fdate,'cdate':tdate
+  'fdate':fdate,'cdate':tdate,'depoid':depoid,'csrfmiddlewaretoken': '{{ csrf_token }}',
   },
   success: function(data) {
      var itemslist =  data.data.consumptionlist;
      message = data.data.message
-     console.log(itemslist.issued);
-      if(message != "Data found")
+     console.log(message);
+      if(message != "data found")
+      {
+       $("#lblNoStock").show();
+       $("#echart-depot1").hide();
+      }else{
+       updateEchartPieChart(itemslist);
+      }
+
+                    $('.issued_bottles').text(itemslist[0].issued);
+                    $('.consumed_botteles').text(itemslist[0].consumed);
+                    $('.shortage').text(itemslist.shortage);[0]
+                    $('.tobe_return').text(itemslist[0].no_of_tickets);
+                    $('.passenger').text(itemslist[0].no_of_tickets);
+
+
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+$("#depoid").change(function() {
+ depoid = $('#depoid').find(":selected").text();
+ fdate = $('#fdate').val();
+ tdate = $('#tdate').val();
+  $.ajax({
+  type: "POST",
+  url: "{% url 'intconsump_dashboard_data' %}",
+  data: {
+  'fdate':fdate,'cdate':tdate,'depoid':depoid, 'csrfmiddlewaretoken': '{{ csrf_token }}',
+  },
+  success: function(data) {
+     var itemslist =  data.data.consumptionlist;
+     message = data.data.message
+     console.log(message);
+      if(message != "data found")
       {
        $("#lblNoStock").show();
        $("#echart-depot1").hide();
@@ -561,8 +600,6 @@ $.ajax({
                     $('.shortage').text(itemslist.shortage);
                     $('.tobe_return').text(itemslist.no_of_tickets);
                     $('.passenger').text(itemslist.no_of_tickets);
-
-
 
   },
   error: function(jqXHR, textStatus, errorThrown) {

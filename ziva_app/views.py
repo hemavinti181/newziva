@@ -1881,6 +1881,7 @@ def bus_status_inactive(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
+    accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
     payload = json.dumps({
@@ -2059,6 +2060,10 @@ def warehouse_list(request):
             data = response.json()
             wh_masterlist = data['warehouselist']
             return render(request, 'warehouse/warehouse_list.html', {'all_data': wh_masterlist,'menuname':menuname})
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
         else:
             return render(request, 'warehouse/warehouse_list.html',{'menuname':menuname})
     except:
@@ -2066,102 +2071,107 @@ def warehouse_list(request):
     return render(request, 'category_master/storetype_list.html', {'menuname': menuname})
 
 def warehouse_add(request):
-    if 'accesskey' not in request.session:
-        messages.error(request, 'Access denied!')
-        return redirect('/login')
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "regionid": ""
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    res_region = response.json()
-    region = res_region['regionlist']
-
-
-    if request.method == "POST":
-        gstattach = request.FILES.get("gstattach")
-        panattach = request.FILES.get("panattach")
-        licattach = request.FILES.get("licattach")
-        warehouse = request.FILES.get("warehousefile")
-        if gstattach:
-            gstattach = base64.b64encode(gstattach.read())
-            gst_name = request.FILES.get("gstattach").name
-
-        else:
-            gstattach = None
-            gst_name = None
-        if panattach:
-            panattach_data = base64.b64encode(panattach.read())
-            panattach_name = request.FILES.get("panattach").name
-
-        else:
-            panattach_data = None
-            panattach_name = None
-        if licattach:
-            licattach_data = base64.b64encode(licattach.read())
-            licattach_name = request.FILES.get("licattach").name
-
-        else:
-            licattach_data = None
-            licattach_name = None
-        if warehouse:
-            warehouse_data = base64.b64encode(warehouse.read())
-            warehouse_name = request.FILES.get("warehouse").name
-
-        else:
-            warehouse_data = None
-            warehouse_name = None
-
-        url = "http://13.235.112.1/ziva/mobile-api/add-warehousemaster.php"
-        payload = {
+    try:
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        payload = json.dumps({
             "accesskey": accesskey,
-            "regionid": request.POST.get('depo'),
-            "warehousename": request.POST.get('warehousename'),
-            "gstnumber": " ",
-            "licenseno": " ",
-            "panno": " ",
-            "address": request.POST.get('storeaddress'),
-            "wh_manager": request.POST.get('warehousemamager'),
-            "location": request.POST.get('location'),
-            "wh_contact_no": request.POST.get('mobileno'),
-            "gstattachfilename": gst_name,
-            "panattachfilekename": panattach_name,
-            "licencefilename": licattach_name,
-            "warehouseattachfilename": warehouse_name,
-            "panattach": panattach_data,
-            "warehouseattach": warehouse_data,
-            "gstattach": gstattach,
-            "licence": licattach_data,
-        }
-        payload = json.dumps(payload, cls=BytesEncoder)
-
+            "regionid": ""
+        })
         headers = {
             'Content-Type': 'application/json'
         }
-        r = requests.post(url, payload, headers=headers)
-        if r.status_code == 200:
-            r1 = r.json()
-            messages.success(request, r1['message'])
-            return redirect('warehouse_list')
-        else:
-            try:
-                r1 = r.json()
-                messages.error(request,r1['message'])
-            except:
-                r1 = r.json()
-                messages.error(request, response.text)
-            return render(request, 'warehouse/warehouse_add.html', {'data': region,'menuname':menuname})
 
-    return render(request, 'warehouse/warehouse_add.html', {'data': region,'menuname':menuname})
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        region = data['regionlist']
 
+
+        if request.method == "POST":
+            gstattach = request.FILES.get("gstattach")
+            panattach = request.FILES.get("panattach")
+            licattach = request.FILES.get("licattach")
+            warehouse = request.FILES.get("warehousefile")
+            if gstattach:
+                gstattach = base64.b64encode(gstattach.read())
+                gst_name = request.FILES.get("gstattach").name
+
+            else:
+                gstattach = None
+                gst_name = None
+            if panattach:
+                panattach_data = base64.b64encode(panattach.read())
+                panattach_name = request.FILES.get("panattach").name
+
+            else:
+                panattach_data = None
+                panattach_name = None
+            if licattach:
+                licattach_data = base64.b64encode(licattach.read())
+                licattach_name = request.FILES.get("licattach").name
+
+            else:
+                licattach_data = None
+                licattach_name = None
+            if warehouse:
+                warehouse_data = base64.b64encode(warehouse.read())
+                warehouse_name = request.FILES.get("warehouse").name
+
+            else:
+                warehouse_data = None
+                warehouse_name = None
+
+            url = "http://13.235.112.1/ziva/mobile-api/add-warehousemaster.php"
+            payload = {
+                "accesskey": accesskey,
+                "regionid": request.POST.get('depo'),
+                "warehousename": request.POST.get('warehousename'),
+                "gstnumber": " ",
+                "licenseno": " ",
+                "panno": " ",
+                "address": request.POST.get('storeaddress'),
+                "wh_manager": request.POST.get('warehousemamager'),
+                "location": request.POST.get('location'),
+                "wh_contact_no": request.POST.get('mobileno'),
+                "gstattachfilename": gst_name,
+                "panattachfilekename": panattach_name,
+                "licencefilename": licattach_name,
+                "warehouseattachfilename": warehouse_name,
+                "panattach": panattach_data,
+                "warehouseattach": warehouse_data,
+                "gstattach": gstattach,
+                "licence": licattach_data,
+                "warehouse_code_org":request.POST.get('warehouse_code')
+            }
+            payload = json.dumps(payload, cls=BytesEncoder)
+
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            r = requests.post(url, payload, headers=headers)
+            if r.status_code == 200:
+                r1 = r.json()
+                messages.success(request, r1['message'])
+                return redirect('warehouse_list')
+            else:
+                try:
+                    r1 = r.json()
+                    messages.error(request,r1['message'])
+                except:
+                    r1 = r.json()
+                    messages.error(request, response.text)
+                return render(request, 'warehouse/warehouse_add.html', {'data': region,'menuname':menuname})
+
+        return render(request, 'warehouse/warehouse_add.html', {'data': region,'menuname':menuname})
+    except:
+     if  response.status_code  == 400:
+         messages.error(request, data['message'])
+         return redirect('/login')
+    return render(request, 'warehouse/warehouse_add.html', {'menuname': menuname})
 def warehouse_status_active(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -11726,6 +11736,16 @@ def intconsump_report(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    depolist = data['depolist']
     if request.method == 'POST':
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
@@ -11735,7 +11755,7 @@ def intconsump_report(request):
 
         payload = json.dumps({
             "accesskey": accesskey, "fdate": fdate,
-            "tdate": tdate
+            "tdate": tdate,"deponame": request.POST.get('deponame'),
         })
         headers = {
             'Content-Type': 'text/plain'
@@ -11745,13 +11765,13 @@ def intconsump_report(request):
             data = response.json()
             busservicesupplylist = data['busservicesupplylist']
             return render(request, 'intconsumption/intconsump_report.html',
-                          {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate})
+                          {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
         elif response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
             return redirect('/login')
         else:
-            return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname})
+            return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'depolist':depolist,'fdate': fdate, 'tdate': tdate})
     else:
         current_date = datetime.date.today()
         fdate = current_date - timedelta(days=current_date.weekday() + 7)
@@ -11763,7 +11783,7 @@ def intconsump_report(request):
         url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
 
         payload = json.dumps({
-            "accesskey": accesskey, "fdate": fdate, "tdate": tdate})
+            "accesskey": accesskey, "fdate": fdate, "tdate": tdate,"deponame":"All"})
         headers = {
             'Content-Type': 'text/plain'
         }
@@ -11772,7 +11792,7 @@ def intconsump_report(request):
             data = response.json()
             busservicesupplylist = data['busservicesupplylist']
             return render(request, 'intconsumption/intconsump_report.html',
-                          {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate})
+                          {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
         elif response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
@@ -11781,9 +11801,11 @@ def intconsump_report(request):
             data = response.json()
             messages.error(request, data['message'])
             return render(request, 'intconsumption/intconsump_report.html',
-                          {'menuname': menuname, 'fdate': fdate, 'tdate': tdate})
+                          {'menuname': menuname, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
         else:
-            return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname})
+            return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'depolist':depolist})
+
+
 def vehicallist(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13134,11 +13156,20 @@ def intconsump_stocktransfer(request):
 
 def intconsump_dashboard(request):
     if 'mylist' not in request.session:
-
         messages.error(request, 'Access denied!')
         return redirect('/login')
     menuname = request.session['mylist']
-    return render(request, 'intconsumption/intconsump_dashboard.html', {"menuname": menuname})
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    depolist = data['depolist']
+    return render(request, 'intconsumption/intconsump_dashboard.html', {"menuname": menuname,'depolist':depolist})
 def intconsump_dashboard_data(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13158,7 +13189,7 @@ def intconsump_dashboard_data(request):
         todate = cdate
     else:
         todate = tdate
-    payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame": "MIYAPUR-I",
+    payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame": request.POST.get('depoid'),
                }
     payload = json.dumps(payload, cls=BytesEncoder)
     headers = {
@@ -13185,3 +13216,10 @@ def intconsump_dashboard_data(request):
         messages.error(request, "Internal Server Error")
         return JsonResponse({'data': "Internal Server Error"})
 
+def driverwise_shortage(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    menuname = request.session['mylist']
+    return render(request, 'intconsumption/driverwise_shortagereport.html', {"menuname": menuname})
