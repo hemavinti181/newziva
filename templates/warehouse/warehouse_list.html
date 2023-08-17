@@ -4,7 +4,7 @@
 <style>
 .style{
 	position: absolute !important;
-	width: 120% !important;
+	width: 100% !important;
 	}
 	</style>
 <div class="right_col" role="main">
@@ -84,7 +84,7 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
         <div class="modal-content style">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Warehouse</h5>
+                <h3 class="modal-title">Edit Warehouse</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -95,16 +95,20 @@
 
                     <input type="hidden" id="whid" name="whid"  />
 
-                    <div class="col-md-4 col-sm-4  form-group has-feedback">
+                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                         <label>Warehouse Name </label>
                         <input type="text" class="form-control" name="warehousename1" id="warehousename1">
                     </div>
-                    <div class="col-md-4 col-sm-4  form-group has-feedback">
+                    <div class="col-md-6 col-sm-6  form-group has-feedback">
+                        <label>Warehouse Code </label>
+                        <input type="text" class="form-control" placeholder="warehouse_code" name="whcode" id="whcode">
+                    </div>
+                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                         <label>Warehouse Manager  </label>
                         <input type="text" class="form-control"  name="manager" id="manager" >
                     </div>
 
-                    <div class="col-md-4 col-sm-4  form-group has-feedback">
+                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                         <label>Mobile </label>
                         <input type="text" class="form-control"  name="mobilewh" id="mobilewh" >
                     </div>
@@ -216,6 +220,7 @@ $(document).ready(function() {
              $("#licnumwh").val(obj.licenseno);
              $("#addresswh").val(obj.address);
              $("#location").val(obj.location);
+             $("#whcode").val(obj.whcode);
              $('#edit_warehouse').modal('show');
         	}
         }

@@ -418,30 +418,29 @@
           <div class="x_content">
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats" >
-                <div class="count pendingind" style="color:red;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
-         <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending</div>
-                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>Pending Indents</p>
+                <div class="count pendingind" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;margin-bottom:23px">0</div>
+         <div style="text-align:center;margin-left: auto;margin-right: auto;">Total indents</div>
+                <p class="d-none"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indentcases" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
-              <div style="text-align:center;margin-left: auto;margin-right: auto;">Verified</div>
-                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Verified indents</p>
+                <div class="count indentcases" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;margin-bottom:23px">0</div>
+              <div style="text-align:center;margin-left: auto;margin-right: auto;">Pending indents</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span></p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indbottles" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
-             <div style="text-align:center;margin-left: auto;margin-right: auto;">Supply Qty(Cases)</div>
-                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty indented(In Cases)</p>
+                <div class="count indbottles" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;">0</div>
+             <div style="text-align:center;margin-left: auto;margin-right: auto;">Qty To Be indented(cases)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Qty To Be indented(cases)</p>
               </div>
             </div>
 
-               <div class="col-md-4">
+               <div class="col-md-4 echart-indent">
                    <h5 class="text-danger" style="width: 300px; height: 200px;margin-top:140px;margin-left:170px;"id="lblindent">No data Available</h5>
                                     <div id="echart-indent"   style="width: 300px; height: 200px;margin-top:-20px;margin-left:100px;"></div>
-                                <!-- <h4 style="margin-left:90px;margin-right:-450px;margin-top:10px;" class="text-info textind">Qty indent versus Qty indented</h4>-->
                                 </div>
 
             <div class="col-md-12 col-sm-12">
@@ -453,8 +452,6 @@
                               <th class="design" colspan="1">1000ml</th>
                                <th class="design" colspan="1">500ml</th>
                                <th class="design" colspan="1">250ml</th>
-                              <th  class="design" colspan="1">Pending indent Qty</th>
-
                           </tr>
                             <tr>
                             <!--<th class="design">Invoice no</th>-->
@@ -465,8 +462,6 @@
                            <!-- <th class="design">Qty( Bottles)</th>-->
                                 <th class="design">Qty( Cases)</th>
                             <!--<th class="design">Qty( Bottles)</th>-->
-                                <th class="design">Qty( Cases)</th>
-                           <!-- <th class="design">Qty( Bottles)</th>-->
                           </tr>
                         </thead>
 
@@ -1426,10 +1421,10 @@ var theme = {
                });
                count++;
             }
-            if(item.verified_count !="0"){
+            if(item.pen_qty_cases !="0"){
                seriesData.push({
-                 value: item.verified_count,
-                 name: 'verified indent'
+                 value: item.pen_qty_cases,
+                 name: 'Qty to be  indented'
                });
                count++;
             }
@@ -2236,28 +2231,26 @@ $.ajax({
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));  // S No
                 row.append($('<td>').text(item.deponame));
-                row.append($('<td>').text(item.itemname));
-                row.append($('<td>').text(item.pen_qty_cases));
-                row.append($('<td>').text(item.pen_qty_bottles));
-                row.append($('<td>').text(item.ver_qty_cases));
-                row.append($('<td>').text(item.ver_qty_bottles));
+                row.append($('<td>').text(item.pen_qty_cases_1000ml));
+                row.append($('<td>').text(item.pen_qty_cases_500ml));
+                row.append($('<td>').text(item.pen_qty_cases_250ml));
                 tableBody.append(row);
               }
        var tfootdata = $('#pendingind tfoot');
        tfootdata.empty();
          for (var i = 0; i < total.length; i++) {
                 var item = total[i];
-                $('.pendingind').text(item.pending_count);
-                $('.indentcases').text(item.verified_count);
+                $('.pendingind').text(item.indent_count);
+                $('.indentcases').text(item.pending_count);
                 $('.indbottles').text(item.pen_qty_cases);
 
-                var row = $('<tr>');
+                /*var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan', 3).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_bottles).addClass('design1'));
-                tfootdata.append(row);
+                tfootdata.append(row); */
           }
 
   },
@@ -2296,29 +2289,27 @@ $.ajax({
               for (var i = 0; i < itemslist.length; i++) {
                 var item = itemslist[i];
                 var row = $('<tr>');
-                row.append($('<td>').text(i + 1));
-                row.append($('<td>').text(item.deponame));// S No
-                row.append($('<td>').text(item.itemname));
-                 row.append($('<td>').text(item.pen_qty_cases));
-                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
-                row.append($('<td>').text(item.ver_qty_cases));
-                row.append($('<td>').text(item.ver_qty_bottles));
+                row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.deponame));
+                row.append($('<td>').text(item.pen_qty_cases_1000ml));
+                row.append($('<td>').text(item.pen_qty_cases_500ml));
+                row.append($('<td>').text(item.pen_qty_cases_250ml));
                 tableBody.append(row);
               }
        var tfootdata = $('#pendingind tfoot');
        tfootdata.empty();
          for (var i = 0; i < total.length; i++) {
                 var item = total[i];
-                $('.pendingind').text(item.pending_count);
-                $('.indentcases').text(item.verified_count);
+                $('.pendingind').text(item.indent_count);
+                $('.indentcases').text(item.pending_count);
                 $('.indbottles').text(item.pen_qty_cases);
-                var row = $('<tr>');
+                /*var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan',3).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_bottles).addClass('design1'));
-                tfootdata.append(row);
+                tfootdata.append(row); */
           }
   },
   error: function(jqXHR, textStatus, errorThrown) {
@@ -2355,29 +2346,28 @@ $.ajax({
               for (var i = 0; i < itemslist.length; i++) {
                 var item = itemslist[i];
                 var row = $('<tr>');
-                row.append($('<td>').text(i + 1));
-                row.append($('<td>').text(item.deponame));// S No
-                row.append($('<td>').text(item.itemname));
-                 row.append($('<td>').text(item.pen_qty_cases));
-                row.append($('<td>').text(item.pen_qty_bottles));  // Quantity
-                row.append($('<td>').text(item.ver_qty_cases));
-                row.append($('<td>').text(item.ver_qty_bottles));
+               row.append($('<td>').text(i + 1));  // S No
+                row.append($('<td>').text(item.deponame));
+                row.append($('<td>').text(item.pen_qty_cases_1000ml));
+                row.append($('<td>').text(item.pen_qty_cases_500ml));
+                row.append($('<td>').text(item.pen_qty_cases_250ml));
                 tableBody.append(row);
               }
        var tfootdata = $('#pendingind tfoot');
        tfootdata.empty();
          for (var i = 0; i < total.length; i++) {
                 var item = total[i];
-                $('.pendingind').text(item.pending_count);
-                $('.indentcases').text(item.verified_count);
+                $('.pendingind').text(item.indent_count);
+                $('.indentcases').text(item.pending_count);
                 $('.indbottles').text(item.pen_qty_cases);
-                var row = $('<tr>');
+
+                /*var row = $('<tr>');
                 row.append($('<th>').text('Grand Total').attr('colspan',3).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.pen_qty_bottles).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_cases).addClass('design1'));
                 row.append($('<td>').text(item.ver_qty_bottles).addClass('design1'));
-                tfootdata.append(row);
+                tfootdata.append(row);*/
           }
   },
   error: function(jqXHR, textStatus, errorThrown) {
@@ -2390,15 +2380,11 @@ $.ajax({
  $(document).ready(function() {
     $("#depots_indent").click(function() {
       if ($(this).is(":checked")) {
-       $("#echart-indent").hide();
-       $('.textind').hide();
-       $('#lblindent').hide();
+       $(".echart-indent").hide();
       $("#pendingind").show();
     }
     else{
-    $('#lblindent').hide();
-     $("#echart-indent").show();
-     $('.textind').show();
+     $(".echart-indent").show();
       $("#pendingind").hide();
     }
     });

@@ -2145,7 +2145,7 @@ def warehouse_add(request):
                 "warehouseattach": warehouse_data,
                 "gstattach": gstattach,
                 "licence": licattach_data,
-                "warehouse_code_org":request.POST.get('warehouse_code')
+                "warehouse_code":request.POST.get('warehouse_code')
             }
             payload = json.dumps(payload, cls=BytesEncoder)
 
@@ -5809,7 +5809,7 @@ def get_warehouse(request):
             if str(i['warehouseid']) == id:
                 data = {"sno":i["sno"],"warehouseid":i["warehouseid"],"warehousename":i["warehousename"],"wh_manager":i['wh_manager'],
                         "gst_no":i['gst_no'],"panno":i['panno'],"address":i['address'],"licenseno":i['licenseno'],
-                        "wh_contact_no":i["wh_contact_no"],"location":i["location"]}
+                        "wh_contact_no":i["wh_contact_no"],"location":i["location"],"whcode":i["warehouse_code_org"]}
     return JsonResponse({'data': data})
 
 
@@ -5833,7 +5833,8 @@ def warehouse_edit(request):
             "address": request.POST.get('addresswh'),
             "wh_manager":request.POST.get('manager'),
             "location": request.POST.get('location'),
-            "wh_contact_no": request.POST.get('mobilewh')
+            "wh_contact_no": request.POST.get('mobilewh'),
+            "warehouse_code":request.POST.get('whcode'),
         })
         headers = {
             'Content-Type': 'application/json'
@@ -8770,8 +8771,6 @@ def payment_report(request):
                 if response.status_code == 200:
                     data = response.json()
                     item  = data['daywisesaleswarehouselist']
-
-
                 url = "http://13.235.112.1/ziva/mobile-api/warehousewise-sales-report.php"
 
                 if range == 'Custom Dates':
@@ -8784,7 +8783,8 @@ def payment_report(request):
                     {
                         "accesskey": accesskey,
                         "fromdate": fdate,
-                        "todate": tdate
+                        "todate": tdate,
+                        "warehouseid": request.POST.get('warehouseid1')
 
                     })
 
@@ -8796,7 +8796,7 @@ def payment_report(request):
                 if response.status_code == 200:
                     data = response.json()
                     daywisesaleslist = data['daywisesaleswarehouselist']
-                    messages.success(request, data['message'])
+
                     return render(request, 'Reports/payments.html', {'item':item[0],'fdate':fdate,'tdate':tdate,'menuname':menuname,'data': daywisesaleslist,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
                 else:
                     data = response.json()
@@ -8810,7 +8810,6 @@ def payment_report(request):
                             "accesskey": accesskey,
                             "fromdate": "Current Month",
                             "todate": "Current Month"
-
                         })
 
                 headers = {
@@ -8827,7 +8826,8 @@ def payment_report(request):
 
                             "accesskey": accesskey,
                             "fromdate": "Current Month",
-                            "todate": "Current Month"
+                            "todate": "Current Month",
+                            "warehouseid": "All"
 
                     })
 
@@ -8992,12 +8992,64 @@ def region_payment(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
             response = response.json()
-            #daywisesaleslist = data['daywisesaleswarehouselist']
             return JsonResponse({'response':response})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
+
+def region_payment_new(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+            if request.method == 'POST':
+                range = request.POST.get('range')
+
+                url = "http://13.235.112.1/ziva/mobile-api/regionwise-total-report-new.php"
+
+                if range == 'Custom Dates':
+                        fdate = request.POST.get('fdate')
+                        tdate = request.POST.get('tdate')
+                else:
+                        fdate = request.POST.get('range')
+                        tdate = request.POST.get('range')
+                payload = json.dumps(
+                    {
+                        "accesskey": accesskey,
+                        "fromdate": fdate,
+                        "todate": tdate,
+                        "region_id": request.POST.get('regionid')
+
+                    })
+
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    data['fdate'] = fdate
+                    data['tdate'] = tdate
+                    return JsonResponse({"response":data})
+                elif response.status_code == 400:
+                    data = response.json()
+                    messages.error(request, data['message'])
+                    return render(request, 'login1.html')
+                else:
+                    data = response.json()
+
+                    messages.error(request, data['message'])
+                    return JsonResponse({"data": data})
+    except:
+            if response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+            return render(request, 'Reports/payments.html',{'menuname':menuname})
 
 def bus_payment(request):
     if 'accesskey' not in request.session:
@@ -9059,7 +9111,10 @@ def depo_payment(request):
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
-
+    else:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'response': data['message']})
 def depot_stock(request,id):
         if 'accesskey' not in request.session:
             messages.error(request, 'Access denied!')
@@ -13223,3 +13278,11 @@ def driverwise_shortage(request):
     accesskey = request.session['accesskey']
     menuname = request.session['mylist']
     return render(request, 'intconsumption/driverwise_shortagereport.html', {"menuname": menuname})
+
+def servicewise_shortage(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    menuname = request.session['mylist']
+    return render(request, 'intconsumption/servicewise_shortage.html', {"menuname": menuname})

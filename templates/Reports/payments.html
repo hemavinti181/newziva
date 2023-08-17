@@ -13,6 +13,10 @@
     font-size: 20px;
     z-index: 1
 }
+.alertify .ajs-info {
+    background-color: #33b5e5; /* Change to your desired color */
+    color: white; /* Change to text color that contrasts well with the background color */
+}
     </style>
 
 <div class="right_col" role="main">
@@ -33,7 +37,7 @@
 
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-					<form id="myForm" method="POST" action=" "  enctype="multipart/form-data">
+					<form id="myForm" method="POST" action="/payment_report"  enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-md-2  form-group has-feedback">
                          <label for="daterangeselect">Frequency</label>
@@ -41,7 +45,7 @@
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
 												</select>
                                 <input type="hidden" name="from" id="from" value="{{ request.POST.from }}" />
-                              <select id="daterangeselect" class="form-control" name="range">
+                              <select id="daterangeselect" class="form-control" name="range" >
 
                                   {% for selectrange in selectrange %}
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
@@ -105,7 +109,7 @@
 													<option value="All">All</option>
 												</select>
 										</div>
-                               <div class="col-md-2 col-sm-2  form-group has-feedback">
+                         <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 30px;" class="btn btn-primary">Search</button>
                                        </div>
 
@@ -161,7 +165,7 @@
 
 </div>-->
  <div class="col-md-12 col-sm-12">
-                <div class="x_panel">
+                <div class="x_panel warehouse">
                     <div class="clearfix"></div>
                   <div class="x_content">
                       <div class="row">
@@ -246,13 +250,20 @@
                                     <tr>
                                       <th>S No</th>
                                         <th>Region</th>
-                                        <th>Quantity</th>
+                                        <th>Quantity(Cases)</th>
                                       <th>Amount Collected</th>
                                         <th>Action</th>
                                     </tr>
                                   </thead>
                                   <tbody>
-
+                                  {% for data in regionlist %}
+                                  <tr>
+                                      <td>{{ forloop.counter }}</td>
+                                      <td>{{ data.regionname }}</td>
+                                      <td>{{ data.qty }}</td>
+                                      <td>{{ data.total }}</td>
+                                  </tr>
+                                  {% endfor %}
                                   </tbody>
                       </table>
                   </div>
@@ -260,6 +271,7 @@
               </div>
             </div>
                 </div>
+              </div>
                   <div class="x_panel itemsreg" style="display:none">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -1185,7 +1197,7 @@ $(document).on('click', '.items_buslist', function () {
                 row.append($('<td>').text(i + 1));
                 row.append($('<td>').text(item.date));
                 row.append($('<td>').text(item.bus_station));
-                 row.append($('<td>').text(item.stall_name));
+                row.append($('<td>').text(item.stall_name));
                 row.append($('<td>').text(item.item_name));
                 row.append($('<td>').text(item.qty));
                 row.append($('<td>').text(item.price_case));
@@ -1226,7 +1238,103 @@ $(document).on('click', '.items_buslist', function () {
         }
     });
 });
+$(document).ready(function() {
+var dataTable = $("#datatable-buttons1").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+});
 
+$("#regionid1").change(function () {
+    var regionid = $('#regionid1').val();
+    var date = $("#daterangeselect").find(":selected").text();
+    var tdate = $('#tdate').val();
+    var fdate = $('#fate').val();
+    $.ajax({
+        url: '{% url "region_payment_new" %}',
+        type: "POST",
+        data: {
+             'tdate':tdate,
+             'fdate':fdate,
+            'range': date,
+            'regionid':regionid,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response,fdate,tdate) {
+            var message=response.response.message;
+            var responseData = response.response.daywisesalesdepolist;
+            var frdate = response.response.fdate;
+            var trdate = response.response.tdate;
+
+            $('.region').show();
+            $('.depo').hide();
+            $('.bus').hide();
+            $('.items').hide();
+            $('.itemsdepot').hide();
+            $('.itemsbus').hide();
+            $('.warehouse').hide();
+            var tableBody = $('#datatable-buttons1 tbody');
+            tableBody.empty();
+            for (var i = 0; i < responseData.length; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                console.log(frdate,trdate)
+                row.append($('<td>').text(i + 1));  // S No
+                 var regionTd = $('<td>').append(
+                        $('<a>')
+                            .attr('href', '#')
+                            .addClass('depo_list')
+                            .css('color', 'rgb(6, 145, 26)')
+                            .text(item.regionname)
+                            .attr('data-id', item.region_id)
+                            .attr('data-fdate', frdate)
+                            .attr('data-tdate', trdate)
+                            .attr('onclick','pageScroll()')
+                    )
+                row.append(regionTd);
+                row.append($('<td>').text(item.qty));  // Quantity
+                row.append($('<td>').text(item.total));
+                var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_regionlist" data-id="' + item.region_id + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                 row.append(code);
+                tableBody.append(row);
+                 if (message) {
+                     alertify.set('notifier','position', 'top-center');
+                     alertify.notify(message,'success');
+
+        }
+            }
+             dataTable.draw();
+        },
+
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+
+    });
+});
 
  </script>
 {% endblock %}

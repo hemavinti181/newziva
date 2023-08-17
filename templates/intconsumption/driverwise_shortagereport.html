@@ -9,7 +9,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Internal consumption</h3>
+                <h3>Driver  Wise Shortage Bottles </h3>
               </div>
 
               <div class="title_right">
@@ -63,18 +63,20 @@
                                     <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
                       <thead>
                         <tr>
-                                    <th>S No</th>
-                                     <th>Depot</th>
-                                    <th>Date</th>
-                                    <!--<th>Service No</th>-->
-                                    <!--<th>Route</th>
-                                     <th>Type Of Bus</th>
-                                    <th>Staff Name(1)</th>-->
-                                    <th>Staff Id(1)</th>
-                                    <th>Staff Name(2)</th>
-                                    <th>Staff Id(2)</th>
-                                    <th>Bootles Issued</th>
-                                    <th>No of tickets</th>
+                                    <th rowspan="2">S No</th>
+                                     <th rowspan="2">Depot</th>
+                                    <!--<th rowspan="2">Date</th>-->
+                                    <th rowspan="2">Staff Id</th>
+                                    <th rowspan="2">Staff Name</th>
+                                    <th colspan="3">Date</th>
+                                    <th colspan="3">Current Month</th>
+                        </tr>
+                        <tr>
+
+                                    <th>Bottles Issued</th>
+                                    <th>Bottles Returned</th>
+                                    <th>Shortage/Excess</th>
+                                    <th>Bottles Issued</th>
                                     <th>Bottles Returned</th>
                                     <th>Shortage/Excess</th>
 
@@ -132,6 +134,7 @@
        alert(selectedText)
     form.submit();
 });
-
+$('#fdate').val(new Date().toJSON().slice(0,10));
+$('#tdate').val(new Date().toJSON().slice(0,10));
 </script>
 {% endblock %}

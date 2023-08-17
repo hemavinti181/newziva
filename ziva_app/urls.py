@@ -282,5 +282,8 @@ urlpatterns = [
     path('intconsump_report',views.intconsump_report,name='intconsump_report'),
     path('intconsump_dashboard',views.intconsump_dashboard,name='intconsump_dashboard'),
     path('intconsump_dashboard_data',views.intconsump_dashboard_data,name='intconsump_dashboard_data'),
-    path('driverwise_shortage',views.driverwise_shortage,name='driverwise_shortage')
+    path('driverwise_shortage',views.driverwise_shortage,name='driverwise_shortage'),
+    path('driverwise_shortage', views.driverwise_shortage, name='driverwise_shortage'),
+    path('servicewise_shortage',views.servicewise_shortage,name='servicewise_shortage'),
+    path('region_payment_new',views.region_payment_new,name='region_payment_new')
 ]

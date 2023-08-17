@@ -499,7 +499,6 @@ function updateEchartPieChart(itemslist) {
 
 $(document).ready(function() {
 depoid = $('#depoid').find(":selected").text();
-alert(depoid)
 $.ajax({
   type: "POST",
   url: "{% url 'intconsump_dashboard_data' %}",
