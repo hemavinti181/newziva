@@ -54,11 +54,11 @@
                             </div>
                              <div class="col-md-2  form-group has-feedback" id="fdate" style="display:none">
                             <label for="start-date">From Date</label>
-                              <input type="date" id="start-date"  name="fdate" class="form-control" value="{{ request.POST.fdate }}" />
+                              <input type="date" id="start-date"  name="fdate" class="form-control" value="{{ fdate }}" />
                             </div>
                               <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
                                 <label  for="end-date">To Date</label>
-                              <input type="date" id="end-date" name="tdate" class="form-control" value="{{ request.POST.tdate }}">
+                              <input type="date" id="end-date" name="tdate" class="form-control" value="{{ tdate }}">
                             </div>
 
 
@@ -674,10 +674,12 @@ $("#regionid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#regionname1").val(selectedOptionText);
 });
+
 $("#depoid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-    ("#deponame1").val(selectedOptionText);
+    $("#deponame1").val(selectedOptionText);
 });
+
 $("#busstationid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busstationname1").val(selectedOptionText);
@@ -854,7 +856,7 @@ $(document).on('click', '.depo_list', function () {
                 row.append(regionTd);
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
-                  var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_depolist" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_depolist" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
                 row.append(code);// Amount Collected
                 tableBody.append(row);
             }
@@ -1166,46 +1168,8 @@ $(document).on('click', '.items_depolist', function () {
         }
     });
 });
-
-
-$(document).on('click', '.items_buslist', function () {
-    let id = $(this).data('id');
-    let fdate = $(this).data('fdate');
-    let tdate = $(this).data('tdate');
-    $.ajax({
-        url: '{% url "bus_items" %}',
-        data: {
-            'id': id,
-            'fdate': fdate,
-            'tdate': tdate,
-            'csrfmiddlewaretoken': '{{ csrf_token }}'
-        },
-        success: function(response) {
-            var responseData = response.response.itemwisesalesbusstationlist;
-            $('.itemsreg').hide();
-             $('.itemsdepot').hide();
-            $('.itemsbus').show();
-            $('.items').hide();
-             $('.region').hide();
-             $('.bus').show();
-             $('.depo').hide();
-            var tableBody = $('#items_bus tbody');
-            // Iterate through the data and append rows to the table
-            for (var i = 0; i < responseData.length; i++) {
-                var item = responseData[i];
-                var row = $('<tr>');
-                row.append($('<td>').text(i + 1));
-                row.append($('<td>').text(item.date));
-                row.append($('<td>').text(item.bus_station));
-                row.append($('<td>').text(item.stall_name));
-                row.append($('<td>').text(item.item_name));
-                row.append($('<td>').text(item.qty));
-                row.append($('<td>').text(item.price_case));
-                row.append($('<td>').text(item.paymentmode));
-                row.append($('<td>').text(item.total));
-                tableBody.append(row);
-            }
-            $("#items_bus").DataTable({
+$(document).ready(function() {
+ $("#items_bus").DataTable({
                 dom: "Blfrtip",
                 "bDestroy": true,
                 buttons: [
@@ -1232,6 +1196,59 @@ $(document).on('click', '.items_buslist', function () {
                 ],
                 responsive: true
             });
+
+
+
+});
+
+$(document).on('click', '.items_buslist', function () {
+    let id = $(this).data('id');
+    let fdate = $(this).data('fdate');
+    let tdate = $(this).data('tdate');
+    $.ajax({
+        url: '{% url "bus_items" %}',
+        data: {
+            'id': id,
+            'fdate': fdate,
+            'tdate': tdate,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            var error = response.response.error;
+            var message = response.response.message;
+            alert(error)
+          if ( error === true) {
+                alert('hai')
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.error(message);
+          }
+          else{
+                var responseData = response.response.itemwisesalesbusstationlist;
+                $('.itemsreg').hide();
+                 $('.itemsdepot').hide();
+                $('.itemsbus').show();
+                $('.items').hide();
+                 $('.region').hide();
+                 $('.bus').show();
+                 $('.depo').hide();
+                var tableBody = $('#items_bus tbody');
+                tableBody.empty();
+                for (var i = 0; i < responseData.length; i++) {
+                    var item = responseData[i];
+                    var row = $('<tr>');
+                    row.append($('<td>').text(i + 1));
+                    row.append($('<td>').text(item.date));
+                    row.append($('<td>').text(item.bus_station));
+                    row.append($('<td>').text(item.stall_name));
+                    row.append($('<td>').text(item.item_name));
+                    row.append($('<td>').text(item.qty));
+                    row.append($('<td>').text(item.price_case));
+                    row.append($('<td>').text(item.paymentmode));
+                    row.append($('<td>').text(item.total));
+                    tableBody.append(row);
+                }
+           }
+            dataTable.draw();
         },
         error: function(xhr, status, error) {
             console.log("AJAX Error:", error);
@@ -1320,11 +1337,7 @@ $("#regionid1").change(function () {
                 var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_regionlist" data-id="' + item.region_id + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
                  row.append(code);
                 tableBody.append(row);
-                 if (message) {
-                     alertify.set('notifier','position', 'top-center');
-                     alertify.notify(message,'success');
 
-        }
             }
              dataTable.draw();
         },
@@ -1336,6 +1349,186 @@ $("#regionid1").change(function () {
     });
 });
 
+
+$(document).ready(function() {
+var dataTable = $("#depo_listtable").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+});
+
+
+$("#depoid1").change(function () {
+
+    var depoid = $('#depoid1').val();
+    var date = $("#daterangeselect").find(":selected").text();
+    var tdate = $('#tdate').val();
+    var fdate = $('#fate').val();
+    $.ajax({
+        url: '{% url "depot_payment_new" %}',
+        type: "POST",
+        data: {
+             'tdate':tdate,
+             'fdate':fdate,
+             'range': date,
+             'depoid':depoid,
+             'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response,fdate,tdate) {
+            var message=response.response.message;
+            var responseData = response.response.daywisesalesdepolist;
+            var frdate = response.response.fdate;
+            var trdate = response.response.tdate;
+
+            $('.region').hide();
+            $('.depo').show();
+            $('.bus').hide();
+            $('.items').hide();
+            $('.itemsdepot').hide();
+            $('.itemsbus').hide();
+            $('.warehouse').hide();
+            var tableBody = $('#depo_listtable tbody');
+            tableBody.empty();
+            for (var i = 0; i < responseData.length; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                console.log(frdate,trdate)
+                row.append($('<td>').text(i + 1));
+
+                 var regionTd = $('<td>').append(
+                        $('<a>')
+                            .attr('href', '#')
+                            .addClass('bus_list')
+                            .css('color', 'rgb(6, 145, 26)')
+                            .text(item.deponame)
+                            .attr('data-id', item.depoid)
+                            .attr('data-fdate', fdate)
+                            .attr('data-tdate', tdate)
+                            .attr('onclick','pageScroll()')
+                    )
+                row.append(regionTd);
+                row.append($('<td>').text(item.qty));  // Quantity
+                row.append($('<td>').text(item.total));
+                var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_depolist" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                row.append(code);
+                tableBody.append(row);
+            }
+             dataTable.draw();
+        },
+
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+
+    });
+});
+$(document).ready(function() {
+var dataTable = $("#bus_listtable").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+});
+
+
+$("#busstationid1").change(function () {
+    alert('hai')
+    var busatationid = $('#busstationid1').val();
+    var date = $("#daterangeselect").find(":selected").text();
+    var tdate = $('#tdate').val();
+    var fdate = $('#fate').val();
+    $.ajax({
+        url: '{% url "bust_payment_new" %}',
+        type: "POST",
+        data: {
+             'tdate':tdate,
+             'fdate':fdate,
+             'range': date,
+             'busatationid':busatationid,
+             'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response,fdate,tdate) {
+            var message=response.response.message;
+            var responseData = response.response.daywisesalesdepolist;
+            var frdate = response.response.fdate;
+            var trdate = response.response.tdate;
+
+            $('.region').hide();
+            $('.depo').hide();
+            $('.bus').show();
+            $('.items').hide();
+            $('.itemsdepot').hide();
+            $('.itemsbus').hide();
+            $('.warehouse').hide();
+            var tableBody = $('#bus_listtable tbody');
+            tableBody.empty();
+            for (var i = 0; i < responseData.length; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                console.log(frdate,trdate)
+                row.append($('<td>').text(i + 1));
+                 row.append($('<td>').text(item.busstationname));
+                   row.append($('<td>').text(item.no_of_stalls));
+                row.append($('<td>').text(item.qty));  // Quantity
+                row.append($('<td>').text(item.total));
+                var code = '<td class="text-center"><a href="#" class="items_buslist" data-id="' + item.busstation_id + '"  data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                row.append(code);
+                tableBody.append(row);
+            }
+             dataTable.draw();
+        },
+
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+
+    });
+});
  </script>
 {% endblock %}
 

@@ -285,5 +285,7 @@ urlpatterns = [
     path('driverwise_shortage',views.driverwise_shortage,name='driverwise_shortage'),
     path('driverwise_shortage', views.driverwise_shortage, name='driverwise_shortage'),
     path('servicewise_shortage',views.servicewise_shortage,name='servicewise_shortage'),
-    path('region_payment_new',views.region_payment_new,name='region_payment_new')
+    path('region_payment_new',views.region_payment_new,name='region_payment_new'),
+    path('depot_payment_new',views.depot_payment_new,name='depot_payment_new'),
+    path('bust_payment_new',views.bust_payment_new,name='bust_payment_new')
 ]

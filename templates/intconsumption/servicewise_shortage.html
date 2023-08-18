@@ -9,7 +9,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Driver  Wise Shortage Bottles </h3>
+                <h3>Service Wise Shortage Bottles</h3>
               </div>
 
               <div class="title_right">
@@ -22,10 +22,9 @@
              <div class="row">
               <div class="col-md-12 col-sm-12">
                                			<!-- Search Filter -->
-						<form  method="POST" action="/driverwise_shortage"  id="myform" enctype="multipart/form-data">
+						<form  method="POST" action="/servicewise_shortage"  id="myform" enctype="multipart/form-data">
 									{% csrf_token %}
-
-                            <div class="col-md-2  form-group has-feedback">
+                              <div class="col-md-2  form-group has-feedback">
                               <label for="daterangeselect">Frequency</label>
                                                  <select class="form-control" name="range2" id="range2" hidden>
                             		                    <option value="{{ request.POST.range }}">{{ request.POST.from }}</option>
@@ -62,9 +61,6 @@
                                                     {% endfor %}
                                                 </select>
                              </div>
-                             <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
-                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>-->
                         </form>
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
@@ -81,24 +77,25 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
+                                     <th>Depot</th>
                                     <th>Date</th>
-                                     <th >Depot</th>
-
-                                    <!--<th rowspan="2">Date</th>-->
-                                    <th>Staff Id</th>
-                                    <th>Staff Name</th>
-                                    <th>Bottles Issued</th>
+                                    <th>Service No</th>
+                                   <th>Bottles Issued</th>
                                     <th>Bottles Returned</th>
                                     <th>Shortage/Excess</th>
-                                    <!--<th colspan="3">Date</th>-->
-                                    <!--<th colspan="3">Current Month</th>-->
+                                    <!--<th rowspan="2">Service No</th>
+                                    <th>Date</th>
+                                    <th>Current Month</th><th>Bottles Issued</th>
+                                    <th>Bottles Returned</th>
+                                    <th>Shortage/Excess</th>-->
+
                         </tr>
-                        <!--<tr>
+                       <!-- <tr>
 
                                     <th>Bottles Issued</th>
                                     <th>Bottles Returned</th>
                                     <th>Shortage/Excess</th>
-                                    <th>Bottles Issued</th>
+                                   <th>Bottles Issued</th>
                                     <th>Bottles Returned</th>
                                     <th>Shortage/Excess</th>
 
@@ -108,12 +105,11 @@
                             {% for data in itemlist %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ data.date }}</td>
                                 <td>{{ data.deponame }}</td>
-                                <td>{{ data.staff_name }}</td>
-                                <td>{{ data.staff_number }}</td>
-                                <td> {{ data.noofbottles_recieve }}</td>
-                                <td>{{ data.return_no_of_bottles }}</td>
+                                <td>{{ data.date }}</td>
+                                <td>{{ data.service_id }}</td>
+                                <td>{{ data.noofbottles_recieve }}</td>
+                                <td> {{ data.return_no_of_bottles }}</td>
                                 <td>{{ data.shortage }}</td>
                                 </tr>
                             {% endfor %}
@@ -130,8 +126,7 @@
 </div>
 </div>
 <script>
-
- $(document).ready(function() {
+     $(document).ready(function() {
   var form = document.getElementById("myform");
   var daterangeSelect = document.getElementById("daterangeselect");
   var startDateInput = document.getElementById("start-date");

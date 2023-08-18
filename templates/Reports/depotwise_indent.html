@@ -511,9 +511,6 @@ $(document).ready(function(){
 $(document).ready(function(){
     var selectedOption = $('#daterangeselect').find(":selected").text();
     if (selectedOption == 'Custom Dates') {
-
-
-
       $('#date-range-fields').show();
       $('#tdate').show();
      // show the date fields if custom option is selected
@@ -569,7 +566,7 @@ $(document).ready(function() {
     $("#date-range-fields").show();
     $("#tdate").show();
     if (startDateInput.value && endDateInput.value) {
-      form.submit(); // Submit the form
+      form.submit();
     }
   } else {
     $("#date-range-fields").hide();

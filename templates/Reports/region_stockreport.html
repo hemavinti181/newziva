@@ -17,7 +17,7 @@
   <div class="col-md-5 col-sm-5 offset-md-3">
     <div class="btn-group" style="display: flex;">
               <div>
-        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="background-color:white; color:#06911A;"  aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="background-color:#1C8D98 ; color:#06911A;"  aria-haspopup="true" aria-expanded="false">
           warehouse
         </button>
         <div class="dropdown-menu"  id="myDropdown3" style="max-height: 400px; overflow-y: auto;">
@@ -30,7 +30,7 @@
         </div>
       </div>
       <div>
-        <button type="button" class="btn btn-info dropdown-toggle" style="background-color:white; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-info dropdown-toggle" style="background-color:#1C8D98; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
           Region
         </button>
         <div class="dropdown-menu"  id="myDropdown" style="max-height: 400px; overflow-y: auto;">
@@ -44,7 +44,7 @@
       </div>
 
       <div>
-        <button type="button" class="btn btn-info dropdown-toggle"  style="background-color:white; color:#06911A;" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-info dropdown-toggle"  style="background-color:#1C8D98; color:#06911A;" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
           Depot
         </button>
         <div class="dropdown-menu"  id="myDropdown1" style="max-height: 400px; overflow-y: auto;">
@@ -57,7 +57,7 @@
       </div>
 
       <div>
-        <button type="button" class="btn btn-info dropdown-toggle"  style="background-color:white; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-info dropdown-toggle"  style="background-color:#1C8D98; color:#06911A;"  data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
           Bus Station
         </button>
         <div class="dropdown-menu"  id="myDropdown2" style="max-height: 400px; overflow-y: auto;">
@@ -162,11 +162,11 @@
                                </thead>
                                   <tbody>
 
-                                    {% for item_quantity in item_quantities %}
+
                                         <tr>
                                                 <td>{{ forloop.counter }}</td>
                                                     <td>{{ item_quantity.date }}</td>
-                                                <td><a href="/depot_stock/{{ item_quantity.region_id }}" style="color:#075ab3;">{{ item_quantity.regionname }}</a></td>
+                                                <td><a href="/depot_stock/{{ item_quantity.regionid }}" style="color:#075ab3;">{{ item_quantity.regionname }}</a></td>
                                                 <td>{{ item_quantity.inv_1000ML }}</td>
                                                 <td>{{ item_quantity.inv_500ML }}</td >
                                                   <td>{{ item_quantity.inv_250ML }}</td>
@@ -174,7 +174,7 @@
                                                   <td>{{ item_quantity.con_500ML }}</td>
                                                    <td>{{ item_quantity.con_250ML }}</td>
                                           </tr>
-                                        {% endfor %}
+
                                   </tbody>
                       </table>
                   </div>

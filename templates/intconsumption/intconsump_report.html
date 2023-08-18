@@ -35,6 +35,9 @@
                                    <input type="hidden" name="tdate_hidden" id="tdate_hidden">
 							</div>
                              <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                  <select class="form-control items" name="depoid1" id="depoid1" hidden>
+                                                     <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
+                                  </select
                                                         <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
 										    	 <select class="form-control items" name="depoid" id="depoid" required>
                                                      <option value="All">All</option>
@@ -131,6 +134,9 @@
     document.getElementById('deponame').value = selectedText;
     form.submit();
 });
-
+$(document).ready(function(){
+  var optionValue = $("#depoid1").val();
+  $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
+})
 </script>
 {% endblock %}
