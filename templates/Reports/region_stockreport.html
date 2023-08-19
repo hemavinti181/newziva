@@ -162,7 +162,7 @@
                                </thead>
                                   <tbody>
 
-
+                                        {% for  item_quantity in item_quantity %}
                                         <tr>
                                                 <td>{{ forloop.counter }}</td>
                                                     <td>{{ item_quantity.date }}</td>
@@ -174,7 +174,7 @@
                                                   <td>{{ item_quantity.con_500ML }}</td>
                                                    <td>{{ item_quantity.con_250ML }}</td>
                                           </tr>
-
+                                       {% endfor %}
                                   </tbody>
                       </table>
                   </div>

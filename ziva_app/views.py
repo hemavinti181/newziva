@@ -8872,12 +8872,14 @@ def warehouse_items(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         response = response.json()
-        # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
+    if response.status_code == 503:
+        response = response.json()
+        return JsonResponse({'response': response})
 def bus_items(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -8934,12 +8936,14 @@ def region_items(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         response = response.json()
-        # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
+    if response.status_code == 503:
+        response = response.json()
+        return JsonResponse({'response': response})
 def depo_items(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -8963,12 +8967,14 @@ def depo_items(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         response = response.json()
-        # daywisesaleslist = data['daywisesaleswarehouselist']
         return JsonResponse({'response': response})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
+    elif response.status_code == 503:
+        response = response.json()
+        return JsonResponse({'response': response})
 
 def region_payment(request):
     if 'accesskey' not in request.session:
@@ -10752,8 +10758,9 @@ def region_stock1(request,id):
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
             data = response.json()
+            data1 = data['regioninventorylist']
             return render(request, 'Reports/region_stockreport.html',
-                          {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantity':data})
+                          {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantity':data1})
         elif response.status_code == 500:
             messages.error(request, 'Internal server  error')
             return render(request, 'Reports/region_stockreport.html',
@@ -11913,11 +11920,16 @@ def intconsump_report(request):
         accesskey = request.session['accesskey']
         fdate = request.POST.get('fdate')
         tdate = request.POST.get('tdate')
+        deponame=request.POST.get('deponame')
+        if deponame:
+            deponame = deponame
+        else:
+            deponame = 'All'
         url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
 
         payload = json.dumps({
             "accesskey": accesskey, "fdate": fdate,
-            "tdate": tdate,"deponame": request.POST.get('deponame'),
+            "tdate": tdate,"deponame":deponame,
         })
         headers = {
             'Content-Type': 'text/plain'
@@ -13331,7 +13343,17 @@ def intconsump_dashboard(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     data = response.json()
     depolist = data['depolist']
-    return render(request, 'intconsumption/intconsump_dashboard.html', {"menuname": menuname,'depolist':depolist})
+
+    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    item_masterlist = data['itemmasterlist']
+    return render(request, 'intconsumption/intconsump_dashboard.html', {"menuname": menuname,'depolist':depolist,'item_masterlist':item_masterlist})
 def intconsump_dashboard_data(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13504,7 +13526,7 @@ def servicewise_shortage(request):
     selectrange = data['timingslist']
     if request.method == 'POST':
         fdate = request.POST.get('fdate')
-        tdate = request.POST.get('tdate')
+        tdate = request.POST.get('ldate')
         deponame = request.POST.get('deponame')
         if deponame:
             deponame = deponame
