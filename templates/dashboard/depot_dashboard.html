@@ -985,11 +985,11 @@ $.ajax({
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));  // S No
                 row.append($('<td>').text(item.itemname));
-                row.append($('<td>').text(item.stock_cases).addClass('design1'));
-                row.append($('<td>').text(item.stock_botteles).addClass('design1'));  // Quantity
-                row.append($('<td>').text(item.consumption_cases).addClass('design1'));
-                row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
-                row.append($('<td>').text(item.indays).addClass('design1'));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.consumption_cases));
+                row.append($('<td>').text(item.consumption_botteles));
+                row.append($('<td>').text(item.indays));
                 tableBody.append(row);
             }
         var tfootdata = $('#stktabel tfoot');

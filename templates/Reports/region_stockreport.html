@@ -162,11 +162,11 @@
                                </thead>
                                   <tbody>
 
-                                        {% for  item_quantity in item_quantity %}
+                                        {% for  item_quantity in item_quantities %}
                                         <tr>
                                                 <td>{{ forloop.counter }}</td>
                                                     <td>{{ item_quantity.date }}</td>
-                                                <td><a href="/depot_stock/{{ item_quantity.regionid }}" style="color:#075ab3;">{{ item_quantity.regionname }}</a></td>
+                                                <td><a href="/depot_stock/{{ item_quantity.region_id }}" style="color:#075ab3;">{{ item_quantity.regionname }}</a></td>
                                                 <td>{{ item_quantity.inv_1000ML }}</td>
                                                 <td>{{ item_quantity.inv_500ML }}</td >
                                                   <td>{{ item_quantity.inv_250ML }}</td>

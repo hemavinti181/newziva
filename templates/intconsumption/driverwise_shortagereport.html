@@ -81,10 +81,8 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
-                                    <th>Date</th>
-                                     <th >Depot</th>
 
-                                    <!--<th rowspan="2">Date</th>-->
+                                    <th>Depot</th>
                                     <th>Staff Id</th>
                                     <th>Staff Name</th>
                                     <th>Bottles Issued</th>
@@ -108,10 +106,10 @@
                             {% for data in itemlist %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ data.date }}</td>
+                                <!--<td>{{ data.date }}</td>-->
                                 <td>{{ data.deponame }}</td>
+                                <td><a href="#" onclick="pageScroll()" style="color: #06911A" class="driver_shortlist"  data-id="{{ data.staff_number }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" >{{ data.staff_number }}</a></td>
                                 <td>{{ data.staff_name }}</td>
-                                <td>{{ data.staff_number }}</td>
                                 <td> {{ data.noofbottles_recieve }}</td>
                                 <td>{{ data.return_no_of_bottles }}</td>
                                 <td>{{ data.shortage }}</td>
@@ -124,13 +122,48 @@
               </div>
             </div>
                 </div>
+
+                  <div class="x_panel driver" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="driver_shortage" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                        <th>S No</th>
+                                        <th>Date</th>
+                                        <th>Staff Id</th>
+                                        <th>Staff Name</th>
+                                        <th>Bottles Returned</th>
+                                        <th>Bottles Issued</th>
+                                        <th>Shortage/Excess</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
               </div>
             </div>
           </div>
 </div>
 </div>
+</div>
 <script>
-
+function pageScroll() {
+   $('body,html').animate({scrollTop: 500}, 1000);
+    //window.scrollBy(0,1);
+   // scrolldelay = setTimeout(pageScroll,10);
+}
  $(document).ready(function() {
   var form = document.getElementById("myform");
   var daterangeSelect = document.getElementById("daterangeselect");
@@ -206,5 +239,73 @@ $("#depoid").change(function() {
   var selectedOptionText = $('#daterangeselect').find(":selected").text();
   $("#from").val(selectedOptionText);
 });
+
+
+ $(document).ready( function () {
+     $('#driver_shortage').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+} );
+
+
+$(".driver_shortlist").on('click', function () {
+    let staffid = $(this).data('id');
+    let fdate = $(this).data('fdate');
+    let tdate = $(this).data('tdate');
+    $.ajax({
+        url: '{% url "driverwise_sub_shoretage" %}',
+        type:'POST',
+        data: {
+            'staffid': staffid,
+            'fdate': fdate,
+            'tdate': tdate,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(data) {
+        var error = data.data.error;
+        var message = data.data.message;
+        alert(error)
+         if ( error === true) {
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.error(message);
+          }
+        else{
+             $('.driver').show();
+            var responseData = data.data.shortagelist;
+            var tableBody = $('#driver_shortage tbody');
+            var count =responseData.length;
+            tableBody.empty();
+            for (var i = 0; i < count; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));
+                row.append($('<td>').text(item.date));
+                if (i === 0) {
+
+                    row.append($('<td rowspan="' + count + '">').text(item.staff_number));
+                    row.append($('<td rowspan="' + count + '">').text(item.staff_name));
+                }
+
+
+                row.append($('<td>').text(item.noofbottles_recieve));
+                row.append($('<td>').text(item.return_no_of_bottles));
+                row.append($('<td>').text(item.shortage));
+                tableBody.append(row);
+                }
+                        }
+            datatable.draw();
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+    });
+});
+
 </script>
 {% endblock %}

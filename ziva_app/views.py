@@ -111,10 +111,10 @@ def login(request):
                 return redirect('/depot_dashboard')
             elif role == "Warehouse":
                 return redirect('/zonal_dashboard')
+            elif role == 'Bus Station' and displayrole == 'DC CONTROLLER':
+                return redirect('/internal_consumption')
             elif role == 'Bus Station':
                 return redirect('/bust_dashboard')
-            elif role == 'Bus Station' and  displayrole == 'DC CONTROLLER':
-                return redirect('/internal_consumption')
             elif role ==  "Depo":
                 return redirect('/depot_dashboard')
             elif displayrole == "MARKETING EXECUTIVE":
@@ -8081,6 +8081,38 @@ def bus_edit(request):
             return redirect('/bus_list')
     return redirect('/bus_list')
 
+def get_whinventory(request):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/warehouse-inventory-depologin.php"
+    payload = json.dumps(
+        {
+            "accesskey": accesskey,
+            "warehouseid":request.POST.get('warehouseid')
+
+        })
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return JsonResponse({'data':data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 500:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
+    elif response.status_code == 503:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
 def live_inventory(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -8098,23 +8130,10 @@ def live_inventory(request):
 
             data = response.json()
             wh_masterlist = data['warehouselist']
-            '''url = "http://13.235.112.1/ziva/mobile-api/inventorylist-new.php"
-            payload = json.dumps(
-                {
-                    "accesskey": accesskey
-
-                })
-            headers = {
-                'Content-Type': 'text/plain'
-            }
-            response = requests.request("GET", url, headers=headers, data=payload)
-            if response.status_code == 200:
-                data = response.json()
-                inventorylist = data['inventorylist']'''
             url = "http://13.235.112.1/ziva/mobile-api/inventorylist-new.php"
             payload = json.dumps(
                 {
-                    "accesskey":  accesskey
+                    "accesskey": accesskey
 
                 })
             headers = {
@@ -13400,6 +13419,39 @@ def intconsump_dashboard_data(request):
         messages.error(request, "Internal Server Error")
         return JsonResponse({'data': "Internal Server Error"})
 
+def driverwise_sub_shoretage(request):
+    if 'mylist' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/sub-shortagelist.php"
+    payload = {"accesskey": accesskey,"staff_number":request.POST.get('staffid') ,"fromdate": request.POST.get('fdate') , "todate":request.POST.get('tdate'),
+               }
+    payload = json.dumps(payload, cls=BytesEncoder)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('\login')
+    elif response.status_code == 503:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        messages.error(request, "Internal Server Error")
+        return JsonResponse({'data': "Internal Server Error"})
 
 def driverwise_shortage(request):
     if 'mylist' not in request.session:
@@ -13444,21 +13496,18 @@ def driverwise_shortage(request):
         else:
             range = "Current Month"
         if range == 'Custom Dates':
-            payload = json.dumps({
+            fdate = request.POST.get('fdate')
+            tdate = request.POST.get('tdate')
+        else:
+            fdate = request.POST.get('from')
+            tdate = request.POST.get('from')
+        payload = json.dumps({
                 "accesskey": accesskey,
                 "deponame": deponame,
                 "fromdate":fdate,
                 "todate":tdate,
 
-            })
-        else:
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "deponame": deponame,
-                "fromdate": range,
-                "todate": range,
-
-            })
+        })
         headers = {
             'Content-Type': 'text/plain'
         }
@@ -13468,10 +13517,10 @@ def driverwise_shortage(request):
             data = response.json()
             itemlist = data['shortagelist']
             return render(request, 'intconsumption/driverwise_shortagereport.html',
-                          {'menuname': menuname, 'itemlist': itemlist,'depolist':depolist,'selectrange':selectrange})
+                          {'menuname': menuname, 'itemlist': itemlist,'depolist':depolist,'selectrange':selectrange,'fdate':fdate,'tdate':tdate})
         else:
             return render(request, 'intconsumption/driverwise_shortagereport.html',
-                          {'menuname': menuname,'depolist':depolist,'selectrange':selectrange})
+                          {'menuname': menuname,'depolist':depolist,'selectrange':selectrange,'fdate':fdate,'tdate':tdate})
     else:
 
                 url = "http://13.235.112.1/ziva/mobile-api/shortagelist.php"
@@ -13489,10 +13538,10 @@ def driverwise_shortage(request):
                     data = response.json()
                     itemlist = data['shortagelist']
                     return render(request, 'intconsumption/driverwise_shortagereport.html',
-                                  {'menuname': menuname, 'itemlist': itemlist,'depolist':depolist,'selectrange':selectrange})
+                                  {'menuname': menuname, 'itemlist': itemlist,'depolist':depolist,'selectrange':selectrange,'fdate': "Current Month",'tdate': "Current Month"})
                 else:
                     return render(request, 'intconsumption/driverwise_shortagereport.html',
-                              {'menuname': menuname,'depolist':depolist,'selectrange':selectrange})
+                              {'menuname': menuname,'depolist':depolist,'selectrange':selectrange,'fdate': "Current Month",'tdate': "Current Month"})
 
 
 
@@ -13534,21 +13583,20 @@ def servicewise_shortage(request):
             deponame = 'All'
         range = request.POST.get('from')
         if range == 'Custom Dates':
-            payload = json.dumps({
+            fdate = request.POST.get('fdate')
+            tdate = request.POST.get('tdate')
+        else:
+            fdate = request.POST.get('from')
+            tdate = request.POST.get('from')
+
+        payload = json.dumps({
                 "accesskey": accesskey,
                 "service_id": "All",
                 "deponame": deponame,
                 "fromdate": fdate,
                 "todate": tdate,
-            })
-        else:
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "service_id": "All",
-                "deponame": deponame,
-                "fromdate": range,
-                "todate": range,
-            })
+        })
+
         headers = {
             'Content-Type': 'text/plain'
         }

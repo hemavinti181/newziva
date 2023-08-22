@@ -26,36 +26,46 @@ color: #14c38e !important;
               <div class="col-md-12 col-sm-12 ">
    <h3> {{ request.session.name }}  Inventory </h3>
                   <div style="display: inline-block;">
-        <div class="top_tiles" style="width: 1000px">
+        <div class="top_tiles" style="width: 900px">
 {% if data %}
     {% for item in data %}
         <a href="batch_codeexpry/{{ item.itemcode }}/">
             <div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
                 <div class="tile-stats">
                     <div class="icon1"><i class="fa fa-bottle-water"></i></div>
-                    <h2 class="text-warning" style="margin-left: 10px;">
+                    <h2 style="margin-left: 10px;font-weight:600;color:#14c38e">
                         {% if not item.Qty %}
                             <span>0</span>
                         {% else %}
                             <span>{{ item.Qty }}</span>
                         {% endif %}
                     </h2>
-                    <p class="text-info" style="font-size: 12px;">{{ item.itemname }} Quantity</p>
+                    <p class="text-info" style="font-size: 15px;font-weight:600;">{{ item.itemname }} Quantity(Cases)</p>
                 </div>
             </div>
         </a>
     {% endfor %}
-{% else %}
-
+            {% else %}
         <div class="animated flipInY col-md-4 col-sm-4" style="width:400px;">
             <div class="tile-stats">
                 <div class="icon1"><i class="fa fa-bottle-water"></i></div>
-                <h2 class="text-warning" style="margin-left: 10px;">
+                <h2 class="text-warning" style="margin-left: 10px;font-weight:600;">
                     <span>0</span>
                 </h2>
-                <p class="text-info" style="font-size: 12px;">1000ml Quantity</p>
+                <p class="text-info" style="font-size: 15px;font-weight:600;">1000ml Quantity(Cases)</p>
             </div>
         </div>
+
+        <div class="animated flipInY col-md-4 col-sm-4" style="width:700px;">
+            <div class="tile-stats">
+                <div class="icon1"><i class="fa fa-bottle-water"></i></div>
+                <h2 class="text-warning" style="margin-left: 10px;font-weight:600;">
+                    <span>0</span>
+                </h2>
+                <p class="text-info" style="font-size: 12px;font-weight:600;">500ml Quantity(Cases)</p>
+            </div>
+        </div>
+
 
         <div class="animated flipInY col-md-4 col-sm-4" style="width:700px;">
             <div class="tile-stats">
@@ -63,71 +73,161 @@ color: #14c38e !important;
                 <h2 class="text-warning" style="margin-left: 10px;">
                     <span>0</span>
                 </h2>
-                <p class="text-info" style="font-size: 12px;">500ml Quantity</p>
+                <p class="text-info" style="font-size: 12px;font-weight:600;">250ml Quantity(Cases)</p>
             </div>
         </div>
-
-
-        <div class="animated flipInY col-md-4 col-sm-4" style="width:700px;">
-            <div class="tile-stats">
-                <div class="icon1"><i class="fa fa-bottle-water"></i></div>
-                <h2 class="text-warning" style="margin-left: 10px;">
-                    <span>0</span>
-                </h2>
-                <p class="text-info" style="font-size: 12px;">250ml Quantity</p>
-            </div>
+{% endif  %}
         </div>
-
-{% endif %}
         </div>
-                           </div>
-              </div>
-          </div>
-</div>
  {% if request.session.role  == 'Depo' %}
  <div class="">
+
             <div class="clearfix"></div>
-              <div class="col-md-12 col-sm-12 ">
-   <h3>  {{ request.session.warehousename }}   Inventory </h3>
+     <h3>  Warehouse  Inventory </h3>
+
+<div class="col-md-3 col-sm-3" style="margin-bttom:120px;">
+                  	<label> Warehouse</label>
+                                         <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+												</select>
+											 <input type="hidden" name="warehousename1" id="warehousename1" />
+												<select class="form-control" name="warehouseid1" id="warehouseid1">
+
+													{% for data1 in wh_masterlist %}
+															{% if data1.status == 'Active' %}
+                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif  %}
+                                                     {% endfor %}
+                                                </select>
+</div>
+
+
+       <div class="col-md-12 col-sm-12" >
+
+               <div class="clearfix"></div>
+
+  <div class="clearfix"></div>
                    <div style="display: inline-block;">
-                       <div class="row" style="display: inline-block;">
+                       <div class="row" style="display: inline-block;margin-top:20px;">
     <div class="top_tiles" style="width: 900px;">
+          <a  class="itemcode1000ml">
     <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">
-            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
-                <h1 class="text-warning" style="margin-left: 10px;">{{ item.1000mlcount }}</h1>
-                <p class="text-info" style="font-size: 12px;">1000ml</p>
+            <div class="icon1"><i  class="fa fa-bottle-water"></i></div>
+                <h2 class="1000mlqty" style="margin-left: 10px;color:#14c38e;font-weight:600;"></h2>
+                <p class="text-info" style="font-size: 15px;font-weight:600;">1000ml Quantity(Cases)</p>
            </div>
         </div>
-
+          </a>
+          <a class="itemcode500ml" href="batch_codeexpry/{{ item.itemcode }}/">
                            <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">
-            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
-                <h1 class="text-warning" style="margin-left: 10px;">{{ item.500mlcount }}</h1>
-                <p class="text-info" style="font-size: 12px;">500ml</p>
+            <div class="icon1"><i class="fa fa-bottle-water"></i></div>
+                <h2 class="500mlqty" style="margin-left: 10px;color:#14c38e;font-weight:600;"></h2>
+                <p class="text-info" style="font-size: 15px;font-weight:600;">500ml Quantity(Cases)</p>
            </div>
         </div>
-        <div class="animated flipInY  col-md-4 col-sm-4">
-        <div class="tile-stats">
-            <div class="icon1"><i class="fa fa-bar-chart"></i></div>
-                <h1 class="text-warning" style="margin-left: 10px;">{{ item.250mlcount}}</h1>
-                <p class="text-info" style="font-size: 12px;">250ml</p>
-           </div>
-        </div>
-
+          </a>
+          <a class="itemcode250ml" href="batch_codeexpry/{{ item.itemcode }}/">
+                <div class="animated flipInY  col-md-4 col-sm-4">
+                <div class="tile-stats">
+                    <div class="icon1"><i class="fa fa-bottle-water"></i></div>
+                        <h2 class="250mlqty" style="margin-left: 10px;color:#14c38e;font-weight:600;"></h2>
+                        <p class="text-info" style="font-size: 15px;font-weight:600;">250ml Quantity(Cases)</p>
+                   </div>
+                </div>
+          </a>
               </div>
           </div>
 </div>
               </div>
  </div>
+                  {% endif %}
     </div>
-{% endif %}
+
                        </div>
                    </div>
               </div>
           </div>
 </div>
+
 <script>
+$("#warehouseid1").change(function() {
+        	var warehouseid = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_whinventory" %}',
+            	data: {
+                	'warehouseid':warehouseid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.inventorylist
+			 		var error = data.data.error;
+			 		var message = data.data.message;
+                      if ( error === true) {
+
+                            $('.1000mlqty').text("0");
+                            $('.500mlqty').text("0");
+                            $('.250mlqty').text("0");
+
+                            alertify.set('notifier', 'position', 'top-center');
+                            alertify.error(message);
+                      }
+					for (var i = 0; i < obj.length; i++) {
+                        var item = obj[i];
+
+                         if (item.itemname === '1000ml') {
+                            $('.1000mlqty').text(item.Qty);
+                            $('.itemcode1000ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                        } else if (item.itemname === '500ml') {
+                            $('.500mlqty').text(item.Qty);
+                            $('.itemcode500ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                        } else if (item.itemname === '250ml') {
+                            $('.250mlqty').text(item.Qty);
+                            $('.itemcode250ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                        }
+                    }
+
+             	}
+        	});
+    	});
+
+
+$(document).ready(function() {
+
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_whinventory" %}',
+            	data: {
+                	'warehouseid':"WDP0002",'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.inventorylist
+			 		var error = data.data.error;
+			 		var message = data.data.message;
+                      if ( error === true) {
+
+                            alertify.set('notifier', 'position', 'top-center');
+                            alertify.error(message);
+                      }
+					for (var i = 0; i < obj.length; i++) {
+                        var item = obj[i];
+
+                         if (item.itemname === '1000ml') {
+                            $('.1000mlqty').text(item.Qty);
+                            $('.itemcode1000ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                        } else if (item.itemname === '500ml') {
+                            $('.500mlqty').text(item.Qty);
+                            $('.itemcode500ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                        } else if (item.itemname === '250ml') {
+                            $('.250mlqty').text(item.Qty);
+                            $('.itemcode250ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                        }
+                    }
+
+             	}
+        	});
+    	});
 
 </script>
 {% endblock %}

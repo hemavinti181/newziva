@@ -1,4 +1,5 @@
 from django.urls import path,include
+
 from ziva_app import views
 
 
@@ -287,5 +288,7 @@ urlpatterns = [
     path('servicewise_shortage',views.servicewise_shortage,name='servicewise_shortage'),
     path('region_payment_new',views.region_payment_new,name='region_payment_new'),
     path('depot_payment_new',views.depot_payment_new,name='depot_payment_new'),
-    path('bust_payment_new',views.bust_payment_new,name='bust_payment_new')
+    path('bust_payment_new',views.bust_payment_new,name='bust_payment_new'),
+    path('driverwise_sub_shoretage',views.driverwise_sub_shoretage,name='driverwise_sub_shoretage'),
+    path('get_whinventory',views.get_whinventory,name='get_whinventory')
 ]
