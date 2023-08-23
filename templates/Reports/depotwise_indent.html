@@ -500,34 +500,38 @@ $(document).ready(function(){
     if (selectedOption == 'Custom Dates') {
       $('#date-range-fields').show();
       $('#tdate').show();
-      displayResults();
+
     } else {
       $('#date-range-fields').hide();
       $('#tdate').hide();
-          displayOtherResults(selectedOption);
+
     }
   });
 });
+
+$(document).ready(function(){
+    var selectedOption = $('#range2').find(":selected").text();
+    if (selectedOption == 'Custom Dates') {
+      $('#date-range-fields').show();
+      $('#tdate').show();
+    } else {
+      $('#date-range-fields').hide();
+      $('#tdate').hide();
+    }
+});
+
 $(document).ready(function(){
     var selectedOption = $('#daterangeselect').find(":selected").text();
     if (selectedOption == 'Custom Dates') {
       $('#date-range-fields').show();
       $('#tdate').show();
-     // show the date fields if custom option is selected
-      displayResults();
+
     } else {
       $('#date-range-fields').hide();
       $('#tdate').hide();// hide the date fields if another option is selected
-          displayOtherResults(selectedOption);
+
     }
 });
-function displayResults() {
-  var fromDate = $('#date-range-fields').val();
-  var toDate = $('#tdate').val();
-
-}
-function displayOtherResults(selectedOption) {
-}
 
 $(document).ready(function() {
         	$.ajax({
@@ -557,7 +561,7 @@ $(document).ready(function() {
   var startDateInput = document.getElementById("start-date");
   var endDateInput = document.getElementById("end-date");
 
- $("#warehouseid1, #regionid1, #depoid1, #daterangeselect").change(function() {
+ $("#warehouseid1, #regionid1, #depoid1, #daterangeselect,#start-date,#end-date").change(function() {
   var validOptions = ["1", "2", "3","4","5","All"]; // Valid options for submission
   if (validOptions.includes(daterangeSelect.value)) {
     form.submit(); // Submit the form

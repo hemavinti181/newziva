@@ -14,8 +14,8 @@
     z-index: 1
 }
 .alertify .ajs-info {
-    background-color: #33b5e5; /* Change to your desired color */
-    color: white; /* Change to text color that contrasts well with the background color */
+    background-color: #33b5e5;
+    color: white;
 }
     </style>
 
@@ -37,7 +37,7 @@
 
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-					<form id="myForm" method="POST" action="/payment_report"  enctype="multipart/form-data">
+					<form id="myform" method="POST" action="/payment_report"  enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-md-2  form-group has-feedback">
                          <label for="daterangeselect">Frequency</label>
@@ -54,11 +54,11 @@
                             </div>
                              <div class="col-md-2  form-group has-feedback" id="fdate" style="display:none">
                             <label for="start-date">From Date</label>
-                              <input type="date" id="start-date"  name="fdate" class="form-control" value="{{ fdate }}" />
+                              <input type="date" id="start-date"  name="fdate" class="form-control" value="{{ request.POST.fdate }}" />
                             </div>
                               <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
                                 <label  for="end-date">To Date</label>
-                              <input type="date" id="end-date" name="tdate" class="form-control" value="{{ tdate }}">
+                              <input type="date" id="end-date" name="tdate" class="form-control" value="{{ request.POST.tdate }}">
                             </div>
 
 
@@ -109,9 +109,9 @@
 													<option value="All">All</option>
 												</select>
 										</div>
-                         <div class="col-md-2 col-sm-2  form-group has-feedback">
+                       <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 30px;" class="btn btn-primary">Search</button>
-                                       </div>
+                                       </div>-->
 
                     </form>
 
@@ -189,7 +189,8 @@
                                     {% for all_data in data %}
                                     <tr>
                                       <td>{{ forloop.counter }}</td>
-                                         <td><a href="#" onclick="pageScroll()" style="color: #06911A" class="region_list"  data-id="{{ all_data.warehouseid }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" >{{ all_data.warehouse }}</a></td>
+                                        <td>{{ all_data.warehouse }}</td>
+                                      <!--<td><a href="#" onclick="pageScroll()" style="color: #06911A" class="region_list"  data-id="{{ all_data.warehouseid }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" >{{ all_data.warehouse }}</a></td>-->
                                         <td> {{ all_data.qty }}</td>
                                       <td>{{ all_data.total }}</td>
                                         <td class="text-center"><a href = "#" onclick="pageScroll()" class="items_list"  data-id="{{ all_data.warehouseid }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o"  style='font-size:20px;color:blue'></i></a></td>
@@ -434,6 +435,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
+$(document).ready(function() {
+     var selectedOptionText = $('#daterangeselect').find(":selected").text();
+     $("#from").val(selectedOptionText);
+});
 function pageScroll() {
    $('body,html').animate({scrollTop: 500}, 1000);
     //window.scrollBy(0,1);
@@ -460,7 +465,6 @@ $("#busstationid").change(function() {
 });
 $("#daterangeselect").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
-
     $("#from").val(selectedOptionText);
 });
 
@@ -745,7 +749,17 @@ function displayOtherResults(selectedOption) {
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         success: function(response) {
+            var error = response.response.error;
+            var message = response.response.message;
+
+          if ( error === true) {
+
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.error(message);
+          }
+           else{
             var responseData = response.response.daywisesalesdepolist;
+            console.log(responseData)
             $('.region').show();
              $('.depo').hide();
               $('.bus').hide();
@@ -754,7 +768,7 @@ function displayOtherResults(selectedOption) {
               $('.itemsbus').hide();
 
             var tableBody = $('#datatable-buttons1 tbody');
-            // Iterate through the data and append rows to the table
+
             for (var i = 0; i < responseData.length; i++) {
                 var item = responseData[i];
                 var row = $('<tr>');
@@ -762,7 +776,7 @@ function displayOtherResults(selectedOption) {
                 //row.append($('<td>').text(item.region));
                 console.log(id, fdate, tdate)
 
-                 var regionTd = $('<td>').append(
+                 /* var regionTd = $('<td>').append(
                         $('<a>')
                             .attr('href', '#')
                             .addClass('depo_list')
@@ -773,7 +787,8 @@ function displayOtherResults(selectedOption) {
                             .attr('data-tdate', tdate)
                             .attr('onclick','pageScroll()')
                     )
-                row.append(regionTd);
+                row.append(regionTd); */
+                row.append($('<td>').text(item.region));
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
                 row.append(code);
@@ -781,6 +796,7 @@ function displayOtherResults(selectedOption) {
                  row.append(code);
                 tableBody.append(row);
             }
+        }
             $("#datatable-buttons1").DataTable({
                 dom: "Blfrtip",
                 "bDestroy": true,
@@ -841,9 +857,9 @@ $(document).on('click', '.depo_list', function () {
                 var item = responseData[i];
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));  // S No
-                //row.append($('<td>').text(item.region));
+                row.append($('<td>').text(item.region));
                 console.log(id, fdate, tdate)
-                 var regionTd = $('<td>').append(
+                 /* var regionTd = $('<td>').append(
                         $('<a>')
                             .attr('href', '#')
                             .addClass('bus_list')
@@ -854,7 +870,8 @@ $(document).on('click', '.depo_list', function () {
                             .attr('data-tdate', tdate)
                             .attr('onclick','pageScroll()')
                     )
-                row.append(regionTd);
+                row.append(regionTd); */
+                row.append($('<td>').text(item.depo));
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
                 var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_depolist" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
@@ -1326,10 +1343,11 @@ var dataTable = $("#datatable-buttons1").DataTable({
 });
 
 $("#regionid1").change(function () {
+alert('hai')
     var regionid = $('#regionid1').val();
     var date = $("#daterangeselect").find(":selected").text();
-    var tdate = $('#tdate').val();
-    var fdate = $('#fate').val();
+    var tdate = $('#end-date').val();
+    var fdate = $('#start-date').val();
     $.ajax({
         url: '{% url "region_payment_new" %}',
         type: "POST",
@@ -1361,7 +1379,7 @@ $("#regionid1").change(function () {
                 var row = $('<tr>');
                 console.log(frdate,trdate)
                 row.append($('<td>').text(i + 1));  // S No
-                 var regionTd = $('<td>').append(
+                 /* var regionTd = $('<td>').append(
                         $('<a>')
                             .attr('href', '#')
                             .addClass('depo_list')
@@ -1372,7 +1390,8 @@ $("#regionid1").change(function () {
                             .attr('data-tdate', trdate)
                             .attr('onclick','pageScroll()')
                     )
-                row.append(regionTd);
+                row.append(regionTd); */
+                row.append($('<td>').text(item.regionname));  // Quantity
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
                 var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_regionlist" data-id="' + item.region_id + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
@@ -1426,8 +1445,8 @@ $("#depoid1").change(function () {
 
     var depoid = $('#depoid1').val();
     var date = $("#daterangeselect").find(":selected").text();
-    var tdate = $('#tdate').val();
-    var fdate = $('#fate').val();
+    var fdate = $('#start-date').val();
+    var tdate = $('#end-date').val();
     $.ajax({
         url: '{% url "depot_payment_new" %}',
         type: "POST",
@@ -1459,7 +1478,7 @@ $("#depoid1").change(function () {
                 console.log(frdate,trdate)
                 row.append($('<td>').text(i + 1));
 
-                 var regionTd = $('<td>').append(
+                 /* var regionTd = $('<td>').append(
                         $('<a>')
                             .attr('href', '#')
                             .addClass('bus_list')
@@ -1470,7 +1489,8 @@ $("#depoid1").change(function () {
                             .attr('data-tdate', tdate)
                             .attr('onclick','pageScroll()')
                     )
-                row.append(regionTd);
+                     row.append(regionTd); */
+                row.append($('<td>').text(item.deponame));
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
                 var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_depolist" data-id="' + item.depoid + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
@@ -1521,8 +1541,8 @@ $("#busstationid1").change(function () {
 
     var busatationid = $('#busstationid1').val();
     var date = $("#daterangeselect").find(":selected").text();
-    var tdate = $('#tdate').val();
-    var fdate = $('#fate').val();
+    var tdate = $('#end-date').val();
+    var fdate = $('#start-date').val();
     $.ajax({
         url: '{% url "bust_payment_new" %}',
         type: "POST",
@@ -1570,6 +1590,47 @@ $("#busstationid1").change(function () {
 
     });
 });
+
+$(document).ready(function() {
+  var form = document.getElementById("myform");
+  var daterangeSelect = document.getElementById("daterangeselect");
+  var startDateInput = document.getElementById("start-date");
+  var endDateInput = document.getElementById("end-date");
+
+ $("#warehouseid1,  #daterangeselect,#start-date,#end-date").change(function() {
+  var validOptions = ["1", "2", "3","4","5","All"]; // Valid options for submission
+  if (validOptions.includes(daterangeSelect.value)) {
+    form.submit(); // Submit the form
+  }
+  if (daterangeSelect.value === "6") { // "6" is the value for "Custom Dates" option
+    $("#date-range-fields").show();
+    $("#tdate").show();
+    if (startDateInput.value && endDateInput.value) {
+      form.submit(); // Submit the form
+    }
+  } else {
+    $("#date-range-fields").hide();
+    $("#tdate").hide();
+    form.removeEventListener("submit", validateCustomDates); // Remove event listener for custom dates
+  }
+});
+
+form.addEventListener("submit", function(event) {
+  if (daterangeSelect.value === "6" && (!startDateInput.value || !endDateInput.value)) {
+    event.preventDefault();
+    console.log("Please select both start date and end date.");
+  }
+  var selectedOptionText = $('#warehouseid1').find(":selected").text();
+  $("#warehousename1").val(selectedOptionText);
+  selectedOptionText = $('#regionid1').find(":selected").text();
+  $("#regionname1").val(selectedOptionText);
+  selectedOptionText = $('#depoid1').find(":selected").text();
+  $("#deponame1").val(selectedOptionText);
+  var selectedOptionText = $('#daterangeselect').find(":selected").text();
+  $("#from").val(selectedOptionText);
+});
+});
+
  </script>
 {% endblock %}
 

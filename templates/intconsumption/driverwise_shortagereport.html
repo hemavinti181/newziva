@@ -188,6 +188,7 @@ function pageScroll() {
   }
 });
 
+
 form.addEventListener("submit", function(event) {
   if (daterangeSelect.value === "6") {
     event.preventDefault();
@@ -199,6 +200,8 @@ form.addEventListener("submit", function(event) {
   $("#from").val(selectedOptionText);
 });
 });
+
+
 $(document).ready(function(){
   $('#daterangeselect').change(function() {
     var selectedOption = $(this).find(":selected").text();
@@ -270,7 +273,7 @@ $(".driver_shortlist").on('click', function () {
         success: function(data) {
         var error = data.data.error;
         var message = data.data.message;
-        alert(error)
+
          if ( error === true) {
                 alertify.set('notifier', 'position', 'top-center');
                 alertify.error(message);

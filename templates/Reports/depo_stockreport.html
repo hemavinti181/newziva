@@ -23,9 +23,9 @@
         <div class="dropdown-menu"  id="myDropdown3" style="max-height: 400px; overflow-y: auto;">
 
       <input type="search" placeholder="search" id="myInpu3" class="form-control"  onkeyup="filterFunction3()">
-          <a class="dropdown-item" href="/warehouse_stock">All</a>
+          <a class="dropdown-item" href="/warehouse_stock" style="font-size: 16px;">All</a>
           {% for data in wh_masterlist %}
-            <a class="dropdown-item" href="/warehouse_stock1/{{ data.warehouseid }}">{{ data.warehousename }}</a>
+            <a class="dropdown-item" href="/warehouse_stock1/{{ data.warehouseid }}" style="font-size: 16px;">{{ data.warehousename }}</a>
           {% endfor %}
         </div>
       </div>
@@ -37,9 +37,9 @@
         <div class="dropdown-menu"  id="myDropdown" style="max-height: 400px; overflow-y: auto;">
 
       <input type="search" placeholder="search" id="myInput" class="form-control"  onkeyup="filterFunction()">
-          <a class="dropdown-item" href="/region_stock1/All">All</a>
+          <a class="dropdown-item" href="/region_stock1/All" style="font-size: 16px;">All</a>
           {% for data in regionlist %}
-            <a class="dropdown-item" href="/region_stock1/{{ data.region_id }}">{{ data.regionname }}</a>
+            <a class="dropdown-item" href="/region_stock1/{{ data.region_id }}" style="font-size: 16px;">{{ data.regionname }}</a>
           {% endfor %}
         </div>
       </div>
@@ -50,9 +50,9 @@
         </button>
         <div class="dropdown-menu"  id="myDropdown1" style="max-height: 400px; overflow-y: auto;">
           <input type="search" class="form-control" id="myInput1" placeholder="search" onkeyup="filterFunction1()">
-          <a class="dropdown-item" href="/depot_stock_new/All">All</a>
+          <a class="dropdown-item" href="/depot_stock_new/All" style="font-size: 16px;">All</a>
           {% for data in depolist %}
-            <a class="dropdown-item depo" href="/depot_stock_new/{{ data.depoid }}">{{ data.deponame }}</a>
+            <a class="dropdown-item depo" href="/depot_stock_new/{{ data.depoid }}" style="font-size: 16px;">{{ data.deponame }}</a>
           {% endfor %}
         </div>
       </div>
@@ -63,9 +63,9 @@
         </button>
         <div class="dropdown-menu"  id="myDropdown2" style="max-height: 400px; overflow-y: auto;">
         <input type="search" id="myInput2" class="form-control" placeholder="search" onkeyup="filterFunction2()">
-              <a class="dropdown-item" href="/busstation_stock1/All">All</a>
+              <a class="dropdown-item" href="/busstation_stock1/All" style="font-size: 16px;">All</a>
           {% for data in bus %}
-            <a class="dropdown-item" href="/busstation_stock1/{{ data.busatationid }}/">{{ data.busstationname }}</a>
+            <a class="dropdown-item" href="/busstation_stock1/{{ data.busatationid }}/" style="font-size: 16px;">{{ data.busstationname }}</a>
           {% endfor %}
         </div>
       </div>

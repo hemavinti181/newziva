@@ -857,11 +857,15 @@ $('#tickets').on('input', function() {
                   'auth': auth,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
               success: function (response) {
+              var message = response.response.message;
+              alert(message)
               if(response === '200'){
                  $("#return").show();
                  $("#bs-example-modal-sm").hide();
                }
                else{
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.error(message);
                 $("#bs-example-modal-sm").modal("hide");
                }
               },

@@ -8790,6 +8790,7 @@ def payment_report(request):
                 if response.status_code == 200:
                     data = response.json()
                     item  = data['daywisesaleswarehouselist']
+
                 url = "http://13.235.112.1/ziva/mobile-api/warehousewise-sales-report.php"
 
                 if range == 'Custom Dates':
@@ -9025,7 +9026,13 @@ def region_payment(request):
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
-
+    elif response.status_code == 503:
+        response = response.json()
+        return JsonResponse({'response': response})
+    else:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'response': response})
 def region_payment_new(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -11921,82 +11928,89 @@ def returnsconsumption(request):
 
 
 def intconsump_report(request):
-    if 'accesskey' not in request.session:
-        messages.error(request, 'Access denied!')
-        return redirect('/login')
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
-
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    depolist = data['depolist']
-    if request.method == 'POST':
-        menuname = request.session['mylist']
+    try:
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
         accesskey = request.session['accesskey']
-        fdate = request.POST.get('fdate')
-        tdate = request.POST.get('tdate')
-        deponame=request.POST.get('deponame')
-        if deponame:
-            deponame = deponame
-        else:
-            deponame = 'All'
-        url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-        payload = json.dumps({
-            "accesskey": accesskey, "fdate": fdate,
-            "tdate": tdate,"deponame":deponame,
-        })
+        payload = json.dumps({"accesskey": accesskey})
         headers = {
             'Content-Type': 'text/plain'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            busservicesupplylist = data['busservicesupplylist']
-            return render(request, 'intconsumption/intconsump_report.html',
-                          {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
-        elif response.status_code == 400:
-            data = response.json()
-            messages.error(request, data['message'])
-            return redirect('/login')
-        else:
-            return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'depolist':depolist,'fdate': fdate, 'tdate': tdate})
-    else:
-        current_date = datetime.date.today()
-        fdate = current_date - timedelta(days=current_date.weekday() + 7)
-        fdate = fdate.strftime("%Y-%m-%d")
-        tdate = datetime.date.today()
-        tdate = tdate.strftime("%Y-%m-%d")
-        menuname = request.session['mylist']
-        accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
+        data = response.json()
+        depolist = data['depolist']
+        if request.method == 'POST':
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+            fdate = request.POST.get('fdate')
+            tdate = request.POST.get('tdate')
+            deponame=request.POST.get('deponame')
+            if deponame:
+                deponame = deponame
+            else:
+                deponame = 'All'
+            url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
 
-        payload = json.dumps({
-            "accesskey": accesskey, "fdate": fdate, "tdate": tdate,"deponame":"All"})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            busservicesupplylist = data['busservicesupplylist']
-            return render(request, 'intconsumption/intconsump_report.html',
-                          {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
-        elif response.status_code == 400:
+            payload = json.dumps({
+                "accesskey": accesskey, "fdate": fdate,
+                "tdate": tdate,"deponame":deponame,
+            })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                busservicesupplylist = data['busservicesupplylist']
+                return render(request, 'intconsumption/intconsump_report.html',
+                              {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('/login')
+            else:
+                return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'depolist':depolist,'fdate': fdate, 'tdate': tdate})
+        else:
+            current_date = datetime.date.today()
+            fdate = current_date - timedelta(days=current_date.weekday() + 7)
+            fdate = fdate.strftime("%Y-%m-%d")
+            tdate = datetime.date.today()
+            tdate = tdate.strftime("%Y-%m-%d")
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
+
+            payload = json.dumps({
+                "accesskey": accesskey, "fdate": fdate, "tdate": tdate,"deponame":"All"})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                busservicesupplylist = data['busservicesupplylist']
+                return render(request, 'intconsumption/intconsump_report.html',
+                              {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('/login')
+            elif response.status_code == 503:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'intconsumption/intconsump_report.html',
+                              {'menuname': menuname, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
+            else:
+                return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'depolist':depolist})
+    except:
+        if response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
             return redirect('/login')
-        elif response.status_code == 503:
-            data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'intconsumption/intconsump_report.html',
-                          {'menuname': menuname, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
-        else:
-            return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'depolist':depolist})
+    return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname})
 
 
 def vehicallist(request):
@@ -12222,17 +12236,16 @@ def authorize_staffid(request):
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
                     messages.error(request, data['message'])
-                    return redirect('/internal_consumption')
+                    return JsonResponse({'response':response})
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
             elif response.status_code == 503:
                     data = response.json()
-                    messages.error(request, data['message'])
-                    return redirect('/internal_consumption')
+                    return JsonResponse({'response': data})
             elif response.status_code == 500:
                 messages.error(request,"Internal Server Error")
-                return redirect('/internal_consumption')
+                return JsonResponse({'response': response})
             else:
                 return redirect('/internal_consumption')
     except:
@@ -13285,44 +13298,45 @@ def zonal_depotwise_data(request):
 
 
 def zonal_depotindent_data(request):
-    if 'accesskey' not in request.session:
-        messages.error(request, 'Access denied!')
-        return redirect('/login')
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/depo-pending-indent-new-backup.php.php"
-    fdate = request.POST.get('inddate')
-    tdate = datetime.date.today()
-    tdate = tdate.strftime("%Y-%m-%d")
-    if fdate:
-        date = fdate
-    else:
-        date = tdate
-    payload = {"accesskey": accesskey,"date":date, "depoid": request.POST.get('deponame'),
-               }
-    payload = json.dumps(payload, cls=BytesEncoder)
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data': data})
-    elif response.status_code == 400:
-        data = response.json()
-        if data['message'] == 'Sorry! some details are missing':
-            messages.error(request, data['message'])
-            return JsonResponse({'data': data})
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/depo-pending-indent-new-backup.php.php"
+        fdate = request.POST.get('inddate')
+        tdate = datetime.date.today()
+        tdate = tdate.strftime("%Y-%m-%d")
+        if fdate:
+            date = fdate
         else:
-            messages.error(request, data['message'])
-            return redirect('\login')
-    elif response.status_code == 503:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'data': data})
-    elif response.status_code == 500:
-        messages.error(request, "Internal Server Error")
-        return JsonResponse({'data': "Internal Server Error"})
+            date = tdate
+        payload = {"accesskey": accesskey,"date":date, "depoid": request.POST.get('deponame'),
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            return JsonResponse({'data': "Internal Server Error"})
+
+
+
+
 
 
 def admin_dashboard(request):
@@ -13348,31 +13362,39 @@ def intconsump_stocktransfer(request):
     return render(request, 'intconsumption/intconsump_stocktransfer.html', {"menuname": menuname})
 
 def intconsump_dashboard(request):
-    if 'mylist' not in request.session:
+    if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+    try:
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    depolist = data['depolist']
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        depolist = data['depolist']
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    item_masterlist = data['itemmasterlist']
-    return render(request, 'intconsumption/intconsump_dashboard.html', {"menuname": menuname,'depolist':depolist,'item_masterlist':item_masterlist})
+        url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        item_masterlist = data['itemmasterlist']
+        return render(request, 'intconsumption/intconsump_dashboard.html', {"menuname": menuname,'depolist':depolist,'item_masterlist':item_masterlist})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request,data['message'])
+            return redirect('/login')
+    return render(request, 'intconsumption/intconsump_dashboard.html',{"menuname": menuname})
 def intconsump_dashboard_data(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13454,184 +13476,193 @@ def driverwise_sub_shoretage(request):
         return JsonResponse({'data': "Internal Server Error"})
 
 def driverwise_shortage(request):
-    if 'mylist' not in request.session:
+    if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
+    try:
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
 
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    depolist = data['depolist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
-
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    selectrange = data['timingslist']
-    if request.method == 'POST':
-        fdate = request.POST.get('fdate')
-        tdate = request.POST.get('ldate')
-        deponame = request.POST.get('deponame')
-        if deponame:
-            deponame=deponame
-        else:
-            deponame = 'All'
-        range = request.POST.get('from')
-        if range:
-            range =range
-        else:
-            range = "Current Month"
-        if range == 'Custom Dates':
-            fdate = request.POST.get('fdate')
-            tdate = request.POST.get('tdate')
-        else:
-            fdate = request.POST.get('from')
-            tdate = request.POST.get('from')
-        payload = json.dumps({
-                "accesskey": accesskey,
-                "deponame": deponame,
-                "fromdate":fdate,
-                "todate":tdate,
-
-        })
+        payload = json.dumps({"accesskey": accesskey})
         headers = {
             'Content-Type': 'text/plain'
         }
-        url = "http://13.235.112.1/ziva/mobile-api/shortagelist.php"
+
         response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            itemlist = data['shortagelist']
-            return render(request, 'intconsumption/driverwise_shortagereport.html',
-                          {'menuname': menuname, 'itemlist': itemlist,'depolist':depolist,'selectrange':selectrange,'fdate':fdate,'tdate':tdate})
+        data = response.json()
+        depolist = data['depolist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        selectrange = data['timingslist']
+        if request.method == 'POST':
+            deponame = request.POST.get('deponame')
+            if deponame:
+                deponame=deponame
+            else:
+                deponame = 'All'
+            range = request.POST.get('from')
+            if range:
+                range =range
+            else:
+                range = "Current Month"
+            if range == 'Custom Dates':
+                fdate = request.POST.get('fdate')
+                tdate = request.POST.get('tdate')
+            else:
+                fdate = request.POST.get('from')
+                tdate = request.POST.get('from')
+            payload = json.dumps({
+                    "accesskey": accesskey,
+                    "deponame": deponame,
+                    "fromdate":fdate,
+                    "todate":tdate,
+
+            })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            url = "http://13.235.112.1/ziva/mobile-api/shortagelist.php"
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                itemlist = data['shortagelist']
+                return render(request, 'intconsumption/driverwise_shortagereport.html',
+                              {'menuname': menuname, 'itemlist': itemlist,'depolist':depolist,'selectrange':selectrange,'fdate':fdate,'tdate':tdate})
+            else:
+                return render(request, 'intconsumption/driverwise_shortagereport.html',
+                              {'menuname': menuname,'depolist':depolist,'selectrange':selectrange,'fdate':fdate,'tdate':tdate})
         else:
-            return render(request, 'intconsumption/driverwise_shortagereport.html',
-                          {'menuname': menuname,'depolist':depolist,'selectrange':selectrange,'fdate':fdate,'tdate':tdate})
-    else:
 
-                url = "http://13.235.112.1/ziva/mobile-api/shortagelist.php"
-                payload = json.dumps({
-                                      "accesskey": accesskey,
-                                      "deponame": "All",
-                                       "fromdate": "Current Month",
-                                       "todate": "Current Month"
-                                      })
-                headers = {
-                    'Content-Type': 'text/plain'
-                }
-                response = requests.request("GET", url, headers=headers, data=payload)
-                if response.status_code == 200:
-                    data = response.json()
-                    itemlist = data['shortagelist']
-                    return render(request, 'intconsumption/driverwise_shortagereport.html',
-                                  {'menuname': menuname, 'itemlist': itemlist,'depolist':depolist,'selectrange':selectrange,'fdate': "Current Month",'tdate': "Current Month"})
-                else:
-                    return render(request, 'intconsumption/driverwise_shortagereport.html',
-                              {'menuname': menuname,'depolist':depolist,'selectrange':selectrange,'fdate': "Current Month",'tdate': "Current Month"})
-
-
+                    url = "http://13.235.112.1/ziva/mobile-api/shortagelist.php"
+                    payload = json.dumps({
+                                          "accesskey": accesskey,
+                                          "deponame": "All",
+                                           "fromdate": "Current Month",
+                                           "todate": "Current Month"
+                                          })
+                    headers = {
+                        'Content-Type': 'text/plain'
+                    }
+                    response = requests.request("GET", url, headers=headers, data=payload)
+                    if response.status_code == 200:
+                        data = response.json()
+                        itemlist = data['shortagelist']
+                        return render(request, 'intconsumption/driverwise_shortagereport.html',
+                                      {'menuname': menuname, 'itemlist': itemlist,'depolist':depolist,'selectrange':selectrange,'fdate': "Current Month",'tdate': "Current Month"})
+                    else:
+                        return render(request, 'intconsumption/driverwise_shortagereport.html',
+                                  {'menuname': menuname,'depolist':depolist,'selectrange':selectrange,'fdate': "Current Month",'tdate': "Current Month"})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+    return render(request, 'intconsumption/driverwise_shortagereport.html',
+                  {'menuname': menuname})
 
 def servicewise_shortage(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+    try:
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    data = response.json()
-    depolist = data['depolist']
+        data = response.json()
+        depolist = data['depolist']
 
-    url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
+        url = "http://13.235.112.1/ziva/mobile-api/dates-filter.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    data = response.json()
-    selectrange = data['timingslist']
-    if request.method == 'POST':
-        fdate = request.POST.get('fdate')
-        tdate = request.POST.get('ldate')
-        deponame = request.POST.get('deponame')
-        if deponame:
-            deponame = deponame
-        else:
-            deponame = 'All'
-        range = request.POST.get('from')
-        if range == 'Custom Dates':
+        data = response.json()
+        selectrange = data['timingslist']
+        if request.method == 'POST':
             fdate = request.POST.get('fdate')
-            tdate = request.POST.get('tdate')
-        else:
-            fdate = request.POST.get('from')
-            tdate = request.POST.get('from')
+            tdate = request.POST.get('ldate')
+            deponame = request.POST.get('deponame')
+            if deponame:
+                deponame = deponame
+            else:
+                deponame = 'All'
+            range = request.POST.get('from')
+            if range == 'Custom Dates':
+                fdate = request.POST.get('fdate')
+                tdate = request.POST.get('tdate')
+            else:
+                fdate = request.POST.get('from')
+                tdate = request.POST.get('from')
 
-        payload = json.dumps({
+            payload = json.dumps({
+                    "accesskey": accesskey,
+                    "service_id": "All",
+                    "deponame": deponame,
+                    "fromdate": fdate,
+                    "todate": tdate,
+            })
+
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            url = "http://13.235.112.1/ziva/mobile-api/servicewise-shortagelist.php"
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                itemlist = data['shortagelist']
+                return render(request, 'intconsumption/servicewise_shortage.html',
+                              {'menuname': menuname, 'itemlist': itemlist, 'depolist': depolist, 'fdate': fdate,
+                               'tdate': tdate,'selectrange':selectrange})
+            else:
+                return render(request, 'intconsumption/servicewise_shortage.html',
+                              {'menuname': menuname, 'depolist': depolist, 'fdate': fdate, 'tdate': tdate,'selectrange':selectrange})
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/servicewise-shortagelist.php"
+            payload = json.dumps({
                 "accesskey": accesskey,
-                "service_id": "All",
-                "deponame": deponame,
-                "fromdate": fdate,
-                "todate": tdate,
-        })
-
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        url = "http://13.235.112.1/ziva/mobile-api/servicewise-shortagelist.php"
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
+                "deponame": "All",
+                "service_id":"All",
+                "fromdate":"Current Month",
+                "todate":"Current Month"
+            })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                itemlist = data['shortagelist']
+                return render(request, 'intconsumption/servicewise_shortage.html',
+                              {'menuname': menuname, 'itemlist': itemlist, 'depolist': depolist,'selectrange':selectrange})
+            else:
+                return render(request, 'intconsumption/servicewise_shortage.html',
+                              {'menuname': menuname, 'depolist': depolist,'selectrange':selectrange})
+    except:
+        if response.status_code == 400:
             data = response.json()
-            itemlist = data['shortagelist']
-            return render(request, 'intconsumption/servicewise_shortage.html',
-                          {'menuname': menuname, 'itemlist': itemlist, 'depolist': depolist, 'fdate': fdate,
-                           'tdate': tdate,'selectrange':selectrange})
-        else:
-            return render(request, 'intconsumption/servicewise_shortage.html',
-                          {'menuname': menuname, 'depolist': depolist, 'fdate': fdate, 'tdate': tdate,'selectrange':selectrange})
-    else:
-        url = "http://13.235.112.1/ziva/mobile-api/servicewise-shortagelist.php"
-        payload = json.dumps({
-            "accesskey": accesskey,
-            "deponame": "All",
-            "service_id":"All",
-            "fromdate":"Current Month",
-            "todate":"Current Month"
-        })
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            itemlist = data['shortagelist']
-            return render(request, 'intconsumption/servicewise_shortage.html',
-                          {'menuname': menuname, 'itemlist': itemlist, 'depolist': depolist,'selectrange':selectrange})
-        else:
-            return render(request, 'intconsumption/servicewise_shortage.html',
-                          {'menuname': menuname, 'depolist': depolist,'selectrange':selectrange})
-
-
+            messages.error(request,data['message'])
+            return redirect('/login')
+    return render(request, 'intconsumption/servicewise_shortage.html',
+                  {'menuname': menuname})
 
