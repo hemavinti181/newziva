@@ -292,3 +292,5 @@ urlpatterns = [
     path('driverwise_sub_shoretage',views.driverwise_sub_shoretage,name='driverwise_sub_shoretage'),
     path('get_whinventory',views.get_whinventory,name='get_whinventory')
 ]
+
+

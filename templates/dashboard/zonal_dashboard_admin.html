@@ -115,18 +115,20 @@
                    <div class="row">
                         <div class="col-md-4 col-sm-4" style="overflow:hidden;">
                         <div class="x_panel Consumption">
-                              <h3 style="margin: 125px 3px 149px 100px;display:none;" id="depotstock1">No Stock Available</h3>
+                              <h3 class="text-danger" style="margin: 125px 3px 149px 100px;display:none;" id="depotstock1">No Stock Available</h3>
                                     <div id="graph_bar_group1" style="width:100%; height:280px;"></div>
-                                      <h5 class="text-info textqty" style="margin:20px">Qty Available vs Qty Consumption progress</h5>
+                                      <h3 class="text-success textqty" style="margin:20px">Qty Available vs Qty Consumption progress</h3>
                                 </div>
                         </div>
             <div class="col-md-3 col-sm-3">
                  <div class="x_panel">
-                  <h3 style="margin: 125px 3px 149px 100px;display:none;" id="depotstock">No Stock Available</h3>
-                       <div id="echart-zonal1" style="height:350px;margin-top:-4px;margin-left:-110px;width:600px"></div>
-            </div>
+                       <h3 class="text-danger" style="margin: 125px 3px 149px 100px;display:none;" id="depotstock">No Stock Available</h3>
+                          <div id="echart-zonal1" style="height:350px;margin-top:-50px;margin-left:-110px;width:600px"></div>
+                       <h3 class="text-success textqty1" style="margin-bottom:11px;margin-left:60px;"> Available Stock</h3>
+                  </div>
               </div>
-    <div class="col-md-5 col-sm-5">
+
+                       <div class="col-md-5 col-sm-5">
 <div class="x_panel stktabel">
             <table class="table table-striped" style="display:block;width=200%"; id="stktabel">
                         <thead>
@@ -769,7 +771,7 @@ var theme = {
 
 
  function updateEchartPieChart(itemslist) {
-        var echartPie = echarts.init(document.getElementById('echart-depot1'), "");
+        var echartPie = echarts.init(document.getElementById('echart-depot1'),theme);
           var count = 0;
           var seriesData = [];
           var legendData = [];
@@ -1173,9 +1175,11 @@ function grnchart(total,itemslist){
           }
            if (count === 0) {
               $('#echart-zonal1').hide();
+                $('.textqty1').hide();
               $('#depotstock').show();
           } else {
               $('#echart-zonal1').show();
+                $('.textqty1').show();
               $('#depotstock').hide();
           }
           echartPie.setOption({
@@ -1555,12 +1559,12 @@ $.ajax({
         $('.avgbott').text(item.consumption_botteles);
         $('.zonaldays').text(item.indays);
         var row = $('<tr>');
-        row.append($('<th>').text('Grand Total').attr('colspan', 2).addClass('design1'));
-        row.append($('<td>').text(item.stock_cases).addClass('design1'));
-        row.append($('<td>').text(item.stock_botteles).addClass('design1'));
-        row.append($('<td>').text(item.consumption_cases).addClass('design1'));
-        row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
-        row.append($('<td>').text(item.indays).addClass('design1'));
+        row.append($('<th>').text('Grand Total').attr('colspan', 2));
+        row.append($('<td>').text(item.stock_cases));
+        row.append($('<td>').text(item.stock_botteles));
+        row.append($('<td>').text(item.consumption_cases));
+        row.append($('<td>').text(item.consumption_botteles));
+        row.append($('<td>').text(item.indays));
         tfootdata.append(row);
       }
     } else if ( url === "/zonal_dashboard_data1") {
@@ -1579,12 +1583,12 @@ $.ajax({
         $('.zonaldays').text(item.indays);
         var row = $('<tr>');
         row.append($('<td>').text(i + 1));
-        row.append($('<td>').text(item.itemname).addClass('design1'));
-        row.append($('<td>').text(item.stock_cases).addClass('design1'));
-        row.append($('<td>').text(item.stock_botteles).addClass('design1'));
-        row.append($('<td>').text(item.consumption_cases).addClass('design1'));
-        row.append($('<td>').text(item.consumption_botteles).addClass('design1'));
-        row.append($('<td>').text(item.indays).addClass('design1'));
+        row.append($('<td>').text(item.itemname));
+        row.append($('<td>').text(item.stock_cases));
+        row.append($('<td>').text(item.stock_botteles));
+        row.append($('<td>').text(item.consumption_cases));
+        row.append($('<td>').text(item.consumption_botteles));
+        row.append($('<td>').text(item.indays));
         tableBody.append(row);
       }
       var tfootdata = $('#stktabel tfoot');

@@ -115,15 +115,16 @@
                    <div class="row">
                         <div class="col-md-4 col-sm-4" style="overflow:hidden;">
                         <div class="x_panel Consumption">
-                             <h3 style="margin: 168px 3px 149px 80px;display:none;" id="depotstock1">No Stock Available</h3>
+                             <h3 class="text-danger" style="margin: 168px 3px 149px 80px;display:none;" id="depotstock1">No Stock Available</h3>
                                     <div id="graph_bar_group1" style="width:100%; height:280px;"></div>
-                                      <h5 class="text-info textqty" style="margin:20px">Qty Available vs Qty Consumption progress</h5>
+                                      <h3 class="text-success textqty" style="margin:20px">Qty Available vs Qty Consumption progress</h3>
                                 </div>
                         </div>
             <div class="col-md-3 col-sm-3">
                  <div class="x_panel">
-                  <h3 style="margin: 168px 3px 149px 80px;display:none;" id="depotstock">No Stock Available</h3>
-                       <div id="echart-zonal1" style="height:350px;margin-top:-5px;margin-left:-150px;width:600px;"></div>
+                  <h3 class="text-danger" style="margin: 168px 3px 149px 80px;display:none;" id="depotstock">No Stock Available</h3>
+                       <div id="echart-zonal1" style="height:350px;margin-top:-50px;margin-left:-150px;width:600px;"></div>
+                      <h3 class="text-success textqty1" style="margin-bottom:11px;margin-left:60px;"> Available Stock</h3>
             </div>
               </div>
     <div class="col-md-5 col-sm-5">
@@ -245,12 +246,12 @@
                                 <div class="col-md-4">
                                       <h3  class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock">No Stock Available</h3>
                                     <div id="echart-depot1"   style="height:350px;margin-top:-60px;margin-left:-100px;width:600px"></div>
-                                 <h4 style="margin:18px">Stock Available</h4>
+                                 <h3 class="text-success textstock" style="margin:18px">Stock Available</h3>
                                 </div>
                                 <div class="col-md-3">
                                       <h3 class="text-danger" style="margin: 125px 3px 149px -10px;display:none;" id="lblNoStock1">No Consumption Available</h3>
                                     <div id="echart-pies2"    style="height:350px;margin-top:-60px;margin-left:-100px;width:600px"></div>
-                                  <h4 style="margin:18px">Avg consumption of last 7 days</h4>
+                                  <h3 class="text-success textconsumption" style="margin:18px">Avg consumption of last 7 days</h3>
                                 </div>
                                 <div class="col-md-5">
                                    <div class="clearfix"></div>
@@ -746,7 +747,7 @@ var theme = {
         generateGradient: true
     };
  function updateEchartPieChart(itemslist) {
-        var echartPie = echarts.init(document.getElementById('echart-depot1'),"");
+        var echartPie = echarts.init(document.getElementById('echart-depot1'),theme);
           var count = 0;
           var seriesData = [];
           var legendData = [];
@@ -763,9 +764,11 @@ var theme = {
           }
           if (count === 0) {
               $('#echart-depot1').hide();
+              $('.textstock').hide();
               $('#lblNoStock').show();
           } else {
               $('#echart-depot1').show();
+              $('.textstock').show();
               $('#lblNoStock').hide();
           }
           echartPie.setOption({
@@ -847,11 +850,14 @@ var theme = {
             }
             legendData.push(item.itemname);
           }
+
           if (count === 0) {
               $('#echart-pies2').hide();
+              $('.textconsumption').hide();
               $('#lblNoStock1').show();
           } else {
               $('#echart-pies2').show();
+               $('.textconsumption').show();
               $('#lblNoStock1').hide();
           }
           echartPie.setOption({
@@ -920,7 +926,7 @@ var theme = {
  }
 
  function updateEchartPieChart_depot(total) {
-        var echartPie = echarts.init(document.getElementById('echart-depot1'),"");
+        var echartPie = echarts.init(document.getElementById('echart-depot1'),theme);
           var count = 0;
           var seriesData = [];
           var legendData = [];
@@ -937,9 +943,11 @@ var theme = {
           }
           if (count === 0) {
               $('#echart-depot1').hide();
+              $('.textstock').hide();
               $('#lblNoStock').show();
           } else {
               $('#echart-depot1').show();
+              $('.textstock').show();
               $('#lblNoStock').hide();
           }
           echartPie.setOption({
@@ -1024,9 +1032,11 @@ var theme = {
           }
           if (count === 0) {
               $('#echart-pies2').hide();
+              $('.textconsumption').hide();
               $('#lblNoStock1').show();
           } else {
               $('#echart-pies2').show();
+              $('.textconsumption').show();
               $('#lblNoStock1').hide();
           }
           echartPie.setOption({
@@ -1322,9 +1332,11 @@ var theme = {
           }
            if (count === 0) {
               $('#echart-zonal1').hide();
+               $('.textqty1').hide();
               $('#depotstock').show();
           } else {
               $('#echart-zonal1').show();
+               $('.textqty1').show();
               $('#depotstock').hide();
           }
           echartPie.setOption({
