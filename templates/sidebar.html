@@ -1,11 +1,43 @@
+<style>
+.custom-scrollbar {
+  overflow: hidden; /* Hide default scrollbar */
+}
 
-<div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="margin-top: -3px;">
+.custom-scrollbar ul.nav.side-menu:hover {
+  width: 100%; /* Adjust as needed */
+  max-height: 300px; /* Adjust as needed */
+  padding-right: 4px; /* Reserve space for custom scrollbar */
+  box-sizing: border-box;
+  overflow-y: scroll; /* Enable scrolling */
+
+}
+
+.custom-scrollbar ul.nav.side-menu::-webkit-scrollbar {
+  width: 7px; /* Adjust as needed */
+}
+
+.custom-scrollbar ul.nav.side-menu::-webkit-scrollbar-track {
+  background: transparent; /* Track color */
+}
+
+.custom-scrollbar ul.nav.side-menu::-webkit-scrollbar-thumb {
+  background: rgb(204, 204, 204); /* Thumb color */
+  border-radius: 1px; /* Rounded thumb */
+}
+
+.custom-scrollbar ul.nav.side-menu::-webkit-scrollbar-thumb:hover {
+  background: rgb(204, 204, 204); /* Thumb color on hover */
+}
+</style>
+
+
+<div id="sidebar-menu" class="main_menu_side hidden-print main_menu custom-scrollbar" style="margin-top: -3px;">
 <div class="menu_section">
-<ul class="nav side-menu">
+<ul class="nav side-menu" id="sidebar-nav" >
 
         {% for  item in menuname %}
             {% if item.weblinks != "#" and  item.weblinks != '' %}
-                <li><a href=" {{ item.weblinks }}"><i class="{{ item.icon }}"></i>{{ item.name }}</a></li>
+                <li><a href=" {{ item.weblinks }}"  onclick="pageScroll()"><i class="{{ item.icon }}"></i>{{ item.name }}</a></li>
     {% else %}
         <li><a><i class="{{ item.icon }}"></i>{{ item.name }}<span class="fa fa-chevron-down"></span></a>
             {% endif %}
@@ -26,3 +58,27 @@
 
 </div>
 </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script>
+function pageScroll() {
+   $('body,html').animate({scrollTop: 500}, 1000);
+    //window.scrollBy(0,1);
+   // scrolldelay = setTimeout(pageScroll,10);
+}
+    function setSidebarMaxHeight() {
+  var sidebarNav = document.getElementById('sidebar-nav');
+  var windowHeight = window.innerHeight;
+  var navTop = sidebarNav.getBoundingClientRect().top;
+
+  var calculatedMaxHeight = windowHeight - navTop;
+  sidebarNav.style.maxHeight = calculatedMaxHeight + 'px';
+}
+
+// Call the function when the page loads and when it's resized
+window.addEventListener('load', setSidebarMaxHeight);
+window.addEventListener('resize', setSidebarMaxHeight);
+</script>

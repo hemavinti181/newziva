@@ -12309,7 +12309,7 @@ def depot_dashboard(request):
         if response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
-            return redirect('login')
+            return redirect('/login')
     return render(request, 'dashboard/depot_dashboard.html', {"menuname": menuname})
 def depot_dashboard_data(request):
     if 'accesskey' not in request.session:
