@@ -107,7 +107,7 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ data.deponame }}</td>
                                 <td>{{ data.date }}</td>
-                                <td>{{ data.service_id }}</td>
+                                 <td><a href="#" onclick="pageScroll()" style="color: #06911A" class="driver_shortlist"  data-id="{{ data.service_id }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" data-deponame="{{ data.deponame }}" >{{ data.service_id }}</a></td>
                                 <td>{{ data.noofbottles_recieve }}</td>
                                 <td> {{ data.return_no_of_bottles }}</td>
                                 <td>{{ data.shortage }}</td>
@@ -120,9 +120,38 @@
               </div>
             </div>
                 </div>
+                  <div class="x_panel driver" style="display:none">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+
+                        <table id="driver_shortage" class="display  table-bordered" style="width:100%">
+
+                     <thead>
+                                    <tr>
+                                        <th>S No</th>
+                                        <th>Date</th>
+                                        <th>Service  Id</th>
+                                        <th>Bottles Issued</th>
+                                        <th>Bottles Returned</th>
+                                        <th>Shortage/Excess</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
               </div>
             </div>
           </div>
+</div>
 </div>
 </div>
 <script>
@@ -186,6 +215,8 @@ $(document).ready(function(){
     }
 });
 
+
+
 $(document).ready(function(){
   var optionValue = $("#depoid1").val();
   $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
@@ -200,6 +231,74 @@ $("#depoid").change(function() {
   $("#daterangeselect").change(function() {
   var selectedOptionText = $('#daterangeselect').find(":selected").text();
   $("#from").val(selectedOptionText);
+});
+
+$(document).ready( function () {
+     $('#driver_shortage').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+} );
+
+
+$(".driver_shortlist").on('click', function () {
+    let service_id = $(this).data('id');
+      let deponame = $(this).data('deponame');
+    let fdate = $(this).data('fdate');
+    let tdate = $(this).data('tdate');
+    $.ajax({
+        url: '{% url "service_wise_shortage" %}',
+        type:'POST',
+        data: {
+           'deponame':deponame,
+            'service_id': service_id,
+            'fdate': fdate,
+            'tdate': tdate,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(data) {
+        var error = data.data.error;
+        var message = data.data.message;
+
+         if ( error === true) {
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.error(message);
+          }
+        else{
+             $('.driver').show();
+            var responseData = data.data.shortagelist;
+            var tableBody = $('#driver_shortage tbody');
+            var count =responseData.length;
+            tableBody.empty();
+            for (var i = 0; i < count; i++) {
+                var item = responseData[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));
+                row.append($('<td>').text(item.date));
+                if (i === 0) {
+
+                    row.append($('<td rowspan="' + count + '">').text(item.service_id));
+
+                }
+
+
+                row.append($('<td>').text(item.noofbottles_recieve));
+                row.append($('<td>').text(item.return_no_of_bottles));
+                row.append($('<td>').text(item.shortage));
+                tableBody.append(row);
+                }
+                        }
+            datatable.draw();
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+    });
 });
 </script>
 {% endblock %}

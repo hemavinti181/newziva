@@ -284,13 +284,13 @@ urlpatterns = [
     path('intconsump_dashboard',views.intconsump_dashboard,name='intconsump_dashboard'),
     path('intconsump_dashboard_data',views.intconsump_dashboard_data,name='intconsump_dashboard_data'),
     path('driverwise_shortage',views.driverwise_shortage,name='driverwise_shortage'),
-    path('driverwise_shortage', views.driverwise_shortage, name='driverwise_shortage'),
     path('servicewise_shortage',views.servicewise_shortage,name='servicewise_shortage'),
     path('region_payment_new',views.region_payment_new,name='region_payment_new'),
     path('depot_payment_new',views.depot_payment_new,name='depot_payment_new'),
     path('bust_payment_new',views.bust_payment_new,name='bust_payment_new'),
-    path('driverwise_sub_shoretage',views.driverwise_sub_shoretage,name='driverwise_sub_shoretage'),
-    path('get_whinventory',views.get_whinventory,name='get_whinventory')
+    path('driverwise_sub_shortage',views.driverwise_sub_shoretage,name='driverwise_sub_shortage'),
+    path('get_whinventory',views.get_whinventory,name='get_whinventory'),
+    path('service_wise_shortage',views.service_wise_shortage,name='service_wise_shortage')
 ]
 
 

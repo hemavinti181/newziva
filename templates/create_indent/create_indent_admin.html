@@ -53,10 +53,9 @@
 									<br />
 									<form class="form-label-left input_mask"  method="POST" action="/create_depoindent"   enctype="multipart/form-data">
 										{% csrf_token %}
-                                                             <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Indent from *</label>
-
-    <input type="hidden" name="deponame1" id="deponame1" />
+                                            <input type="hidden" name="deponame1" id="deponame1" />
                                             <select class="form-control items" name="depocode1" id="depocode1" required>
 
                                                      <option value="">select depot</option>
@@ -68,7 +67,7 @@
 
                                                 </select>
                                         </div>
-                                        	<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Indent to  *</label>
                                                    <input type="hidden" name="whname1" id="whname1" />
 										    	 <select class="form-control items" name="wh1" id="wh1" required>
@@ -78,11 +77,8 @@
                                                             <option value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
                                                         {% endif %}
                                                      {% endfor %}
-
                                                 </select>
 										</div>
-
-
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Select Items *</label>
 										    	 <select class="form-control items" name="itemcode1" id="itemcode1" required>

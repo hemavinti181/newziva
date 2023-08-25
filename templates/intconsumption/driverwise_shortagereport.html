@@ -140,8 +140,8 @@
                                         <th>Date</th>
                                         <th>Staff Id</th>
                                         <th>Staff Name</th>
-                                        <th>Bottles Returned</th>
                                         <th>Bottles Issued</th>
+                                        <th>Bottles Returned</th>
                                         <th>Shortage/Excess</th>
                                     </tr>
                                   </thead>
@@ -257,12 +257,14 @@ $("#depoid").change(function() {
 } );
 
 
+
+
 $(".driver_shortlist").on('click', function () {
     let staffid = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
     $.ajax({
-        url: '{% url "driverwise_sub_shoretage" %}',
+        url: '{% url "service_wise_shortage" %}',
         type:'POST',
         data: {
             'staffid': staffid,
@@ -279,7 +281,7 @@ $(".driver_shortlist").on('click', function () {
                 alertify.error(message);
           }
         else{
-             $('.driver').show();
+            $('.driver').show();
             var responseData = data.data.shortagelist;
             var tableBody = $('#driver_shortage tbody');
             var count =responseData.length;
@@ -294,14 +296,12 @@ $(".driver_shortlist").on('click', function () {
                     row.append($('<td rowspan="' + count + '">').text(item.staff_number));
                     row.append($('<td rowspan="' + count + '">').text(item.staff_name));
                 }
-
-
                 row.append($('<td>').text(item.noofbottles_recieve));
                 row.append($('<td>').text(item.return_no_of_bottles));
                 row.append($('<td>').text(item.shortage));
                 tableBody.append(row);
                 }
-                        }
+        }
             datatable.draw();
         },
         error: function(xhr, status, error) {
@@ -309,6 +309,5 @@ $(".driver_shortlist").on('click', function () {
         }
     });
 });
-
 </script>
 {% endblock %}

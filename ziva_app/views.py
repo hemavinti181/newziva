@@ -4891,49 +4891,92 @@ def add_indentitem(request,id):
         return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
+    if role == 'Admin':
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/create-indent-item-admin.php"
 
-    if request.method == 'POST':
-        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "indentno": id,
+                "itemname": request.POST.get('itemname'),
+                "itemcode": request.POST.get('itemcode'),
+                "warehouseid": request.POST.get('whcode'),
+                "warehousename": request.POST.get('whname'),
+                "date ": request.POST.get('date'),
+                "qty": request.POST.get('quantity'),
+                "mrp": request.POST.get('price'),
 
-        payload = json.dumps({
-            "accesskey": accesskey,
-            "indentno": id,
-            "itemname": request.POST.get('itemname'),
-            "itemcode": request.POST.get('itemcode'),
-            "warehouseid": request.POST.get('whcode'),
-            "warehousename": request.POST.get('whname'),
-            "date ": request.POST.get('date'),
-            "qty": request.POST.get('quantity'),
-            "mrp": request.POST.get('price'),
-
-        })
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            id = data['indentno']
-            messages.success(request, data['message'])
-            url = reverse('indent_item_list', args=[id])
-            return redirect(url)
-        elif response.status_code == 400:
-            data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
-        else:
-            try:
+            })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
                 data = response.json()
-                messages.error(request, data['message'])
+                id = data['indentno']
+                messages.success(request, data['message'])
                 url = reverse('indent_item_list', args=[id])
                 return redirect(url)
-            except:
-                messages.error(request, response.text)
-            url = reverse('indent_item_list', args=[id])
-            return redirect(url)
-    url = reverse('indent_item_list', args=[id])
-    return redirect(url)
-    #return render(request, 'create_indent/indent_item_list.html',{"item_masterlist":item_masterlist,'id':id,'menuname':menuname})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+            else:
+                try:
+                    data = response.json()
+                    messages.error(request, data['message'])
+                    url = reverse('indent_item_list', args=[id])
+                    return redirect(url)
+                except:
+                    messages.error(request, response.text)
+                url = reverse('indent_item_list', args=[id])
+                return redirect(url)
+        url = reverse('indent_item_list', args=[id])
+        return redirect(url)
+
+    else:
+                if request.method == 'POST':
+                    url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "indentno": id,
+                        "itemname": request.POST.get('itemname'),
+                        "itemcode": request.POST.get('itemcode'),
+                        "warehouseid": request.POST.get('whcode'),
+                        "warehousename": request.POST.get('whname'),
+                        "date ": request.POST.get('date'),
+                        "qty": request.POST.get('quantity'),
+                        "mrp": request.POST.get('price'),
+
+                    })
+                    headers = {
+                        'Content-Type': 'text/plain'
+                    }
+                    response = requests.request("GET", url, headers=headers, data=payload)
+                    if response.status_code == 200:
+                        data = response.json()
+                        id = data['indentno']
+                        messages.success(request, data['message'])
+                        url = reverse('indent_item_list', args=[id])
+                        return redirect(url)
+                    elif response.status_code == 400:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        return render(request, 'login1.html')
+                    else:
+                        try:
+                            data = response.json()
+                            messages.error(request, data['message'])
+                            url = reverse('indent_item_list', args=[id])
+                            return redirect(url)
+                        except:
+                            messages.error(request, response.text)
+                        url = reverse('indent_item_list', args=[id])
+                        return redirect(url)
+                url = reverse('indent_item_list', args=[id])
+                return redirect(url)
+
 
 def indent_item_list(request,id):
     if 'accesskey' not in request.session:
@@ -13441,6 +13484,43 @@ def intconsump_dashboard_data(request):
         messages.error(request, "Internal Server Error")
         return JsonResponse({'data': "Internal Server Error"})
 
+
+def service_wise_shortage(request):
+        if 'mylist' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        accesskey = request.session['accesskey']
+
+        url = "http://13.235.112.1/ziva/mobile-api/servicewise-sub-shortagelist.php"
+        payload = {"accesskey": accesskey, "service_id": request.POST.get('service_id'),
+                    "deponame": request.POST.get('deponame'),"fromdate": request.POST.get('fdate'), "todate": request.POST.get('tdate'),
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
+
+
 def driverwise_sub_shoretage(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13570,6 +13650,7 @@ def driverwise_shortage(request):
     return render(request, 'intconsumption/driverwise_shortagereport.html',
                   {'menuname': menuname})
 
+
 def servicewise_shortage(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13600,8 +13681,6 @@ def servicewise_shortage(request):
         data = response.json()
         selectrange = data['timingslist']
         if request.method == 'POST':
-            fdate = request.POST.get('fdate')
-            tdate = request.POST.get('ldate')
             deponame = request.POST.get('deponame')
             if deponame:
                 deponame = deponame
@@ -13654,10 +13733,10 @@ def servicewise_shortage(request):
                 data = response.json()
                 itemlist = data['shortagelist']
                 return render(request, 'intconsumption/servicewise_shortage.html',
-                              {'menuname': menuname, 'itemlist': itemlist, 'depolist': depolist,'selectrange':selectrange})
+                              {'menuname': menuname, 'itemlist': itemlist, 'depolist': depolist,'selectrange':selectrange,'fdate':"Current Month",'tdate':"Current Month"})
             else:
                 return render(request, 'intconsumption/servicewise_shortage.html',
-                              {'menuname': menuname, 'depolist': depolist,'selectrange':selectrange})
+                              {'menuname': menuname, 'depolist': depolist,'selectrange':selectrange,'fdate':"Current Month",'tdate':"Current Month"})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -13665,4 +13744,5 @@ def servicewise_shortage(request):
             return redirect('/login')
     return render(request, 'intconsumption/servicewise_shortage.html',
                   {'menuname': menuname})
+
 
