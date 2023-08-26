@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba"> <b>Internal Stock Transfer </b></h3>
+              </div>
+          </div>
+          </div>
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel warehouse-div">
+                    <!--<div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba">Indent From depot</h3>
+              </div>
+                    </div>-->
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="/internal_stktransfer"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Depot *</label>
+                                            <input type="text"  name="deponame1" class="form-control" id="deponame1" value="{{ request.session.deponame }}"  />
+                                        </div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>select stockpoint *</label>
+                                                   <input type="hidden" name="stockpoint_name" id="stockpoint_name" />
+										    	 <select class="form-control items" name="stockpoint" id="stockpoint" required>
+                                                     <option value="">stockpoint list</option>
+                                                     {% for data in stockpointlist %}
+                                                            <option value="{{ data.busstationid }}">{{ data.busstationname }}</option>
+                                                     {% endfor %}
+                                                </select>
+										</div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label> Item name *</label>
+										    	  <input type="text" class="form-control" value="500ml" name="itemname" id="itemname" readonly >
+										</div>
+
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Quantity(In Cases) *</label>
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" required>
+										</div>
+                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Quantity(In Bottles) *</label>
+										    <input type="text" class="form-control" placeholder="quantity in bottles" name="nob" id="nob" readonly>
+										</div>
+                                        <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
+											<label>Total Price *</label>
+										    <input type="text" class="form-control" placeholder="total price" id="mrp" name="price" readonly>
+										</div>-->
+
+										<div class="col-md-2 col-sm-2 form-group has-feedback">
+												<button type="submit"  style="margin-top: 25px;"  class="btn btn-primary">Transfer</button>
+											</div>
+
+										  <input type="hidden" class="form-control"  name="itemname1" id="itemname1">
+                                        <input type="hidden" class="form-control"  name="whname" id="whname">
+                                        <input type="hidden" class="form-control"  name="cases1" id="cases1">
+                                        <input type="hidden" class="form-control"  name="mrp1" id="mrp1">
+
+                                 </div>
+              </div>
+                </form>
+
+            </div>
+
+
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </di
+</div>
+<script>
+$("#stockpoint").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#stockpoint_name").val(selectedOptionText);
+});
+$('#quantity').on('input', function()  {
+    	    val  = $("#quantity").val();
+            val2 =    (val * 24)
+            $("#nob").val(val2);
+    });
+</script>
+{% endblock %}

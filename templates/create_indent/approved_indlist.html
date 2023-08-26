@@ -7,7 +7,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"> <b>Indent Item List</b></h3>
+                <h3 style="color:#1372ba"> <b>Approved List</b></h3>
               </div>
 
               </div>
@@ -44,6 +44,7 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Date</th>
+                                    <th>Transfer Id</th>
                                     <th>DC Number</th>
                                     <th>Out pass number</th>
                                     <th>Transfer From</th>
@@ -57,6 +58,7 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td> {{ all_data.modified_on }} </td>
+                                    <td>{{ all_data.indent_no }}</td>
                                     <td>{{ all_data.dc_number }}</td>
                                     <td>{{ all_data.outpass_number }}</td>
                                     <td> {{ all_data.region_name }}</td>

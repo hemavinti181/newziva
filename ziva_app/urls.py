@@ -290,7 +290,8 @@ urlpatterns = [
     path('bust_payment_new',views.bust_payment_new,name='bust_payment_new'),
     path('driverwise_sub_shortage',views.driverwise_sub_shoretage,name='driverwise_sub_shortage'),
     path('get_whinventory',views.get_whinventory,name='get_whinventory'),
-    path('service_wise_shortage',views.service_wise_shortage,name='service_wise_shortage')
+    path('service_wise_shortage',views.service_wise_shortage,name='service_wise_shortage'),
+    path('internal_stktransfer',views.internal_stktransfer,name='internal_stktransfer')
 ]
 
 

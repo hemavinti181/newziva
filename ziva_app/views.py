@@ -4897,14 +4897,16 @@ def add_indentitem(request,id):
 
             payload = json.dumps({
                 "accesskey": accesskey,
-                "indentno": id,
+                "indentno": "",
                 "itemname": request.POST.get('itemname'),
-                "itemcode": request.POST.get('itemcode'),
-                "warehouseid": request.POST.get('whcode'),
-                "warehousename": request.POST.get('whname'),
-                "date ": request.POST.get('date'),
-                "qty": request.POST.get('quantity'),
-                "mrp": request.POST.get('price'),
+                "itemcode": request.POST.get('itemname'),
+                "qty": "1",
+                "mrp": "8.75",
+                "to_name": "Uppal",
+                "to_id": "WDP0002",
+                "from_name": "PKT",
+                "from_id": "DEPO0059",
+                "date": "2023-07-13"
 
             })
             headers = {
@@ -5468,8 +5470,12 @@ def approved_indlist_pending(request):
             return render(request, 'create_indent/approved_indlist.html', {"all_data": approved_list,'menuname':menuname,'fdate':fdate,'tdate':tdate})
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/busstation_item_add')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
             return render(request, 'create_indent/approved_indlist.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
     else:
@@ -5493,8 +5499,12 @@ def approved_indlist_pending(request):
                           {"all_data": approved_list, 'menuname': menuname})
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/busstation_item_add')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
             return render(request, 'create_indent/approved_indlist.html',
                           {'menuname': menuname})
@@ -12164,20 +12174,20 @@ def create_depoindent(request):
     accesskey = request.session['accesskey']
     menuname = request.session['mylist']
     if request.method == 'POST':
-        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item-admin.php"
 
         payload = json.dumps({
             "accesskey": accesskey,
             "indentno": "",
             "itemname": request.POST.get('itemname1'),
             "itemcode": request.POST.get('itemcode1'),
-            "to_id": request.POST.get('whname1'),
-            "to_name": request.POST.get('wh1'),
+            "to_id": request.POST.get('wh1') ,
+            "to_name":request.POST.get('whname1'),
             "date ": request.POST.get('getdate1'),
             "qty": request.POST.get('quantity'),
             "mrp": request.POST.get('price'),
-            "from_name": request.POST.get('depocode1'),
-            "from_id": request.POST.get('deponame1'),
+            "from_name": request.POST.get('deponame1'),
+            "from_id": request.POST.get('depocode1'),
         })
         headers = {
             'Content-Type': 'text/plain'
@@ -12212,7 +12222,7 @@ def create_busindent(request):
     accesskey = request.session['accesskey']
     menuname = request.session['mylist']
     if request.method == 'POST':
-        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item-admin.php"
 
         payload = json.dumps({
             "accesskey": accesskey,
@@ -12224,8 +12234,8 @@ def create_busindent(request):
             "date ": request.POST.get('date'),
             "qty": request.POST.get('quantity1'),
             "mrp": request.POST.get('mrp2'),
-            "from_name": request.POST.get('buscode'),
-            "from_id": request.POST.get('busname'),
+            "from_id": request.POST.get('buscode'),
+            "from_name": request.POST.get('busname'),
         })
         headers = {
             'Content-Type': 'text/plain'
@@ -13746,3 +13756,63 @@ def servicewise_shortage(request):
                   {'menuname': menuname})
 
 
+def internal_stktransfer(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-stockpoints.php"
+
+        payload = json.dumps({
+
+            "accesskey": accesskey
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data1 = response.json()
+        stockpointlist = data1['stockpointlist']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/stock-transfer-internal.php"
+
+            payload = json.dumps({
+
+                "accesskey": accesskey,
+                "toname": request.POST.get('stockpoint_name'),
+                "toid": request.POST.get('stockpoint'),
+                "quantity": request.POST.get('quantity'),
+                "noofbottles":request.POST.get('nob')
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                messages.success(request, data['message'])
+                return render(request, 'intconsumption/internal_stktransfer.html',
+                              {"menuname": menuname, 'stockpointlist': stockpointlist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'intconsumption/internal_stktransfer.html',
+                                  {"menuname": menuname, 'stockpointlist': stockpointlist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            elif response.status_code == 503:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'intconsumption/internal_stktransfer.html',
+                              {"menuname": menuname, 'stockpointlist': stockpointlist})
+        else:
+            return render(request,'intconsumption/internal_stktransfer.html',{"menuname":menuname,'stockpointlist':stockpointlist})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
