@@ -3,11 +3,16 @@
 {% block htmlbody %}
 
 
-<div class="right_col" role="main">
+<div class="right_col" role="main" xmlns="http://www.w3.org/1999/html">
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Approved Stock List</b></h3>
+
+               {% if data.status == 'Accepted' %}
+                    <h3 style="color:#1372ba"><b>Approved Stock List</b></h3>
+                  {% else %}
+                    <h3 style="color:#1372ba"><b>Out For Delivery Stock List</b></h3>
+                  {% endif %}
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -127,10 +132,10 @@
                 {% endif %}
 <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>
+                                       </div>-->
                         </form>
 
-						</div>-->
+						</div>
                 <div class="x_panel">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -196,7 +201,45 @@
 </div>
 </div>
 
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content">
 
+                                        <div class="modal-body">
+                                            <form method="post" action="{% url 'approve_accept' %}">
+                                                    {% csrf_token %}
+                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                            </button>
+
+                                            <h3 class="modal-title" id="myModalLabel2" style="text-align:center;">Acknowledgement</h4>
+
+                                                 <label for="qty">Quantity</label>
+                                                <textarea class="form-control" rows="1"  name="qty" id="qty"></textarea>
+
+                                            <label for="remarks">Remarks</label>
+                                            <input type="hidden" id="txtHdnId" name="id" />
+                                                <textarea class="form-control" rows="2"  name="remarks" id="remarks"></textarea>
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <button type="submit" class="btn btn-primary">UPDATE</button>
+
+                                            </div>
+                                        </div>
+</form>
+                                        </div>
+                                    </div>
+                                </div>
+
+ </div>
+
+                          <div class="inner-fabs">
+                                  <div class="fab bg-green round" id="fab3" data-tooltip="Out For Delivery"><a href="approve_list_admin"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -170px !important;">Out For Delivery</span></div>
+                                  <div class="fab bg-purple round" id="fab2" data-tooltip="Accepted"><a href="approve_list_admin1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Accepted</span></div>
+                          </div>
+                                <div class="fab bg-yellow  round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+                        </div>
+              </div>
 <script>
 
 $("#daterangeselect").change(function() {
@@ -460,7 +503,6 @@ $(document).ready(function(){
         // Submit the form programmatically if either start date or end date is filled
         form.submit();
       }
-
     });
     form.addEventListener("change", function() {
       // Set the hidden input values before submitting the form
@@ -476,6 +518,12 @@ $(document).ready(function(){
       $("#from").val(selectedOptionText);
  });
   });
+
+   function VerifyClick(qty,id){
+$("#qty").val(qty);
+$("#remarks").val(" ");
+$("#txtHdnId").val(id);
+}
 </script>
 
 {% endblock %}

@@ -846,6 +846,7 @@ $('#tickets').on('input', function() {
     });
 
 
+
   $(document).ready(function () {
     $("#authorize1").click(function() {
     		var auth = $('#sno').val();
@@ -858,8 +859,8 @@ $('#tickets').on('input', function() {
                 },
               success: function (response) {
               var message = response.response.message;
-              alert(message)
               if(response === '200'){
+                 alertify.success(message);
                  $("#return").show();
                  $("#bs-example-modal-sm").hide();
                }

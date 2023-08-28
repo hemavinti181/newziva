@@ -7,7 +7,11 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Pending Indent</b></h3>
+                {% if data1.status == 'Pending' %}
+                <h3 >Pending Indent</h3>
+                  {% else %}
+                   <h3 >Verified  Indent</h3>
+                  {% endif %}
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
@@ -115,11 +119,19 @@
                                         <td></td>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ all_data.indent_no }}</td>
-                                    <td>{{ all_data.region_name }}</td>
-                                    <td> {{ all_data.warehouse_name }} </td>
+                                        <td>{{ all_data.region_name }}</td>
+                                        <td> {{ all_data.warehouse_name }} </td>
                                         <td>{{ all_data.createdon }}</td>
-                                    <td>{{ all_data.status }}</td>
+                                          <td>
+                                        {% if all_data.status == "Pending" %}
+                                        <a href="pending_indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-warning">{{ all_data.status }}</span></a>
+                                         <span class="badge bg-green" data-toggle="modal"  onclick="VerifyClick('{{all_data.indent_no}}','{{ all_data.region_name }}','{{ all_data.warehouse_name }}','{{ all_data.warehouse_id }}','{{ all_data.region_id }}')" data-target=".bs-example-modal-sm">
+                                             Acknowledgement</span>
+                                    </td>
+                                        {% else %}
+                                         <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-success">{{ all_data.status }}</span></a>
                                     </tr>
+                                   {% endif %}
 
 
                         {% endfor %}
@@ -138,6 +150,42 @@
           </div>
 </div>
 </div>
+ <div class="inner-fabs">
+
+                                  <div class="fab bg-green round" id="fab3"><a href="pending_indent_pending1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="pending_indent_admin"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+  <div class="modal custom-modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content">
+                                        <div class="modal-body">
+                                            <form method="post" action="pending_ind_status">
+                                                    {% csrf_token %}
+                                          	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+
+                                            <h3 class="modal-title" style="text-align:center;" id="myModalLabel2" >Acknowledgement</h3>
+
+                                            <label for="comment">Remarks *</label>
+                                            <input type="hidden" id="txtHdnId" name="txtHdnId" />
+                                                  <input type="hidden" id="from" name="from" />
+                                                  <input type="hidden" id="to" name="to" />
+                                                 <input type="hidden" id="fromid" name="fromid" />
+                                                  <input type="hidden" id="toid" name="toid" />
+                                                <textarea class="form-control" placeholder="remarks" rows="2"  name="comment" id="comment"></textarea>
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-primary" style="margin-left:-22px;">ACKNOWLEDGE</button></a>
+
+                                            </div>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -312,6 +360,19 @@ $(document).ready(function(){
       $("#from").val(selectedOptionText);
  });
   });
+
+
+function VerifyClick(id,id1,id2,id3,id4){
+$("#comment").val(" ");
+$("#txtHdnId").val(id);
+$("#from").val(id1);
+$("#to").val(id2);
+$("#fromid").val(id4);
+$("#toid").val(id3);
+$("#toid").val(id3);
+}
+</script>
+
  </script>
 {% endblock %}
 

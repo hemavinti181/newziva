@@ -127,10 +127,10 @@
                 {% endif %}
 <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>
+                                       </div>-->
                         </form>
 
-						</div>-->
+						</div>
                 <div class="x_panel">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -172,16 +172,16 @@
                        <td>{{  all_data.created_by}}</td>
                            <td>{{ all_data.created_on }}</td>
                            <td>{{ all_data.type }}</td>
-                            <!--{% if all_data.status == 'Ready to Ship' %}-->
+                            {% if all_data.status == 'Ready to Ship' %}
                                 <td>
-                                  <!--<a href="indent_item_list1/{{ all_data.dc_number }}/"><i class="fa fa-edit"></i></a>-->
-                                    <span data-target=".custom-modal"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}')" class="badge badge-info" >{{ all_data.status }} </span></a>
+                                  <a href="/indent_item_list1/{{ all_data.dc_number }}/"><i class="fa fa-edit"></i></a>
+                                    <span id="gatepass" data-target=".bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}','{{all_data.indentno}}')" class="badge badge-info" >Generate Gate Pass </span></a>
                                 </td>
-                           <!--{% else %}
+                           {% else %}
                            <td>
-                                  <a href="indent_item_list1/{{ all_data.dc_number }}/"><i class="fa fa-edit"></i></a>
+                                  <a href="/indent_item_list_approve/{{ all_data.dc_number }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
                            </td>
-                           {% endif %}-->
+                           {% endif %}
                       </tr>
                       {% endfor %}
 
@@ -200,9 +200,53 @@
 </div>
 </div>
 
+<div class="modal custom-modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content style">
+<form method="post" action="{% url 'generate_gate_pass' %}">
+                                                    {% csrf_token %}
+                                        <div class="modal-body">
+
+                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4  id="myModalLabel2" style="text-align:center;color:#14c38e;;">Generate Gate Pass</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                                <p></p>
+                                                <input type="hidden" id="txtHdnId" name="id" />
+                                                <input type="hidden" id="rname" name="rname" />
+                                                <input type="hidden" id="rid" name="rid" />
+                                                <input type="hidden" id="wname" name="wname" />
+                                                <input type="hidden" id="wid" name="wid" />
+                                                 <input type="hidden" id="indno" name="indno" />
+                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+										            <input type="text" class="form-control" placeholder="Driver Name" name="agentname" id="name">
+                                            </div>
+                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
+										        <input type="hidden" class="form-control" placeholder="Vehicals Details" name="vehicaldetails1" id="veh1">
+                                                	<select class="form-control" name="vehicaldetails" id="veh">
+                                                    <option value=" ">Vehical Details</option>
+                                                    {% for data1 in vehicals %}
+													    <option value="{{data1.vehicleno }}">{{ data1.vehicleno }}</option>
+                                                    {% endfor %}
+												</select>
+
+										    </div>
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                                 <button type="submit" class="btn btn-primary">UPDATE</button></a>
+
+                                            </div>
+                                            </form>
+                                        </div>
+
+
+                                        </div>
+                                    </div>
+</div>
 
 <script>
-
 $("#daterangeselect").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#from").val(selectedOptionText);
@@ -479,6 +523,20 @@ $(document).ready(function(){
       $("#from").val(selectedOptionText);
  });
   });
+
+  function VerifyClick(id,tname,tid,fname,fid,indno){
+$("#remarks").val(" ");
+$("#txtHdnId").val(id);
+$("#wname").val(tname);
+$("#wid").val(tid);
+$("#rname").val(fname);
+$("#rid").val(fid);
+$("#indno").val(indno);
+}
+
+
+
+
 </script>
 
 {% endblock %}
