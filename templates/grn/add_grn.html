@@ -26,25 +26,28 @@
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
 											  <input type="hidden" class="form-control" name="vname" id="vname"  >
 											<label>Select Vendor *</label>
-										    	<select class=" form-control" name="vid" id="vid">
+										    	<select class=" form-control items" name="vid" id="vid">
 												{% for data in all_data %}
 													<option  value="{{ data.vendorcode}}">{{ data.vendorname }}</option>
 												{% endfor %}
 												</select>
 										</div>
-										<!--<div class="col-md-3 col-sm-6  form-group has-feedback">
-											<label>Warehouse Name *</label>
-											<select class="country form-control" name="whname">
-												<option>warehouse name search</option>
-											{% for data in all_data1 %}
-											<option  value="{{ data.warehouseid}}">{{ data.warehousename }}</option>
-											{% endfor %}
-											</select>
-										</div>-->
+
+									   {% if request.session.role == 'Admin' %}
+											<div class="col-md-3 col-sm-6  form-group has-feedback">
+												<label>Select Warehouse *</label>
+												<select class="form-control items" name="whname">
+												{% for data in all_data1 %}
+													<option  value="{{ data.warehouseid}}">{{ data.warehousename }}</option>
+												{% endfor %}
+												</select>
+											</div>
+									   {% else %}
 											<div class="col-md-3 col-sm-6  form-group has-feedback">
 											<label>Warehouse Name  *</label>
 										    <input type="text" class="form-control" value="{{ whname }}" name="whname" readonly>
 										</div>
+									   {% endif %}
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
 
 											<label>Invoice No *</label>

@@ -19,17 +19,7 @@
   width: 70%; /* Set the maximum width of the QR code image */
   height: 40%; /* Maintain the aspect ratio of the image */
 }
-.btn-warning{
-        color: black;
-        background-color: white !important;
-}
 
-.join-btn:checked + label {
-    /* Apply your highlighted style here */
-    /* For example, change the background color and add a border */
-    background-color: #06911A !important;
-    border: 5px solid #ccc !important;
-  }
 </style>
  <div class="right_col" role="main">
         <div class="">
@@ -75,16 +65,12 @@
 
 
                                                     {% if request.session.displayrole == 'BUS STATION CONTROLLER' %}
-                                                     <input type="text"  class="form-control" name="deponame"  value="{{ busdeponame }}" />
-                                                    <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}" />
-                                                     <!--<select class="form-control depoid" name="depoid2"  >
-                                                      <option value="">depot </option>
-                                                           <option value="{{ busdepoid}}" selected>{{  busdeponame  }} </option>
-												    </select>-->
+                                                         <input type="text"  class="form-control" name="deponame"  value="{{ busdeponame }}"  required/>
+                                                        <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}" />
                                                     {% else %}
                                                      <input type="hidden" name="deponame" id="deponame" />
                                                        <input type="hidden" name="depoid1" id="depoid1"  value="{{  deponame }}" />
-                                                    <select class="form-control depoid" name="depoid" id="depoid">
+                                                    <select class="form-control items" name="depoid" id="depoid" required>
                                                       <option value="">depot </option>
                                                         {% for data in depolist %}
                                                            <option value="{{ data.id }}">{{ data.name }} </option>
@@ -97,15 +83,15 @@
                                                 {% if bustation %}
 												<select class="form-control" name="busstationid1" id="busstationid1">
 													<option value="{{  bustation }}"> {{ bustation }}</option>
-                                                    </select>
+                                                </select>
                                                 {% else %}
                                                     <input type="hidden" name="busstationname" id="busstationname" />
-                                                    <select class="form-control" name="busstationid" id="busstationid">
+                                                    <select class="form-control items" name="busstationid" id="busstationid" required>
 													<option value="">bus station</option>
                                                     </select>
                                                 {% endif %}
 										</div>
-                                       <div class="col-md-3 col-sm-4  form-group has-feedback">
+                                        <div class="col-md-3 col-sm-4  form-group has-feedback">
                                             {% if stname %}
                                              <input type="hidden" name="stid2" id="stid2" value="{{ stid }}"  />
                                                 <select class="form-control" name="stid" id="stid1">
@@ -113,7 +99,7 @@
                                                 </select>
                                             {% else %}
                                             <input type="hidden" name="stname" id="stname"  />
-                                                <select class="form-control" name="stid" id="stid">
+                                                <select class="form-control items" name="stid" id="stid" required>
 													<option value="">Store</option>
                                                 </select>
                                             {% endif %}
@@ -209,8 +195,8 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Item Name</th>
-                                    <th>Qty In Cases</th>
-                                    <th>Qty In Bottles</th>
+                                    <th>Qty(Cases)</th>
+                                    <th>Qty(Bottles)</th>
                                     <!--<th>HSN</th>-->
                                     <th>Batch</th>
                                     <th>Total </th>
@@ -282,6 +268,7 @@
             </div>
           </div>
 </div>
+
 
     <div class="modal custom-modal fade" id="complete" role="dialog">
                                        <div class="modal-dialog modal-dialog-centered">
@@ -361,6 +348,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+
 <div class="modal custom-modal fade" id="edit_sale_item" role="dialog">
                                        <div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content style1">
@@ -399,6 +388,7 @@
                                         </div>
                                     </div>
                                 </div>
+
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
 <script>
@@ -406,7 +396,6 @@
 window.onload=function()
 {
 $(".join-btn").on('change', function(e){
-console.log(e.currentTarget);
    var id=e.currentTarget.id;
    $(".btn-round").removeClass("btn-primary");
    $(".btn-round").addClass("btn-warning");
@@ -496,8 +485,10 @@ $(document).ready(function() {
           });
    });
 
+
    $("#depoid").change(function() {
         	var depo = $('#depoid').val();
+        	$("#busstationid").empty();
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_proformabus" %}',
@@ -505,9 +496,16 @@ $(document).ready(function() {
                 	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-					if(obj) {
+			 		var error = data.data.error;
+			 		var message = data.data.message
+                    if ( error === true) {
 
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.error(message);
+          }
+           else{
+           var obj = data.data.dropdownlist
+					if(obj) {
 			 		$("#busstationid").empty();
 			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
                 	$.each(obj, function (index, item) {
@@ -515,8 +513,10 @@ $(document).ready(function() {
 					});
                 	}
                 }
+           }
             });
    });
+
 $("#busstationid").change(function() {
         	var depoid = $('#depoid2').val();
         	var busid = $('#busstationid').val();
@@ -527,6 +527,15 @@ $("#busstationid").change(function() {
                 	'depo':depoid,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
+			 	var error = data.data.error;
+			 		var message = data.data.message
+                    if ( error === true) {
+
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.error(message);
+          }
+           else{
+
 			 		var obj = data.data.adminstoremasterlistdata
 					if(obj) {
 			 		$("#stid").empty();
@@ -536,6 +545,7 @@ $("#busstationid").change(function() {
 					});
                 	}
              	}
+            }
         	});
     	});
 
@@ -561,6 +571,7 @@ $("#busstationid").change(function() {
              	}
         	});
     	});
+
     	$("#saleitem").change(function() {
         	var itemname1 = $('#saleitem').val();
         	$.ajax({
@@ -751,6 +762,7 @@ qrcodeContainer.appendChild(successMessage);
 }
 
  function toggleButtonVisibility() {
+
         var upiRadioButton = document.getElementById("upi");
          var cashRadioButton = document.getElementById("cash");
          var dueRadioButton = document.getElementById("due");
@@ -762,15 +774,9 @@ qrcodeContainer.appendChild(successMessage);
          var msg = document.getElementById("response_label");
          var msg1 = document.getElementById("response_label1");
 
-        if (upiRadioButton.checked) {
-            paytmButton.style.display = "block";
-            completeButton.style.display = "none";
-            qrButton.style.display = "none";
-            qrCode.style.display = "none";
-            msg.style.display = "none";
-            msg1.style.display = "none";
-        }
+
         if (cashRadioButton.checked) {
+
             paytmButton.style.display = "none";
             qrButton.style.display = "none";
             completeButton.style.display = "block";

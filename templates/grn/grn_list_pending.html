@@ -4,7 +4,8 @@
 <style>
 .style{
 	position: absolute !important;
-	width: 80% !important;
+	width: 60% !important;
+	margin-left:35px;
 	}
     {
   box-sizing: border-box;
@@ -233,9 +234,9 @@
 									<span aria-hidden="true">&times;</span>
 								</button>
 
-                                            <h4 class="modal-title text-success" id="myModalLabel2" style="text-align:center;">Verify</h4>
+                                            <h3 class="modal-title" id="myModalLabel2" style="text-align:center;">Verify</h3>
 
-                                            <label for="comment">Remarks *</label>
+                                            <label for="comment">Remarks</label>
                                             <input type="hidden" id="txtHdnId" name="txtHdnId" />
                                                   <input type="hidden" id="from" name="from" />
                                                   <input type="hidden" id="to" name="to" />
@@ -248,14 +249,14 @@
 
                                             </div>
                                         </div>
-
+                                            </form>
 
                                         </div>
                                     </div>
                                 </div>
  <div class="modal custom-modal fade" id="bs-example-modal-sm1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
+						<div class="modal-content style">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -269,12 +270,12 @@
 									  <div class="modal-btn delete-action">
 									<input type="hidden" id="txtHdnId1" name="txtHdnId1"  />
 									<div class="row">
-										<div class="col-6">
-											<button class="btn btn-primary submit-btn">Yes</button>
-										</div>
-										<div class="col-6">
-											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
-										</div>
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
 									</div>
 								</div>
 								  </form>

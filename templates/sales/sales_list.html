@@ -7,10 +7,7 @@
 	width: 100% !important;
 	 right: 20px;
 	}
-	.btn-warning{
-        color: black;
-        background-color: white !important;
-}
+
  .tile-stats .icon1 {
     width: 20px;
     height: 10px;
@@ -199,9 +196,9 @@
                                                  <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
                                                 </label>
 
-                                                   <label class="btn btn-round btn-warning" id="btn_upi">
+                                                  <!-- <label class="btn btn-round btn-warning" id="btn_upi">
                                                  <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()"  /> UPI
-                                                </label>
+                                                </label>-->
                                                    <label class="btn btn-round btn-warning" id="btn_scanner">
                                                  <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" /> SCANNER
                                                 </label>
@@ -338,14 +335,7 @@ qrcodeContainer.appendChild(successMessage);
          var msg = document.getElementById("response_label");
          var msg1 = document.getElementById("response_label1");
 
-        if (upiRadioButton.checked) {
-            paytmButton.style.display = "block";
-            completeButton.style.display = "none";
-            qrButton.style.display = "none";
-            qrCode.style.display = "none";
-            msg.style.display = "none";
-            msg1.style.display = "none";
-        }
+
         if (cashRadioButton.checked) {
             paytmButton.style.display = "none";
             qrButton.style.display = "none";

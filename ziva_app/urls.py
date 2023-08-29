@@ -292,7 +292,8 @@ urlpatterns = [
     path('get_whinventory',views.get_whinventory,name='get_whinventory'),
     path('service_wise_shortage',views.service_wise_shortage,name='service_wise_shortage'),
     path('internal_stktransfer',views.internal_stktransfer,name='internal_stktransfer'),
-    path('approve_list_admin1',views.approve_list_admin1,name='approve_list_admin')
+    path('approve_list_admin1',views.approve_list_admin1,name='approve_list_admin'),
+    path('vehcals_list',views.vehcals_list,name='vehcals_list')
 ]
 
 

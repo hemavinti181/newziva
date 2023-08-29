@@ -225,22 +225,21 @@
                                             </div>
                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
 										        <input type="hidden" class="form-control" placeholder="Vehicals Details" name="vehicaldetails1" id="veh1">
-                                                	<select class="form-control" name="vehicaldetails" id="veh">
-                                                    <option value=" ">Vehical Details</option>
-                                                    {% for data1 in vehicals %}
-													    <option value="{{data1.vehicleno }}">{{ data1.vehicleno }}</option>
-                                                    {% endfor %}
+                                                	<select class="form-control items" name="vehicaldetails" id="veh" required>
+                                                    <option value="">Vehical Details</option>
 												</select>
 
 										    </div>
                                             <p></p>
-                                           <div class="col-md-6 col-sm-6  offset-md-3">
+                                            <p></p>
+                                           <div class="col-md-6 col-sm-6  offset-md-3" style="margin-bottom:15px;">
                                                  <button type="submit" class="btn btn-primary">UPDATE</button></a>
 
                                             </div>
+                                            <p></p>
+                                            <p></p>
                                             </form>
                                         </div>
-
 
                                         </div>
                                     </div>
@@ -452,6 +451,7 @@ $(document).ready(function(){
         	});
         });
 });
+
  $("#warehouseid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#warehousename1").val(selectedOptionText);
@@ -525,16 +525,32 @@ $(document).ready(function(){
   });
 
   function VerifyClick(id,tname,tid,fname,fid,indno){
-$("#remarks").val(" ");
-$("#txtHdnId").val(id);
-$("#wname").val(tname);
-$("#wid").val(tid);
-$("#rname").val(fname);
-$("#rid").val(fid);
-$("#indno").val(indno);
-}
-
-
+        $("#remarks").val(" ");
+        $("#txtHdnId").val(id);
+        $("#wname").val(tname);
+        $("#wid").val(tid);
+        $("#rname").val(fname);
+        $("#rid").val(fid);
+        $("#indno").val(indno);
+  }
+  $('#gatepass').click(function() {
+     var toid = $("#wid").val();
+        $.ajax({
+            	type: "POST",
+            	url: '{% url "vehcals_list" %}',
+            	data: {
+                	'toid':toid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.vehicleslist
+					if(obj) {
+                	$.each(obj, function (index, item) {
+                    $("#veh").append("<option value='" + item.vehicleno+ "'>" + item.vehicleno+ "</option>");
+					});
+                	}
+             	}
+        	});
+});
 
 
 </script>
