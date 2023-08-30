@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
+<style>
+	.style{
+	position: absolute !important;
+	width: 80% !important;
+	margin-left:50px !important;
+	}
+</style>
 
 <div class="right_col" role="main">
           <div class="">
@@ -11,7 +17,11 @@
               </div>
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                <!--  <a href="add_grnitem"><button type="submit" class="btn btn-success">Add GRN Item</button> -->
+               {% if request.session.role == 'Admin' %}
+                         <div class="col-md-12 col-sm-12 form-group has-feedback" >
+                            <span  class="btn btn-info btnSubmit" onclick="VerifyClick()" data-toggle="modal" data-target="#bs-example-modal-sm1">  Delivery Challan </span>
+                        </div>
+                  {% endif %}
                 </div>
             </div>
               </div>
@@ -127,7 +137,7 @@
                                        </div>
                         </form>
 
-                 <div class="col-md-12 col-sm-12 ">
+                 <div class="col-md-12 col-sm-12">
                 <div class="x_panel">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -137,14 +147,15 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="example1" class="display  table-bordered" style="width:100%">
                             <colgroup>
 
     <col span="1" style="visibility: collapse">
   </colgroup>
                       <thead>
                         <tr>
-                                        <th></th>
+                            <th></th>
+                                     <th><input type="checkbox" class="btnSelectAll" /></th>
                                     <th>S NO</th>
                                     <th>Bus Station</th>
                                     <th>Store Name</th>
@@ -160,8 +171,10 @@
                       </thead>
 
                             {% for all_data in all_data %}
-                                    <tr>
-                                        <th></th>
+
+                                          <tr class="row-select">
+                                              <td class="id">{{ all_data.id }}</td>
+                                              <td><input type="checkbox"  name="language"/></td>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ all_data.bus_station }}</td>
                                     <td>{{ all_data.storename }}</td>
@@ -206,51 +219,34 @@
             </div>
           </div>
 </div>
-
-<div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal custom-modal fade"  id="bs-example-modal-sm1" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                  <div class="modal-header">
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Delivery Challan</h4>
+                                            <div class="modal-content style">
+                                               <div class="modal-body">
+
+                                             <form method="POST" action="deliver_challan_status">
+                                                    {% csrf_token %}
+                              <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-                                </div>
-                                        <div class="modal-body">
-                                             <form method="POST" action="deliver_challan_status">
-                                                    {% csrf_token %}
-                                                 <input type="hidden" id="txtHdnId1" name="txtHdnId[]"  />
-                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
-										            <input type="text" class="form-control" placeholder="Driver Name" name="agentname" id="name">
-                                            </div>
-                                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
-										            <input type="text" class="form-control" placeholder="Driver Number" name="agentno" id="agentno">
-                                            </div>
-                                            <div class="col-md-12 col-sm-12  form-group has-feedback">
-										        <input type="hidden" class="form-control" placeholder="Vehicals Details" name="vehicaldetails1" id="veh1">
-                                                	<select class="form-control" name="vehicaldetails" id="veh">
-                                                    <option value=" ">Vehical Details</option>
-                                                    {% for data1 in vehicals %}
-													    <option value="{{data1.vehicleno }}">{{ data1.vehicleno }}</option>
-                                                    {% endfor %}
-												</select>
 
-										    </div>
-                                               <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                    <h3  id="myModalLabel3" style="text-align:center;">Delivery Challan</h3>
 
-                                                   <textarea class="form-control" name="remarks" rows="2" placeholder="Remarks" id="remarks"></textarea>
-										    </div>
+
+                                                 <input type="hidden" id="txtHdnId2" name="txtHdnId[]"  />
+                                                      <label for="remarks1">Remarks</label>
+                                                  <textarea class="form-control" name="remarks" rows="2" placeholder="remarks" id="remarks1"></textarea>
+
                                             <p></p>
-                                            <div class="col-md-6 col-sm-8  offset-md-5">
-                                                  <button type="submit" class="btn btn-info">Approve</button>
+                                            <div class="col-md-6 col-sm-6  offset-md-4">
+                                                  <button type="submit" class="btn btn-primary">APPROVE</button>
                                             </div>
-                                             </form>
                                         </div>
-
-
                                         </div>
                                     </div>
                                 </div>
+
 <div class="inner-fabs">
 
                                   <div class="fab bg-green round" id="fab3"><a href="medeliver_challan"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Approve</span></div>
@@ -263,7 +259,27 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
+function VerifyClick(){
+$("#name").val("");
+$("#agentno").val("");
+$("#vehicaldetails").val("");
+$("#remarks").val("");
+}
 
+$(document).ready(function() {
+    $('#example1').DataTable( {
+        columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+            targets:   0
+        } ],
+        select: {
+            style:    'os',
+            selector: 'td:first-child'
+        },
+        order: [[ 1, 'asc' ]]
+    } );
+} );
 $("#busstationid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#busstationname").val(selectedOptionText);
@@ -555,6 +571,24 @@ function displayOtherResults(selectedOption) {
   // Code to display results...
 }
 
+$(document).ready(function() {
+  $('.btnSubmit').click(function() {
+    var arr = [];
+  $('.row-select input:checked').each(function(){
+   id=$(this).closest('tr').find('.id').html();
+     arr.push(id);
+     $('#txtHdnId1').val(arr);
+      $('#txtHdnId2').val(arr);
+    })
+  })
+ $(".btnSelectAll").click(function() {
+    $("tbody td input[type=checkbox]").prop("checked", this.checked);
+    })
+})
+
+$(".btnSelectAll").click(function() {
+    $("tbody td input[type=checkbox]").prop("checked", this.checked);
+    })
  </script>
 {% endblock %}
 

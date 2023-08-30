@@ -53,7 +53,7 @@
 
                   {% if request.session.displayrole == 'DEPOT STORE EXECUTIVE' %}
 
-                         <div class="col-md-2 col-sm-2 form-group has-feedback">
+                         <div class="col-md-12 col-sm-12">
                  <span style="margin-top: 25px;" class="btn btn-info btnSubmit" onclick="VerifyClick()" data-toggle="modal" data-target="#bs-example-modal-hm">  Delivery Challan </span>
                 </div>
                   {% else %}
@@ -95,7 +95,6 @@
                                     <th>Action</th>
                         </tr>
                       </thead>
-
                             {% for all_data in all_data %}
                                     <tr class="row-select">
                                      <td class="id">{{ all_data.id }}</td>
@@ -205,7 +204,7 @@
 
 
                                                  <input type="hidden" id="txtHdnId2" name="txtHdnId[]"  />
-                                                      <label for="remarks1">Remarks *</label>
+                                                      <label for="remarks1">Remarks</label>
                                                   <textarea class="form-control" name="remarks" rows="2" placeholder="remarks" id="remarks1"></textarea>
 
                                             <p></p>

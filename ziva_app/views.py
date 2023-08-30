@@ -3968,9 +3968,10 @@ def complete_sale(request):
             messages.error(request, 'Access denied!')
             return redirect('/login')
         accesskey = request.session['accesskey']
-
-        if  request.method == 'POST':
-                url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
+        role = request.session['role']
+        if role == 'Admin':
+            if request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/dc-pending-admin.php"
                 paymentmode = request.POST.get('paymenttype')
                 if paymentmode == 'CASH':
                     payload = json.dumps({
@@ -3979,9 +3980,9 @@ def complete_sale(request):
                         "paymentmode": request.POST.get('paymenttype'),
                         "remarks": request.POST.get('remarks'),
                         "date": request.POST.get('date'),
-                        "spelloftheday":request.POST.get('spell1'),
-                        "transaction_status":"success",
-                        "transaction_id":"",
+                        "spelloftheday": request.POST.get('spell1'),
+                        "transaction_status": "success",
+                        "transaction_id": "",
                     })
                 if paymentmode == 'SCANNER':
                     payload = json.dumps({
@@ -4025,8 +4026,67 @@ def complete_sale(request):
                         messages.error(request, data['message'])
                         return redirect('proformainvoice')
                     except:
-                        messages.error(request,response.text)
+                        messages.error(request, response.text)
                         return redirect('proformainvoice')
+        else:
+                if  request.method == 'POST':
+                        url = "http://13.235.112.1/ziva/mobile-api/dc-pending.php"
+                        paymentmode = request.POST.get('paymenttype')
+                        if paymentmode == 'CASH':
+                            payload = json.dumps({
+                                "accesskey": accesskey,
+                                "sonumber": request.POST.get('txtHdnId'),
+                                "paymentmode": request.POST.get('paymenttype'),
+                                "remarks": request.POST.get('remarks'),
+                                "date": request.POST.get('date'),
+                                "spelloftheday":request.POST.get('spell1'),
+                                "transaction_status":"success",
+                                "transaction_id":"",
+                            })
+                        if paymentmode == 'SCANNER':
+                            payload = json.dumps({
+                                "accesskey": accesskey,
+                                "sonumber": request.POST.get('txtHdnId'),
+                                "paymentmode": request.POST.get('paymenttype'),
+                                "remarks": request.POST.get('remarks'),
+                                "date": request.POST.get('date'),
+                                "spelloftheday": request.POST.get('spell1'),
+                                "transaction_status": "success",
+                                "transaction_id": request.POST.get('txnid')
+                            })
+                        if paymentmode == 'DUE':
+                            payload = json.dumps({
+                                "accesskey": accesskey,
+                                "sonumber": request.POST.get('txtHdnId'),
+                                "paymentmode": request.POST.get('paymenttype'),
+                                "remarks": request.POST.get('remarks'),
+                                "date": request.POST.get('date'),
+                                "spelloftheday": request.POST.get('spell1'),
+                                "transaction_status": "due",
+                                "transaction_id": "",
+                            })
+                        headers = {
+                            'Content-Type': 'application/json'
+                        }
+                        response = requests.request("POST", url, headers=headers, data=payload)
+
+                        if response.status_code == 200:
+                            data = response.json()
+                            messages.success(request, data['message'])
+                            return redirect('proformainvoice')
+                        elif response.status_code == 400:
+                            data = response.json()
+                            messages.error(request, data['message'])
+                            return redirect('proformainvoice')
+
+                        else:
+                            try:
+                                data = response.json()
+                                messages.error(request, data['message'])
+                                return redirect('proformainvoice')
+                            except:
+                                messages.error(request,response.text)
+                                return redirect('proformainvoice')
 def delete_sale_item(request,id):
         if 'accesskey' not in request.session:
             messages.error(request, 'Access denied!')
@@ -4757,40 +4817,76 @@ def deliver_challan_status(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
+
     accesskey = request.session['accesskey']
+    role = request.session['role']
     id = request.POST.getlist('txtHdnId[]')
     id = str(id).replace('[', '').replace(']', '').replace("'", '')
-    url = "http://13.235.112.1/ziva/mobile-api/delivery-challan.php"
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/delivery-challan-admin.php"
 
-    payload = json.dumps({
-        "accesskey":accesskey,
-        "id":id,
-        "agentname":request.POST.get('agentname'),
-        "vehicledetails":request.POST.get('vehicaldetails'),
-        "remarks":request.POST.get('remarks'),
-        "contactno":request.POST.get('agentno')
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "id": id,
+            "agentname": request.POST.get('agentname'),
+            "vehicledetails": request.POST.get('vehicaldetails'),
+            "remarks": request.POST.get('remarks'),
+            "contactno": request.POST.get('agentno')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    if response.status_code == 200:
-        data = response.json()
-        messages.success(request, data['message'])
-        return redirect('deliver_challan')
-    elif response.status_code == 400:
-        data = response.json()
-        messages.error(request, data['message'])
-        return render(request,'login1.html')
-    elif response.status_code == 503:
-        data = response.json()
-        messages.error(request, data['message'])
-        return redirect('deliver_challan')
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('medeliver_challan_pending')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('medeliver_challan_pending')
+        else:
+            messages.error(request, "Please select any checkbox")
+            return redirect('medeliver_challan_pending')
+
     else:
-        messages.error(request,"Please select any checkbox")
-        return redirect('deliver_challan')
+            url = "http://13.235.112.1/ziva/mobile-api/delivery-challan.php"
+
+            payload = json.dumps({
+                "accesskey":accesskey,
+                "id":id,
+                "agentname":request.POST.get('agentname'),
+                "vehicledetails":request.POST.get('vehicaldetails'),
+                "remarks":request.POST.get('remarks'),
+                "contactno":request.POST.get('agentno')
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            if response.status_code == 200:
+                data = response.json()
+                messages.success(request, data['message'])
+                return redirect('deliver_challan')
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request,'login1.html')
+            elif response.status_code == 503:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('deliver_challan')
+            else:
+                messages.error(request,"Please select any checkbox")
+                return redirect('deliver_challan')
 
 def deliver_challan_update(request):
     if 'accesskey' not in request.session:
@@ -4798,8 +4894,10 @@ def deliver_challan_update(request):
         return redirect('/login')
     accesskey = request.session['accesskey']
     paymentmode = request.POST.get('paymenttype')
-    if paymentmode == 'CASH':
-            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
+    role = request.session['role']
+    if role == 'Admin':
+        if paymentmode == 'CASH':
+            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
             payload = json.dumps({
                 "accesskey": accesskey,
                 "sonumber": request.POST.get('txtHdnId'),
@@ -4807,8 +4905,8 @@ def deliver_challan_update(request):
                 "transaction_status": "success",
                 "transaction_id": "",
             })
-    elif paymentmode == 'scanner':
-            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
+        elif paymentmode == 'scanner':
+            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
             payload = json.dumps({
                 "accesskey": accesskey,
                 "sonumber": request.POST.get('txtHdnId'),
@@ -4816,30 +4914,73 @@ def deliver_challan_update(request):
                 "transaction_status": "success",
                 "transaction_id": request.POST.get("txnid"),
             })
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "sonumber": request.POST.get('txtHdnId2'),
+                "paymentmode": request.POST.get('paymentmode'),
+                "transaction_status": "success"
+            })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('sales_admin_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        else:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('sales_admin_list')
     else:
-        url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-qtyupdate.php"
-        payload = json.dumps({
-            "accesskey":accesskey,
-            "sonumber":request.POST.get('txtHdnId2'),
-            "paymentmode":request.POST.get('paymentmode'),
-            "transaction_status": "success"
-        })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        messages.success(request, data['message'])
-        return redirect('sales_list')
-    elif response.status_code == 400:
-        data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
-    else:
-        data = response.json()
-        messages.error(request, data['message'])
-        return redirect('sales_list')
+            if paymentmode == 'CASH':
+                    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "sonumber": request.POST.get('txtHdnId'),
+                        "paymentmode": request.POST.get('paymenttype'),
+                        "transaction_status": "success",
+                        "transaction_id": "",
+                    })
+            elif paymentmode == 'scanner':
+                    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "sonumber": request.POST.get('txtHdnId'),
+                        "paymentmode": request.POST.get('paymenttype'),
+                        "transaction_status": "success",
+                        "transaction_id": request.POST.get("txnid"),
+                    })
+            else:
+                url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-qtyupdate.php"
+                payload = json.dumps({
+                    "accesskey":accesskey,
+                    "sonumber":request.POST.get('txtHdnId2'),
+                    "paymentmode":request.POST.get('paymentmode'),
+                    "transaction_status": "success"
+                })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                messages.success(request, data['message'])
+                return redirect('sales_list')
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+            else:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('sales_list')
 
 def deliver_challan_item_update(request):
     if 'accesskey' not in request.session:
@@ -6645,14 +6786,14 @@ def pending_ind_status(request):
                 messages.error(request, response.text)
             return redirect('pending_indent_admin')
     else:
-        url = "http://13.235.112.1/ziva/mobile-api/dc-generate.php"
+        url = "http://13.235.112.1/ziva/mobile-api/dc-generate-new.php"
         payload = json.dumps({
             "accesskey": accesskey,
             "indentno":request.POST.get('txtHdnId'),
             "fromname":request.POST.get('from'),
             "fromid":request.POST.get('fromid'),
             "toid":request.POST.get('toid'),
-           "toname":request.POST.get('to'),
+            "toname":request.POST.get('to'),
             "remarks":request.POST.get('comment')
         })
         headers = {
@@ -7082,6 +7223,10 @@ def sales_admin_list(request):
 
             payload = json.dumps({
                 "accesskey": accesskey,
+                "warehouseid": "All",
+                "depoid": "All",
+                "regionid": "All",
+                "busstationid": "All",
                 "type": "Pending",
                 "date": "All"
             })
@@ -7130,7 +7275,7 @@ def sales_admin_approvelist(request):
                 "depoid": request.POST.get('depoid1'),
                 "regionid": request.POST.get('regionid1'),
                 "busstationid": request.POST.get('busstationname1'),
-                "type": "Pending",
+                "type": "Approved",
                 "date": date
             })
             headers = {
@@ -7151,7 +7296,7 @@ def sales_admin_approvelist(request):
 
             payload = json.dumps({
                 "accesskey": accesskey,
-                "type": "Pending",
+                "type": "Approved",
                 "warehouseid": "All",
                 "regionid": "All",
                 "depoid": "All",

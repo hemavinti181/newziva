@@ -7,6 +7,11 @@
 	width: 80% !important;
 	 right: 20px;
 	}
+	.style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:75px;
+	}
 	</style>
 <div class="right_col" role="main">
           <div class="">
@@ -132,16 +137,16 @@
                             {% if  all_data.transaction_status == 'success'  or all_data.paymentmode == 'CASH' %}
                                 <td>
                                    <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
-                                      <!--{% if all_data.status == 'Approved' %}
+                                      {% if all_data.status == 'Approved' %}
                                     <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick1('{{all_data.sonumber}}','{{ all_data.paymentmode }}')"  data-target="#Approve">APPROVE</span>
-                                    {% endif %}-->
+                                    {% endif %}
                                 </td>
                            {% else %}
                             <td>
                                  <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
-                                    <!--{% if all_data.status == 'Approved' %}
+                                    {% if all_data.status == 'Approved' %}
                                 <span class="badge badge-danger" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
-                                {% endif %}-->
+                                {% endif %}
                             </td>
                            {% endif %}
 
@@ -166,42 +171,105 @@
             </div>
           </div>
 </div>
+
+<div class="modal custom-modal fade" id="Approve" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="deliver_challan_update">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Approve</h3>
+									<p>Are you sure want to Approve?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="txtHdnId2" name="txtHdnId2"  />
+                                          <input type="hidden" id="paymentmode" name="paymentmode"  />
+										<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
                                                   <div class="modal-header">
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Payment</h4>
+                              <h3 class="modal-title" id="myModalLabel2" style="text-align:center;">Update Payment</h3>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
                                 </div>
                                         <div class="modal-body">
-                                             <form method="post" action="deliver_challan_update">
+                                             <form method="post" action="" id="saleform">
                                                     {% csrf_token %}
                                                   <input type="hidden" id="txtHdnId" name="txtHdnId"  />
-                                                 <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                                         <label><h4><b>Payment Mode</b></h4></label>
+                                                   <input type="hidden" id="price" name="price"  />
+                                                     <input type="hidden" id="order_id_input" name="order_id_input"  />
+                                                        <input type="hidden" id="txnid" name="txnid"  />
+
+                                                      <!--<div style="display: inline-block;">
+                                                        <div class="top_tiles" style="width: 1000px;">
+
+                                                            <div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
+                                                                <div class="tile-stats">
+                                                                    <div class="icon1"><i class="fa fa-bottle-water"></i></div>
+                                                                    <h2 class="text-warning" style="margin-left: 10px;">
+                                                                        Order Id:         12345
+                                                                    </h2>
+                                                                    <p class="text-info" style="font-size: 12px;">Amount Payable</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                      </div>-->
+
+                                                 <label>Payment mode</label><br>
+                                                 <label class="btn btn-round btn-warning" id="btn_cash">
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
+                                                </label>
+
+                                                  <!-- <label class="btn btn-round btn-warning" id="btn_upi">
+                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()"  /> UPI
+                                                </label>-->
+                                                   <label class="btn btn-round btn-warning" id="btn_scanner">
+                                                 <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" /> SCANNER
+                                                </label>
+
+                                                </div>
+                                                 <div id="qrcode-container" style="display:none;">
+                                                       <img id="qr-image" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
+
                                                  </div>
-                                                 <div class="col-md-3 col-sm-3 form-group has-feedback">
-                                                  <label class="btn btn-round btn-danger">
-                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" /> CASH
-                                                </label>
-                                                     </div>
-                                                 <div class="col-md-3 col-sm-3 form-group has-feedback">
-                                                   <label class="btn btn-round btn-primary">
-                                                 <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" /> UPI
-                                                </label>
-                                                 </div>
-                                                     <div class="col-md-3 col-sm-3 form-group has-feedback">
-                                                   <label class="btn btn-round btn-success">
-                                                 <input type="radio" name="paymenttype" id="scanner" value="scanner" class="join-btn" /> Scanner
-                                                </label>
-                                                     </div>
+                                                <div id="response-container">
+                                                 <label id="response_label" style="width:250px;margin-left:130px;color:#EF091E;"></label>
+                                                    <label id="response_label1" style="width:250px;margin-left:180px;color:#06911A;"></label>
+                                                    </div>
+                                                <p></p>
 
 
-                                            <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-info">Update</button>
+                                                    <div class="col-md-6 col-sm-6   offset-md-3">
+											            <button class="btn btn-primary submit-btn" id="completebtn" onclick="submitToPayment()">Complete</button>
+                                                        <button class="btn btn-info" id="payment_status"  onclick="qrResponse(event)" style="display:none; width: 250px;margin-left:-27px;" >Check  Payment Status </button>
+                                                        <button class="btn  btn-primary submit-btn" id="paytmWithPaytm" onclick="submitFormToPayment()"  style="display:none;">Proceed to pay</button>
+                                                    <p></p>
+                                                        <p></p>
+
+                                                    </div>
                                             </div>
+                                                </div>
                                              </form>
                                         </div>
 
@@ -477,7 +545,6 @@ qrcodeContainer.appendChild(successMessage);
  function toggleButtonVisibility() {
         var upiRadioButton = document.getElementById("upi");
          var cashRadioButton = document.getElementById("cash");
-         var dueRadioButton = document.getElementById("due");
          var paytmButton = document.getElementById("paytmWithPaytm");
          var qrButton = document.getElementById("payment_status");
          var completeButton = document.getElementById("completebtn");
@@ -486,14 +553,7 @@ qrcodeContainer.appendChild(successMessage);
          var msg = document.getElementById("response_label");
          var msg1 = document.getElementById("response_label1");
 
-        if (upiRadioButton.checked) {
-            paytmButton.style.display = "block";
-            completeButton.style.display = "none";
-            qrButton.style.display = "none";
-            qrCode.style.display = "none";
-            msg.style.display = "none";
-            msg1.style.display = "none";
-        }
+
         if (cashRadioButton.checked) {
             paytmButton.style.display = "none";
             qrButton.style.display = "none";
@@ -502,14 +562,7 @@ qrcodeContainer.appendChild(successMessage);
              msg.style.display = "none";
               msg1.style.display = "none";
         }
-        if (dueRadioButton.checked) {
-            paytmButton.style.display = "none";
-            completeButton.style.display = "block";
-            qrCode.style.display = "none";
-            qrButton.style.display = "none";
-             msg.style.display = "none";
-              msg1.style.display = "none";
-        }
+
         if (scannerButton.checked){
             paytmButton.style.display = "none";
             completeButton.style.display = "block";
