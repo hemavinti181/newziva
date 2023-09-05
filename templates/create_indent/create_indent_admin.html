@@ -304,17 +304,13 @@ $('.form-control').change(function() {
   $(document).ready(function() {
     $("#wh").on("change", function() {
       var selectedOption = $(this).val();
-
-      // Hide all the divs initially
       $(".warehouse-div").hide();
       $(".depot-div").hide();
 
       if (selectedOption === "Depot") {
-        // Show the Warehouse-specific div
         $(".warehouse-div").show();
         $(".depot-div").hide();
       } else if (selectedOption === "Busstation") {
-        // Show the Depot-specific div
         $(".depot-div").show();
          $(".warehouse-div").hide();
       }

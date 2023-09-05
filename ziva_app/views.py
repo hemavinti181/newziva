@@ -4895,11 +4895,13 @@ def deliver_challan_update(request):
     accesskey = request.session['accesskey']
     paymentmode = request.POST.get('paymenttype')
     role = request.session['role']
+    medepoid =  request.session['medepoid']
     if role == 'Admin':
         if paymentmode == 'CASH':
             url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
             payload = json.dumps({
                 "accesskey": accesskey,
+                "depoid":medepoid,
                 "sonumber": request.POST.get('txtHdnId'),
                 "paymentmode": request.POST.get('paymenttype'),
                 "transaction_status": "success",
@@ -4909,6 +4911,7 @@ def deliver_challan_update(request):
             url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
             payload = json.dumps({
                 "accesskey": accesskey,
+                "depoid": medepoid,
                 "sonumber": request.POST.get('txtHdnId'),
                 "paymentmode": request.POST.get('paymenttype'),
                 "transaction_status": "success",
@@ -4918,6 +4921,7 @@ def deliver_challan_update(request):
             url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
             payload = json.dumps({
                 "accesskey": accesskey,
+                "depoid": medepoid,
                 "sonumber": request.POST.get('txtHdnId2'),
                 "paymentmode": request.POST.get('paymentmode'),
                 "transaction_status": "success"
@@ -9620,6 +9624,8 @@ def payment_report(request):
             return render(request, 'login1.html')
     return render(request, 'Reports/payments.html',{'menuname':menuname})
 
+
+
 def warehouse_items(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13195,6 +13201,9 @@ def depot_dashboard(request):
             messages.error(request, data['message'])
             return redirect('/login')
     return render(request, 'dashboard/depot_dashboard.html', {"menuname": menuname})
+
+
+
 def depot_dashboard_data(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13203,15 +13212,12 @@ def depot_dashboard_data(request):
     role = request.session['role']
     if role == 'Admin':
             url = "http://13.235.112.1/ziva/mobile-api/stock-available-admin-report-new.php"
-            payload = {"accesskey": accesskey, "itemcode":request.POST.get('itemcode'), "depoid":request.POST.get('depoid')
-                       }
+            payload = {"accesskey": accesskey, "itemcode":request.POST.get('itemcode'), "depoid":request.POST.get('depoid')}
             payload = json.dumps(payload, cls=BytesEncoder)
             headers = {
                 'Content-Type': 'application/json'
             }
             response = requests.request("GET", url, headers=headers, data=payload)
-
-
             if response.status_code == 200:
                 data = response.json()
                 return JsonResponse({'data':data})
@@ -13259,6 +13265,72 @@ def depot_dashboard_data(request):
             messages.error(request, "Internal Server Error")
             return JsonResponse({'data': "Internal Server Error"})
 
+def internal_consump_stock(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    role = request.session['role']
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
+        payload = {"accesskey": accesskey, 'depoid': request.POST.get('depoid')
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
+
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/stock-available-report.php"
+        payload = {"accesskey": accesskey
+
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
+
 def depot_dashboard_data1(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -13271,7 +13343,8 @@ def depot_dashboard_data1(request):
                    }
         payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'applic'
+                            'ation/json'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
 
@@ -14279,12 +14352,13 @@ def intconsump_dashboard(request):
             messages.error(request,data['message'])
             return redirect('/login')
     return render(request, 'intconsumption/intconsump_dashboard.html',{"menuname": menuname})
+
+
 def intconsump_dashboard_data(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-
     url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
     fdate = request.POST.get('fdate')
     cdate = request.POST.get('cdate')

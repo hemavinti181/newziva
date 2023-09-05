@@ -55,7 +55,8 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Depot</th>
-                                    <th>Date</th>
+                                     <th>Departure Date & Time</th>
+                                    <th>Returned Date</th>
                                     <th>Service No</th>
                                     <th>OPRS</th>
                                     <th>Bottles Issued</th>
@@ -64,10 +65,11 @@
                                     <th>Shortage/Excess</th>
                                     <th>Vehical no</th>
                                     <th>Staff Name(1)</th>
-                                    <th>Staff Id(1)</th>
+                                    <!--<th>Staff Id(1)</th>-->
                                      <th>Staff Name(2)</th>
-                                      <th>Staff Id(2)</th>
-                                      <th>Taken From</th>
+                                     <!--<th>Staff Id(2)</th>-->
+                                     <th>Issued To</th>
+                                     <th>Taken From</th>
 
 
 
@@ -78,19 +80,20 @@
                             <tr>
                               <td>{{ forloop.counter }}</td>
                               <td>{{ data.deponame }}</td>
+                                <td>{{ data.created_on}} {{ data.departure_time }}</td>
                               <td>{{ data.modified_on }}</td>
                                 <td>{{ data.bus_service_no }}</td>
                                 <td>{{ data.oprs }}</td>
+
                               <td>{{ data.noofbottles_recieve }}</td>
                               <td>{{ data.no_of_tickets_consumed }}</td>
                               <td>{{ data.return_no_of_bottles }}</td>
                                 <!--<td>{{ data.to_be_returned }}</td>-->
                                 <td>{{ data.shortage }}</td>
                                 <td>{{ data.vehicleno }}</td>
-                                <td></td>
                               <td>{{ data.return_drivername }}</td>
-                                <td></td>
                                 <td>{{ data.return_drivername_two }}</td>
+                                <td></td>
                                 <td>{{ data.return_authorized_staffname }}</td>
 
                                 </tr>

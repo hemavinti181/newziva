@@ -30,7 +30,7 @@
 				      	<form  method="POST" action="store_master"   enctype="multipart/form-data">
 											{% csrf_token %}
 									<div  class="col-md-2 col-sm-2  form-group has-feedback">
-													<label>Select Warehouse</label>
+													<label> Warehouse</label>
 
 										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.warehousename }}</option>

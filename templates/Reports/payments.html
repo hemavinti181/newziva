@@ -2,6 +2,7 @@
 
 {% block htmlbody %}
 
+
 <style>
     .tile-stats .icon1 {
     width: 20px;
@@ -17,7 +18,8 @@
     background-color: #33b5e5;
     color: white;
 }
-    </style>
+</style>
+
 
 <div class="right_col" role="main">
           <div class="">
@@ -1343,7 +1345,6 @@ var dataTable = $("#datatable-buttons1").DataTable({
 });
 
 $("#regionid1").change(function () {
-alert('hai')
     var regionid = $('#regionid1').val();
     var date = $("#daterangeselect").find(":selected").text();
     var tdate = $('#end-date').val();
