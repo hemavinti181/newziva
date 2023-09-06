@@ -37,7 +37,7 @@
 											{% csrf_token %}
                             	<div  class="col-md-3 col-sm-3  form-group has-feedback">
 													<label> Depot</label>
-												 <select class="form-control items" name="depoid" id="depoid" required>
+												 <select class="form-control select2" name="depoid" id="depoid" required>
                                                      <option value="All">All</option>
                                                     {% for data in depolist %}
                                                         {% if data.status == "Active" %}
@@ -116,7 +116,7 @@
               <div class="row">
                 <div class="col-sm-12">
                      <div class="col-md-12 col-sm-12 echart-depot2" style="margin-bottom:35px;">
-                  <h3 style="margin: 125px 3px 149px 100px;display:none;" id="lblNoStock2">No Stock Available</h3>
+                  <h3 style="margin: 125px 3px 165px 100px;display:none;" id="lblNoStock2">No Stock Available</h3>
                        <div id="echart-depot2" style="height:365px;margin-top:-60px;margin-left:-100px;width:600px"></div>
               </div>
                   <div class="card-box table-responsive" style="overflow:hidden">
@@ -824,7 +824,7 @@ $.ajax({
                     $('.issued_bottles').text(itemslist[0].issued);
                     $('.consumed_botteles').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist[0].shortage);
-                    $('.tobe_return').text(itemslist[0].no_of_tickets);
+                    $('.tobe_return').text(itemslist[0].to_be_returned);
                     $('.passenger').text(itemslist[0].no_of_tickets);
 
   },
@@ -859,9 +859,9 @@ $("#fdate, #tdate").change(function() {
       }
 
                     $('.issued_bottles').text(itemslist[0].issued);
-                    $('.consumed_botteles').text(itemslist[0].consumed);
+                    $('.consumed_botteles').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist.shortage);[0]
-                    $('.tobe_return').text(itemslist[0].no_of_tickets);
+                    $('.tobe_return').text(itemslist[0].to_be_returned);
                     $('.passenger').text(itemslist[0].no_of_tickets);
 
 
@@ -874,8 +874,8 @@ $("#fdate, #tdate").change(function() {
 });
 
 
-
-
+$(document).ready(function() {
+$('#depoid').select2();
 $("#depoid").change(function() {
  depoid = $('#depoid').find(":selected").text();
  fdate = $('#fdate').val();
@@ -899,9 +899,9 @@ $("#depoid").change(function() {
       }
 
                      $('.issued_bottles').text(itemslist[0].issued);
-                    $('.consumed_botteles').text(itemslist[0].consumed);
+                    $('.consumed_botteles').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist[0].shortage);
-                    $('.tobe_return').text(itemslist[0].no_of_tickets);
+                    $('.tobe_return').text(itemslist[0].to_be_returned);
                     $('.passenger').text(itemslist[0].no_of_tickets);
 
   },
@@ -911,7 +911,7 @@ $("#depoid").change(function() {
   }
 });
 });
-
+});
 
 $(document).ready(function() {
     $("#checked1").click(function() {
@@ -939,9 +939,7 @@ $.ajax({
   success: function(data) {
      var total =  data.data.totallist;
      message = data.data.message
-      console.log(data);
-
-      if(message != "Data found")
+     if(message != "Data found")
       {
        $("#lblNoStock").html(data.message);
        $("#lblNoStock").show();
@@ -967,7 +965,8 @@ $.ajax({
 });
 });
 
-
+$(document).ready(function() {
+$('#depoid').select2();
 $('#depoid').change(function() {
 var depoid = $('#depoid').val();
 $.ajax({
@@ -1006,7 +1005,7 @@ $.ajax({
   }
 });
 });
-
+});
 
 
 </script>
