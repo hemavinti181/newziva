@@ -78,34 +78,23 @@
                         <tr>
                                     <th>S No</th>
                                      <th>Depot</th>
-                                    <th>Date</th>
+                                    <th>Issued Date</th>
+                                     <th>Returned Date</th>
                                     <th>Service No</th>
                                    <th>Bottles Issued</th>
                                     <th>Bottles Returned</th>
                                     <th>Shortage/Excess</th>
-                                    <!--<th rowspan="2">Service No</th>
-                                    <th>Date</th>
-                                    <th>Current Month</th><th>Bottles Issued</th>
-                                    <th>Bottles Returned</th>
-                                    <th>Shortage/Excess</th>-->
+
 
                         </tr>
-                       <!-- <tr>
 
-                                    <th>Bottles Issued</th>
-                                    <th>Bottles Returned</th>
-                                    <th>Shortage/Excess</th>
-                                   <th>Bottles Issued</th>
-                                    <th>Bottles Returned</th>
-                                    <th>Shortage/Excess</th>
-
-                        </tr>-->
                       </thead>
                             <tbody>
                             {% for data in itemlist %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ data.deponame }}</td>
+                                <td>{{ data.created_date }}</td>
                                 <td>{{ data.date }}</td>
                                  <td><a href="#" onclick="pageScroll()" style="color: #06911A" class="driver_shortlist"  data-id="{{ data.service_id }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" data-deponame="{{ data.deponame }}" >{{ data.service_id }}</a></td>
                                 <td>{{ data.noofbottles_recieve }}</td>
@@ -285,8 +274,6 @@ $(".driver_shortlist").on('click', function () {
                     row.append($('<td rowspan="' + count + '">').text(item.service_id));
 
                 }
-
-
                 row.append($('<td>').text(item.noofbottles_recieve));
                 row.append($('<td>').text(item.return_no_of_bottles));
                 row.append($('<td>').text(item.shortage));

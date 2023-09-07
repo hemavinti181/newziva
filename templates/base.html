@@ -392,8 +392,6 @@ color:#14c38e !important;
     font-size:15px !important;
 
    }
-
-
 </style>
 <meta name="robots" content="noindex, nofollow">
 
@@ -479,6 +477,9 @@ ZIVA <a href="#"></a>
 </footer>
 </div>
 </div>
+
+
+
 <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
@@ -587,11 +588,11 @@ ZIVA <a href="#"></a>
                       alert(e);
                       }
                     })
-                })
+            })
 
 
 
-                $('#itemsearch1').change(function() {
+            $('#itemsearch1').change(function() {
                     var searchterm = $("#itemsearch1").val();
                     $.ajax({
                       data: {"searchterm":searchterm, "wh_id":$("#wh_id").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
@@ -614,6 +615,7 @@ ZIVA <a href="#"></a>
                     })
                 })
             });
+
 
    {% for data in messages %}
 		var a = 'alert-success';
@@ -646,6 +648,7 @@ var cls=$(".inner-fabs").attr("class");
     }
 });
 
+
 document.addEventListener('click', function (e) {
   switch (e.target.id) {
     case "fab1":
@@ -660,6 +663,8 @@ document.addEventListener('click', function (e) {
       break;}
 
 });
+
+
 $(document).ready(function() {
     $('#example').DataTable( {
         columnDefs: [ {
@@ -692,6 +697,8 @@ $(document).ready(function() {
       alert('Please select an option');
     }
   });
+
+
 </script>
 
 

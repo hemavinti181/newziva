@@ -9571,7 +9571,6 @@ def payment_report(request):
                 if response.status_code == 200:
                     data = response.json()
                     daywisesaleslist = data['daywisesaleswarehouselist']
-
                     return render(request, 'Reports/payments.html', {'item':item[0],'fdate':fdate,'tdate':tdate,'menuname':menuname,'data': daywisesaleslist,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
                 else:
                     data = response.json()
@@ -9972,12 +9971,21 @@ def bus_payment(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         response = response.json()
-        # daywisesaleslist = data['daywisesaleswarehouselist']
+        return JsonResponse({'response': response})
+    elif response.status_code == 503:
+        response = response.json()
         return JsonResponse({'response': response})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/internal_consumption')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+
+
+
 def depo_payment(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -10003,16 +10011,20 @@ def depo_payment(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
             response = response.json()
-            #daywisesaleslist = data['daywisesaleswarehouselist']
             return JsonResponse({'response':response})
+
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/internal_consumption')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
     else:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'response': data['message']})
+        response = response.json()
+        return JsonResponse({'response': response})
+
 def depot_stock(request,id):
         if 'accesskey' not in request.session:
             messages.error(request, 'Access denied!')
