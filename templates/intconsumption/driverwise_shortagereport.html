@@ -246,7 +246,7 @@ $("#depoid").change(function() {
 
 
 $(document).ready(function() {
-    var busDataTable = $("#driver_shortage").DataTable({
+    var drivertable = $("#driver_shortage").DataTable({
         dom: "Blfrtip",
         buttons: [
             {
@@ -273,13 +273,13 @@ $(document).ready(function() {
         responsive: true,
         "bDestroy": true, // Destroy the DataTable if it's already initialized
     });
-});
-
 $(".driver_shortlist").on('click', function () {
     let staffid = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
-
+    if ($.fn.DataTable.isDataTable('#driver_shortage')) {
+            drivertable.destroy();
+        }
     $.ajax({
         url: '{% url "driverwise_sub_shortage" %}',
         type:'POST',
@@ -318,8 +318,33 @@ $(".driver_shortlist").on('click', function () {
                 row.append($('<td>').text(item.shortage));
                 tableBody.append(row);
                 }
-
-
+                $("#bus_listtable").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
         }
 
         },
@@ -328,6 +353,6 @@ $(".driver_shortlist").on('click', function () {
         }
     });
 });
-
+});
 </script>
 {% endblock %}
