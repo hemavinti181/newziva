@@ -244,27 +244,44 @@ $("#depoid").change(function() {
 });
 
 
- $(document).ready( function () {
-     $('#driver_shortage').DataTable( {
-        dom: 'Bfrtip',
+
+$(document).ready(function() {
+    var busDataTable = $("#driver_shortage").DataTable({
+        dom: "Blfrtip",
         buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ]
-    } );
-} );
-
-
-
+            {
+                extend: "copy",
+                className: "btn-sm"
+            },
+            {
+                extend: "csv",
+                className: "btn-sm"
+            },
+            {
+                extend: "excel",
+                className: "btn-sm"
+            },
+            {
+                extend: "pdfHtml5",
+                className: "btn-sm"
+            },
+            {
+                extend: "print",
+                className: "btn-sm"
+            },
+        ],
+        responsive: true,
+        "bDestroy": true, // Destroy the DataTable if it's already initialized
+    });
+});
 
 $(".driver_shortlist").on('click', function () {
     let staffid = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
+
     $.ajax({
-        url: '{% url "service_wise_shortage" %}',
+        url: '{% url "driverwise_sub_shortage" %}',
         type:'POST',
         data: {
             'staffid': staffid,
@@ -301,13 +318,16 @@ $(".driver_shortlist").on('click', function () {
                 row.append($('<td>').text(item.shortage));
                 tableBody.append(row);
                 }
+
+
         }
-            datatable.draw();
+
         },
         error: function(xhr, status, error) {
             console.log("AJAX Error:", error);
         }
     });
 });
+
 </script>
 {% endblock %}

@@ -14448,7 +14448,7 @@ def service_wise_shortage(request):
             return JsonResponse({'data': "Internal Server Error"})
 
 
-def driverwise_sub_shoretage(request):
+def driverwise_sub_shortage(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')

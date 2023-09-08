@@ -837,7 +837,6 @@ $(document).ready(function() {
 
 
 $(document).ready(function() {
-    // Initialize DataTable once when the document is ready
     var depoDataTable = $("#depo_listtable").DataTable({
         dom: "Blfrtip",
         buttons: [
@@ -960,36 +959,35 @@ $(document).ready(function() {
     });
 });
 
-$(document).ready(function() {
-var busdataTable = $("#bus_listtable").DataTable({
-                dom: "Blfrtip",
-                "bDestroy": true,
-                buttons: [
-                    {
-                        extend: "copy",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "csv",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "excel",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "pdfHtml5",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "print",
-                        className: "btn-sm"
-                    },
-                ],
-                responsive: true
-            });
-});
 
+$(document).ready(function() {
+    var busDataTable = $("#bus_listtable").DataTable({
+        dom: "Blfrtip",
+        buttons: [
+            {
+                extend: "copy",
+                className: "btn-sm"
+            },
+            {
+                extend: "csv",
+                className: "btn-sm"
+            },
+            {
+                extend: "excel",
+                className: "btn-sm"
+            },
+            {
+                extend: "pdfHtml5",
+                className: "btn-sm"
+            },
+            {
+                extend: "print",
+                className: "btn-sm"
+            },
+        ],
+        responsive: true,
+        "bDestroy": true, // Destroy the DataTable if it's already initialized
+    });
 
 
 $(document).on('click', '.bus_list', function () {
@@ -997,8 +995,9 @@ $(document).on('click', '.bus_list', function () {
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
      if ($.fn.DataTable.isDataTable('#bus_listtable')) {
-            busdataTable .destroy();
+            busDataTable.destroy();
         }
+
     $.ajax({
         url: '{% url "bus_payment" %}',
         data: {
@@ -1074,6 +1073,8 @@ $(document).on('click', '.bus_list', function () {
         }
     });
 });
+});
+
 
 
 $(document).ready(function() {
