@@ -223,23 +223,42 @@ $("#depoid").change(function() {
 });
 
 $(document).ready( function () {
-     $('#driver_shortage').DataTable( {
-        dom: 'Bfrtip',
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ]
-    } );
-} );
+      var datatable = $("#driver_shortage").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+     });
 
-
-$(".driver_shortlist").on('click', function () {
+ $(document).on('click', '.driver_shortlist', function () {
     let service_id = $(this).data('id');
       let deponame = $(this).data('deponame');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
+     if ($.fn.DataTable.isDataTable('#driver_shortage')) {
+            datatable.destroy();
+        }
     $.ajax({
         url: '{% url "service_wise_shortage" %}',
         type:'POST',
@@ -279,13 +298,41 @@ $(".driver_shortlist").on('click', function () {
                 row.append($('<td>').text(item.shortage));
                 tableBody.append(row);
                 }
+                datatable = $("#driver_shortage").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+     });
                         }
-            datatable.draw();
+
         },
         error: function(xhr, status, error) {
             console.log("AJAX Error:", error);
         }
     });
+});
 });
 </script>
 {% endblock %}

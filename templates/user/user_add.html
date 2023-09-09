@@ -73,9 +73,7 @@
 												<select class="form-control" name="role1" id="role">
 													<option> Role</option>
 													{% for all_data2 in all_data2 %}
-														{% if  all_data2.status == "Active" %}
-															<option  value="{{ all_data2.ddcode}}">{{ all_data2.displayname }}</option>
-														{% endif %}
+															<option  value="{{ all_data2.role}}">{{ all_data2.role }}</option>
 													{% endfor %}
 												</select>
                                         </div>
@@ -154,31 +152,33 @@ $("#busstation").change(function() {
 });
 document.getElementById("role").addEventListener("change", function() {
 var val=$(this).find(":selected").text();
-  if (val === "Admin" || val === "Bus Station") {
+  if (val === "Admin") {
+    document.getElementById("warehouse").style.display = "none";
+    document.getElementById("region").style.display = "none";
+    document.getElementById("depo").style.display = "none";
+    document.getElementById("busstation").style.display = "none";
+  }
+  else if (val === "BUS STATION CONTROLLER" || val === "DC CONTROLLER") {
     document.getElementById("warehouse").style.display = "block";
     document.getElementById("region").style.display = "block";
     document.getElementById("depo").style.display = "block";
     document.getElementById("busstation").style.display = "block";
   }
-  else if (val === "Marketing Executive" ){
+
+  else if (val === "MARKETING EXECUTIVE" ){
 		document.getElementById("warehouse").style.display = "block";
         document.getElementById("region").style.display = "block";
         document.getElementById("depo").style.display = "none";
     	document.getElementById("busstation").style.display = "none";
     }
 
-  else if(val === "Depo" ) {
+  else if(val === "DEPOT STORE EXECUTIVE" ) {
 	document.getElementById("warehouse").style.display = "block";
     document.getElementById("region").style.display = "block";
     document.getElementById("depo").style.display = "block";
     document.getElementById("busstation").style.display = "none";
    }
-	else if (val === "Region" ){
-		document.getElementById("warehouse").style.display = "block";
-        document.getElementById("region").style.display = "block";
-        document.getElementById("depo").style.display = "none";
-    	document.getElementById("busstation").style.display = "none";
-    }
+
     else{
 	document.getElementById("warehouse").style.display = "block";
 	document.getElementById("region").style.display = "none";

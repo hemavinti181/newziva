@@ -2693,16 +2693,16 @@ def user_add(request):
         des_list = data['itemmasterlist']
 
 
-        url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
+        url = "http://13.235.112.1/ziva/mobile-api/role-dropdownlist.php"
 
-        payload = json.dumps({"accesskey": accesskey,  "name":"ROLE"})
+        payload = json.dumps({"accesskey": accesskey})
         headers = {
             'Content-Type': 'text/plain'
         }
 
         response3 = requests.request("GET", url, headers=headers, data=payload)
         data2 = response3.json()
-        role_list = data2['itemmasterlist']
+        role_list = data2['roledropdownlist']
 
 
 
@@ -2726,7 +2726,7 @@ def user_add(request):
                 image_data = None
                 image_name = None
 
-            url = "http://13.235.112.1/ziva/mobile-api/create-user.php"
+            url = "http://13.235.112.1/ziva/mobile-api/create-user-new.php"
 
             payload = {
                 "accesskey": accesskey,

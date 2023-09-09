@@ -864,8 +864,6 @@ $(document).ready(function() {
         responsive: true,
         "bDestroy": true, // Destroy the DataTable if it's already initialized
     });
-
-
     $(document).on('click', '.depo_list', function () {
         let id = $(this).data('id');
         let fdate = $(this).data('fdate');
@@ -884,7 +882,6 @@ $(document).ready(function() {
             success: function(response) {
                 var error = response.response.error;
                 var message = response.response.message;
-
                 if (error === true) {
                     alertify.set('notifier', 'position', 'top-center');
                     alertify.error(message);
@@ -960,6 +957,7 @@ $(document).ready(function() {
 });
 
 
+
 $(document).ready(function() {
     var busDataTable = $("#bus_listtable").DataTable({
         dom: "Blfrtip",
@@ -999,12 +997,12 @@ $(document).on('click', '.bus_list', function () {
         }
 
     $.ajax({
-        url: '{% url "bus_payment" %}',
+        url: '/bus_payment',
         data: {
             'id': id,
             'fdate': fdate,
             'tdate': tdate,
-            'csrfmiddlewaretoken': '{{ csrf_token }}'
+            'csrfmiddlewaretoken': 'vuUxVPF5X752XYy9UAkdGV6fIegEl9iSISgJlUOv5fC7YNL82Dh98bHLkoGoyH7w'
         },
         success: function(response) {
             var error = response.response.error;
@@ -1034,12 +1032,12 @@ $(document).on('click', '.bus_list', function () {
                 row.append($('<td>').text(item.no_of_stalls));
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
-                  var code = '<td class="text-center"><a href="#" class="items_buslist" data-id="' + item.busstation_id + '"  data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                  var code = '<td class="text-center"><a href="#" class="items_buslist" data-id="' + item.busstation_id + '"  data-fdate="Current Month" data-tdate="Current Month"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
                 row.append(code);// Amount Collected
                 tableBody.append(row);
             }
 
-            $("#bus_listtable").DataTable({
+            busDataTable = $("#bus_listtable").DataTable({
                 dom: "Blfrtip",
                 "bDestroy": true,
                 buttons: [
@@ -1076,9 +1074,8 @@ $(document).on('click', '.bus_list', function () {
 });
 
 
-
 $(document).ready(function() {
-  var datatable = $("#items_warehouse").DataTable({
+  var itmwhdatatable = $("#items_warehouse").DataTable({
                 dom: "Blfrtip",
                 "bDestroy": true,
                 buttons: [
@@ -1104,14 +1101,14 @@ $(document).ready(function() {
                     },
                 ],
                 responsive: true
-            });
-});
-
-
+  });
 $(".items_list").on('click', function () {
     let id = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
+    if ($.fn.DataTable.isDataTable('#depo_listtable')) {
+            itmwhdatatable.destroy();
+        }
     $.ajax({
         url: '{% url "warehouse_items" %}',
         data: {
@@ -1143,23 +1140,51 @@ $(".items_list").on('click', function () {
                 var item = responseData[i];
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));
-                  row.append($('<td>').text(item.date));// S No
+                row.append($('<td>').text(item.date));// S No
                 row.append($('<td>').text(item.warehouse));  // Region
                 row.append($('<td>').text(item.item_name));  // Quantity
                 row.append($('<td>').text(item.qty));
                 row.append($('<td>').text(item.paymentmode));
-                 row.append($('<td>').text(item.total));
+                row.append($('<td>').text(item.total));
                 tableBody.append(row);
             }
+                 itmwhdatatable = $("#items_warehouse").DataTable({
+                        dom: "Blfrtip",
+                        buttons: [
+                            {
+                                extend: "copy",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "csv",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "excel",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "pdfHtml5",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "print",
+                                className: "btn-sm"
+                            },
+                        ],
+                        responsive: true,
+                        "bDestroy": true, // Destroy the DataTable if it's already initialized
+                    });
 
             }
-            datatable.draw();
         },
         error: function(xhr, status, error) {
             console.log("AJAX Error:", error);
         }
     });
 });
+});
+
 
 
 $(document).ready(function() {
@@ -1190,13 +1215,14 @@ $(document).ready(function() {
                 ],
                 responsive: true
             });
-});
-
 
 $(document).on('click', '.items_regionlist', function () {
     let id = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
+    if ($.fn.DataTable.isDataTable('#depo_listtable')) {
+            items_region.destroy();
+        }
     $.ajax({
         url: '{% url "region_items" %}',
         data: {
@@ -1239,18 +1265,7 @@ $(document).on('click', '.items_regionlist', function () {
                 row.append($('<td>').text(item.total));
                 tableBody.append(row);
             }
-            }
-            items_region.draw();
-        },
-        error: function(xhr, status, error) {
-            console.log("AJAX Error:", error);
-        }
-    });
-});
-
-
-$(document).ready(function() {
-var dataTable = $("#items_depot").DataTable({
+            items_region = $("#items_region").DataTable({
                 dom: "Blfrtip",
                 "bDestroy": true,
                 buttons: [
@@ -1277,11 +1292,53 @@ var dataTable = $("#items_depot").DataTable({
                 ],
                 responsive: true
             });
+            }
+            items_region.draw();
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX Error:", error);
+        }
+    });
+});
+});
+
+
+
+$(document).ready(function() {
+var items_depot = $("#items_depot").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
             });
 $(document).on('click', '.items_depolist', function () {
     let id = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
+      if ($.fn.DataTable.isDataTable('#depo_listtable')) {
+            items_depot.destroy();
+        }
     $.ajax({
         url: '{% url "depo_items" %}',
         data: {
@@ -1321,8 +1378,34 @@ $(document).on('click', '.items_depolist', function () {
                 row.append($('<td>').text(item.total));
                 tableBody.append(row);
             }
+            items_depot = $("#items_depot").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
           }
-          dataTable.draw();
 
         },
         error: function(xhr, status, error) {
@@ -1331,6 +1414,7 @@ $(document).on('click', '.items_depolist', function () {
     });
 });
 
+});
 
 
 $(document).ready(function() {
