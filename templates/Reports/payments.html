@@ -499,6 +499,7 @@ $("#depoid").change(function() {
              	}
         	});
 
+
 $("#depoid").change(function() {
         	var depo = $(this).val();
         	$.ajax({
@@ -532,7 +533,6 @@ $(document).ready(function(){
 
 	$(document).ready(function() {
     var warehousename = $("#warehouseid2").find(":selected").text();
-    console.log(warehousename);
     $.ajax({
         type: "POST",
         url: '{% url "get_storeregion" %}',
@@ -737,6 +737,7 @@ function displayOtherResults(selectedOption) {
   // Code to display results...
 }
 
+
 $(document).ready(function() {
     var dataTable;
     $(".region_list").on('click', function () {
@@ -768,7 +769,6 @@ $(document).ready(function() {
                     $('.itemsdepot').hide();
                     $('.itemsbus').hide();
                     var tableBody = $('.datatable-buttons1 tbody');
-
                     tableBody.empty();
                     for (var i = 0; i < responseData.length; i++) {
                         var item = responseData[i];
@@ -918,7 +918,7 @@ $(document).ready(function() {
                         row.append(code);// Amount Collected
                         tableBody.append(row);
                     }
-                    // Reinitialize the DataTable
+
                     depoDataTable = $("#depo_listtable").DataTable({
                         dom: "Blfrtip",
                         buttons: [
@@ -1505,12 +1505,15 @@ $(document).on('click', '.items_buslist', function () {
 });
 
 
-
+var dataTable;
 $("#regionid1").change(function () {
     var regionid = $('#regionid1').val();
     var date = $("#daterangeselect").find(":selected").text();
     var tdate = $('#end-date').val();
     var fdate = $('#start-date').val();
+    if ($.fn.DataTable.isDataTable('.datatable-buttons1')) {
+            dataTable.destroy();
+     }
     $.ajax({
         url: '{% url "region_payment_new" %}',
         type: "POST",
@@ -1558,11 +1561,36 @@ $("#regionid1").change(function () {
                 row.append($('<td>').text(item.qty));  // Quantity
                 row.append($('<td>').text(item.total));
                 var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_regionlist" data-id="' + item.region_id + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
-                 row.append(code);
+                row.append(code);
                 tableBody.append(row);
 
             }
-             dataTable.draw();
+             dataTable = $(".datatable-buttons1").DataTable({
+                        dom: "Blfrtip",
+                        buttons: [
+                            {
+                                extend: "copy",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "csv",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "excel",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "pdfHtml5",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "print",
+                                className: "btn-sm"
+                            },
+                        ],
+                        responsive: true
+                    });
         },
 
         error: function(xhr, status, error) {
@@ -1573,13 +1601,16 @@ $("#regionid1").change(function () {
 });
 
 
-
+var depo_listdataTable1;
 $("#depoid1").change(function () {
-
     var depoid = $('#depoid1').val();
     var date = $("#daterangeselect").find(":selected").text();
     var fdate = $('#start-date').val();
     var tdate = $('#end-date').val();
+    if (depo_listdataTable1) {
+        depo_listdataTable1.destroy();
+    }
+
     $.ajax({
         url: '{% url "depot_payment_new" %}',
         type: "POST",
@@ -1630,7 +1661,33 @@ $("#depoid1").change(function () {
                 row.append(code);
                 tableBody.append(row);
             }
-             dataTable.draw();
+           depo_listdataTable1 = $("#depo_listtable").DataTable({
+                        dom: "Blfrtip",
+                        buttons: [
+                            {
+                                extend: "copy",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "csv",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "excel",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "pdfHtml5",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "print",
+                                className: "btn-sm"
+                            },
+                        ],
+                        responsive: true,
+
+                    });
         },
 
         error: function(xhr, status, error) {
@@ -1641,12 +1698,15 @@ $("#depoid1").change(function () {
 });
 
 
-
+var bus_listdataTable1;
 $("#busstationid1").change(function () {
     var busatationid = $('#busstationid1').val();
     var date = $("#daterangeselect").find(":selected").text();
     var tdate = $('#end-date').val();
     var fdate = $('#start-date').val();
+      if (bus_listdataTable1) {
+            bus_listdataTable1.destroy();
+     }
     $.ajax({
         url: '{% url "bust_payment_new" %}',
         type: "POST",
@@ -1685,7 +1745,33 @@ $("#busstationid1").change(function () {
                 row.append(code);
                 tableBody.append(row);
             }
-             dataTable.draw();
+              bus_listdataTable1 = $("#bus_listtable").DataTable({
+                        dom: "Blfrtip",
+                        buttons: [
+                            {
+                                extend: "copy",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "csv",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "excel",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "pdfHtml5",
+                                className: "btn-sm"
+                            },
+                            {
+                                extend: "print",
+                                className: "btn-sm"
+                            },
+                        ],
+                        responsive: true,
+
+                    });
         },
 
         error: function(xhr, status, error) {
@@ -1694,6 +1780,7 @@ $("#busstationid1").change(function () {
 
     });
 });
+
 
 $(document).ready(function() {
   var form = document.getElementById("myform");

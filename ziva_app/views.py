@@ -3027,7 +3027,7 @@ def add_grnitem(request,id):
                     return redirect(url)
             else:
                 return render(request, 'grn/add_grnitem.html',
-                              {'data': item_masterlist, 'menuname': menuname})
+                              {'data': item_masterlist, 'menuname': menuname,'id':id})
         else:
             if request.method == "POST":
                 url = "http://13.235.112.1/ziva/mobile-api/grn-item.php"
@@ -5159,36 +5159,59 @@ def indent_list(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     displayrole = request.session['displayrole']
-    url = "http://13.235.112.1/ziva/mobile-api/indent-list-new.php"
+    role = request.session['role']
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/indent-list-admin.php"
 
-    if displayrole == 'DEPOT STORE EXECUTIVE':
         payload = json.dumps({
-            "accesskey": accesskey,
-            "type": "Region",
-            "status":"Pending"
-        })
-    else:
-        payload = json.dumps({
-            "accesskey": accesskey,
-            "type": "Bus station",
-            "status":"Pending"
-        })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+                "accesskey": accesskey,
+            })
+        headers = {
+                'Content-Type': 'application/json'
+            }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        ind_list = data['indentlist']
-        return render(request, 'create_indent/indent_list.html', {"all_data": ind_list,'all_data1':ind_list[0],'menuname':menuname})
-    elif response.status_code == 400:
-        data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            ind_list = data['indentlist']
+            return render(request, 'create_indent/indent-list-admin.html',
+                          {"all_data": ind_list, 'all_data1': ind_list[0], 'menuname': menuname,'status':'Pending'})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        else:
+            return render(request, 'create_indent/indent-list-admin.html', {'menuname': menuname,'status':'Pending'})
     else:
-        return render(request, 'create_indent/indent_list.html',{'menuname':menuname})
+            url = "http://13.235.112.1/ziva/mobile-api/indent-list-new.php"
 
+            if displayrole == 'DEPOT STORE EXECUTIVE':
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "type": "Region",
+                    "status":"Pending"
+                })
+            else:
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "type": "Bus station",
+                    "status":"Pending"
+                })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                ind_list = data['indentlist']
+                return render(request, 'create_indent/indent_list.html', {"all_data": ind_list,'all_data1':ind_list[0],'menuname':menuname})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+            else:
+                return render(request, 'create_indent/indent_list.html',{'menuname':menuname})
 
 def indent_list_approve(request):
     if 'accesskey' not in request.session:
@@ -5197,35 +5220,66 @@ def indent_list_approve(request):
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
     displayrole = request.session['displayrole']
-    url = "http://13.235.112.1/ziva/mobile-api/indent-list-new.php"
-
-    if displayrole == 'DEPOT STORE EXECUTIVE':
+    role = request.session['role']
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/indent-list-new.php"
         payload = json.dumps({
-            "accesskey": accesskey,
-            "type": "Region",
-            "status":"Approve"
-        })
+                "accesskey": accesskey,
+                "status": "Approve"
+            })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            ind_list = data['indentlist']
+            return render(request, 'create_indent/indent-list-admin.html',
+                          {"all_data": ind_list, 'all_data1': ind_list[0], 'menuname': menuname})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return render(request, 'create_indent/indent-list-admin.html', {'menuname': menuname})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            return render(request, 'create_indent/indent_list.html', {'menuname': menuname})
     else:
-        payload = json.dumps({
-            "accesskey": accesskey,
-            "type": "Bus station",
-            "status":"Approve"
-        })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+            url = "http://13.235.112.1/ziva/mobile-api/indent-list-new.php"
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        ind_list = data['indentlist']
-        return render(request, 'create_indent/indent_list.html', {"all_data": ind_list,'all_data1':ind_list[0],'menuname':menuname})
-    elif response.status_code == 400:
-        data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
-    else:
-        return render(request, 'create_indent/indent_list.html',{'menuname':menuname})
+            if displayrole == 'DEPOT STORE EXECUTIVE':
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "type": "Region",
+                    "status":"Approve"
+                })
+            else:
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "type": "Bus station",
+                    "status":"Approve"
+                })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                ind_list = data['indentlist']
+                return render(request, 'create_indent/indent_list.html', {"all_data": ind_list,'all_data1':ind_list[0],'menuname':menuname})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'create_indent/indent_list.html', {'menuname': menuname})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'create_indent/indent_list.html',{'menuname':menuname})
 
 def indent_item_list1(request,id):
     if 'accesskey' not in request.session:
@@ -6468,9 +6522,9 @@ def get_depo(request):
     headers = {
         'Content-Type': 'application/json'
     }
-    data = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data2 = data.json()
+        data2 = response.json()
         return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
@@ -8787,14 +8841,18 @@ def  get_bus(request):
     headers = {
         'Content-Type': 'application/json'
     }
-    data = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data2 = data.json()
+        data2 = response.json()
         return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
 
 
 def bus_edit(request):
@@ -14733,3 +14791,32 @@ def internal_stktransfer(request):
             data = response.json()
             messages.error(request, data['message'])
             return redirect('/login')
+
+def delete_sales(request):
+    if 'accesskey' not in request.session:
+            return redirect('/login')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/delete-delivery-pending-list-region.php"
+
+    payload = json.dumps({
+            "accesskey": accesskey,
+            "sno": request.POST.get('deleteid'),
+            "sonumber": request.POST.get('deletesono'),
+        })
+    headers = {
+            'Content-Type': 'application/json'
+        }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('medeliver_challan_pending')
+    else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('medeliver_challan_pending')
+            except:
+                messages.error(request, response.text)
+            return redirect('medeliver_challan_pending')

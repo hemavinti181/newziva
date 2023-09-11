@@ -208,6 +208,7 @@
                             <tbody>
                             {% for all_data in all_data %}
                        <tr>
+                           {{ all_data.item_name }}
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>

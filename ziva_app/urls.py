@@ -294,7 +294,8 @@ urlpatterns = [
     path('internal_stktransfer',views.internal_stktransfer,name='internal_stktransfer'),
     path('approve_list_admin1',views.approve_list_admin1,name='approve_list_admin'),
     path('vehcals_list',views.vehcals_list,name='vehcals_list'),
-    path('internal_consump_stock',views.internal_consump_stock,name='internal_consump_stock')
+    path('internal_consump_stock',views.internal_consump_stock,name='internal_consump_stock'),
+    path('delete_sales',views.delete_sales,name='delete_sales')
 ]
 
 

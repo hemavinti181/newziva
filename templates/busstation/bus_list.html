@@ -74,12 +74,12 @@
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display  table-striped  table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
                                     <th>Bus ID </th>
-                                    <th>Depo</th>
+                                    <th>Depot</th>
                                      <th>Bus Station  </th>
                                     <th>Action</th>
                         </tr>
@@ -122,7 +122,7 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Bus Station</h5>
+                <h3 class="modal-title">Edit Bus Station</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -137,7 +137,7 @@
 
                                         <div  class="col-md-6 col-sm-6  form-group has-feedback">
 
-													<label>Depo *</label>
+													<label>Depot *</label>
 											<input type="hidden" name="deponame1" id="deponame1" />
 												<select class="form-control" name="depoid1" id="depoid1">
 													{% for data1 in data %}
@@ -152,8 +152,9 @@
                </div>
 
             <div class="modal-footer">
+				 <button type="submit" class="btn btn-primary">Save</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+
             </div>
           </form>
         </div>
@@ -222,6 +223,7 @@
 
 <script>
 function editBus(id){
+
       $.ajax({
         url: "{% url 'get_bus' %}",
         type: 'POST',
@@ -248,7 +250,6 @@ function editBus(id){
   }
   $("#depoid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-  alert(selectedOptionText)
   $("#deponame1").val(selectedOptionText);
 });
 function VerifyClick(id){

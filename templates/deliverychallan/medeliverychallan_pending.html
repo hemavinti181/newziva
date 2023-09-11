@@ -7,6 +7,11 @@
 	width: 80% !important;
 	margin-left:50px !important;
 	}
+	.style1{
+	position: absolute !important;
+	width: 80% !important;
+	margin-left:50px !important;
+	}
 </style>
 
 <div class="right_col" role="main">
@@ -197,6 +202,10 @@
                                         {% else %}
                                          <td>
                                             <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                             {% if request.session.role == 'Admin' %}
+                                                  <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.sonumber }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                  <i class="fa fa-trash"></i></span></a>
+                                             {% endif %}
                                          </td>
                                         {% endif %}
 
@@ -243,6 +252,7 @@
                                                   <button type="submit" class="btn btn-primary">APPROVE</button>
                                             </div>
                                         </div>
+                                                </form>
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +267,37 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="delete_sales">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Sales</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:100px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
 
+						</div>
+					</div>
+				</div>
 <script>
 function VerifyClick(){
 $("#name").val("");
@@ -266,6 +306,12 @@ $("#vehicaldetails").val("");
 $("#remarks").val("");
 }
 
+function VerifyClick1(id,id1){
+alert('hai')
+$("#deleteid").val(id);
+$("#deletesono").val(id1);
+
+}
 $(document).ready(function() {
     $('#example1').DataTable( {
         columnDefs: [ {

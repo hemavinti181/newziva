@@ -711,10 +711,10 @@ function updateEchartPieChart(itemslist) {
                });
                  count++;
                }
-               if(item[0].consumed != "0" ){
+               if(item[0].no_of_services != "0" ){
                seriesData.push({
-                 value: item[0].consumed,
-                 name: 'Consumed'
+                 value: item[0].no_of_services,
+                 name: 'No of services'
                });
                  count++;
                }
@@ -726,7 +726,7 @@ function updateEchartPieChart(itemslist) {
                   count++;
                }
 
-            legendData.push('Issued','Consumed','Shortage');
+            legendData.push('Issued','No of services','Shortage');
 
           if(count === 0){
           $("#echart-depot1").hide();
