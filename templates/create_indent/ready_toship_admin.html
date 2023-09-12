@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
+<style>
+     .style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:50px !important;
+	}
+</style>
 
 <div class="right_col" role="main">
           <div class="">
@@ -174,7 +180,9 @@
                            <td>{{ all_data.type }}</td>
                             {% if all_data.status == 'Ready to Ship' %}
                                 <td>
-                                  <a href="/indent_item_list1/{{ all_data.dc_number }}/"><i class="fa fa-edit"></i></a>
+                                    <a href="/indent_item_list1/{{ all_data.dc_number }}/"><span class="badge badge-success"><i class="fa fa-edit"></i></span></a>
+                                     <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.sonumber }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                  <i class="fa fa-trash"></i></span></a>
                                     <span id="gatepass" data-target=".bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}','{{all_data.indentno}}')" class="badge badge-info" >Generate Gate Pass </span></a>
                                 </td>
                            {% else %}
@@ -244,8 +252,44 @@
                                         </div>
                                     </div>
 </div>
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="delete_pendindent">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Indent</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 
 <script>
+function VerifyClick1(id,id1,id2){
+$("#deletestatus").val(id2);
+$("#deleteid").val(id);
+$("#deletesono").val(id1);
+}
 $("#daterangeselect").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#from").val(selectedOptionText);

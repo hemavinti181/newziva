@@ -138,14 +138,16 @@
                                 <td>
                                    <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>
                                       {% if all_data.status == 'Approved' %}
-                                    <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick1('{{all_data.sonumber}}','{{ all_data.paymentmode }}')"  data-target="#Approve">APPROVE</span>
+                                    <span class="badge  bg-green" data-toggle="modal" onclick="VerifyClick1('{{all_data.sonumber}}','{{ all_data.paymentmode }}')"  data-target="#Approve">APPROVE</span>
                                     {% endif %}
                                 </td>
                            {% else %}
                             <td>
                                  <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                <a href="#" onclick="VerifyClick2('{{ all_data.sonumber }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                  <i class="fa fa-trash"></i></span></a>
                                     {% if all_data.status == 'Approved' %}
-                                <span class="badge badge-danger" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
+                                <span class="badge  badge-success" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
                                 {% endif %}
                             </td>
                            {% endif %}
@@ -277,6 +279,38 @@
                                         </div>
                                     </div>
                                 </div>
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="delete_deliverchallan">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Sales</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
  <div class="inner-fabs">
 
                                   <div class="fab bg-green round" id="fab3"><a href="sales_admin_approvelist"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -145px !important;">Tax Invoice</span></div>
@@ -285,7 +319,10 @@
 
                                <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <script>
-
+function VerifyClick2(id1){
+alert('hai')
+$("#deletesono").val(id1);
+}
   $(document).ready(function() {
     // Get the initial warehouse name
   var warehousename = $("#warehouseid2").find(":selected").text();

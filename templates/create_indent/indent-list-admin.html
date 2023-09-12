@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+<style>
+    .style{
+	position: absolute !important;
+	width: 80% !important;
+	margin-left:50px !important;
+	}
+</style>
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                  {% if status == 'Pending' %}
+                    <h3 style="color:#1372ba"> <b>Pending Indent Details</b></h3>
+                  {% else %}
+                     <h3 style="color:#1372ba"> <b>Approved Indent Details</b></h3>
+                  {% endif %}
+              </div>
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                    <a href="/create_indent_admin"><button type="submit" class="btn btn-primary">Create Indent</button></a>
+                </div>
+            </div>
+            </div>
+          </div>
+
+            <div class="row" style="display: block;">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="clearfix"></div>
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Date</th>
+                                    <th>Indent No</th>
+                                  <th>Indent From</th>
+                                    <th>Indent To</th>
+                                    <th>Created By</th>
+                                   <th>Status</th>
+                              {% if status == 'Pending' %}
+                                    <th>Action</th>
+                            {% endif %}
+
+                        </tr>
+                      </thead>
+                            {% for all_data in all_data %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                     <td>{{all_data.createdon}}</td>
+                                    <td><a href = "/indent_item_list/{{ all_data.indent_no  }}/"  style='color:#14c38e'>{{ all_data.indent_no }}</a></td>
+                                  <td>{{ all_data.from_name }}</td>
+                                    <td>{{ all_data.to_name }}</td>
+                                    <td>{{ all_data.createdby }}</td>
+                                    <!--<td class="text-center"><a href = "indent_item_list/{{ all_data.indent_no  }}"><i class="fa fa-list-ul"  style='font-size:20px;color:#11468F'></i></a></td>-->
+                                       <td>
+                               {%if all_data.status == "Pending" %}
+                                <span class="badge badge-warning">{{ all_data.status }} </span></a>
+                               {% else %}
+                                    <span class="badge badge-info">{{ all_data.status }} </span>
+                                {% endif %}
+                           </td>
+                                     {%if all_data.status == "Pending" %}
+                                     <td>
+
+                                <a href="#" onclick="VerifyClick('{{ all_data.indent_no }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                         <i class="fa fa-trash" style="text-align:center"></i></span></a>
+
+                           </td>
+                                    {% endif %}
+                                </tr>
+                             {% endfor %}
+                      <tbody>
+                      </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="/delete_indent">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Indent</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									<input type="hidden" id="indentid" name="indentid"  />
+									<div class="row">
+										<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:110px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+                                    </div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+                             <div class="inner-fabs">
+                                  <div class="fab bg-green round" id="fab3"><a href="indent_list_approve"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Accepted</span></div>
+                                  <div class="fab bg-yellow round" id="fab2"><a href="indent_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
+                              </div>
+                               <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+                            </div>
+
+
+<script>
+function VerifyClick(id){
+alert(id)
+$("#indentid").val(id);
+}
+</script>
+{% endblock %}

@@ -2959,6 +2959,83 @@ def add_grn(request):
     return render(request, 'grn/add_grn.html',{'menuname':menuname})
 
 
+
+def edit_grn(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == "POST":
+        url = "http://13.235.112.1/ziva/mobile-api/edit-grn-admin.php"
+
+        payload = json.dumps({
+
+            "accesskey": accesskey,
+            "grn":request.POST.get('grn'),
+            "vendorname": request.POST.get('vname'),
+            "invoice_id": request.POST.get('invno'),
+            "invoice_date": request.POST.get('invoicedate'),
+            "invoice_amount": request.POST.get('invoiceamount'),
+            "vendorid": request.POST.get('vid'),
+            "warehouse_id":request.POST.get('whid')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+
+        if response.status_code == 200:
+            messages.success(request, data['message'])
+            return redirect('grn_list1')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/grn_list1')
+            else:
+                messages.error(request, data['message'])
+                return redirect('grn_list1')
+
+    else:
+            return redirect('grn_list1')
+    return redirect('grn_list1')
+
+
+def grn_search(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/grn-searchlist.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "status":request.POST.get('status'),
+        "searchterm": request.POST.get('id')
+    })
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data2 = response.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/grn_list1')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    else:
+        return redirect('/grn_list1')
+
+
 def add_grnitem(request,id):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -3279,31 +3356,56 @@ def grn_list(request):
         return render(request, 'grn/grn_list_all.html',{'menuname':menuname})
 
 def grn_list1(request):
-    if 'accesskey' not in request.session:
-        messages.error(request, 'Access denied!')
-        return redirect('/login')
+    try:
 
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
 
-    url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/vendormasterlist.php"
 
-    payload = json.dumps({"accesskey":accesskey,"status":"All"})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
-        grn_list = data['grnlist']
-        return render(request, 'grn/grn_list1.html', {'all_data': grn_list,'menuname':menuname})
-    elif response.status_code == 400:
+        vendor_masterlist = data['vendormasterlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
-        messages.error(request,data['message'])
-        return render(request,'login1.html')
-    else:
-        return render(request, 'grn/grn_list1.html',{'menuname':menuname})
+        wh_masterlist = data['warehouselist']
+        url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
+
+        payload = json.dumps({"accesskey":accesskey,"status":"All"})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            grn_list = data['grnlist']
+            return render(request, 'grn/grn_list1.html', {'all_data': grn_list,'menuname':menuname,'vendor_masterlist':vendor_masterlist,'wh_masterlist':wh_masterlist})
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request,data['message'])
+            return render(request,'login1.html')
+        else:
+            return render(request, 'grn/grn_list1.html',{'menuname':menuname})
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+    return render(request, 'grn/grn_list1.html', {'menuname': menuname})
 
 def grn_new_verified_status(request):
     if 'accesskey' not in request.session:
@@ -4248,7 +4350,7 @@ def grn(request):
                 "invoiceno": request.POST.get('invno'),
                 "invoicedate": request.POST.get('invoicedate'),
                 "invoiceamount": request.POST.get('invoiceamount'),
-                "vendorid": request.POST.get('vname'),
+                "vendorid": request.POST.get('vid'),
                 "whcode": request.POST.get('whname')
             }
             payload = json.dumps(payload, cls=BytesEncoder)
@@ -5164,7 +5266,7 @@ def indent_list(request):
         url = "http://13.235.112.1/ziva/mobile-api/indent-list-admin.php"
 
         payload = json.dumps({
-                "accesskey": accesskey,
+                "accesskey": accesskey,"status": "Pending"
             })
         headers = {
                 'Content-Type': 'application/json'
@@ -5222,7 +5324,7 @@ def indent_list_approve(request):
     displayrole = request.session['displayrole']
     role = request.session['role']
     if role == 'Admin':
-        url = "http://13.235.112.1/ziva/mobile-api/indent-list-new.php"
+        url = "http://13.235.112.1/ziva/mobile-api/indent-list-admin.php"
         payload = json.dumps({
                 "accesskey": accesskey,
                 "status": "Approve"
@@ -5658,61 +5760,118 @@ def delete_indent_item(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     menuname = request.session['mylist']
+    role = request.session['role']
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/delete-indentitem.php"
-    id = request.POST.get('indentid')
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "sno": request.POST.get('sno')
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+    if role == 'Admin':
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        messages.success(request, data['message'])
-        url = reverse('indent_item_list', args=[id])
-        return redirect(url)
-    elif response.status_code == 400:
-        data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+            url = "http://13.235.112.1/ziva/mobile-api/delete-indentitem-admin.php"
+            id = request.POST.get('indentid')
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "sno": request.POST.get('sno')
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                messages.success(request, data['message'])
+                url = reverse('indent_item_list', args=[id])
+                return redirect(url)
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+            else:
+                data = response.json()
+                messages.success(request, data['message'])
+                url = reverse('indent_item_list', args=[id])
+                return redirect(url)
     else:
-        data = response.json()
-        messages.success(request, data['message'])
-        url = reverse('indent_item_list', args=[id])
-        return redirect(url)
+        url = "http://13.235.112.1/ziva/mobile-api/delete-indentitem.php"
+        id = request.POST.get('indentid')
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sno": request.POST.get('sno')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            url = reverse('indent_item_list', args=[id])
+            return redirect(url)
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        else:
+            data = response.json()
+            messages.success(request, data['message'])
+            url = reverse('indent_item_list', args=[id])
+            return redirect(url)
 def delete_indent(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/delete-indent.php"
+    role = request.session['role']
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/delete-indent-admin.php"
 
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "indentno": request.POST.get('indentid')
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "indentno": request.POST.get('indentid')
+        })
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        messages.success(request,data['message'])
-        return redirect('/indent_list')
-    elif response.status_code == 400:
-        data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request,data['message'])
+            return redirect('/indent_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        else:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/indent_list')
     else:
-        data = response.json()
-        messages.success(request, data['message'])
-        return redirect('/indent_list')
+        url = "http://13.235.112.1/ziva/mobile-api/delete-indent.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "indentno": request.POST.get('indentid')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/indent_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        else:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/indent_list')
+
 def indent_item_list_ack(request, id):
         if 'accesskey' not in request.session:
             messages.error(request, 'Access denied!')
@@ -13190,8 +13349,7 @@ def authorize_staffid(request):
 
             if response.status_code == 200:
                 data = response.json()
-                messages.success(request,data['message'])
-                return redirect('/internal_consumption')
+                return JsonResponse({'response':response})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
@@ -14800,7 +14958,6 @@ def delete_sales(request):
 
     payload = json.dumps({
             "accesskey": accesskey,
-            "sno": request.POST.get('deleteid'),
             "sonumber": request.POST.get('deletesono'),
         })
     headers = {
@@ -14820,3 +14977,88 @@ def delete_sales(request):
             except:
                 messages.error(request, response.text)
             return redirect('medeliver_challan_pending')
+
+def delete_deliverchallan(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/delete-deliverchallan.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "sonumber": request.POST.get('deletesono'),
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('sales_admin_list')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('sales_admin_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('sales_admin_list')
+
+
+
+def delete_pendindent(request):
+    if 'accesskey' not in request.session:
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    status = request.POST.get('status')
+    if status == 'Pending':
+        url = "http://13.235.112.1/ziva/mobile-api/delete-deliverchallan.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sno": request.POST.get('deleteid'),
+            "sonumber": request.POST.get('deletesono'),
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('pending_indent_admin')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('pending_indent_admin')
+            except:
+                messages.error(request, response.text)
+            return redirect('pending_indent_admin')
+    #elif status == 'Ready to Ship':
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/delete-deliverchallan.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "sno": request.POST.get('deleteid'),
+            "sonumber": request.POST.get('deletesono'),
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('pending_indent_admin')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('pending_indent_admin')
+            except:
+                messages.error(request, response.text)
+            return redirect('pending_indent_admin')

@@ -51,8 +51,12 @@
 
 
                             <td  class="text-center">
-                            {%if all_data.status == "pending" %}
+                            {% if all_data.status == "pending" %}
+                                 {% if request.session.role == 'Admin' %}
+                                        <a href="#" class="depoedit" onclick="editGrn('{{ all_data.grn }}')"><span class="badge badge-success"><i class="fa fa-edit"></i></span></a>
+                                {% endif %}
                                <a href="/add_grnitem_list/{{ all_data.grn }}/"><span class="badge badge-warning">Pending</span></a>
+
                             {% elif all_data.status == "Verified" %}
                                      <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge bg-green">Verified</span>
                               {% else %}
@@ -78,6 +82,66 @@
             </div>
 
           </div>
+
+<div id="depo-edit" class="modal custom-modal fade"  role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit GRN</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+            </div>
+            <div class="modal-body">
+               <form  method="POST" action="/edit_grn"   enctype="multipart/form-data">
+											{% csrf_token %}
+                     <input type="hidden" class="form-control" name="grn" id="grn"  >
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+											  <input type="hidden" class="form-control" name="vname" id="vname"  >
+											<label>Select Vendor *</label>
+										    	<select class=" form-control items" name="vid" id="vid">
+												{% for data in vendor_masterlist %}
+													<option  value="{{ data.vendorcode}}">{{ data.vendorname }}</option>
+												{% endfor %}
+												</select>
+										</div>
+
+
+											<div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                 <input type="hidden" class="form-control" name="whname" id="whname"  >
+												<label>Select Warehouse *</label>
+												<select class="form-control items" name="whid" id="whid">
+												{% for data in wh_masterlist %}
+													<option  value="{{ data.warehouseid}}">{{ data.warehousename }}</option>
+												{% endfor %}
+												</select>
+											</div>
+
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+
+											<label>Invoice No *</label>
+										    <input type="text" class="form-control" placeholder="invoice no" id="invno" name="invno" required>
+										</div>
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Invoice Date *</label>
+										    <input type="date" class="form-control" placeholder="invoice date" id="tdate"  name="invoicedate" required>
+										</div>
+									   <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Invoice Amount(Including GST)</label>
+										    <input type="text" class="form-control" placeholder="invoice amount" id="invoiceamount" name="invoiceamount" required>
+										</div>
+
+                   </div>
+
+            <div class="modal-footer">
+				 <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+            </div>
+          </form>
+        </div>
+    </div>
+</div>
                             <div class="inner-fabs">
                                   <div class="fab bg-blue  round" id="fab4" ><a href="grn_list1"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -95px !important;">All</span></div>
                                   <div class="fab bg-green  round" id="fab3" ><a href="grn_new_verified_status"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Verified</span></div>
@@ -86,5 +150,42 @@
                              <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 
 
-{% endblock %}
 
+
+<script>
+$("#vid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#vname").val(selectedOptionText);
+});
+  function editGrn(id){
+    alert(id)
+      $.ajax({
+        url: "{% url 'grn_search' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data.grnlist
+          	console.log(obj[0].vendorname);
+             if(obj){
+                  $("#grn").val(id);
+                 $("#vname").val(obj[0].vendorname);
+                 $("#vid").val(obj[0].vendorid);
+                 $("#whname").val(obj[0].depo_manager);
+                 $("#whid").val(obj[0].warehouseid);
+                 $("#invoiceamount").val(obj[0].invoiceamount);
+                 var dateToBind = new Date(obj[0].invoicedate);
+                  var formattedDate = dateToBind.toISOString().substring(0, 10);
+                 $("#tdate").val(formattedDate);
+                 $("#invno").val(obj[0].invoice_id);
+                 $('#depo-edit').modal('show');
+        	}
+        }
+      });
+  }
+
+var today = new Date().toISOString().split('T')[0];
+document.getElementById('tdate').setAttribute('max', today);
+</script>
+{% endblock %}

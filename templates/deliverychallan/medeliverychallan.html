@@ -154,6 +154,7 @@
                                     <th>Itemcount</th>
                                      <th>Total</th>
                                     <th>Payment Status</th>
+                                    <!--<th>Status</th>-->
                                     <th>Action</th>
                         </tr>
                       </thead>
@@ -175,6 +176,7 @@
                                         {% else %}
                                             <td class="text-danger">{{ all_data.transaction_status }}</td>
                                         {% endif %}
+                                        <!--<td>{{ all_data.status }}</td>-->
                                           {% if all_data.transaction_status == "success" or all_data.paymentmode == 'CASH' %}
                                         <td>
                                             <a href="sale_item_list_approve/{{ all_data.sonumber }}/"><span class="badge badge-warning"><i class="fa fa-check-square-o"></i></span></a>

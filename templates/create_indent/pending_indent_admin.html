@@ -2,7 +2,13 @@
 
 {% block htmlbody %}
 
-
+<style>
+    .style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:50px !important;
+	}
+</style>
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -110,6 +116,9 @@
                                     <th>To name</th>
                                     <th>Date</th>
                                     <th>Status</th>
+                               {% if data1.status == 'Pending' %}
+                                    <th>Action</th>
+                               {% endif %}
 
                         </tr>
                       </thead>
@@ -122,18 +131,29 @@
                                         <td>{{ all_data.region_name }}</td>
                                         <td> {{ all_data.warehouse_name }} </td>
                                         <td>{{ all_data.createdon }}</td>
+
+                                            {% if all_data.status == "Pending" %}
+                                         <td>
+                                               <a href="pending_indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-warning">{{ all_data.status }}</span></a>
+                                         </td>
+                                            {% else %}
+                                           <td>
+                                              <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-success">{{ all_data.status }}</span></a>
+                                            </td>
+                                             {% endif %}
+                                           {% if data1.status == 'Pending' %}
                                           <td>
-                                        {% if all_data.status == "Pending" %}
-                                        <a href="pending_indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-warning">{{ all_data.status }}</span></a>
-                                         <span class="badge bg-green" data-toggle="modal"  onclick="VerifyClick('{{all_data.indent_no}}','{{ all_data.region_name }}','{{ all_data.warehouse_name }}','{{ all_data.warehouse_id }}','{{ all_data.region_id }}')" data-target=".bs-example-modal-sm">
-                                             Acknowledgement</span>
-                                    </td>
-                                        {% else %}
-                                         <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-success">{{ all_data.status }}</span></a>
+                                            {% if all_data.status == "Pending" %}
+                                               <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.sonumber }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                  <i class="fa fa-trash"></i></span></a>
+                                                 <span class="badge badge-info" data-toggle="modal"  onclick="VerifyClick('{{all_data.indent_no}}','{{ all_data.region_name }}','{{ all_data.warehouse_name }}','{{ all_data.warehouse_id }}','{{ all_data.region_id }}')" data-target=".bs-example-modal-sm">
+                                                     Acknowledgement</span>
+                                            </td>
+                                            {% else %}
+                                               <td> <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-success">{{ all_data.status }}</span></a></td>
+                                            {% endif %}
+                                        {% endif %}
                                     </tr>
-                                   {% endif %}
-
-
                         {% endfor %}
 
                       <tbody>
@@ -156,7 +176,7 @@
                                  <div class="fab bg-yellow round" id="fab2"><a href="pending_indent_admin"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -125px !important;">Pending</span></div>
                               </div>
                                <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-  <div class="modal custom-modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                      <div class="modal custom-modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered">
                                             <div class="modal-content">
                                         <div class="modal-body">
@@ -186,14 +206,46 @@
                                         </div>
                                     </div>
                                 </div>
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="delete_pendindent">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Indent</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
 
-
+						</div>
+					</div>
+				</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
 <script>
-
+function VerifyClick1(id,id1,id2){
+$("#deletestatus").val(id2);
+$("#deleteid").val(id);
+$("#deletesono").val(id1);
+}
 
 
 

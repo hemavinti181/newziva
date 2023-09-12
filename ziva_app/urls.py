@@ -295,7 +295,11 @@ urlpatterns = [
     path('approve_list_admin1',views.approve_list_admin1,name='approve_list_admin'),
     path('vehcals_list',views.vehcals_list,name='vehcals_list'),
     path('internal_consump_stock',views.internal_consump_stock,name='internal_consump_stock'),
-    path('delete_sales',views.delete_sales,name='delete_sales')
+    path('delete_sales',views.delete_sales,name='delete_sales'),
+    path('delete_deliverchallan', views.delete_deliverchallan, name='delete_deliverchallan'),
+    path('delete_pendindent',views.delete_pendindent,name='delete_pendindent'),
+    path('edit_grn',views.edit_grn,name='edit_grn'),
+    path('grn_search',views.grn_search,name='grn_search')
 ]
 
 

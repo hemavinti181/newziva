@@ -843,11 +843,10 @@ $('#tickets').on('input', function() {
      document.getElementById('tdate').addEventListener('change', function() {
         var form = document.getElementById('myForm');
         form.submit();
-    });
+  });
 
 
-
-  $(document).ready(function () {
+$(document).ready(function () {
     $("#authorize1").click(function() {
     		var auth = $('#sno').val();
             var serviceid1 = $('#serviceid1').val();
@@ -859,15 +858,20 @@ $('#tickets').on('input', function() {
                 },
               success: function (response) {
               var message = response.response.message;
+              console.log(response)
+              alert(response)
+              alert(message)
               if(response === '200'){
                  alertify.success(message);
                  $("#return").show();
                  $("#bs-example-modal-sm").hide();
+                 window.location.reload();
                }
                else{
-                alertify.set('notifier', 'position', 'top-center');
-                alertify.error(message);
-                $("#bs-example-modal-sm").modal("hide");
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                    $("#bs-example-modal-sm").modal("hide");
+                    window.location.reload();
                }
               },
               error: function (xhr, status, error) {

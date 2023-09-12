@@ -26,7 +26,7 @@
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
 											  <input type="hidden" class="form-control" name="vname" id="vname"  >
 											<label>Select Vendor *</label>
-										    	<select class=" form-control items" name="vid" id="vid">
+										    	<select class=" form-control items" name="vid" id="vid" required>
 												{% for data in all_data %}
 													<option  value="{{ data.vendorcode}}">{{ data.vendorname }}</option>
 												{% endfor %}
@@ -114,10 +114,8 @@ $(document).ready(function() {
 });
 
 
-// Get the current date
-var today = new Date().toISOString().split('T')[0];
 
-// Set the min attribute of the input element to the current date
+var today = new Date().toISOString().split('T')[0];
 document.getElementById('tdate').setAttribute('max', today);
 
 
