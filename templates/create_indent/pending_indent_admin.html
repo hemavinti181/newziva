@@ -2,7 +2,7 @@
 
 {% block htmlbody %}
 
-<style>
+<style xmlns="http://www.w3.org/1999/html">
     .style1{
 	position: absolute !important;
 	width: 60% !important;
@@ -127,30 +127,30 @@
                                     <tr>
                                         <td></td>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{ all_data.indent_no }}</td>
+                                        <td><a href="indent_item_list/{{ all_data.indent_no  }}" style="color:#14c38e">{{ all_data.indent_no }}</a></td>
                                         <td>{{ all_data.region_name }}</td>
                                         <td> {{ all_data.warehouse_name }} </td>
                                         <td>{{ all_data.createdon }}</td>
 
                                             {% if all_data.status == "Pending" %}
                                          <td>
-                                               <a href="pending_indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-warning">{{ all_data.status }}</span></a>
+                                               <span class="badge badge-warning">{{ all_data.status }}</span>
                                          </td>
                                             {% else %}
                                            <td>
-                                              <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-success">{{ all_data.status }}</span></a>
+                                             <span class="badge badge-success">{{ all_data.status }}</span>
                                             </td>
                                              {% endif %}
                                            {% if data1.status == 'Pending' %}
                                           <td>
                                             {% if all_data.status == "Pending" %}
-                                               <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.sonumber }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                               <a href="#" onclick="VerifyClick1('{{ all_data.indent_no }}','{{ all_data.status }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                   <i class="fa fa-trash"></i></span></a>
                                                  <span class="badge badge-info" data-toggle="modal"  onclick="VerifyClick('{{all_data.indent_no}}','{{ all_data.region_name }}','{{ all_data.warehouse_name }}','{{ all_data.warehouse_id }}','{{ all_data.region_id }}')" data-target=".bs-example-modal-sm">
                                                      Acknowledgement</span>
                                             </td>
                                             {% else %}
-                                               <td> <a href="indent_item_list/{{ all_data.indent_no  }}"><span class="badge badge-success">{{ all_data.status }}</span></a></td>
+                                               <td><span class="badge badge-success">{{ all_data.status }}</span></td>
                                             {% endif %}
                                         {% endif %}
                                     </tr>
@@ -202,7 +202,7 @@
                                             </div>
                                         </div>
 
-
+</form>
                                         </div>
                                     </div>
                                 </div>
@@ -213,14 +213,14 @@
 									<span aria-hidden="true">&times;</span>
 								</button>
 							<div class="modal-body">
-								  <form method="post" action="delete_pendindent">
+								  <form method="post" action="/delete_pendindent">
                                                     {% csrf_token %}
 								<div class="form-header">
 									<h3>Delete Indent</h3>
 									<p>Are you sure want to Delete?</p>
 								</div>
 									  <div class="modal-btn delete-action">
-									<input type="hidden" id="deleteid" name="deleteid"  />
+									<input type="hidden" id="deletestatus" name="deletestatus"  />
                                           <input type="hidden" id="deletesono" name="deletesono"  />
 									<div class="row">
 											<div class="col-md-6 col-sm-6">
@@ -241,9 +241,10 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
-function VerifyClick1(id,id1,id2){
+function VerifyClick1(id1,id2){
+alert(id1)
+alert(id2)
 $("#deletestatus").val(id2);
-$("#deleteid").val(id);
 $("#deletesono").val(id1);
 }
 

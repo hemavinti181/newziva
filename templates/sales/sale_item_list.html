@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
-
+<style>
+	.style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:50px !important;
+	}
+</style>
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -55,7 +60,7 @@
                                     <th>Total</th>
                                     <th>Manufacture</th>
                             {% if approve == 'pending' %}
-                                {% if request.session.displayrole ==  'BUS STATION CONTROLLER' or  request.session.displayrole ==  'DEPOT STORE EXECUTIVE' or  request.session.displayrole == 'Admin' %}
+                                {% if request.session.displayrole ==  'BUS STATION CONTROLLER' or  request.session.displayrole ==  'DEPOT STORE EXECUTIVE' or  request.session.role == 'Admin' %}
                                         <th>Action</th>
                                 {% endif %}
                             {% endif %}
@@ -73,9 +78,12 @@
                        <td class="text-success">₹ {{ all_data.total }}</td>
                            <td>{{all_data.manufacturer}}</td>
                            {% if approve == 'pending' %}
-                                 {% if request.session.displayrole == 'BUS STATION CONTROLLER' or  request.session.displayrole == 'DEPOT STORE EXECUTIVE' or request.session.displayrole == 'Admin' %}
+                                 {% if request.session.displayrole == 'BUS STATION CONTROLLER' or  request.session.displayrole == 'DEPOT STORE EXECUTIVE' or request.session.role == 'Admin' %}
                               <td>
                                   <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}',{{ all_data.noofbottles }},{{ all_data.id }})"  data-target="#bs-example-modal-sm">Quantity Update</span>
+                                  <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.so_number }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                  <i class="fa fa-trash"></i></span></a>
+
                                </td>
                                    {% endif %}
                               </tr>
@@ -132,7 +140,44 @@
                                         </div>
                                     </div>
                                 </div>
+
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="/delete_salesitem">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Sale Item</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 <script>
+
+function VerifyClick1(id,id1){
+    $("#deleteid").val(id);
+    $("#deletesono").val(id1);
+}
 function VerifyClick(id,id1,id2,id3,id4,id5,id6){
 $("#qty").val(id1);
 $("#nob").val(id5);

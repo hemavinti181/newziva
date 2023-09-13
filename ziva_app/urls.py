@@ -299,7 +299,10 @@ urlpatterns = [
     path('delete_deliverchallan', views.delete_deliverchallan, name='delete_deliverchallan'),
     path('delete_pendindent',views.delete_pendindent,name='delete_pendindent'),
     path('edit_grn',views.edit_grn,name='edit_grn'),
-    path('grn_search',views.grn_search,name='grn_search')
+    path('grn_search',views.grn_search,name='grn_search'),
+    path('get_grn_item',views.get_grn_item,name='get_grn_item'),
+    path('delete_salesitem',views.delete_salesitem,name='delete_salesitem'),
+    path('delete_deliverchallanitem',views.delete_deliverchallanitem,name='delete_deliverchallanitem'),
 ]
 
 

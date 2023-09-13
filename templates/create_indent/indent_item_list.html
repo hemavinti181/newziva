@@ -109,8 +109,10 @@
                                     <th>Qty(In Bottles)</th>
                                     <th>MRP</th>
                                     <th>Dispatch Qty</th>
-                             {% if data.status == 'Pending' or data == 'Pending' %}
+                            {% if request.session.role == 'Admin' %}
+                                {% if data.status == 'Pending' or data == 'Pending' %}
                                     <th>Action</th>
+                                {% endif %}
                             {% endif %}
                                     <!--<th>Batch Code</th>-->
                                     <!--<th>Expiry Date</th>-->
@@ -127,11 +129,13 @@
                                      <td> {{ all_data.noofbottles }} </td>
                                     <td>{{ all_data.mrp }}</td>
                                     <td>{{all_data.dispatch_qty}}</td>
-                                    {% if data.status == 'Pending' or data == 'Pending' %}
-                                    <td>
-                                    <a href="#" onclick="VerifyClick('{{ all_data.indent_no }}','{{ all_data.sno }}')"><span class="badge badge-info" data-toggle="modal" data-target="#store-status">
-                                         <i class="fa fa-trash"></i></span></a>
+                                    {% if request.session.role == 'Admin' %}
+                                        {% if data.status == 'Pending' or data == 'Pending' %}
+                                        <td>
+                                            <a href="#" onclick="VerifyClick('{{ all_data.indent_no }}','{{ all_data.sno }}')"><span class="badge badge-info" data-toggle="modal" data-target="#store-status">
+                                            <i class="fa fa-trash"></i></span></a>
                                         </td>
+                                        {% endif %}
                                     {% endif %}
                                     <!--<td>{{ all_data.batch_code }}</td>-->
                                     <!--<td>{{  all_data.expirydate }}</td>-->

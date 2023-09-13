@@ -237,7 +237,7 @@
                                                             </div>
                                                         </div>
                                                       </div>-->
-
+                          <div>
                                                  <label>Payment mode</label><br>
                                                  <label class="btn btn-round btn-warning" id="btn_cash">
                                                  <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
@@ -262,7 +262,7 @@
                                                 <p></p>
 
 
-                                                    <div class="col-md-6 col-sm-6   offset-md-3">
+                                                    <div class="col-md-6 col-sm-6   offset-md-3" >
 											            <button class="btn btn-primary submit-btn" id="completebtn" onclick="submitToPayment()">Complete</button>
                                                         <button class="btn btn-info" id="payment_status"  onclick="qrResponse(event)" style="display:none; width: 250px;margin-left:-27px;" >Check  Payment Status </button>
                                                         <button class="btn  btn-primary submit-btn" id="paytmWithPaytm" onclick="submitFormToPayment()"  style="display:none;">Proceed to pay</button>
@@ -320,7 +320,6 @@
                                <div class="fab bg-purple round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <script>
 function VerifyClick2(id1){
-alert('hai')
 $("#deletesono").val(id1);
 }
   $(document).ready(function() {
@@ -544,7 +543,7 @@ function displayQRCode() {
         qrImage.src = 'data:image/png;base64,' + imageURL;
         qrImage.style.maxWidth = '150px'; // Adjust the width as desired
         qrImage.style.maxHeight = '150px';
-        qrImage.style.marginLeft = '150px';
+        qrImage.style.marginLeft = '110px';
         // Display the QR code container
         document.getElementById("qrcode-container").style.display = 'block';
 
