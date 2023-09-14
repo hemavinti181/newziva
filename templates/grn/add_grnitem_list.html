@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
+<style>
+    .style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:75px;
+	}
+</style>
 
 <div class="right_col" role="main">
           <div class="">
@@ -49,7 +55,9 @@
                                     <th>Expiry Date</th>
                                     <th>Batch code</th>
                                     <th> Price Per Bottle</th>
+                            {% if request.session.role == 'Admin' %}
                                   <th>Action</th>
+                            {% endif %}
 
                         </tr>
                       </thead>
@@ -62,9 +70,13 @@
                        <td>{{  all_data.expiry_date}}</td>
                     <td>{{ all_data.batch_no }}</td>
                        <td>{{ all_data.purchase_price }}</td>
-                        <td>
-                            <a href="#" class="depoedit" onclick="editGrnItem('{{ id }}','{{ all_data.item_code }}' )" data-id="{{ id}}" data-id1="{{ all_data.item_code }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
-                       </td>
+                       {% if request.session.role == 'Admin' %}
+                            <td>
+                                <a href="#" class="depoedit" onclick="editGrnItem('{{ id }}','{{ all_data.item_code }}' )" data-id="{{ id}}" data-id1="{{ all_data.item_code }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                  <a href="#" onclick="VerifyClick2('{{ all_data.id }}','{{ all_data.grn }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                  <i class="fa fa-trash"></i></span></a>
+                           </td>
+                       {% endif %}
                       </tr>
                       {% endfor %}
 
@@ -91,7 +103,7 @@
 								</button>
             </div>
             <div class="modal-body">
-               <form  method="POST" action="depo_edit"   enctype="multipart/form-data">
+               <form  method="POST" action="/edit_grn_item"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
                                                  <input type="hidden" id="itemname" name="itemname" />
@@ -124,10 +136,13 @@
                                              <label>Manufacture Date *</label>
 										    <input type="date" class="form-control"  name="expdate" id="expdate" required>
 										</div>
-                                                 <input type="hidden" class="form-control"  id="result" name="result">
+                                               <input type="hidden" id="mrp" name="mrp"  />
+                                            <input type="hidden" class="form-control"  id="result" name="result">
+                                            <input type="hidden" class="form-control"  id="uom" name="uom">
 										    <input type="hidden" class="form-control" id="manufacture" name="manufacture" required>
-                    <input type="hidden" class="form-control" id="grn" name="grn">
+                                            <input type="hidden" class="form-control" id="grn" name="grn">
 										    <input type="hidden" class="form-control" id="itemsno" name="itemsno">
+                     <input type="hidden" class="form-control" id="id" name="id">
 </div>
             <div class="modal-footer">
 				 <button type="submit" class="btn btn-primary">Update</button>
@@ -152,7 +167,7 @@
                                              <form method="post" action="/add_grn_inventory">
                                                     {% csrf_token %}
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
-                                                 <input type="hidden" id="mrp" name="mrp"  />
+
                                                    <input type="hidden" id="sno" name="sno"  />
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                         <label>Quantity (In Cases)</label>
@@ -178,8 +193,45 @@
                                         </div>
                                     </div>
                                 </div>
-<script>
 
+
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="/delete_grn_item">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Consumption</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+<script>
+function VerifyClick2(id,id1){
+$("#deleteid").val(id);
+$("#deletesono").val(id1);
+}
 function editGrnItem(id,id1){
       $.ajax({
         url: "{% url 'get_grn_item' %}",
@@ -191,57 +243,65 @@ function editGrnItem(id,id1){
          var obj = data.data
           	console.log(obj.uom);
              if(obj){
-              $("#grn").val(id);
+             $("#grn").val(id);
              $("#uom").val(obj.uom);
              $("#id").val(obj.id);
+              $("#mrp").val(obj.mrp);
              $("#quantity").val(obj.quantity);
              $("#noofbottles").val(obj.noofbottles);
              $("#batchno").val(obj.batch_no);
              $("#itemname").val(obj.itemname);
              $('#itemcode').val(obj.item_code)
              $("#latestpurchase").val(obj.purchase_price);
-             $("#expdate").val(obj.expiry_date);
+               var inputDate =obj.expiry_date;
+
+              var date = new Date(inputDate);
+              date.setMonth(date.getMonth() - 6);
+              var result = formatDate(date);
+              $("#result").val(obj.expiry_date);
+              $("#expdate").val(result);
              $('#itemsno').val(obj.sno);
                $('#depo-edit').modal('show');
         	}
-
         }
       });
 }
-
-
-
-function VerifyClick(id,id1,id2,id3,id4,id5,id6){
-$("#qty").val(id1);
-$("#nob").val(id4);
-$("#price").val(id6);
-$("#txtHdnId").val(id);
-$("#cases").val(id3)
-$("#mrp").val(id2)
-$("#sno").val(id5)
-}
-        $('#qty').on('input', function()  {
-            $("#nob").val(" ");
-            $("#price").val(" ");
-    	    val  = $("#qty").val();
-            val1 = $("#cases").val();
-            mrp = $("#mrp").val( );
+$("#itemcode").change(function() {
+        	var itemname = $('#itemcode').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_grn_item_data" %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 	 var obj = data.data
+			 	 alert(obj.uom)
+                        if(obj){
+                        $("#quantity").val(" ");
+                        $("#noofbottles").val(" ");
+                            $("#uom").val(obj.uom);
+                            $("#itemsno").val(obj.sno);
+                             $("#mrp").val(obj.mrp);
+					    }
+             	}
+        	});
+    	});
+$('#quantity').on('input', function()  {
+            val  = $("#quantity").val();
+            val1 = $("#uom").val();
             val2 =    (val * val1)
-            val3 = (val2 * mrp)
-            $("#nob").val(val2);
-            $("#price").val(" ");
-            $("#price").val(val3);
+            $("#noofbottles").val(val2);
+    });
 
-         });
-         document.getElementById("expdate").addEventListener("input", calculateDate);
+document.getElementById("expdate").addEventListener("input", calculateDate);
 
 function calculateDate() {
   var inputDate = document.getElementById("expdate").value; // Get the selected date from the input field
   var date = new Date(inputDate); // Convert the input value to a Date object
-  date.setMonth(date.getMonth() - 6); // Subtract 6 months from the selected date
-
+  date.setMonth(date.getMonth() + 6); // Subtract 6 months from the selected date
   var result = formatDate(date); // Format the result using a helper function formatDate()
-  $("#expdate").val(result);
+  $("#result").val(result);
 }
 
 function formatDate(date) {

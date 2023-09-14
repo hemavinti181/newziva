@@ -17,7 +17,11 @@
 	position: absolute !important;
 	width: 60% !important;
 	margin-left:80px !important;
-
+	}
+	 .modal1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:75px;
 	}
 	#checked {
   margin-left: 10px; /* Adjust the margin as needed */
@@ -102,7 +106,12 @@
 
                             <td>
                                 {% if data.status == 'Pending' %}
-                                    <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+                                    {% if request.session.role == 'Admin' %}
+                                          <a href="#" onclick="VerifyClick2('{{ data.sno }}','{{ data.service_id }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                          <i class="fa fa-trash"></i></span></a>
+                                    {% endif %}
+                                      <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+
                                 {% else %}
                                     <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}')"  data-target="#return">RETURN</span>
                                 {% endif %}
@@ -361,9 +370,41 @@
                                                   <button type="button" class="btn btn-primary" id="authorize1" style="margin-left:-30px;">Authorize</button>
                                             </div>
                                         </div>
+                                                </form>
                                         </div>
                                     </div>
                                 </div>
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content modal1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="/delete_intconsumption">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Consumption</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 
 <div class="inner-fabs">
 
@@ -375,7 +416,10 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <script>
-
+function VerifyClick2(id,id1){
+$("#deleteid").val(id);
+$("#deletesono").val(id1);
+}
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
 

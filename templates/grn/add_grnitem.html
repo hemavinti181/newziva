@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
-
+<style>
+.style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:75px;
+	}
+</style>
 <div class="right_col" role="main" xmlns="http://www.w3.org/1999/html">
           <div class="">
             <div class="page-title">
@@ -127,6 +132,9 @@
                                     <th>Expiry Date</th>
                                     <th>Qty(In Bottles)</th>
                                     <th>Purchase Per Bottle</th>
+                             {% if request.session.role == 'Admin' %}
+                                    <th>Action</th>
+                            {% endif %}
 
                         </tr>
                       </thead>
@@ -138,6 +146,13 @@
                        <td>{{  all_data.expiry_date}}</td>
                        <td>{{ all_data.uom }}</td>
                        <td>{{ all_data.purchase_price }}</td>
+                            {% if request.session.role == 'Admin' %}
+                            <td>
+                                <a href="#" class="depoedit" onclick="editGrnItem('{{ id }}','{{ all_data.item_code }}' )" data-id="{{ id}}" data-id1="{{ all_data.item_code }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                  <a href="#" onclick="VerifyClick2('{{ all_data.id }}','{{ all_data.grn }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                  <i class="fa fa-trash"></i></span></a>
+                           </td>
+                       {% endif %}
                       </tr>
                       {% endfor %}
 
@@ -157,14 +172,149 @@
             </div>
           </div>
 </div>
+<div id="depo-edit" class="modal custom-modal fade"  role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit GRN Item</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+            </div>
+            <div class="modal-body">
+               <form  method="POST" action="/edit_grn_item"   enctype="multipart/form-data">
+											{% csrf_token %}
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                 <input type="hidden" id="itemname1" name="itemname" />
+                                                       <label>Select Items *</label>
+                                                <select class="form-control items" name="itemcode" id="itemcode1" required>
+                                                    <option value="">item name</option>
+                                                    {% for data in data %}
+                                                        <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                             <label>Batch Number *</label>
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno1">
+										</div>
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                             <label>Qty(Cases)*</label>
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity1">
+										</div>
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                              <label>Qty(Bottles)*</label>
+										    <input type="text" class="form-control" placeholder="bottles" name="nob" id="noofbottles" readonly>
+										</div>
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                              <label>Price Per Bottle*</label>
+										    <input type="text" class="form-control" id="latestpurchase1" placeholder="price per bottle" name="latestpurchase" value="{{ data.item_code }}"required>
+										</div>
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+                                             <label>Manufacture Date *</label>
+										    <input type="date" class="form-control"  name="expdate" id="expdate1" required>
+										</div>
+                                               <input type="hidden" id="mrp1" name="mrp"  />
+                                            <input type="hidden" class="form-control"  id="result1" name="result">
+                                            <input type="hidden" class="form-control"  id="uom1" name="uom">
+										    <input type="hidden" class="form-control" id="manufacture1" name="manufacture" required>
+                                            <input type="hidden" class="form-control" id="grn" name="grn">
+										    <input type="hidden" class="form-control" id="itemsno1" name="itemsno">
+                     <input type="hidden" class="form-control" id="id" name="id">
+</div>
+            <div class="modal-footer">
+				 <button type="submit" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+            </div>
+          </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="/delete_grn_item">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete GRN Item</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
 <script>
+function VerifyClick2(id,id1){
+$("#deleteid").val(id);
+$("#deletesono").val(id1);
+}
+
+function editGrnItem(id,id1){
+      $.ajax({
+        url: "{% url 'get_grn_item' %}",
+        type: 'POST',
+        data: {
+          'id': id,'itemcode':id1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data
+          	console.log(obj.uom);
+             if(obj){
+             $("#grn").val(id);
+             $("#uom1").val(obj.uom);
+             $("#id").val(obj.id);
+              $("#mrp1").val(obj.mrp);
+             $("#quantity1").val(obj.quantity);
+             $("#noofbottles").val(obj.noofbottles);
+             $("#batchno1").val(obj.batch_no);
+             $("#itemname1").val(obj.itemname);
+             $('#itemcode1').val(obj.item_code)
+             $("#latestpurchase1").val(obj.purchase_price);
+               var inputDate =obj.expiry_date;
+
+              var date = new Date(inputDate);
+              date.setMonth(date.getMonth() - 6);
+              var result = formatDate(date);
+              $("#result1").val(obj.expiry_date);
+              $("#expdate1").val(result);
+             $('#itemsno1').val(obj.sno);
+               $('#depo-edit').modal('show');
+        	}
+        }
+      });
+}
 
 	$("#itemname").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#txtItemName").val(selectedOptionText);
 });
 
-	$("#itemname").change(function() {
+$("#itemcode1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#itemname1").val(selectedOptionText);
+});
+$("#itemname").change(function() {
         	var itemname = $('#itemname').val();
         	$.ajax({
             	type: "POST",
@@ -182,13 +332,42 @@
 					    }
              	}
         	});
-    	});
+        	});
 $('#quantity').on('input', function()  {
             val  = $("#quantity").val();
             val1 = $("#uom").val();
             val2 =    (val * val1)
             $("#nob").val(val2);
             });
+
+$("#itemcode1").change(function() {
+        	var itemname = $('#itemcode1').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_grn_item_data" %}',
+            	data: {
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 	 var obj = data.data
+			 	 alert(obj.uom)
+                        if(obj){
+                        $("#quantity1").val(" ");
+                        $("#noofbottles").val(" ");
+                        $("#uom1").val(obj.uom);
+                        $("#itemsno1").val(obj.sno);
+                        $("#mrp1").val(obj.mrp);
+					    }
+             	}
+        	});
+    	});
+$('#quantity1').on('input', function()  {
+            val  = $("#quantity1").val();
+            val1 = $("#uom1").val();
+            val2 =    (val * val1)
+            $("#noofbottles").val(val2);
+    });
+
 $('.items').change(function() {
     console.log('Dropdown value changed');
     if($(this).val() === '1') {
@@ -214,5 +393,24 @@ function formatDate(date) {
   return year + "-" + month + "-" + day; // Format the date as "YYYY-MM-DD"
 }
 
+
+document.getElementById("expdate1").addEventListener("input", calculateDate);
+
+function calculateDate() {
+  var inputDate = document.getElementById("expdate1").value; // Get the selected date from the input field
+  var date = new Date(inputDate); // Convert the input value to a Date object
+  date.setMonth(date.getMonth() + 6); // Add 6 months to the selected date
+
+  var result = formatDate(date); // Format the result using a helper function formatDate()
+
+  document.getElementById("result1").value = result; // Set the result value in the output field
+}
+
+function formatDate(date) {
+  var year = date.getFullYear();
+  var month = ("0" + (date.getMonth() + 1)).slice(-2); // Adding 1 to the month since it's zero-based index
+  var day = ("0" + date.getDate()).slice(-2);
+  return year + "-" + month + "-" + day; // Format the date as "YYYY-MM-DD"
+}
 </script>
 {% endblock %}

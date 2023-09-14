@@ -303,6 +303,11 @@ urlpatterns = [
     path('get_grn_item',views.get_grn_item,name='get_grn_item'),
     path('delete_salesitem',views.delete_salesitem,name='delete_salesitem'),
     path('delete_deliverchallanitem',views.delete_deliverchallanitem,name='delete_deliverchallanitem'),
+    path('edit_grn_item',views.edit_grn_item,name='edit_grn_item'),
+    path('delete_grn_item', views.delete_grn_item, name='delete_grn_item'),
+    path('delete_intconsumption', views.delete_intconsumption, name='delete_intconsumption'),
+    path('indent_item_update',views.indent_item_update,name='indent_item_update')
+
 ]
 
 

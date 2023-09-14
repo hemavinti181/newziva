@@ -80,7 +80,7 @@
                            {% if approve == 'pending' %}
                                  {% if request.session.displayrole == 'BUS STATION CONTROLLER' or  request.session.displayrole == 'DEPOT STORE EXECUTIVE' or request.session.role == 'Admin' %}
                               <td>
-                                  <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}',{{ all_data.noofbottles }},{{ all_data.id }})"  data-target="#bs-example-modal-sm">Quantity Update</span>
+                                  <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}',)"  data-target="#bs-example-modal-sm"><i class="fa fa-edit"></i></span>
                                   <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.so_number }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                   <i class="fa fa-trash"></i></span></a>
 
