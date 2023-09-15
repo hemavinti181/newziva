@@ -3003,13 +3003,14 @@ def indent_item_update(request):
         return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == "POST":
+        id = request.POST.get('indentno')
         url = "http://13.235.112.1/ziva/mobile-api/edit-indentitem-admin.php"
 
         payload = json.dumps({
 
             "accesskey": accesskey,
-            "indent_no":request.POST.get('indent'),
-            "sno":request.POST.get('indent'),
+            "indent_no":request.POST.get('indentno'),
+            "sno":request.POST.get('indsno'),
             "item_code":request.POST.get('itemcode'),
             "item_name":request.POST.get('itemname'),
             "qty":request.POST.get('qty'),
@@ -3025,22 +3026,22 @@ def indent_item_update(request):
 
         if response.status_code == 200:
             messages.success(request, data['message'])
-            url = reverse('add_grnitem_list', args=[id])
+            url = reverse('indent_item_list', args=[id])
             return redirect(url)
         elif response.status_code == 400:
             data = response.json()
             if data['message'] == 'Sorry! some details are missing':
                 messages.error(request, data['message'])
-                url = reverse('add_grnitem_list', args=[id])
+                url = reverse('indent_item_list', args=[id])
                 return redirect(url)
             else:
                 messages.error(request, data['message'])
                 return redirect('/login')
 
     else:
-        return redirect('grn_list1')
-    url = reverse('add_grnitem_list', args=[id])
-    return redirect(url)
+
+        url = reverse('indent_item_list', args=[id])
+        return redirect(url)
 
 
 
@@ -5904,62 +5905,121 @@ def indent_item_list(request,id):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         item_masterlist = data['itemmasterlist']
-        if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+        role = request.session['role']
+        if role  == 'Admin':
+            if request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "indentno": id,
+                    "itemname": request.POST.get('itemname'),
+                    "itemcode": request.POST.get('itemcode'),
+                    "warehouseid": request.POST.get('whcode'),
+                    "warehousename": request.POST.get('whname'),
+                    "date ": request.POST.get('date'),
+                    "qty": request.POST.get('quantity'),
+                    "mrp": request.POST.get('price'),
+
+                })
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    id = data['indentno']
+                    messages.success(request, data['message'])
+                    url = reverse('indent_item_list', args=[id])
+                    return redirect(url)
+                else:
+                    try:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        url = reverse('indent_item_list', args=[id])
+                        return redirect(url)
+                    except:
+                        messages.error(request, response.text)
+                    url = reverse('indent_item_list', args=[id])
+                    return redirect(url)
+            url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
 
             payload = json.dumps({
                 "accesskey": accesskey,
-                "indentno": id,
-                "itemname": request.POST.get('itemname'),
-                "itemcode": request.POST.get('itemcode'),
-                "warehouseid": request.POST.get('whcode'),
-                "warehousename": request.POST.get('whname'),
-                "date ": request.POST.get('date'),
-                "qty": request.POST.get('quantity'),
-                "mrp": request.POST.get('price'),
-
+                "indentno": id
             })
             headers = {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
             }
+
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                id = data['indentno']
-                messages.success(request, data['message'])
-                url = reverse('indent_item_list', args=[id])
-                return redirect(url)
+                ind_item_list = data['indentitemlist']
+                return render(request, 'create_indent/indent_item_list.html',
+                              {"all_data": ind_item_list, 'data': ind_item_list[0], 'id': id, 'menuname': menuname,
+                               'item_masterlist': item_masterlist})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
             else:
-                try:
+                return render(request, 'create_indent/indent_item_list.html',
+                              {'menuname': menuname, 'id': id, 'data': 'Pending', 'item_masterlist':item_masterlist})
+        else:
+
+            if request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "indentno": id,
+                    "itemname": request.POST.get('itemname'),
+                    "itemcode": request.POST.get('itemcode'),
+                    "qty": request.POST.get('quantity'),
+                    "mrp": request.POST.get('mrp1'),
+                })
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
                     data = response.json()
-                    messages.error(request, data['message'])
+                    id = data['indentno']
+                    messages.success(request, data['message'])
                     url = reverse('indent_item_list', args=[id])
                     return redirect(url)
-                except:
-                    messages.error(request, response.text)
-                url = reverse('indent_item_list', args=[id])
-                return redirect(url)
-        url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
+                else:
+                    try:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        url = reverse('indent_item_list', args=[id])
+                        return redirect(url)
+                    except:
+                        messages.error(request, response.text)
+                    url = reverse('indent_item_list', args=[id])
+                    return redirect(url)
+            url = "http://13.235.112.1/ziva/mobile-api/indent-item-list.php"
 
-        payload = json.dumps({
-            "accesskey": accesskey,
-            "indentno":id
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "indentno":id
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            ind_item_list = data['indentitemlist']
-            return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list,'data':ind_item_list[0],'id':id,'menuname':menuname,'item_masterlist':item_masterlist})
-        elif response.status_code == 400:
-            data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
-        else:
-            return render(request, 'create_indent/indent_item_list.html',{'menuname':menuname,'id':id,'data':'Pending','item_masterlist':item_masterlist})
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                ind_item_list = data['indentitemlist']
+                return render(request, 'create_indent/indent_item_list.html', {"all_data": ind_item_list,'data':ind_item_list[0],'id':id,'menuname':menuname,'item_masterlist':item_masterlist})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+            else:
+                return render(request, 'create_indent/indent_item_list.html',{'menuname':menuname,'id':id,'data':'Pending','item_masterlist':item_masterlist})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -13005,6 +13065,7 @@ def internal_consumption(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         nobot = data['noofbottleslist']
+
         if request.method == 'POST':
                 fdate = request.POST.get('fdate')
                 tdate = request.POST.get('tdate')
@@ -13067,11 +13128,114 @@ def internal_consumption(request):
             return redirect('/login')
         return render(request, 'intconsumption/internal_consumption.html',{'menuname':menuname})
 
+
+def get_consumption(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/busservicesearchlist.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "service_id": request.POST.get('id')
+    })
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data2 = response.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/add_bussupply')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    else:
+        return redirect('/add_bussupply')
+
+def get_dclist(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/dc-controller-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+        "depoid": request.POST.get('depoid1')
+    })
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data2 = response.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/add_bussupply')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    else:
+        return redirect('/add_bussupply')
+
+
+def edit_consumption(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-submit-admin.php"
+    payload = json.dumps({"accesskey": accesskey,
+                              "deponame": request.POST.get('deponame1'),
+                              "bus_service_no": request.POST.get('service'),
+                              "oprs": request.POST.get('oprs'),
+                              "departure_time": request.POST.get('departure'),
+                              "staffnumber": request.POST.get('staffnumb'),
+                              "staffname": request.POST.get('staffname'),
+                              "vehicleno": request.POST.get('vehicalnumb'),
+                              "product_type": request.POST.get('product'),
+                              "staffnumbertwo": request.POST.get('staffnumb1'),
+                              "staffnametwo": request.POST.get('staffname1'),
+                              "route": request.POST.get('route'),
+                              "noofbottles": request.POST.get('nobt')})
+    headers = {
+            'Content-Type': 'text/plain'
+        }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/internal_consumption')
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/internal_consumption')
+        else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+    else:
+        data = response.json()
+        messages.error(request, data['message'])
+        return redirect('/internal_consumption')
+
 def add_bussupply(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
     try:
+        role = request.session['role']
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
@@ -13093,42 +13257,80 @@ def add_bussupply(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         nobot = data['noofbottleslist']
+        if role == 'Admin':
 
-        if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-submit.php"
-            payload = json.dumps({"accesskey": accesskey,
-                    "deponame":request.POST.get('deponame1'),
-                    "bus_service_no":request.POST.get('service'),
-                    "oprs":request.POST.get('oprs'),
-                    "departure_time":request.POST.get('departure'),
-                    "staffnumber":request.POST.get('staffnumb'),
-                    "staffname":request.POST.get('staffname'),
-                    "vehicleno": request.POST.get('vehicalnumb'),
-                    "product_type": request.POST.get('product'),
-                    "staffnumbertwo": request.POST.get('staffnumb1'),
-                    "staffnametwo": request.POST.get('staffname1'),
-                    "route": request.POST.get('route'),
-                    "noofbottles":request.POST.get('nobt')})
-            headers = {
-                'Content-Type': 'text/plain'
-            }
-            response = requests.request("POST", url, headers=headers, data=payload)
-            if response.status_code == 200:
-                data = response.json()
-                messages.success(request,data['message'])
-                return redirect('/internal_consumption')
-            elif response.status_code == 400:
-                data = response.json()
-                if data['message'] == 'Sorry! some details are missing':
+                if request.method == 'POST':
+                    url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-submit-admin.php"
+                    payload = json.dumps({"accesskey": accesskey,
+                            "deponame":request.POST.get('deponame1'),
+                            "busstationid":request.POST.get('supervisorid'),
+                            "bus_service_no":request.POST.get('service'),
+                            "oprs":request.POST.get('oprs'),
+                            "departure_time":request.POST.get('departure'),
+                            "staffnumber":request.POST.get('staffnumb'),
+                            "staffname":request.POST.get('staffname'),
+                            "vehicleno": request.POST.get('vehicalnumb'),
+                            "product_type": request.POST.get('product'),
+                            "staffnumbertwo": request.POST.get('staffnumb1'),
+                            "staffnametwo": request.POST.get('staffname1'),
+                            "route": request.POST.get('route'),
+                            "noofbottles":request.POST.get('nobt')})
+                    headers = {
+                        'Content-Type': 'text/plain'
+                    }
+                    response = requests.request("POST", url, headers=headers, data=payload)
+                    if response.status_code == 200:
+                        data = response.json()
+                        messages.success(request,data['message'])
+                        return redirect('/internal_consumption')
+                    elif response.status_code == 400:
+                        data = response.json()
+                        if data['message'] == 'Sorry! some details are missing':
+                            messages.error(request, data['message'])
+                            return redirect('/internal_consumption')
+                        else:
+                            messages.error(request, data['message'])
+                            return redirect('/login')
+                    else:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        return redirect('/internal_consumption')
+        else:
+            if request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-submit.php"
+                payload = json.dumps({"accesskey": accesskey,
+                                      "deponame": request.POST.get('deponame1'),
+                                      "bus_service_no": request.POST.get('service'),
+                                      "oprs": request.POST.get('oprs'),
+                                      "departure_time": request.POST.get('departure'),
+                                      "staffnumber": request.POST.get('staffnumb'),
+                                      "staffname": request.POST.get('staffname'),
+                                      "vehicleno": request.POST.get('vehicalnumb'),
+                                      "product_type": request.POST.get('product'),
+                                      "staffnumbertwo": request.POST.get('staffnumb1'),
+                                      "staffnametwo": request.POST.get('staffname1'),
+                                      "route": request.POST.get('route'),
+                                      "noofbottles": request.POST.get('nobt')})
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+                response = requests.request("POST", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    messages.success(request, data['message'])
+                    return redirect('/internal_consumption')
+                elif response.status_code == 400:
+                    data = response.json()
+                    if data['message'] == 'Sorry! some details are missing':
+                        messages.error(request, data['message'])
+                        return redirect('/internal_consumption')
+                    else:
+                        messages.error(request, data['message'])
+                        return redirect('/login')
+                else:
+                    data = response.json()
                     messages.error(request, data['message'])
                     return redirect('/internal_consumption')
-                else:
-                    messages.error(request, data['message'])
-                    return redirect('/login')
-            else:
-                data = response.json()
-                messages.error(request, data['message'])
-                return redirect('/internal_consumption')
     except:
         return render(request, 'intconsumption/internal_consumption.html', {'menuname': menuname})
 

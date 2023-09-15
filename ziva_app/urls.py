@@ -306,7 +306,10 @@ urlpatterns = [
     path('edit_grn_item',views.edit_grn_item,name='edit_grn_item'),
     path('delete_grn_item', views.delete_grn_item, name='delete_grn_item'),
     path('delete_intconsumption', views.delete_intconsumption, name='delete_intconsumption'),
-    path('indent_item_update',views.indent_item_update,name='indent_item_update')
+    path('indent_item_update',views.indent_item_update,name='indent_item_update'),
+    path('get_dclist',views.get_dclist,name='get_dclist'),
+    path('get_consumption',views.get_consumption,name='get_consumption'),
+    path('edit_consumption',views.edit_consumption,name='edit_consumption')
 
 ]
 

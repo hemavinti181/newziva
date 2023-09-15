@@ -109,8 +109,9 @@
                                     {% if request.session.role == 'Admin' %}
                                           <a href="#" onclick="VerifyClick2('{{ data.sno }}','{{ data.service_id }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                           <i class="fa fa-trash"></i></span></a>
+                                          <a href="#" class="depoedit" onclick="editConsumption('{{ data.service_id }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                     {% endif %}
-                                      <span class="badge badge-info" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+                                      <span class="badge bg-green" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
 
                                 {% else %}
                                     <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}')"  data-target="#return">RETURN</span>
@@ -158,10 +159,19 @@
                                                     {% endfor %}
 												</select>
 										</div>
+                             {% if request.session.role == 'Admin' %}
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Product Supervisor</label>
+											 <input type="hidden" name="supervisor" id="supervisor" />
+												<select class="form-control" name="supervisorid" id="supervisorid" style="width:180px !important;" required>
+													<option value=""></option>
+												</select>
+										</div>
+                             {% endif %}
                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Select Service</label>
 											 <input type="hidden" name="servicename" id="servicename" />
-												<select class="form-control select2" name="service" id="service" style="width:180px !important;" required>
+											 	<select class="form-control select2 service" name="service" id="service" style="width:180px !important;" required>
 													<option value=""> service</option>
 												</select>
 										</div>
@@ -227,6 +237,7 @@
                                                     {% endfor %}
 												</select>
 										</div>
+
 </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Save</button>
@@ -267,6 +278,8 @@
 						</div>
 					</div>
 </div>
+
+
 
 <div class="modal custom-modal fade"  id="return" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -348,6 +361,130 @@
                                          </div>
     </div>
 </div>
+</div>
+
+<div class="inner-fabs">
+
+                                  <div class="fab bg-green round" id="fab3"><a href="returnsconsumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Return items</span></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="internal_consumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Supply items</span></div>
+                              </div>
+                               <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+<div id="depo-edit" class="modal custom-modal fade"  role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Consumption</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+            </div>
+            <div class="modal-body">
+               <form  method="POST" action=""   enctype="multipart/form-data">
+											{% csrf_token %}
+
+                               <input type="hidden" name="serviceid" id="serviceid" />
+										<div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Select Depot</label>
+											 <input type="hidden" name="deponame2" id="deponame2" />
+												<select class="form-control depot" name="depoid2" id="depoid2" required>
+                                                    <option value=""> depot</option>
+                                                    {% for data in depolist %}
+                                                            {% if data.depoid == 'DEPO0094' %}
+													            <option value="{{ data.depoid  }}" selected>{{  data.deponame  }}</option>
+                                                            {% else %}
+                                                                <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
+                                                            {% endif %}
+                                                    {% endfor %}
+												</select>
+										</div>
+                             <!--{% if request.session.role == 'Admin' %}
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Product Supervisor</label>
+											 <input type="hidden" name="supervisor1" id="supervisor1" />
+												<select class="form-control" name="supervisorid1" id="supervisorid1" style="width:180px !important;" required>
+													<option value=""></option>
+												</select>
+										</div>
+                             {% endif %}-->
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Select Service</label>
+											 <input type="hidden" name="servicename1" id="servicename1" />
+											 	<select class="form-control select2" name="service1" id="service1" style="width:180px !important;" required>
+													<option value=""> service</option>
+												</select>
+										</div>
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>OPRS *</label>
+										    <input type="text" class="form-control" placeholder="OPRS" name="oprs1" id="oprs1" readonly>
+										</div>
+
+										<div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Departure *</label>
+										    <input type="text" class="form-control" placeholder="Departure" name="departure1" id="departure1" readonly>
+										</div>
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Route *</label>
+										    <input type="text" class="form-control" placeholder="Route" name="route1" id="route1" readonly>
+										</div>
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label> Driver Id1 *</label>
+										     <input type="hidden" name="staffnumone" id="staffnumone" />
+												<select class="form-control select2 items" name="staffnumbone" id="staffnumbone" style="width:180px !important;" required>
+													<option value="">driver id</option>
+												</select>
+										</div>
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Driver Name1 *</label>
+										    <input type="text" class="form-control" placeholder="name" name="staffnameone" id="staffnameone" readonly>
+										</div>
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label> Driver Id2 </label>
+										     <input type="hidden" name="staffnum" id="staffnum2" />
+												<select class="form-control select2" name="staffnumb1" id="staffnumb2" style="width:180px !important;" required>
+													<option value="">driver id</option>
+												</select>
+										</div>
+
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Driver Name2 </label>
+										    <input type="text" class="form-control" placeholder="name" name="staffname2" id="staffname2" readonly>
+										</div>
+										<div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label> Vehical Number *</label>
+										     <input type="hidden" name="vehicalname`" id="vehicalname1" />
+												<select class="form-control select2" name="vehicalnumb1" id="vehicalnumb1" style="width:180px !important;" required>
+													<option value=""> Vehical number</option>
+												</select>
+										</div>
+                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label> Product type *</label>
+										    <input type="text" class="form-control" placeholder="product type" name="product1" id="product1" readonly>
+										</div>
+                                        <!--<div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Staff Name *</label>
+										    <input type="text" class="form-control" placeholder="name" name="staffname" id="staffname" readonly>
+										</div>-->
+
+                                        <div class="col-md-4 col-sm-4  form-group has-feedback">
+											<label>Select No Of Bottles *</label>
+										     <input type="hidden" name="nob1" id="nob1" />
+												<select class="form-control" name="nobt1" id="nobt1" required>
+													<option value="">bottles</option>
+                                                    	{% for data in nobot %}
+                                                            	<option value="{{ data.noofbottles }}">{{ data.noofbottles}}</option>
+                                                    {% endfor %}
+												</select>
+										</div>
+   <div class="modal-footer">
+				 <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+            </div>
+          </form>
+            </div>
+          </form>
+        </div>
+	</div>
 
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -404,14 +541,9 @@
 
 						</div>
 					</div>
-				</div>
 
-<div class="inner-fabs">
 
-                                  <div class="fab bg-green round" id="fab3"><a href="returnsconsumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Return items</span></div>
-                                 <div class="fab bg-yellow round" id="fab2"><a href="internal_consumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Supply items</span></div>
-                              </div>
-                               <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
@@ -420,9 +552,9 @@ function VerifyClick2(id,id1){
 $("#deleteid").val(id);
 $("#deletesono").val(id1);
 }
+
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
-
         	$.ajax({
             	type: "POST",
             	url: '{% url "depo_servicenum" %}',
@@ -509,25 +641,7 @@ $(document).ready(function() {
                 	$.each(obj, function (index, item) {
                     $("#staffnumb").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
                     });
-                	}
-             	}
-        	});
-});
-//$("#depoid1").change(function() {
-$(document).ready(function() {
-    		var depo = $('#depoid1').find(":selected").text();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "staffnumber" %}',
-            	data: {
-                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data
-
-
-					if(obj) {
-			 		$("#staffnumb1").empty();
+                    $("#staffnumb1").empty();
 			 		$("#staffnumb1").append("<option  value=''> staff number</option>");
                 	$.each(obj, function (index, item) {
                     $("#staffnumb1").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
@@ -536,6 +650,8 @@ $(document).ready(function() {
              	}
         	});
 });
+
+
 $(document).ready(function() {
     		var depo = $('#depoid1').find(":selected").text();
         	$.ajax({
@@ -558,6 +674,8 @@ $(document).ready(function() {
              	}
         	});
 });
+
+
 $(document).ready(function() {
     		var depo = $('#depoid1').find(":selected").text();
         	$.ajax({
@@ -569,7 +687,6 @@ $(document).ready(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-
 					if(obj) {
 			 		$("#staffnumret1").empty();
 			 		$("#staffnumret1").append("<option  value=''>driver id</option>");
@@ -580,10 +697,11 @@ $(document).ready(function() {
              	}
         	});
 });
+
+
 //$("#depoid1").change(function() {
 $(document).ready(function() {
     		var depo = $('#depoid1').find(":selected").text();
-
         	$.ajax({
             	type: "POST",
             	url: '{% url "vehicallist" %}',
@@ -604,6 +722,7 @@ $(document).ready(function() {
              	}
         	});
 });
+
 $(document).ready(function() {
     $("#vehicalnumb").select2();
     $("#vehicalnumb").change(function() {
@@ -617,7 +736,6 @@ $(document).ready(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data
-
 
 					if(obj) {
 			 		$("#product").val(obj[0].product_type);
@@ -779,9 +897,7 @@ $(document).ready(function() {
                'auth':auth,'serviceid1 ':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function(response) {
-                alert('hai')
-                alert(data.response)
-                alert(response)
+
                 console.log(data.response)
                 if (response.status_code === 200) {
                     $('#returnButton').show();
@@ -791,6 +907,7 @@ $(document).ready(function() {
                 }
             },
             error: function() {
+            alert("error")
                 // Handle error here, e.g., display an error message or hide the button
                 $('#returnButton').hide();
             }
@@ -828,7 +945,10 @@ $("#id1").val(id);
   var selectedOptionText = $('#depoid1').find(":selected").text();
   $("#deponame1").val(selectedOptionText);
 });
-
+ $(document).ready(function() {
+  var selectedOptionText = $('#supervisorid').find(":selected").text();
+  $("#supervisor").val(selectedOptionText);
+});
 
 function VerifyClick1(id,id1,id2){
 $("#tickets").val(" ");
@@ -901,11 +1021,9 @@ $(document).ready(function () {
                   'auth': auth,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
               success: function (response) {
-              var message = response.response.message;
+              var message = response.message;
               console.log(response)
-              alert(response)
-              alert(message)
-              if(response === '200'){
+               if(response === '200'){
                  alertify.success(message);
                  $("#return").show();
                  $("#bs-example-modal-sm").hide();
@@ -924,6 +1042,221 @@ $(document).ready(function () {
             });
   });
   });
+
+
+$(document).ready(function () {
+            var depoid1 = $('#depoid1').val();
+            $.ajax({
+               url: "{% url 'get_dclist' %}",
+                type: 'POST',
+                data: {
+               'depoid1':depoid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(data){
+			 		var obj = data.data.dccontrollerlist
+			 		console.log(obj[0].busstationname)
+                    if(obj) {
+			 		$("#supervisorid").empty();
+                	$.each(obj, function (index, item) {
+                    $("#supervisorid").append("<option value='" + item.busstationid+ "'>" + item.busstationname+ "</option>");
+					});
+                	}
+              },
+              error: function (xhr, status, error) {
+                console.error(error);
+              }
+            });
+  });
+
+
+function editConsumption(id){
+alert(id)
+      $.ajax({
+        url: "{% url 'get_consumption' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data.bussupplylist
+
+             if(obj){
+              $('#service').select2();
+              $('#staffnumbone').select2();
+              $('#staffnumb2').select2();
+              $("#vehicalnumb1").select2();
+             $("#serviceid").val(obj[0].service_id);
+             $("#deponame2").val(obj[0].deponame);
+              $("#depoid2").val(obj[0].depoid);
+             $("#service1").val(obj[0].bus_service_no);
+              $('#service1').select2().trigger('change');
+              $("#servicename1").val(obj[0].bus_service_no);
+             $("#oprs1").val(obj[0].oprs);
+              $("#route1").val(obj[0].route);
+             $("#departure1").val(obj[0].departure_time);
+             $("#staffnumbone").val(obj[0].staffnumber);
+             $('#staffnumbone').select2().trigger('change');
+             $("#staffnameone").val(obj[0].staffname);
+             $("#staffnumb2").val(obj[0].staffnumbertwo);
+             $('#staffnumb2').select2().trigger('change');
+             $("#staffname2").val(obj[0].staffnumbertwoname);
+             $("#product1").val(obj[0].product_type);
+              $("#vehicalname1").val(obj[0].vehicleno);
+              $("#vehicalnumb1").val(obj[0].vehicleno);
+                $("#vehicalnumb1").select2().trigger('change');
+               $("#nob1").val(obj[0].noofbottles_recieve);
+                $("#nobt1").val(obj[0].noofbottles_recieve);
+             $('#depo-edit').modal('show');
+        	}
+        }
+      });
+  }
+$("#depoid2").change(function() {
+    		var depo = $('#depoid2').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "depo_servicenum" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+					if(obj) {
+			 		$("#service1").empty();
+                	$.each(obj, function (index, item) {
+                    $("#service1").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
+					});
+                	}
+             	}
+        	});
+});
+
+//$("#depoid1").change(function() {
+$(document).ready(function() {
+    		var depo = $('#depoid2').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "depo_servicenum" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+					if(obj) {
+			 		$("#service1").empty();
+			 		$("#service").append("<option  value=''>choose service</option>");
+                	$.each(obj, function (index, item) {
+                    $("#service1").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
+					});
+                	}
+             	}
+        	});
+});
+
+$(document).ready(function() {
+    $("#service1").select2();
+    $("#service1").on('select2:select', function (e) {
+
+    		var depo = $('#depoid2').find(":selected").text();
+            var service = $('#service1').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "service_details" %}',
+            	data: {
+                	'depo':depo,'service':service,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+
+					if(obj) {
+			 		$("#oprs1").val(obj[0].oprs);
+                	$("#departure1").val(obj[0].depot);
+                	$("#route1").val(obj[0].route);
+                	}
+             	}
+        	});
+    });
+});
+//$("#depoid2").change(function() {
+$(document).ready(function() {
+    		var depo = $('#depoid2').find(":selected").text();
+
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffnumber" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+
+					if(obj) {
+			 		$("#staffnumbone").empty();
+			 		$("#staffnumbone").append("<option  value=''> staff number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#staffnumbone").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
+                    });
+                    $("#staffnumb2").empty();
+			 		$("#staffnumb2").append("<option  value=''> staff number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#staffnumb2").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
+                    });
+                	}
+             	}
+        	});
+});
+
+//$("#depoid2").change(function() {
+$(document).ready(function() {
+    		var depo = $('#depoid2').find(":selected").text();
+
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "vehicallist" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+
+					if(obj) {
+			 		$("#vehicalnumb1").empty();
+			 		$("#vehicalnumb1").append("<option  value=''> vehical number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#vehicalnumb1").append("<option value='" + item.vehicleno+ "'>" + item.vehicleno+ "</option>");
+                    });
+                	}
+             	}
+        	});
+});
+
+
+$(document).ready(function() {
+    $("#vehicalnumb1").select2();
+    $("#vehicalnumb1").change(function() {
+    		var depo = $('#depoid2').find(":selected").text();
+            var vehicalnumb = $('#vehicalnumb1').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "producttype" %}',
+            	data: {
+                	'depo':depo,'vehicalnumb':vehicalnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+
+					if(obj) {
+			 		$("#product").val(obj[0].product_type);
+                	}
+             	}
+        	});
+});
+});
 
 </script>
 {% endblock %}
