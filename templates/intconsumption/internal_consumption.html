@@ -114,6 +114,9 @@
                                       <span class="badge bg-green" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
 
                                 {% else %}
+								   <a href="#" onclick="VerifyClick2('{{ data.sno }}','{{ data.service_id }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                          <i class="fa fa-trash"></i></span></a>
+                                          <a href="#" class="depoedit" onclick="editConsumption('{{ data.service_id }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                     <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}')"  data-target="#return">RETURN</span>
                                 {% endif %}
                             </td>
@@ -191,7 +194,7 @@
                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label> Driver Id1 *</label>
 										     <input type="hidden" name="staffnum" id="staffnum" />
-												<select class="form-control select2 items" name="staffnumb" id="staffnumb" style="width:180px !important;" required>
+												<select class="form-control select2 items" name="staffnumb" id="staffnumb" style="width:180px !important;">
 													<option value="">driver id</option>
 												</select>
 										</div>
@@ -202,7 +205,7 @@
                                          <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label> Driver Id2 </label>
 										     <input type="hidden" name="staffnum" id="staffnum1" />
-												<select class="form-control select2" name="staffnumb1" id="staffnumb1" style="width:180px !important;" required>
+												<select class="form-control select2" name="staffnumb1" id="staffnumb1" style="width:180px !important;">
 													<option value="">driver id</option>
 												</select>
 										</div>
@@ -379,7 +382,7 @@
 								</button>
             </div>
             <div class="modal-body">
-               <form  method="POST" action=""   enctype="multipart/form-data">
+               <form  method="POST" action="/edit_consumption"   enctype="multipart/form-data">
 											{% csrf_token %}
 
                                <input type="hidden" name="serviceid" id="serviceid" />
@@ -429,7 +432,7 @@
                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label> Driver Id1 *</label>
 										     <input type="hidden" name="staffnumone" id="staffnumone" />
-												<select class="form-control select2 items" name="staffnumbone" id="staffnumbone" style="width:180px !important;" required>
+												<select class="form-control select2" name="staffnumbone" id="staffnumbone" style="width:180px !important;" required>
 													<option value="">driver id</option>
 												</select>
 										</div>
@@ -439,8 +442,8 @@
 										</div>
                                          <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label> Driver Id2 </label>
-										     <input type="hidden" name="staffnum" id="staffnum2" />
-												<select class="form-control select2" name="staffnumb1" id="staffnumb2" style="width:180px !important;" required>
+										     <input type="hidden" name="staffnum2" id="staffnum2" />
+												<select class="form-control select2" name="staffnumb2" id="staffnumb2" style="width:180px !important;">
 													<option value="">driver id</option>
 												</select>
 										</div>
@@ -485,6 +488,7 @@
           </form>
         </div>
 	</div>
+</div>
 
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -511,6 +515,9 @@
                                         </div>
                                     </div>
                                 </div>
+</div>
+</div>
+
 <div class="modal custom-modal fade" id="store-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content modal1">
@@ -548,10 +555,12 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <script>
+
 function VerifyClick2(id,id1){
 $("#deleteid").val(id);
 $("#deletesono").val(id1);
 }
+
 
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
@@ -572,6 +581,7 @@ $("#depoid1").change(function() {
              	}
         	});
 });
+
 
 //$("#depoid1").change(function() {
 $(document).ready(function() {
@@ -595,6 +605,7 @@ $(document).ready(function() {
              	}
         	});
 });
+
 
 $(document).ready(function() {
     $("#service").select2();
@@ -744,6 +755,7 @@ $(document).ready(function() {
         	});
 });
 });
+
 
 $(document).ready(function() {
     $("#staffnumb").select2();
@@ -1070,7 +1082,6 @@ $(document).ready(function () {
 
 
 function editConsumption(id){
-alert(id)
       $.ajax({
         url: "{% url 'get_consumption' %}",
         type: 'POST',
@@ -1251,12 +1262,84 @@ $(document).ready(function() {
 
 
 					if(obj) {
-			 		$("#product").val(obj[0].product_type);
+			 		$("#product1").val(obj[0].product_type);
                 	}
              	}
         	});
 });
 });
+
+$(document).ready(function() {
+    $("#staffnumb").select2();
+    $("#staffnumb").change(function() {
+    		var depo = $('#depoid1').find(":selected").text();
+            var staffnumb = $('#staffnumb').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffname" %}',
+            	data: {
+                	'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+
+
+					if(obj) {
+			 		$("#staffname").val(obj[0].name);
+                	}
+             	}
+        	});
+});
+});
+
+
+$(document).ready(function() {
+    $("#staffnumb2").select2();
+	$("#staffnumb2").change(function() {
+    		var depo = $('#depoid2').find(":selected").text();
+            var staffnumb = $('#staffnumb2').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffname" %}',
+            	data: {
+                	'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+
+					if(obj) {
+			 		$("#staffname2").val(obj[0].name);
+                	}
+             	}
+        	});
+});
+});
+
+$(document).ready(function() {
+    $("#staffnumbone").select2();
+	$("#staffnumbone").change(function() {
+    		var depo = $('#depoid2').find(":selected").text();
+            var staffnumb = $('#staffnumbone').find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffname" %}',
+            	data: {
+                	'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+
+					if(obj) {
+			 		$("#staffnameone").val(obj[0].name);
+                	}
+             	}
+        	});
+});
+});
+
 
 </script>
 {% endblock %}

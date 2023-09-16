@@ -80,9 +80,11 @@
                            {% if approve == 'pending' %}
                                  {% if request.session.displayrole == 'BUS STATION CONTROLLER' or  request.session.displayrole == 'DEPOT STORE EXECUTIVE' or request.session.role == 'Admin' %}
                               <td>
-                                  <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}',)"  data-target="#bs-example-modal-sm"><i class="fa fa-edit"></i></span>
-                                  <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.so_number }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
-                                                  <i class="fa fa-trash"></i></span></a>
+                                  <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.so_number}}','{{ all_data.quantity }}','{{ all_data.total }}','{{ all_data.uom }}','{{ all_data.mrp }}','{{ all_data.noofbottles }}','{{ all_data.id }}')"  data-target="#bs-example-modal-sm"><i class="fa fa-edit"></i></span>
+                                  {% if request.session.role == 'Admin' %}
+                                      <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.so_number }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                                      <i class="fa fa-trash"></i></span></a>
+                                  {% endif %}
 
                                </td>
                                    {% endif %}
@@ -101,6 +103,7 @@
             </div>
           </div>
 </div>
+
 <div class="modal custom-modal fade"  id="bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
@@ -195,8 +198,8 @@ $("#sno").val(id6)
             mrp = $("#mrp").val( );
             val2 =    (val * val1)
             val3 = (val2 * mrp)
+
             $("#nob").val(val2);
-            $("#price").val(" ");
             $("#price").val(val3);
 
          });

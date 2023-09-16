@@ -13195,20 +13195,21 @@ def edit_consumption(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-submit-admin.php"
+    url = "http://13.235.112.1/ziva/mobile-api/edit-internal-consumption-admin.php"
     payload = json.dumps({"accesskey": accesskey,
-                              "deponame": request.POST.get('deponame1'),
-                              "bus_service_no": request.POST.get('service'),
-                              "oprs": request.POST.get('oprs'),
-                              "departure_time": request.POST.get('departure'),
-                              "staffnumber": request.POST.get('staffnumb'),
-                              "staffname": request.POST.get('staffname'),
-                              "vehicleno": request.POST.get('vehicalnumb'),
-                              "product_type": request.POST.get('product'),
-                              "staffnumbertwo": request.POST.get('staffnumb1'),
-                              "staffnametwo": request.POST.get('staffname1'),
-                              "route": request.POST.get('route'),
-                              "noofbottles": request.POST.get('nobt')})
+                             "service_id":request.POST.get('serviceid'),
+                              "deponame": request.POST.get('deponame2'),
+                              "bus_service_no": request.POST.get('service1'),
+                              "oprs": request.POST.get('oprs1'),
+                              "departure_time": request.POST.get('departure1'),
+                              "staffnumber": request.POST.get('staffnumbone'),
+                              "staffname": request.POST.get('staffnameone'),
+                              "vehicleno": request.POST.get('vehicalnumb1'),
+                              "product_type": request.POST.get('product1'),
+                              "staffnumbertwo": request.POST.get('staffnumb2'),
+                              "staffnametwo": request.POST.get('staffname2'),
+                              "route": request.POST.get('route1'),
+                              "noofbottles": request.POST.get('nobt1')})
     headers = {
             'Content-Type': 'text/plain'
         }
@@ -13229,6 +13230,8 @@ def edit_consumption(request):
         data = response.json()
         messages.error(request, data['message'])
         return redirect('/internal_consumption')
+
+
 
 def add_bussupply(request):
     if 'accesskey' not in request.session:

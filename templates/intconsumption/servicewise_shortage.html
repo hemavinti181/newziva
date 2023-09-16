@@ -91,16 +91,16 @@
                       </thead>
                             <tbody>
                             {% for data in itemlist %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ data.deponame }}</td>
-                                <td>{{ data.created_date }}</td>
-                                <td>{{ data.date }}</td>
-                                 <td><a href="#" onclick="pageScroll()" style="color: #06911A" class="driver_shortlist"  data-id="{{ data.service_id }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" data-deponame="{{ data.deponame }}" >{{ data.service_id }}</a></td>
-                                <td>{{ data.noofbottles_recieve }}</td>
-                                <td> {{ data.return_no_of_bottles }}</td>
-                                <td>{{ data.shortage }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ data.deponame }}</td>
+                                        <td>{{ data.created_date }}</td>
+                                        <td>{{ data.date }}</td>
+                                         <td><a href="#" onclick="pageScroll()" style="color: #06911A" class="driver_shortlist"  data-id="{{ data.service_id }}" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}" data-deponame="{{ data.deponame }}" >{{ data.service_id }}</a></td>
+                                        <td>{{ data.noofbottles_recieve }}</td>
+                                        <td> {{ data.return_no_of_bottles }}</td>
+                                        <td>{{ data.shortage }}</td>
+                                    </tr>
                             {% endfor %}
                       </tbody>
                       </table>
@@ -252,83 +252,84 @@ $(document).ready( function () {
      });
 
  $(document).on('click', '.driver_shortlist', function () {
+    alert('hai');
     let service_id = $(this).data('id');
-      let deponame = $(this).data('deponame');
+    let deponame = $(this).data('deponame');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
-     if ($.fn.DataTable.isDataTable('#driver_shortage')) {
-            datatable.destroy();
-        }
+
+
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable('#driver_shortage')) {
+        $('#driver_shortage').DataTable().destroy(); // Destroy the existing DataTable
+    }
+
     $.ajax({
         url: '{% url "service_wise_shortage" %}',
-        type:'POST',
+        type: 'POST',
         data: {
-           'deponame':deponame,
+            'deponame': deponame,
             'service_id': service_id,
             'fdate': fdate,
             'tdate': tdate,
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
-        success: function(data) {
-        var error = data.data.error;
-        var message = data.data.message;
+        success: function (data) {
+            var error = data.data.error;
+            var message = data.data.message;
 
-         if ( error === true) {
+            if (error === true) {
                 alertify.set('notifier', 'position', 'top-center');
                 alertify.error(message);
-          }
-        else{
-             $('.driver').show();
-            var responseData = data.data.shortagelist;
-            var tableBody = $('#driver_shortage tbody');
-            var count =responseData.length;
-            tableBody.empty();
-            for (var i = 0; i < count; i++) {
-                var item = responseData[i];
-                var row = $('<tr>');
-                row.append($('<td>').text(i + 1));
-                row.append($('<td>').text(item.date));
-                if (i === 0) {
-
-                    row.append($('<td rowspan="' + count + '">').text(item.service_id));
-
+            } else {
+                $('.driver').show();
+                var responseData = data.data.shortagelist;
+                var tableBody = $('#driver_shortage tbody');
+                var count = responseData.length;
+                tableBody.empty();
+                for (var i = 0; i < count; i++) {
+                    var item = responseData[i];
+                    var row = $('<tr>');
+                    row.append($('<td>').text(i + 1));
+                    row.append($('<td>').text(item.date));
+                    if (i === 0) {
+                        row.append($('<td rowspan="' + count + '">').text(item.service_id));
+                    }
+                    row.append($('<td>').text(item.noofbottles_recieve));
+                    row.append($('<td>').text(item.return_no_of_bottles));
+                    row.append($('<td>').text(item.shortage));
+                    tableBody.append(row);
                 }
-                row.append($('<td>').text(item.noofbottles_recieve));
-                row.append($('<td>').text(item.return_no_of_bottles));
-                row.append($('<td>').text(item.shortage));
-                tableBody.append(row);
-                }
-                datatable = $("#driver_shortage").DataTable({
-                dom: "Blfrtip",
-                "bDestroy": true,
-                buttons: [
-                    {
-                        extend: "copy",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "csv",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "excel",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "pdfHtml5",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "print",
-                        className: "btn-sm"
-                    },
-                ],
-                responsive: true
-     });
-                        }
 
+                $('#driver_shortage').DataTable({
+                    dom: "Blfrtip",
+                    buttons: [
+                        {
+                            extend: "copy",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "csv",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "excel",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "pdfHtml5",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "print",
+                            className: "btn-sm"
+                        },
+                    ],
+                    responsive: true
+                });
+            }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.log("AJAX Error:", error);
         }
     });

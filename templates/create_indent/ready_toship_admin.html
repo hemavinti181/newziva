@@ -180,7 +180,7 @@
                            <td>{{ all_data.type }}</td>
                             {% if all_data.status == 'Ready to Ship' %}
                                 <td>
-                                   <span class="badge badge-success"><i class="fa fa-edit"></i></span>
+
                                      <a href="#" onclick="VerifyClick1('{{ all_data.indentno }}','{{ all_data.status }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                   <i class="fa fa-trash"></i></span></a>
                                     <span id="gatepass" data-target=".bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}','{{all_data.indentno}}')" class="badge badge-info" >Generate Gate Pass </span></a>
