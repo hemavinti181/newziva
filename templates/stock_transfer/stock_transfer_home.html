@@ -185,10 +185,10 @@
                                                         <td>{{all_data.manufacturer}}</td>
 
                                                         <td>
-                                                            <a class="btn btn-default btn-sm"
-                                                               href="delete_stk_item/{{ all_data.sno }}/"><i
-                                                                    class="fa fa-trash"></i></a>
-                                                            <span class="btn btn-default btn-sm"
+                                                            <a
+                                                               href="delete_stk_item/{{ all_data.sno }}/"><span class="badge badge-danger"><i
+                                                                    class="fa fa-trash"></i></span></a>
+                                                            <span class="badge badge-info"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
@@ -891,6 +891,7 @@ $('#quantity').on('input', function()  {
                     })
  })
  })
+
 $('#depoquantity').on('input', function()  {
             $("#deponob").val(" ");
     	    val  = $("#depoquantity").val();
@@ -917,6 +918,7 @@ $("#typebus").val(id4);
         $("#nob1").prop("readonly", true);
       }
 }
+
 
 $('#qty').on('input', function()  {
     	    val  = $("#qty").val();

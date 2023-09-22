@@ -309,7 +309,16 @@ urlpatterns = [
     path('indent_item_update',views.indent_item_update,name='indent_item_update'),
     path('get_dclist',views.get_dclist,name='get_dclist'),
     path('get_consumption',views.get_consumption,name='get_consumption'),
-    path('edit_consumption',views.edit_consumption,name='edit_consumption')
+    path('edit_consumption',views.edit_consumption,name='edit_consumption'),
+    path('generate_transid',views.generate_transid,name='generate_transid'),
+    path('generate_transid_bust',views.generate_transid_bust,name='generate_transid_bust'),
+    path('stk_warehouse_list',views.stk_warehouse_list,name='stk_warehouse_list'),
+    path('stk_depot_list',views.stk_depot_list,name='stk_depot_list'),
+    path('stk_busstation_list',views.stk_busstation_list,name='stk_busstation_list'),
+    path('warehouseinventory_search',views.warehouseinventory_search,name='warehouseinventory_search'),
+    path('wh_item_add_admin',views.wh_item_add_admin,name='wh_item_add_admin'),
+    path('wh_item_list_admin',views.wh_item_list_admin,name='wh_item_list_admin'),
+
 
 ]
 
