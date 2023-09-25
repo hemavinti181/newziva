@@ -62,6 +62,7 @@
                                                 </select>
                                             <input type="hidden" id="txtItemName" name="txtItemName" />
                                             </div>
+                                           <input type="hidden" id="response" name="response" value="{{ response  }}" />
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
                                              <label>Batch Number *</label>
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
@@ -112,9 +113,9 @@
 									</form>
 				 </div>
 				</div>
-			<div class="row" style="display: block;">
+			<div class="row" >
               <div class="col-md-12 col-sm-12 ">
-                <div class="x_panel">
+                <div class="x_panel" id="list" style="display:none;">
                     <div class="clearfix"></div>
                   <div class="x_content">
                       <div class="row">
@@ -291,8 +292,7 @@ function editGrnItem(id,id1){
              $("#itemname1").val(obj.itemname);
              $('#itemcode1').val(obj.item_code)
              $("#latestpurchase1").val(obj.purchase_price);
-               var inputDate =obj.expiry_date;
-
+             var inputDate =obj.expiry_date;
               var date = new Date(inputDate);
               date.setMonth(date.getMonth() - 6);
               var result = formatDate(date);
@@ -305,7 +305,8 @@ function editGrnItem(id,id1){
       });
 }
 
-	$("#itemname").change(function() {
+
+$("#itemname").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#txtItemName").val(selectedOptionText);
 });
@@ -332,13 +333,14 @@ $("#itemname").change(function() {
 					    }
              	}
         	});
-        	});
+  });
+
 $('#quantity').on('input', function()  {
             val  = $("#quantity").val();
             val1 = $("#uom").val();
             val2 =    (val * val1)
             $("#nob").val(val2);
-            });
+  });
 
 $("#itemcode1").change(function() {
         	var itemname = $('#itemcode1').val();
@@ -350,7 +352,7 @@ $("#itemcode1").change(function() {
             	},
 			 	success: function(data){
 			 	 var obj = data.data
-			 	 alert(obj.uom)
+
                         if(obj){
                         $("#quantity1").val(" ");
                         $("#noofbottles").val(" ");
@@ -361,30 +363,32 @@ $("#itemcode1").change(function() {
              	}
         	});
     	});
+
+
 $('#quantity1').on('input', function()  {
             val  = $("#quantity1").val();
             val1 = $("#uom1").val();
             val2 =    (val * val1)
             $("#noofbottles").val(val2);
-    });
+ });
+
 
 $('.items').change(function() {
     console.log('Dropdown value changed');
     if($(this).val() === '1') {
       alert('Please select an option');
     }
-  });
-  document.getElementById("expdate").addEventListener("input", calculateDate);
+});
 
+document.getElementById("expdate").addEventListener("input", calculateDate);
 function calculateDate() {
   var inputDate = document.getElementById("expdate").value; // Get the selected date from the input field
   var date = new Date(inputDate); // Convert the input value to a Date object
   date.setMonth(date.getMonth() + 6); // Add 6 months to the selected date
-
   var result = formatDate(date); // Format the result using a helper function formatDate()
-
   document.getElementById("result").value = result; // Set the result value in the output field
 }
+
 
 function formatDate(date) {
   var year = date.getFullYear();
@@ -394,23 +398,30 @@ function formatDate(date) {
 }
 
 
-document.getElementById("expdate1").addEventListener("input", calculateDate);
+document.getElementById("expdate1").addEventListener("input", calculateDate1);
 
-function calculateDate() {
+function calculateDate1() {
   var inputDate = document.getElementById("expdate1").value; // Get the selected date from the input field
   var date = new Date(inputDate); // Convert the input value to a Date object
   date.setMonth(date.getMonth() + 6); // Add 6 months to the selected date
 
-  var result = formatDate(date); // Format the result using a helper function formatDate()
+  var result = formatDate1(date); // Format the result using a helper function formatDate()
 
   document.getElementById("result1").value = result; // Set the result value in the output field
 }
 
-function formatDate(date) {
+function formatDate1(date) {
   var year = date.getFullYear();
   var month = ("0" + (date.getMonth() + 1)).slice(-2); // Adding 1 to the month since it's zero-based index
   var day = ("0" + date.getDate()).slice(-2);
   return year + "-" + month + "-" + day; // Format the date as "YYYY-MM-DD"
 }
+
+$(document).ready(function(){
+ var response = $('#response').val();
+  if ( response === '200') {
+        $('#list').show();
+   }
+});
 </script>
 {% endblock %}

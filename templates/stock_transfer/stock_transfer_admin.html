@@ -2,7 +2,13 @@
 
 {% block htmlbody %}
 
-
+<style>
+	.style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:70px !important;
+	}
+</style>
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -80,45 +86,21 @@
                 </div>
               </div>
 
-            </div>
-                 <div class="row">
-              <div class="col-md-12 col-sm-12 ">
-                <div class="x_panel bus-div" style="display:none;">
-									<br />
-									<form class="form-label-left input_mask"  method="POST" action="/create_depoindent"   enctype="multipart/form-data">
-										{% csrf_token %}
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Stock Transfer From  *</label>
-                                                   <input type="hidden" name="busname1" id="busname1" />
-										    	 <select class="form-control items" name="busid1" id="busid1" required>
-                                                     <option value="">select busstation</option>
-
-                                                </select>
-										</div>
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Stock Transfer To *</label>
-                                            <input type="hidden" name="depotname1" id="depotname" />
-                                            <select class="form-control items" name="depotid" id="depotid" required>
-                                                     <option value="">select depot</option>
-                                                </select>
-                                        </div>
-                                        <div class="col-md-6 col-sm-2 form-group has-feedback">
-												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
-											</div>
-                                    </form>
-                </div>
-              </div>
 
 
- <div class="col-md-12 col-sm-12">
+ <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-div"  style="display:none;">
+           	<form class="form-label-left input_mask"  method="POST" action="/wh_item_add_admin"   enctype="multipart/form-data">
+										{% csrf_token %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-                                              <input id="itemname1" name="itemname1" type="hidden"/>
+                                              <input id="whitemname" name="whitemname" type="hidden"/>
                                              <input id="freequantity" name="freequantity" type="hidden"/>
-                                             <input id="expdate" name="expdate" type="hidden"/>
-                                             <input id="batchno" name="batchno" type="hidden"/>
-                                             <input id="cpsno" name="cpsno" type="hidden"/>
-                                            <input id="uom" name="uom" type="hidden"/>
+                                             <input id="whexpdate" name="whexpdate" type="hidden"/>
+                                             <input id="whbatchno" name="whbatchno" type="hidden"/>
+                                             <input id="whcp_sno" name="whcp_sno" type="hidden"/>
+                                            <input id="whuom" name="whuom" type="hidden"/>
+                                            <input id="whnob" name="whnob" type="hidden"/>
+                                            <input id="whexpirydate" name="whexpirydate" type="hidden"/>
 											<label>Select Items *</label>
 										    	 <select class="form-control select2" name="itemcode1" id="itemcode1" required>
 													<option value="">Items</option>
@@ -155,11 +137,14 @@
               </div>
                 </form>
 
-
+ </div>
                   </div>
               </div>
-            </div>
-                   <div class="x_content" id="divItemsAdd" style="display:none;">
+
+
+    <div class="col-md-12 col-sm-12 ">
+                    <div class="x_panel"  style="display:none;"  id="divItemsAdd">
+                   <div class="x_content">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="card-box table-responsive">
@@ -188,7 +173,7 @@
                                                     <tr>
                                                         <td>{{ forloop.counter }}</td>
                                                         <td>{{ all_data.item_name }}</td>
-                                                                                  <td> {{ all_data.quantity }}</td>
+                                                        <td> {{ all_data.quantity }}</td>
                                                         <td>{{ all_data.noofbottles }}</td>
                                                         <td>{{ all_data.expiry_date }}</td>
                                                         <!--<td>{{ all_data.hsn }}</td>-->
@@ -197,10 +182,10 @@
                                                         <td>{{all_data.manufacturer}}</td>
 
                                                         <td>
-                                                            <a class="btn btn-default btn-sm"
-                                                               href="delete_stk_item/{{ all_data.sno }}/"><i
-                                                                    class="fa fa-trash"></i></a>
-                                                            <span class="btn btn-default btn-sm"
+                                                              <a
+                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status"><i
+                                                                    class="fa fa-trash"></i></span></a>
+                                                            <span class="badge badge-info"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
@@ -210,6 +195,7 @@
                                                     </tbody>
                                                     <tfoot>
 
+                                                    </tfoot>
                                                     </tfoot>
                                                     </tr>
                                                     {% endfor %}
@@ -225,7 +211,174 @@
                                                                                              data-target="#complete"
                                                                                              data-toggle="modal"
                                                                                              onclick="VerifyClick('{{data.so_number}}')"
-                                                                                             style="padding:  4px !important;">COMPLETE SALE</span></span>
+                                                                                             style="padding:  4px !important;">COMPLETE TRANSFER</span></span>
+                                                        {% endif %}
+                                                    </th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    </div>
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel bus_div">
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="/generate_transid_bust"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+
+											<label>Stock Transfer From  *</label>
+                                                   <input type="hidden" name="busname1" id="busname1" />
+										    	 <select class="form-control items" name="busid1" id="busid1" required>
+                                                     <option value="">select busstation</option>
+
+                                                </select>
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Stock Transfer To *</label>
+                                            <input type="hidden" name="depotname1" id="depotname1" />
+                                            <select class="form-control items" name="depotid" id="depotid" required>
+                                                     <option value="">select depot</option>
+                                                </select>
+                                        </div>
+                                        <div class="col-md-6 col-sm-2 form-group has-feedback">
+												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
+											</div>
+                                    </form>
+                </div>
+              </div>
+
+                    </div>
+
+                        <div class="col-md-12 col-sm-12 ">
+       <div class="x_panel" id="items-div"  style="display:none;">
+           	<form class="form-label-left input_mask"  method="POST" action="/wh_item_add_admin"   enctype="multipart/form-data">
+										{% csrf_token %}
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                              <input id="whitemname" name="whitemname" type="hidden"/>
+                                             <input id="freequantity" name="freequantity" type="hidden"/>
+                                             <input id="whexpdate" name="whexpdate" type="hidden"/>
+                                             <input id="whbatchno" name="whbatchno" type="hidden"/>
+                                             <input id="whcp_sno" name="whcp_sno" type="hidden"/>
+                                            <input id="whuom" name="whuom" type="hidden"/>
+                                            <input id="whnob" name="whnob" type="hidden"/>
+                                            <input id="whexpirydate" name="whexpirydate" type="hidden"/>
+											<label>Select Items *</label>
+										    	 <select class="form-control select2" name="itemcode1" id="itemcode1" required>
+													<option value="">Items</option>
+
+                                                </select>
+										</div>
+                                        	 <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
+                                            <label>Type</label>
+                                            <input id="typename" name="typename" type="hidden"/>
+                                            <select class="form-control items" id="typeid" name="typeid" required>
+                                                <option value="">Type</option>
+                                                {% for data1 in type %}
+                                                <option value="{{ data1.type }}">{{ data1.type }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
+                                            <label>Qty(Cases) </label>
+                                            <input class="form-control" id="quantity" name="quantity"
+                                                   placeholder="cases"
+                                                   type="text">
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
+                                            <label>Qty(Bottles)</label>
+                                            <input class="form-control" id="nob" name="nob" placeholder="bottles"
+                                                   type="text">
+                                        </div>
+										 <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                            <button class="btn btn-primary" name="add" style="margin-top: 30px;"
+                                                    type="submit">Add
+                                            </button>
+                                        </div>
+
+              </div>
+                </form>
+
+ </div>
+                  </div>
+              </div>
+            </div>
+             </div>
+
+
+                    <div class="x_panel"  style="display:none;"  id="divItemsAdd">
+                   <div class="x_content">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card-box table-responsive">
+                                                <p class="text-muted font-13 m-b-30">
+                                                </p>
+
+                                                <table class="display  table-bordered" id="datatable"
+                                                       style="width:100%">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>S No</th>
+                                                        <th>Item Name</th>
+                                                        <th>Qty(Cases)</th>
+                                                        <th>Qty(Bottles)</th>
+                                                        <th>Expiry Date</th>
+                                                        <!--<th>HSN</th>-->
+                                                        <th>Batch</th>
+                                                        <!--<th>MRP</th>-->
+                                                        <th>Manufacture</th>
+                                                        <th>Action</th>
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for all_data in wh_item_list %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ all_data.item_name }}</td>
+                                                        <td> {{ all_data.quantity }}</td>
+                                                        <td>{{ all_data.noofbottles }}</td>
+                                                        <td>{{ all_data.expiry_date }}</td>
+                                                        <!--<td>{{ all_data.hsn }}</td>-->
+                                                        <td>{{ all_data.batch_no }}</td>
+                                                        <!--<td>{{ all_data.mrp }}</td>-->
+                                                        <td>{{all_data.manufacturer}}</td>
+
+                                                        <td>
+                                                              <a
+                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status"><i
+                                                                    class="fa fa-trash"></i></span></a>
+                                                            <span class="badge badge-info"
+                                                                  data-target="#edit_stk_item"
+                                                                  data-toggle="modal"
+                                                                  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
+                                                                    class="fa fa-edit"></i></span>
+
+                                                        </td>
+                                                    </tbody>
+                                                    <tfoot>
+
+                                                    </tfoot>
+                                                    </tfoot>
+                                                    </tr>
+                                                    {% endfor %}
+
+
+                                                    <tbody>
+                                                    </tbody>
+                                                     {% if status == 'ok' %}
+                                                    <td colspan="9" style="color:#06911A">
+                                                        <b>Invoice No: {{ taxinvoice }}</b>
+
+                                                            <span style="float:right;"><span class="badge-warning"
+                                                                                             data-target="#complete"
+                                                                                             data-toggle="modal"
+                                                                                             onclick="VerifyClick('{{data.so_number}}')"
+                                                                                             style="padding:  4px !important;">COMPLETE TRANSFER</span></span>
                                                         {% endif %}
                                                     </th>
                                                     </tr>
@@ -236,19 +389,84 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                </div>
-              </div>
+             </div>
+          </div>
+</div>
+
             </div>
           </div>
 </div>
+
+<div class="modal custom-modal fade" id="complete" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content style1">
+            <div class="modal-header">
+                <h3 class="modal-title"  id="myModalLabel1">Complete Transfer</h3>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/complete_stk_admin"  method="POST">
+                    {% csrf_token %}
+                    <input id="txtHdnId" name="txtHdnId" type="hidden"/>
+
+                    <div class="col-md-12 col-sm-12  form-group has-feedback">
+                        <label for="remarks">Remarks</label>
+
+                        <textarea class="form-control" id="remarks" name="remarks" placeholder="remarks"></textarea>
+                        <p></p>
+                    </div>
+                    <div class="col-md-6 col-sm-6  offset-md-3">
+                        <button class="btn btn-primary" name="complete" type="submit">Complete</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="" id="myForm1">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete  Item</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="sno" name="sno"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit"  id="modalLink" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 <script>
-$("#wh").change(function() {
-  var selectedOption= $(this).val();
-    $("#wh").val(selectedOption);
+
+function VerifyClick1(id){
+$("#sno").val(id);
+}
+
+$("#wh1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
-  $("#whname").val(selectedOptionText);
+  $("#whname1").val(selectedOptionText);
 });
 $("#itemcode").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -257,6 +475,14 @@ $("#itemcode").change(function() {
 $("#buscode").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busname").val(selectedOptionText);
+});
+$("#busid1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#busname1").val(selectedOptionText);
+});
+$("#depotid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#depotname1").val(selectedOptionText);
 });
 $("#depocode").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -267,10 +493,7 @@ $("#itemcode1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#itemname1").val(selectedOptionText);
 });
-$("#wh1").change(function() {
-  var selectedOptionText = $(this).find(":selected").text();
-  $("#whname1").val(selectedOptionText);
-});
+
 $("#depocode1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#deponame1").val(selectedOptionText);
@@ -293,7 +516,7 @@ $("#depocode1").change(function() {
                  if (response === "200") {
                     var optionValue1 = $("#wh2").val();
                     $("#wh1").find("option[value='" + optionValue1 + "']").prop("selected", true);
-                      var optionValue2 = $("#wh").val();
+                     var optionValue2 = $("#wh").val();
                     $("#wh").find("option[value='" + optionValue2 + "']").prop("selected", true);
                  }
                 }
@@ -341,7 +564,7 @@ $("#depocode1").change(function() {
 
                     $.each(obj, function(index, item) {
                          if (item.status === "Active") {
-                            $("#busid1").append("<option value='" + item.busstationid + "'>" + item.busstationname + "</option>");
+                            $("#busid1").append("<option value='" + item.busatationid + "'>" + item.busstationname + "</option>");
                             //$("#depotid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
                          }
                     });
@@ -352,15 +575,13 @@ $("#depocode1").change(function() {
         });
     });
 
-
-
     $(document).ready(function() {
-        var code = $('#wh2').val();
+
         $.ajax({
             type: "POST",
             url: '{% url "warehouseinventory_search" %}',
             data: {
-                'code': code,
+
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
             },
             success: function(data) {
@@ -383,25 +604,30 @@ $("#depocode1").change(function() {
         });
     });
 
+
+
  $(document).ready(function () {
             $('#itemcode1').change(function() {
                     //$("#busitem_id").select2();
                     var code = $('#wh2').val();
+                     var itemcode = $(this).val();
                      var searchterm = $(this).find(":selected").text();
                     $.ajax({
-                      data: {"searchterm":searchterm,'code':code,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      data: {"searchterm":searchterm,'code':code,'itemcode':itemcode,'csrfmiddlewaretoken': '{{ csrf_token }}',},
                       url: "{% url 'get_wh_item' %}",
                       type: 'POST',
                       success: function(data){
-                        var obj = data.data.warehouseinventorylist
-                        console.log("obj");
+
+                        var obj = data.data
                          console.log(obj);
-                        if(obj.length>0){
-                            $("#freequantity").val(obj[0].freeqty);
-                            $("#expdate").val(obj[0].expirydate);
-                            $("#batchno").val(obj[0].batchcode);
-                            $("#cpsno").val(obj[0].cp_sno);
-                            $("#uom").val(obj[0].uom);
+                          console.log(obj.whmrp);
+                        if(obj){
+                            $("#whmrp").val(obj.whmrp);
+                            $("#whuom").val(obj.whuom);
+                            $("#whitemname").val(obj.whitemname);
+                            $("#whcp_sno").val(obj.whcp_sno);
+                            $("#whexpdate").val(obj.whexpirydate);
+                             $("#whnob").val(obj.whexpirydate);
                         }
                       },
                       errors: function(e) {
@@ -409,18 +635,22 @@ $("#depocode1").change(function() {
                       }
                     })
             })
-  })
+ })
+
+
+
 $('#quantity').on('input', function()  {
             $("#nob").val(" ");
     	    val  = $("#quantity").val();
-            val1 = $("#uom").val();
+
+            val1 = $("#whuom").val();
             val2 =    (val * val1)
             $("#nob").val(val2);
         });
  $('#nob').on('input', function()  {
             $("#quantity").val(" ");
     	    val  = $("#nob").val();
-            val1 = $("#uom").val();
+            val1 = $("#whuom").val();
             val2 =    (val / val1)
             if (Number.isInteger(val2)) {
                     val2 = val2.toFixed(0); // For integers, remove decimal places
@@ -440,6 +670,15 @@ $(document).ready(function(){
    }
 });
 
+$(document).ready(function(){
+ var response = $('#response').val();
+  if ( response === '200') {
+        $('#divItemsAdd').show();
+   }
+});
+
+
+
 $('#getdate').val(new Date().toJSON().slice(0,10));
 $('.form-control').change(function() {
     console.log('Dropdown value changed');
@@ -453,9 +692,10 @@ $('.form-control').change(function() {
       var selectedOption = $(this).val();
       if (selectedOption === "Warehouse") {
         $(".warehouse-div").show();
-         $(".bus-div").hide()
+         $(".bus_div").hide()
       } else if (selectedOption === "Busstation") {
-         $(".bus-div").show();
+        alert('hai')
+         $(".bus_div").show();
          $(".warehouse-div").hide();
       }
     });
@@ -472,7 +712,14 @@ $(document).ready(function() {
       }
     });
 });
-
+$(document).ready(function() {
+    $('#store-status').on('show.bs.modal', function(event) {
+        var modalLink = $(this).find('#modalLink');
+        var sno = $(event.relatedTarget).data('sno');
+        var modalUrl = '/delete_stk_item/' + sno + '/';
+         $('#myForm1').attr('action', modalUrl);
+    });
+});
    $('#getdate1').val(new Date().toJSON().slice(0,10));
 </script>
 {% endblock %}

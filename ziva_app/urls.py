@@ -318,6 +318,7 @@ urlpatterns = [
     path('warehouseinventory_search',views.warehouseinventory_search,name='warehouseinventory_search'),
     path('wh_item_add_admin',views.wh_item_add_admin,name='wh_item_add_admin'),
     path('wh_item_list_admin',views.wh_item_list_admin,name='wh_item_list_admin'),
+    path('complete_stk_admin',views.complete_stk_admin,name='complete_stk_admin')
 
 
 ]
