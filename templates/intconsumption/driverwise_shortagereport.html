@@ -81,7 +81,6 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
-
                                     <th>Depot</th>
                                     <th>Staff Id</th>
                                     <th>Staff Name</th>
@@ -132,7 +131,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="datatable-buttons" class="display  table-striped table-bordered" style="width:100%">
+                        <table  class="datatable-buttons1  display  table-striped table-bordered" style="width:100%">
 
                      <thead>
                                     <tr>
@@ -243,62 +242,99 @@ $("#depoid").change(function() {
   $("#from").val(selectedOptionText);
 });
 
-+
 
 
-$(".driver_shortlist").on('click', function () {
-    let staffid = $(this).data('id');
-    let fdate = $(this).data('fdate');
-    let tdate = $(this).data('tdate');
+$(document).ready(function () {
+    var dataTable = $(".datatable-buttons1").DataTable({
+        dom: "Blfrtip",
+        buttons: [
+            {
+                extend: "copy",
+                className: "btn-sm"
+            },
+            {
+                extend: "csv",
+                className: "btn-sm"
+            },
+            {
+                extend: "excel",
+                className: "btn-sm"
+            },
+            {
+                extend: "pdfHtml5",
+                className: "btn-sm"
+            },
+            {
+                extend: "print",
+                className: "btn-sm"
+            },
+        ],
+        responsive: true,
+          columns: [
+            { data: 'date' },
+            { data: 'staff_number' },
+            { data: 'staff_name' },
+            { data: 'noofbottles_recieve' },
+            { data: 'return_no_of_bottles' },
+            { data: 'shortage' },
+        ],
+    });
 
-    $.ajax({
-        url: '{% url "driverwise_sub_shortage" %}',
-        type: 'POST',
-        data: {
-            'staffid': staffid,
-            'fdate': fdate,
-            'tdate': tdate,
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-        },
-        success: function (data) {
-            var error = data.data.error;
-            var message = data.data.message;
+    $(".driver_shortlist").on('click', function () {
+        let staffid = $(this).data('id');
+        let fdate = $(this).data('fdate');
+        let tdate = $(this).data('tdate');
 
-            if (error === true) {
-                alertify.set('notifier', 'position', 'top-center');
-                alertify.error(message);
-            } else {
-                $('.driver').show();
-                var responseData = data.data.shortagelist;
-                var tableBody = $('#datatable-buttons tbody');
+        $.ajax({
+            url: '{% url "driverwise_sub_shortage" %}',
+            type: 'POST',
+            data: {
+                'staffid': staffid,
+                'fdate': fdate,
+                'tdate': tdate,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (data) {
+                var error = data.data.error;
+                var message = data.data.message;
 
-                // Clear existing rows
-                tableBody.empty();
+                if (error === true) {
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                } else {
+                    $('.driver').show();
+                    var responseData = data.data.shortagelist;
+                    dataTable.clear().rows.add(responseData).draw();
+                    var tableBody = $('.datatable-buttons1 tbody');
 
-                for (var i = 0; i < responseData.length; i++) {
-                    var item = responseData[i];
-                    var row = $('<tr>');
-                    row.append($('<td>').text(i + 1));
-                    row.append($('<td>').text(item.date));
+                    // Clear existing rows
+                    tableBody.empty();
 
-                    if (i === 0) {
-                        row.append($('<td rowspan="' + responseData.length + '">').text(item.staff_number));
-                        row.append($('<td rowspan="' + responseData.length + '">').text(item.staff_name));
+                    for (var i = 0; i < responseData.length; i++) {
+                        var item = responseData[i];
+                        var row = $('<tr>');
+                        row.append($('<td>').text(i + 1));
+                        row.append($('<td>').text(item.date));
+
+                        if (i === 0) {
+                            row.append($('<td rowspan="' + responseData.length + '">').text(item.staff_number));
+                            row.append($('<td rowspan="' + responseData.length + '">').text(item.staff_name));
+                        }
+
+                        row.append($('<td>').text(item.noofbottles_recieve));
+                        row.append($('<td>').text(item.return_no_of_bottles));
+                        row.append($('<td>').text(item.shortage));
+                        tableBody.append(row);
                     }
 
-                    row.append($('<td>').text(item.noofbottles_recieve));
-                    row.append($('<td>').text(item.return_no_of_bottles));
-                    row.append($('<td>').text(item.shortage));
-                    tableBody.append(row);
                 }
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error:", error);
             }
-        },
-        error: function (xhr, status, error) {
-            console.log("AJAX Error:", error);
-        }
+        });
     });
 });
-
 
 </script>
 {% endblock %}

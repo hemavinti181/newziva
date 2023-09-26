@@ -2988,6 +2988,15 @@ def add_grn(request):
         if role == 'Admin':
 
             if request.method == "POST":
+                invoiceattach = request.FILES.get("invoiceimage")
+
+                if invoiceattach:
+                    invoiceattach_data = base64.b64encode(invoiceattach.read())
+                    invoiceattach_name = request.FILES.get("invoiceimage").name
+
+                else:
+                    invoiceattach_data = None
+                    invoiceattach_name = None
                 url = "http://13.235.112.1/ziva/mobile-api/create-grn-admin.php"
                 payload = {
                     "accesskey": accesskey,
@@ -2996,6 +3005,8 @@ def add_grn(request):
                     "invoicedate": request.POST.get('invoicedate'),
                     "invoiceamount": request.POST.get('invoiceamount'),
                     "vendorid": request.POST.get('vid'),
+                    "invoicephoto":invoiceattach_data,
+                    "invoiceattachfilename":invoiceattach_name,
                     "whcode": warehouseid
                 }
                 payload = json.dumps(payload, cls=BytesEncoder)
@@ -3021,6 +3032,15 @@ def add_grn(request):
         else:
 
                     if request.method == "POST":
+                        invoiceattach = request.FILES.get("invoiceimage")
+
+                        if invoiceattach:
+                            invoiceattach_data = base64.b64encode(invoiceattach.read())
+                            invoiceattach_name = request.FILES.get("invoiceimage").name
+
+                        else:
+                            invoiceattach_data = None
+                            invoiceattach_name = None
                         url = "http://13.235.112.1/ziva/mobile-api/create-grn.php"
                         payload = {
                             "accesskey": accesskey,
@@ -3028,7 +3048,10 @@ def add_grn(request):
                             "invoiceno": request.POST.get('invno'),
                             "invoicedate": request.POST.get('invoicedate'),
                             "invoiceamount": request.POST.get('invoiceamount'),
+                            "invoice_photo": invoiceattach,
                             "vendorid": request.POST.get('vid'),
+                            "invoicephoto": invoiceattach_data,
+                            "invoiceattachfilename": invoiceattach_name,
                             "whcode": warehouseid
                         }
                         payload = json.dumps(payload, cls=BytesEncoder)

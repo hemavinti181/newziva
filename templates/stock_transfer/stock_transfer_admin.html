@@ -86,7 +86,35 @@
                 </div>
               </div>
 
+     <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel bus_div" style="display:none">
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="/generate_transid_bust"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
 
+											<label>Stock Transfer From  *</label>
+                                                   <input type="hidden" name="busname1" id="busname1" />
+										    	 <select class="form-control items" name="busid1" id="busid1" required>
+                                                     <option value="">select busstation</option>
+
+                                                </select>
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Stock Transfer To *</label>
+                                            <input type="hidden" name="depotname1" id="depotname1" />
+                                            <select class="form-control items" name="depotid" id="depotid" required>
+                                                     <option value="">select depot</option>
+                                                </select>
+                                        </div>
+                                        <div class="col-md-6 col-sm-2 form-group has-feedback">
+												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
+											</div>
+                                    </form>
+                </div>
+              </div>
+
+                    </div>
 
  <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-div"  style="display:none;">
@@ -224,35 +252,7 @@
 
 
                                     </div>
-              <div class="col-md-12 col-sm-12 ">
-                <div class="x_panel bus_div">
-									<br />
-									<form class="form-label-left input_mask"  method="POST" action="/generate_transid_bust"   enctype="multipart/form-data">
-										{% csrf_token %}
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
 
-											<label>Stock Transfer From  *</label>
-                                                   <input type="hidden" name="busname1" id="busname1" />
-										    	 <select class="form-control items" name="busid1" id="busid1" required>
-                                                     <option value="">select busstation</option>
-
-                                                </select>
-										</div>
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Stock Transfer To *</label>
-                                            <input type="hidden" name="depotname1" id="depotname1" />
-                                            <select class="form-control items" name="depotid" id="depotid" required>
-                                                     <option value="">select depot</option>
-                                                </select>
-                                        </div>
-                                        <div class="col-md-6 col-sm-2 form-group has-feedback">
-												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
-											</div>
-                                    </form>
-                </div>
-              </div>
-
-                    </div>
 
                         <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-div"  style="display:none;">
@@ -637,8 +637,6 @@ $("#depocode1").change(function() {
             })
  })
 
-
-
 $('#quantity').on('input', function()  {
             $("#nob").val(" ");
     	    val  = $("#quantity").val();
@@ -646,7 +644,8 @@ $('#quantity').on('input', function()  {
             val1 = $("#whuom").val();
             val2 =    (val * val1)
             $("#nob").val(val2);
-        });
+});
+
  $('#nob').on('input', function()  {
             $("#quantity").val(" ");
     	    val  = $("#nob").val();

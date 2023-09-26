@@ -73,7 +73,7 @@
                                 <p></p>
                         <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">
                                 <table id="datatable" class="display table-striped table-bordered" style="width:100%">-->
-                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
+                                    <table id="datatable" class="display table-striped table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
@@ -118,7 +118,7 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
 
-                        <table id="driver_shortage" class="display  table-bordered" style="width:100%">
+                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
 
                      <thead>
                                     <tr>
@@ -222,48 +222,12 @@ $("#depoid").change(function() {
   $("#from").val(selectedOptionText);
 });
 
-$(document).ready( function () {
-      var datatable = $("#driver_shortage").DataTable({
-                dom: "Blfrtip",
-                "bDestroy": true,
-                buttons: [
-                    {
-                        extend: "copy",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "csv",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "excel",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "pdfHtml5",
-                        className: "btn-sm"
-                    },
-                    {
-                        extend: "print",
-                        className: "btn-sm"
-                    },
-                ],
-                responsive: true
-     });
 
- $(document).on('click', '.driver_shortlist', function () {
-    alert('hai');
+$(document).on('click', '.driver_shortlist', function () {
     let service_id = $(this).data('id');
     let deponame = $(this).data('deponame');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
-
-
-    // Check if DataTable is already initialized
-    if ($.fn.DataTable.isDataTable('#driver_shortage')) {
-        $('#driver_shortage').DataTable().destroy(); // Destroy the existing DataTable
-    }
-
     $.ajax({
         url: '{% url "service_wise_shortage" %}',
         type: 'POST',
@@ -284,9 +248,11 @@ $(document).ready( function () {
             } else {
                 $('.driver').show();
                 var responseData = data.data.shortagelist;
-                var tableBody = $('#driver_shortage tbody');
+                var tableBody = $('#datatable-buttons tbody');
+                table = $('#demoApi').DataTable();
                 var count = responseData.length;
                 tableBody.empty();
+
                 for (var i = 0; i < count; i++) {
                     var item = responseData[i];
                     var row = $('<tr>');
@@ -300,33 +266,7 @@ $(document).ready( function () {
                     row.append($('<td>').text(item.shortage));
                     tableBody.append(row);
                 }
-
-                $('#driver_shortage').DataTable({
-                    dom: "Blfrtip",
-                    buttons: [
-                        {
-                            extend: "copy",
-                            className: "btn-sm"
-                        },
-                        {
-                            extend: "csv",
-                            className: "btn-sm"
-                        },
-                        {
-                            extend: "excel",
-                            className: "btn-sm"
-                        },
-                        {
-                            extend: "pdfHtml5",
-                            className: "btn-sm"
-                        },
-                        {
-                            extend: "print",
-                            className: "btn-sm"
-                        },
-                    ],
-                    responsive: true
-                });
+                table.draw();
             }
         },
         error: function (xhr, status, error) {
@@ -334,6 +274,7 @@ $(document).ready( function () {
         }
     });
 });
-});
+
+
 </script>
 {% endblock %}
