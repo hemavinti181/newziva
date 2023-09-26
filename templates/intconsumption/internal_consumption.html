@@ -75,11 +75,11 @@
                         <tr>
                                     <th>S No</th>
                                     <th>Depot</th>
-                                    <th>Service no</th>
+                                    <th>Service</th>
                                     <th>Date</th>
-                                    <th>No Of Bottles</th>
+                                    <th>Bottles</th>
                                     <th>OPRS</th>
-                                    <th>Vehical No</th>
+                                    <th>Vehical</th>
                                     <th>Staff Id(1)</th>
                                     <th>Staff Name(1)</th>
                                     <th>Staff Id(2)</th>
@@ -93,7 +93,7 @@
                             {% for data in busservicesupplylist %}
                             <tr>
                               <td>{{ forloop.counter }}</td>
-                              <td>{{ data.deponame }}</td>
+								<td>{{ data.deponame }}</td>
                               <td>{{ data.bus_service_no }}</td>
                               <td>{{ data.created_on }}</td>
                               <td>{{ data.noofbottles_recieve }}</td>
