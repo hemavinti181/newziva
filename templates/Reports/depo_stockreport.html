@@ -179,14 +179,17 @@
                                <th rowspan="2">S NO</th>
                                 <th rowspan="2">Date</th>
                                 <th rowspan="2">Depot Name</th>
-                                <th colspan="3">Items</th>
+                                <th colspan="6">Stock Available in days</th>
                              <th  colspan="3">Average Consumption Per Day</th>
                             </tr>
                        <tr>
 
                                        <th>1000ml</th>
+                                       <th>Days</th>
                                         <th>500ml</th>
+                                        <th>Days</th>
                                         <th>250ml</th>
+                                        <th>Days</th>
                                        <th>1000ml</th>
                                         <th>500ml</th>
                                         <th>250ml</th>
@@ -197,15 +200,18 @@
 
                         {% for item_quantity in item_quantities %}
     <tr>
-      <td>{{ forloop.counter }}</td>
-      <td>{{ item_quantity.date }}</td>
-        <td><a href="/busstation_stock/{{ item_quantity.depoid }}/" style="color:#075ab3;">{{ item_quantity.depo_name }}</a></td>
-                                            <td>{{ item_quantity.inv_1000ML }}</td>
-                                                <td>{{ item_quantity.inv_500ML }}</td >
-                                                  <td>{{ item_quantity.inv_250ML }}</td>
-                                                  <td>{{ item_quantity.con_1000ML }}</td>
-                                                  <td>{{ item_quantity.con_500ML }}</td>
-                                                   <td>{{ item_quantity.con_250ML }}</td>
+                                          <td>{{ forloop.counter }}</td>
+                                          <td>{{ item_quantity.date }}</td>
+                                         <td><a href="/busstation_stock/{{ item_quantity.depoid }}/" style="color:#075ab3;">{{ item_quantity.depo_name }}</a></td>
+                                          <td>{{ item_quantity.inv_1000ML }}</td>
+                                            <td>{{ item_quantity.indays_1000ML }}</td>
+                                           <td>{{ item_quantity.inv_500ML }}</td >
+                                             <td>{{ item_quantity.indays_500ML }}</td>
+                                           <td>{{ item_quantity.inv_250ML }}</td>
+                                             <td>{{ item_quantity.indays_250ML }}</td>
+                                           <td>{{ item_quantity.con_1000ML }}</td>
+                                           <td>{{ item_quantity.con_500ML }}</td>
+                                           <td>{{ item_quantity.con_250ML }}</td>
 
 
                             </tr>

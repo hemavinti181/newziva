@@ -107,18 +107,20 @@
                             <td>
                                 {% if data.status == 'Pending' %}
                                     {% if request.session.role == 'Admin' %}
-                                          <a href="#" onclick="VerifyClick2('{{ data.sno }}','{{ data.service_id }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
+                                         <a href="#" onclick="VerifyClick2('{{ data.sno }}','{{ data.service_id }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                           <i class="fa fa-trash"></i></span></a>
                                           <a href="#" class="depoedit" onclick="editConsumption('{{ data.service_id }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                     {% endif %}
                                       <span class="badge bg-green" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+								{% else %}
+								{% if request.session.role == 'Admin' %}
 
-                                {% else %}
 								   <a href="#" onclick="VerifyClick2('{{ data.sno }}','{{ data.service_id }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                           <i class="fa fa-trash"></i></span></a>
                                           <a href="#" class="depoedit" onclick="editConsumption('{{ data.service_id }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
-                                    <span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}')"  data-target="#return">RETURN</span>
                                 {% endif %}
+								<span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}')"  data-target="#return">RETURN</span>
+								{% endif %}
                             </td>
                                 </tr>
                             {% endfor %}
@@ -289,7 +291,7 @@
                                             <div class="modal-content style1">
                                                <div class="modal-body">
 
-                                             <form method="POST" action="/return_bussupply">
+                                             <form method="POST" action="/return_bussupply" enctype="multipart/form-data">
                                                     {% csrf_token %}
                               <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -912,32 +914,9 @@ $(document).ready(function() {
   });
 
   function VerifyClick(id, id1) {
-
         var auth = $("#sno").val(id);
         var serviceid1 = $("#serviceid1").val(id1)
 
-        $.ajax({
-            url: 'authorize_staffid', // Replace with the actual server endpoint URL
-            type: 'POST', // Use the appropriate HTTP method (GET/POST/PUT/DELETE) as per your server endpoint
-            data: {
-               'auth':auth,'serviceid1 ':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function(response) {
-
-                console.log(data.response)
-                if (response.status_code === 200) {
-                    $('#returnButton').show();
-                     window.reaload();
-                } else {
-                    $('#returnButton').hide();
-                }
-            },
-            error: function() {
-            alert("error")
-                // Handle error here, e.g., display an error message or hide the button
-                $('#returnButton').hide();
-            }
-        });
     }
 
  function VerifyClick1(id){
@@ -1047,15 +1026,22 @@ $(document).ready(function () {
                   'auth': auth,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
               success: function (response) {
-              var message = response.message;
+              alert('hello')
+              var message = response.response.message;
+              var response = response.response.status
+              alert(response)
+              alert(message)
               console.log(response)
-               if(response === '200'){
-                 alertify.success(message);
+               if(response === 200){
+
                  $("#return").show();
                  $("#bs-example-modal-sm").hide();
                  window.location.reload();
+                  alertify.set('notifier', 'position', 'top-center');
+                  alertify.success(message);
                }
                else{
+                    alert(false)
                     alertify.set('notifier', 'position', 'top-center');
                     alertify.error(message);
                     $("#bs-example-modal-sm").modal("hide");

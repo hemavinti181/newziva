@@ -32,7 +32,6 @@ from django.contrib.auth import logout
 
 
 class BytesEncoder(json.JSONEncoder):
-
     def default(self, obj):
         if isinstance(obj, bytes):
             return obj.decode('utf-8')
@@ -1619,104 +1618,108 @@ def city_status_inactive(request):
 def depo_add(request):
     if 'accesskey' not in request.session:
         return redirect('/login')
-    menuname = request.session['mylist']
-    g = geocoder.ip('me', user_agent='http')
-    latlng = g.latlng
-    lat = latlng[0]
-    lng = latlng[1]
-    accesskey = request.session['accesskey']
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-    response = requests.request("POST", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        regionlist = data['regionlist']
-    else:
-        try:
+    try:
+
+        menuname = request.session['mylist']
+        g = geocoder.ip('me', user_agent='http')
+        latlng = g.latlng
+        lat = latlng[0]
+        lng = latlng[1]
+        accesskey = request.session['accesskey']
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
             data = response.json()
-            messages.error(request,response.text)
+            regionlist = data['regionlist']
+        else:
+            try:
+                data = response.json()
+                messages.error(request,response.text)
+                return render(request, 'depo/depo_add.html')
+            except:
+                messages.error(request,response.text)
             return render(request, 'depo/depo_add.html')
-        except:
-            messages.error(request,response.text)
-        return render(request, 'depo/depo_add.html')
 
 
 
-    if request.method == "POST":
-        gstattach = request.FILES.get("gstattach")
-        depofile = request.FILES.get("depofile")
-        licattach = request.FILES.get("licattach")
-        if licattach:
-            gstattach = base64.b64encode(gstattach.read())
-            gst_name = request.FILES.get("gstattach").name
+        if request.method == "POST":
+            gstattach = request.FILES.get("gstattach")
+            depofile = request.FILES.get("depofile")
+            licattach = request.FILES.get("licattach")
+            if licattach:
+                gstattach = base64.b64encode(gstattach.read())
+                gst_name = request.FILES.get("gstattach").name
 
+            else:
+                gstattach = None
+                gst_name = None
+            if licattach:
+                licenceattach_data = base64.b64encode(licattach.read())
+                licenceattach_name = request.FILES.get("licattach").name
+
+            else:
+                licenceattach_data = None
+                licenceattach_name = None
+            if depofile:
+                depofile_data = base64.b64encode(depofile.read())
+                depofile_name = request.FILES.get("depofile").name
+
+            else:
+                depofile_data = None
+                depofile_name = None
+
+            id=request.POST.get("regionid")
+            for i in regionlist:
+                if i['region_id'] == id:
+                    whid=i['warehouseid']
+                    whname=i['warehousename']
+                    regionname = i['regionname']
+
+                    url = "http://13.235.112.1/ziva/mobile-api/add-depomaster.php"
+
+                    payload = {
+                        "accesskey": accesskey,
+                        "deponame": request.POST.get("deponame"),
+                        "gstnumber": request.POST.get("gstnumber"),
+                        "address": request.POST.get("address"),
+                        "depo_manager": request.POST.get("depomanager"),
+                        "location":  str(lat)+","+str(lng),
+                        "depo_contact_no": request.POST.get('mobileno'),
+                        "gstattach": gstattach,
+                        "gstattachfilename": gst_name,
+                        "licence":request.POST.get("license"),
+                        "licenceattach":licenceattach_data,
+                        "licencefilename": licenceattach_name,
+                        "depoattach":  depofile_name,
+                        "depoattachfilename":depofile_data,
+                        "warehouseid": whid,
+                        "warehouse": whname,
+                        "regionid": request.POST.get('regionid'),
+                        "regionname": regionname
+                    }
+                    payload = json.dumps(payload, cls=BytesEncoder)
+                    headers = {
+                        'Content-Type': 'application/json'
+                    }
+                    r = requests.post(url, payload, headers=headers)
+                    if r.status_code == 200:
+                        r1 = r.json()
+                        messages.success(request, r1['message'])
+                        return redirect('/depo_list')
+                    else:
+                        r1 = r.json()
+                        messages.error(request, r1['message'])
+                        return redirect('/depo_list')
         else:
-            gstattach = None
-            gst_name = None
-        if licattach:
-            licenceattach_data = base64.b64encode(licattach.read())
-            licenceattach_name = request.FILES.get("licattach").name
+            return render(request, 'depo/depo_add.html', {'data': regionlist,'menuname':menuname})
 
-        else:
-            licenceattach_data = None
-            licenceattach_name = None
-        if depofile:
-            depofile_data = base64.b64encode(depofile.read())
-            depofile_name = request.FILES.get("depofile").name
-
-        else:
-            depofile_data = None
-            depofile_name = None
-
-        id=request.POST.get('regionid')
-        for i in regionlist:
-            if i['regionid'] == id:
-                whid=i['warehouseid']
-                whname=i['warehousename']
-                regionname = i['regionname']
-
-                url = "http://13.235.112.1/ziva/mobile-api/add-depomaster.php"
-
-                payload = {
-                    "accesskey": accesskey,
-                    "deponame": request.POST.get("deponame"),
-
-                    "gstnumber": request.POST.get("gstnumber"),
-                    "address": request.POST.get("address"),
-                    "depo_manager": request.POST.get("depomanager"),
-                    "location":  str(lat)+","+str(lng),
-                    "depo_contact_no": request.POST.get('mobileno'),
-                    "gstattach": gstattach,
-                    "gstattachfilename": gst_name,
-                    "licence":request.POST.get("license"),
-                    "licenceattach":licenceattach_data,
-                    "licencefilename": licenceattach_name,
-                    "depoattach":  depofile_name,
-                    "depoattachfilename":depofile_data,
-                    "warehouseid": whid,
-                    "warehouse": whname,
-                    "regionid": request.POST.get('regionid'),
-                    "regionname": regionname
-                }
-                payload = json.dumps(payload, cls=BytesEncoder)
-                headers = {
-                    'Content-Type': 'application/json'
-                }
-                r = requests.post(url, payload, headers=headers)
-                if r.status_code == 200:
-                    r1 = r.json()
-                    messages.success(request, r1['message'])
-                    return redirect('/depo_list')
-                else:
-                    r1 = r.json()
-                    messages.error(request, r1['message'])
-                    return redirect('/depo_list')
-    else:
-
-        return render(request, 'depo/depo_add.html', {'data': regionlist,'menuname':menuname})
+    except Exception as e:
+        messages.error(request, str(e))
+        return render(request, 'depo/depo_add.html', {"menuname": menuname})
 
 
 def depo_list(request):
@@ -2869,6 +2872,56 @@ def user_add(request):
     messages.error(request,response.text)
     return render(request, 'user/user_add.html')
 
+def user_edit(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == "POST":
+        url = "http://13.235.112.1/ziva/mobile-api/edit-user.php"
+
+        payload = json.dumps({
+
+            "accesskey": accesskey,
+            "username": request.POST.get('username'),
+            "mobile": request.POST.get('mobile'),
+            "userid": request.POST.get('uid'),
+            "emailid": request.POST.get('email'),
+            "region": request.POST.get('regionname'),
+            "regionid": request.POST.get('region'),
+            "warehousename": request.POST.get('warehousename'),
+            "depo": request.POST.get('depo'),
+            "level": request.POST.get('level'),
+            "role": request.POST.get('role'),
+            "userattachfilename": "",
+            "designation": "",
+            "deponame": request.POST.get('deponame'),
+            "depoid": request.POST.get('depo'),
+            "busstationname": request.POST.get('busstationname'),
+            "busstationid": request.POST.get('busstation'),
+            "userimage": ""
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+
+        if response.status_code == 200:
+            messages.success(request, data['message'])
+            return redirect('user_list')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        else:
+            messages.error(request, data['message'])
+            return redirect('user_list')
+    return redirect('user_list')
+
+
 def user_list(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -2892,7 +2945,7 @@ def user_list(request):
     if response.status_code == 400:
             data = response.json()
             messages.error(request,data['message'])
-            return render(request,'login1.html')
+            return redirect('/login')
     else:
             return render(request, 'user/user_list.html',{'menuname':menuname})
 
@@ -2986,17 +3039,16 @@ def add_grn(request):
         data = response.json()
         wh_masterlist = data['warehouselist']
         if role == 'Admin':
-
             if request.method == "POST":
                 invoiceattach = request.FILES.get("invoiceimage")
-
                 if invoiceattach:
-                    invoiceattach_data = base64.b64encode(invoiceattach.read())
-                    invoiceattach_name = request.FILES.get("invoiceimage").name
+                    invoiceimage_data = base64.b64encode(invoiceattach.read())
+                    invoiceimage_name = request.FILES.get("invoiceimage").name
 
                 else:
-                    invoiceattach_data = None
-                    invoiceattach_name = None
+                    invoiceimage_data = None
+                    invoiceimage_name = None
+
                 url = "http://13.235.112.1/ziva/mobile-api/create-grn-admin.php"
                 payload = {
                     "accesskey": accesskey,
@@ -3005,8 +3057,8 @@ def add_grn(request):
                     "invoicedate": request.POST.get('invoicedate'),
                     "invoiceamount": request.POST.get('invoiceamount'),
                     "vendorid": request.POST.get('vid'),
-                    "invoicephoto":invoiceattach_data,
-                    "invoiceattachfilename":invoiceattach_name,
+                    "invoicephoto":invoiceimage_data,
+                    "invoiceattachfilename":invoiceimage_name,
                     "whcode": warehouseid
                 }
                 payload = json.dumps(payload, cls=BytesEncoder)
@@ -3032,23 +3084,22 @@ def add_grn(request):
         else:
 
                     if request.method == "POST":
-                        invoiceattach = request.FILES.get("invoiceimage")
+                        invoiceimage = request.FILES.get("invoiceimage")
 
-                        if invoiceattach:
-                            invoiceattach_data = base64.b64encode(invoiceattach.read())
+                        if invoiceimage:
+                            invoiceattach_data = base64.b64encode(invoiceimage.read())
                             invoiceattach_name = request.FILES.get("invoiceimage").name
 
                         else:
                             invoiceattach_data = None
                             invoiceattach_name = None
                         url = "http://13.235.112.1/ziva/mobile-api/create-grn.php"
-                        payload = {
+                        payload ={
                             "accesskey": accesskey,
                             "vendorname": request.POST.get('vname'),
                             "invoiceno": request.POST.get('invno'),
                             "invoicedate": request.POST.get('invoicedate'),
                             "invoiceamount": request.POST.get('invoiceamount'),
-                            "invoice_photo": invoiceattach,
                             "vendorid": request.POST.get('vid'),
                             "invoicephoto": invoiceattach_data,
                             "invoiceattachfilename": invoiceattach_name,
@@ -3073,9 +3124,10 @@ def add_grn(request):
                             return redirect('add_grn')
                     else:
                         return render(request, 'grn/add_grn.html', {'all_data': vendor_masterlist, 'whname': whname,'menuname':menuname,'all_data1':wh_masterlist})
-    except:
-        messages.error(request,response.text)
-    return render(request, 'grn/add_grn.html',{'menuname':menuname})
+    except Exception as e:
+        messages.error(request, str(e))
+        return render(request, 'grn/add_grn.html', {'menuname': menuname})
+
 
 def delete_grn_item(request):
     if 'accesskey' not in request.session:
@@ -12349,7 +12401,7 @@ def region_stock1(request,id):
             data = response.json()
             data1 = data['regioninventorylist']
             return render(request, 'Reports/region_stockreport.html',
-                          {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantity':data1})
+                          {"regionlist":regionlist,'bus':bus,'depolist':depolist,"wh_masterlist":wh_masterlist,"menuname": menuname,'item_quantities':data1})
         elif response.status_code == 500:
             messages.error(request, 'Internal server  error')
             return render(request, 'Reports/region_stockreport.html',
@@ -13579,8 +13631,18 @@ def return_bussupply(request):
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
+        ticketattach = request.FILES.get("ticketsimg")
+        if ticketattach:
+            ticketattach_data = base64.b64encode(ticketattach.read())
+            ticketattach_name = request.FILES.get("ticketsimg").name
+
+        else:
+            ticketattach_data = None
+            ticketattach_name = None
+
+
         url = "http://13.235.112.1/ziva/mobile-api/busservice-supply-logs-return.php"
-        payload = json.dumps({
+        payload = {
             "accesskey": accesskey,
             "no_of_tickets":request.POST.get('tickets'),
             "return_no_of_bottles":request.POST.get('actbottlesreturn'),
@@ -13588,8 +13650,12 @@ def return_bussupply(request):
             "return_drivername_two":request.POST.get('staffname4'),
             "return_staffno":request.POST.get('staffnumret1'),
             "return_staffno_two":request.POST.get('staffnumret2'),
-            "service_id":request.POST.get('service_id')
-        })
+            "service_id":request.POST.get('service_id'),
+            "ticketattach":ticketattach_data,
+            "ticketattachfilename":ticketattach_name,
+
+        }
+        payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
             'Content-Type': 'text/plain'
         }
@@ -13608,7 +13674,8 @@ def return_bussupply(request):
                 return redirect('/login')
         else:
             return redirect('internal_consumption')
-    except:
+    except Exception as e:
+        messages.error(request, str(e))
         return redirect('internal_consumption')
 def depo_servicenum(request):
 
@@ -14071,19 +14138,26 @@ def authorize_staffid(request):
 
             if response.status_code == 200:
                 data = response.json()
-                return JsonResponse({'response':response})
+                response = response.status_code
+                data['status'] = response
+                return JsonResponse({'response':data})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
-                    messages.error(request, data['message'])
-                    return JsonResponse({'response':response})
+                    response = response.status_code
+                    data['status'] = response
+                    return JsonResponse({'response': data})
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
             elif response.status_code == 503:
                     data = response.json()
+                    response = response.status_code
+                    data['status'] = response
                     return JsonResponse({'response': data})
             elif response.status_code == 500:
+                response = response.status_code
+                response = response.status_code
                 messages.error(request,"Internal Server Error")
                 return JsonResponse({'response': response})
             else:
@@ -16040,3 +16114,5 @@ def delete_intconsumption(request):
         except:
             messages.error(request, response.text)
         return redirect('/internal_consumption')
+
+

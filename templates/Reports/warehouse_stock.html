@@ -141,7 +141,7 @@
                                   <th class="row2" rowspan="2">S NO</th>
                                 <th class="row2" rowspan="2">Date</th>
                                 <th class="row2" rowspan="2">WareHouse</th>
-                                <th class="row2" colspan="3">Items</th>
+                                <th class="row2" colspan="6">Stock Available in days</th>
                                 <th  class="row2" colspan="3">Average Consumption Per Day</th>
 
                             </tr>
@@ -149,8 +149,11 @@
                              <tr>
 
                                        <th>1000ml</th>
+                                       <th>Days</th>
                                         <th>500ml</th>
+                                      <th>Days</th>
                                         <th>250ml</th>
+                                         <th>Days</th>
                                         <th>1000ml</th>
                                         <th>500ml</th>
                                         <th>250ml</th>
@@ -166,8 +169,11 @@
 
                                               <td><a  href="/region_stock/{{ inventorylist.warehouseid }}" style="color:#075ab3;">{{ inventorylist.warehousename }}</a></td>
                                               <td>{{ inventorylist.inv_1000ML }}</td>
+                                              <td>{{ inventorylist.indays_1000ML }}</td>
                                                <td>{{ inventorylist.inv_500ML }}</td>
+                                              <td>{{ inventorylist.indays_500ML }}</td>
                                               <td>{{ inventorylist.inv_250ML }}</td>
+                                              <td>{{ inventorylist.indays_250ML }}</td>
                                               <td>{{ inventorylist.con_1000ML }}</td>
                                               <td>{{ inventorylist.con_500ML }}</td>
                                                <td>{{ inventorylist.con_250ML }}</td>

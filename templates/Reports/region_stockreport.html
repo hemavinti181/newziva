@@ -139,7 +139,7 @@
                                   <th class="row2" rowspan="2">S NO</th>
                                 <th class="row2" rowspan="2">Date</th>
                                 <th class="row2" rowspan="2">Region</th>
-                                <th class="row2" colspan="3">Items</th>
+                                <th class="row2" colspan="6">Stock available in days </th>
                                 <th  class="row2" colspan="3">Average Consumption Per Day</th>
 
                             </tr>
@@ -147,8 +147,11 @@
                              <tr>
 
                                        <th>1000ml</th>
+                                       <th>Days</th>
                                         <th>500ml</th>
+                                       <th>Days</th>
                                         <th>250ml</th>
+                                         <th>Days</th>
                                         <th>1000ml</th>
                                         <th>500ml</th>
                                         <th>250ml</th>
@@ -168,8 +171,11 @@
                                                     <td>{{ item_quantity.date }}</td>
                                                 <td><a href="/depot_stock/{{ item_quantity.region_id }}" style="color:#075ab3;">{{ item_quantity.regionname }}</a></td>
                                                 <td>{{ item_quantity.inv_1000ML }}</td>
+                                                <td>{{ item_quantity.indays_1000ML }}</td>
                                                 <td>{{ item_quantity.inv_500ML }}</td >
-                                                  <td>{{ item_quantity.inv_250ML }}</td>
+                                                <td>{{ item_quantity.indays_500ML }}</td>
+                                                  <td>{{ item_quantity.indays_250ML }}</td>
+                                            <td>{{ item_quantity.inv_1000ML }}</td>
                                                   <td>{{ item_quantity.con_1000ML }}</td>
                                                   <td>{{ item_quantity.con_500ML }}</td>
                                                    <td>{{ item_quantity.con_250ML }}</td>

@@ -45,37 +45,17 @@
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Mobile </label>
 										    <input type="text" class="form-control" placeholder="Mobile number" name="mobileno" >
-											</div>
-										<!--<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>GST Number *</label>
-										    <input type="text" class="form-control" name="gstnumber" placeholder="GST Number" required>
 										</div>
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>GST Choose File</label>
-    											<input type="file" name="gstattach" id="customFile5" required>
-										</div>
-
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>License Choose File *</label>
-    											<input type="file" name="licattach" id="customFile4" required>
-										</div>
-											<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label> License *</label>
-										    <input type="text" class="form-control" name="license" placeholder="license number" required>
-										</div>-->
-
-												<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<input type="hidden" name="=regionname" id="regionname" />
-													<label>Region </label>
-
-												<select class="form-control items" name="regionid" id="regionid" required>
-													<option value="">Region</option>
+                                                 <div  class="col-md-3 col-sm-6  form-group has-feedback">
+													<label> Region</label>
+											 <input type="hidden" name="regionname" id="regionname" />
+												<select class="form-control" name="regionid" id="regionid">
+														<option value="">Region</option>
 													{% for data1 in data %}
-                            							<option value="{{ data1.regionid }}" >{{ data1.regionname }}</option>
+                            							<option value="{{ data1.region_id }}" >{{ data1.regionname }}</option>
                                                     {% endfor %}
 												</select>
 										</div>
-
 
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Address </label>
@@ -106,4 +86,13 @@
             </div>
           </div>
 </div>
+
+<script>
+$("#regionid").change(function() {
+  var selectedOptionText1 = $(this).val();
+  alert(selectedOptionText1)
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regionname").val(selectedOptionText);
+});
+</script>
 {% endblock %}

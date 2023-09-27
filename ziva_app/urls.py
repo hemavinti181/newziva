@@ -64,6 +64,7 @@ urlpatterns = [
     path('vendor_status_inactive/<str:id>/',views.vendor_status_inactive,name='vendor_status_inactive'),
     path('user_add',views.user_add,name='user_add'),
     path('user_list',views.user_list,name='user_list'),
+    path('user_edit', views.user_edit, name='user_edit'),
     path('user_status_active',views.user_status_active,name='vendor_status_active'),
     path('user_status_inactive',views.user_status_inactive,name='vendor_status_inactive'),
     path('add_grn',views.add_grn,name='add_grn'),
