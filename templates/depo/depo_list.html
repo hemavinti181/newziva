@@ -7,6 +7,11 @@
 	position: absolute !important;
 	width: 120% !important;
 	}
+	.style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:75px;
+	}
 </style>
 
 <div class="right_col" role="main">
@@ -97,7 +102,7 @@
                            <td>
                         {% if all_data.status == "Active" %}
 
-                                   <a href="#" class="depoedit" onclick="editDepo('{{ all_data.depoid }}')" data-id="{{ all_data.depoid }}"><i class="fa fa-edit"></i></a>
+                                   <a href="#" class="depoedit" onclick="editDepo('{{ all_data.depoid }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                     <a href="#" onclick="VerifyClick('{{  all_data.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#depo-status">
                                        {{ all_data.status }} </span></a>
                           {% else %}
@@ -192,7 +197,7 @@
 
 <div class="modal custom-modal fade" id="depo-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
+						<div class="modal-content style1">
 							<div class="modal-body">
                                 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
@@ -206,12 +211,12 @@
 									  <div class="modal-btn delete-action">
 									<input type="hidden" id="id" name="id"  />
 									<div class="row">
-										<div class="col-6">
-											<button class="btn btn-primary submit-btn">Yes</button>
-										</div>
-										<div class="col-6">
-											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
-										</div>
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
 									</div>
 								</div>
 								  </form>
@@ -222,7 +227,7 @@
 				</div>
 <div class="modal custom-modal fade" id="depo-status1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
+						<div class="modal-content style1">
 							<div class="modal-body">
                                 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
@@ -235,13 +240,13 @@
 								</div>
 									  <div class="modal-btn delete-action">
 									<input type="hidden" id="id1" name="id"  />
-									<div class="row">
-										<div class="col-6">
-											<button class="btn btn-primary submit-btn">Yes</button>
-										</div>
-										<div class="col-6">
-											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
-										</div>
+									 <div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
 									</div>
 								</div>
 								  </form>
@@ -393,8 +398,5 @@ $(document).ready(function() {
         }
     });
   });
-
-
-
 </script>
 {% endblock %}

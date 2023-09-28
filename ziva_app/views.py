@@ -2113,7 +2113,33 @@ def warehouseinventory_search(request):
             messages.error(request, data['message'])
             return redirect('/login')
 
+def stk_region_list(request):
+            if 'accesskey' not in request.session:
+                messages.error(request, 'Access denied!')
+                return redirect('/login')
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+            payload = json.dumps({
+                "accesskey": accesskey
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
 
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                return JsonResponse({'data': data})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return JsonResponse({'data': data})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return JsonResponse({'data': "Some thing went wrong"})
 
 
 def stk_busstation_list(request):
@@ -2876,7 +2902,6 @@ def user_edit(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    accesskey = request.session['accesskey']
     if request.method == "POST":
         url = "http://13.235.112.1/ziva/mobile-api/edit-user.php"
 
@@ -2928,6 +2953,27 @@ def user_list(request):
         return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/role-dropdownlist.php"
+
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+
+    response3 = requests.request("GET", url, headers=headers, data=payload)
+    data2 = response3.json()
+
+    role_list = data2['roledropdownlist']
+
+    url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
+
+    payload = json.dumps({"accesskey": accesskey, "name": "LEVEL"})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response4 = requests.request("GET", url, headers=headers, data=payload)
+    data3 = response4.json()
+    level_list = data3['itemmasterlist']
     url = "http://13.235.112.1/ziva/mobile-api/user-list.php"
 
     payload = json.dumps({
@@ -2941,13 +2987,13 @@ def user_list(request):
     if response.status_code == 200:
             data = response.json()
             user_list = data['userlist']
-            return render(request, 'user/user_list.html', {"list": user_list,'menuname':menuname})
+            return render(request, 'user/user_list.html', {"list": user_list,'menuname':menuname,'role_list':role_list,'level_list':level_list})
     if response.status_code == 400:
             data = response.json()
             messages.error(request,data['message'])
             return redirect('/login')
     else:
-            return render(request, 'user/user_list.html',{'menuname':menuname})
+            return render(request, 'user/user_list.html',{'menuname':menuname,'role_list':role_list,'level_list':level_list})
 
 def user_status_active(request):
     if 'accesskey' not in request.session:
@@ -8428,7 +8474,40 @@ def get_wh_item(request):
             data = response.json()
             messages.error(request, data['message'])
             return render(request, 'login1.html')
+def get_user(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    userid = request.POST.get('id')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/user-list.php"
 
+    payload = json.dumps({
+        "accesskey": accesskey
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        list = data['userlist']
+        for i in list:
+            if str(i['userid']) == userid:
+                data = {"userid": i["userid"], "username": i["username"], "mobile": i["mobile"], "emailid": i['emailid'],
+                        "region": i['region'], "regionid": i['regionid'], "warehouseid": i['warehouseid'], "warehousename": i['warehousename'], "depoid": i['depoid'],
+                        "deponame": i['deponame'], "busstationid": i['busstationid'], "busstationname": i['busstationname'], "role": i['role'], "level": i['level'],"role2": i['role2'],
+                        }
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/user_list')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
 
 def wh_search(request):
     if 'accesskey' not in request.session:
@@ -9682,6 +9761,38 @@ def bus_edit(request):
             return redirect('/bus_list')
     return redirect('/bus_list')
 
+def get_ps_stock(request):
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/depo-stockpointinventory.php"
+    payload = json.dumps(
+        {
+            "accesskey": accesskey,
+
+        })
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 500:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
+    elif response.status_code == 503:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
+
 def get_whinventory(request):
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehouse-inventory-depologin.php"
@@ -9754,17 +9865,19 @@ def live_inventory(request):
             return render(request,'login1.html')
     return render(request, 'grn/inventory.html',{'menuname':menuname})
 
-def batch_codeexpry(request,id):
+
+def batch_codeexpry1(request, id):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
+    role = request.session['role']
     url = "http://13.235.112.1/ziva/mobile-api/batchcode-expdate-inventorylist.php"
     payload = json.dumps(
         {
-            "accesskey":accesskey ,
-            "itemcode" : id
+            "accesskey": accesskey,
+            "itemcode": id
         })
     headers = {
         'Content-Type': 'text/plain'
@@ -9774,7 +9887,7 @@ def batch_codeexpry(request,id):
         data = response.json()
         inventorylist = data['inventorylist']
         messages.success(request, data['message'])
-        return render(request, 'grn/batchcode.html', {'data': inventorylist,'menuname':menuname})
+        return render(request, 'grn/batchcode.html', {'data': inventorylist, 'menuname': menuname})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
@@ -9782,40 +9895,72 @@ def batch_codeexpry(request,id):
     else:
         data = response.json()
         messages.error(request, data['message'])
-        return render(request, 'grn/batchcode.html',{'menuname':menuname})
+        return render(request, 'grn/batchcode.html', {'menuname': menuname})
+
+
+def batch_codeexpry(request,id):
+            if 'accesskey' not in request.session:
+                messages.error(request, 'Access denied!')
+                return redirect('/login')
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+            role = request.session['role']
+            url = "http://13.235.112.1/ziva/mobile-api/batchcode-expdate-inventorylist.php"
+            payload = json.dumps(
+                {
+                    "accesskey":accesskey ,
+                    "itemcode" : id
+                })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                inventorylist = data['inventorylist']
+                messages.success(request, data['message'])
+                return render(request, 'grn/batchcode.html', {'data': inventorylist,'menuname':menuname})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+            else:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'grn/batchcode.html',{'menuname':menuname})
 
 def get_storetype(request):
-    if 'accesskey' not in request.session:
-        messages.error(request, 'Access denied!')
-        return redirect('/login')
-    accesskey = request.session['accesskey']
-    id = request.POST.get('id')
-    url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
+            if 'accesskey' not in request.session:
+                messages.error(request, 'Access denied!')
+                return redirect('/login')
+            accesskey = request.session['accesskey']
+            id = request.POST.get('id')
+            url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = json.dumps({"accesskey": accesskey, "name": "Storetype"})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
+            payload = json.dumps({"accesskey": accesskey, "name": "Storetype"})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-        data = response.json()
-        storetype_list = data['itemmasterlist']
-        for i in storetype_list:
-            if str(i['ddcode']) == id:
-                data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
-        return JsonResponse({'data': data})
-    elif response.status_code == 400:
-        data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
-    else:
-        try:
-            data = response.json()
-            messages.error(request, data['message'])
-        except:
-            messages.error(request, response.text)
-        return redirect('/storetype_list')
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                storetype_list = data['itemmasterlist']
+                for i in storetype_list:
+                    if str(i['ddcode']) == id:
+                        data = {"ddcode": i["ddcode"], "displayname": i["displayname"], "sno": i["sno"]}
+                return JsonResponse({'data': data})
+            elif response.status_code == 400:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
+            else:
+                try:
+                    data = response.json()
+                    messages.error(request, data['message'])
+                except:
+                    messages.error(request, response.text)
+                return redirect('/storetype_list')
 
 def edit_storetype(request):
     if 'accesskey' not in request.session:
@@ -14224,7 +14369,7 @@ def depot_dashboard(request):
             data = response.json()
             messages.error(request, data['message'])
             return redirect('/login')
-    return render(request, 'dashboard/depot_dashboard.html', {"menuname": menuname})
+    return render(request, 'dashboard/depot_admin_dashboard.html', {"menuname": menuname})
 
 
 

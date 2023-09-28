@@ -63,7 +63,7 @@
 
                           {% if all_data.status == "Active" %}
                                 <td>
-                                  <a class="edit_item" href="#"  data-id="{{ all_data.itemcode }}"><i class="fa fa-edit"></i></a>
+                                  <a class="edit_item" href="#"  data-id="{{ all_data.itemcode }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                    <a href="#" onclick="VerifyClick('{{  all_data.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#item-status">
                                        Active </span></a>
                                 </td>

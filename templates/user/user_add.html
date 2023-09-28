@@ -150,42 +150,45 @@ $("#busstation").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busstationname").val(selectedOptionText);
 });
+
+
 document.getElementById("role").addEventListener("change", function() {
-var val=$(this).find(":selected").text();
-  if (val === "Admin") {
-    document.getElementById("warehouse").style.display = "none";
-    document.getElementById("region").style.display = "none";
-    document.getElementById("depo").style.display = "none";
-    document.getElementById("busstation").style.display = "none";
-  }
-  else if (val === "BUS STATION CONTROLLER" || val === "DC CONTROLLER") {
-    document.getElementById("warehouse").style.display = "block";
-    document.getElementById("region").style.display = "block";
-    document.getElementById("depo").style.display = "block";
-    document.getElementById("busstation").style.display = "block";
-  }
-
-  else if (val === "MARKETING EXECUTIVE" ){
+	var val=$(this).find(":selected").text();
+	  if (val === "Admin") {
+		document.getElementById("warehouse").style.display = "none";
+		document.getElementById("region").style.display = "none";
+		document.getElementById("depo").style.display = "none";
+		document.getElementById("busstation").style.display = "none";
+	  }
+	  else if (val === "BUS STATION CONTROLLER" || val === "DC CONTROLLER") {
 		document.getElementById("warehouse").style.display = "block";
-        document.getElementById("region").style.display = "block";
-        document.getElementById("depo").style.display = "none";
-    	document.getElementById("busstation").style.display = "none";
-    }
+		document.getElementById("region").style.display = "block";
+		document.getElementById("depo").style.display = "block";
+		document.getElementById("busstation").style.display = "block";
+	  }
 
-  else if(val === "DEPOT STORE EXECUTIVE" ) {
-	document.getElementById("warehouse").style.display = "block";
-    document.getElementById("region").style.display = "block";
-    document.getElementById("depo").style.display = "block";
-    document.getElementById("busstation").style.display = "none";
-   }
+	  else if (val === "MARKETING EXECUTIVE" ){
+			document.getElementById("warehouse").style.display = "block";
+			document.getElementById("region").style.display = "block";
+			document.getElementById("depo").style.display = "none";
+			document.getElementById("busstation").style.display = "none";
+		}
 
-    else{
-	document.getElementById("warehouse").style.display = "block";
-	document.getElementById("region").style.display = "none";
-    document.getElementById("depo").style.display = "none";
-    document.getElementById("busstation").style.display = "none";
-	}
-});
+	  else if(val === "DEPOT STORE EXECUTIVE" ) {
+		document.getElementById("warehouse").style.display = "block";
+		document.getElementById("region").style.display = "block";
+		document.getElementById("depo").style.display = "block";
+		document.getElementById("busstation").style.display = "none";
+	   }
+
+		else{
+		document.getElementById("warehouse").style.display = "block";
+		document.getElementById("region").style.display = "none";
+		document.getElementById("depo").style.display = "none";
+		document.getElementById("busstation").style.display = "none";
+		}
+	});
+
 $(document).ready(function(){
 		$("#warehouse").change(function() {
         	var warehousename = $(this).find(":selected").text();

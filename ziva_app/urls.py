@@ -172,6 +172,7 @@ urlpatterns = [
     path('medeliver_challan_pending',views.medeliver_challan_pending,name='medeliver_challan_pending'),
     path('live_inventory',views.live_inventory,name='live_inventory'),
     path('batch_codeexpry/<str:id>/',views.batch_codeexpry,name='batch_codeexpry'),
+    path('batch_codeexpry1/<str:id>/',views.batch_codeexpry1,name='batch_codeexpry1'),
     path('add_apending_grn_inventory1',views.add_apending_grn_inventory1,name='add_apending_grn_inventory1'),
     path('grn_list1',views.grn_list1,name='grn_list1'),
     path('add_grnitem_list1/<str:id>/',views.add_grnitem_list1,name='add_grnitem_list1'),
@@ -315,11 +316,14 @@ urlpatterns = [
     path('generate_transid_bust',views.generate_transid_bust,name='generate_transid_bust'),
     path('stk_warehouse_list',views.stk_warehouse_list,name='stk_warehouse_list'),
     path('stk_depot_list',views.stk_depot_list,name='stk_depot_list'),
+    path('stk_region_list',views.stk_region_list,name='stk_region_list'),
     path('stk_busstation_list',views.stk_busstation_list,name='stk_busstation_list'),
     path('warehouseinventory_search',views.warehouseinventory_search,name='warehouseinventory_search'),
     path('wh_item_add_admin',views.wh_item_add_admin,name='wh_item_add_admin'),
     path('wh_item_list_admin',views.wh_item_list_admin,name='wh_item_list_admin'),
-    path('complete_stk_admin',views.complete_stk_admin,name='complete_stk_admin')
+    path('complete_stk_admin',views.complete_stk_admin,name='complete_stk_admin'),
+    path('get_ps_stock',views.get_ps_stock,name='get_ps_stock'),
+    path('get_user',views.get_user,name='get_user')
 
 
 ]

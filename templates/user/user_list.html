@@ -1,8 +1,17 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
-
+<style>
+    .style{
+	position: absolute !important;
+	width: 100% !important;
+	}
+    .style1{
+        position: absolute !important;
+        width: 60% !important;
+        margin-left:75px;
+    }
+</style>
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -51,9 +60,10 @@
                            <td>{{ all_data.warehousename }}</td>
                        <td>{{ all_data.region }}</td>
                        <td>{{ all_data.level }}</td>
-                       <td>{{ all_data.role }}</td>
+                       <td>{{ all_data.role2 }}</td>
                        {% if all_data.status == "Active" %}
                                 <td>
+                                    <a href="#" class="depoedit" onclick="editDepo('{{ all_data.userid }}')" data-id="{{ all_data.userid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                    <a href="#" onclick="VerifyClick('{{ all_data.sno }} ')"><span class="badge badge-success" data-toggle="modal" data-target="#user-status">
                                        Active </span></a>
                                 </td>
@@ -79,9 +89,117 @@
             </div>
           </div>
 </div>
+
+<div id="depo-edit" class="modal custom-modal fade"  role="dialog" >
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit User</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+            </div>
+            <div class="modal-body">
+               <form  method="POST" action="depo_edit"   enctype="multipart/form-data">
+											{% csrf_token %}
+										 <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>User Id </label>
+										    <input type="text" class="form-control" placeholder="user id" name="uid" id="userid">
+										</div>
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>User Name </label>
+										    <input type="text" class="form-control" placeholder="user name" name="username" id="username">
+										</div>
+										<div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Mobile Number</label>
+										    <input type="text" name="mobile" class="form-control" placeholder="mobile number" pattern= "[6789][0-9]{9}" id="mobile">
+                                         </div>
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback" >
+											<label>Email Id</label>
+										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  id="emailid">
+										 </div>
+											<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+												<input type="hidden" name="level" id="levelname" />
+												<select class="form-control" name="levelname" id="level">
+													<option>Level</option>
+                                                    {% for all_data3 in level_list %}
+														{% if  all_data3.status == "Active" %}
+															<option  value="{{ all_data3.ddcode}}">{{ all_data3.displayname }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+                                        </div>
+										  <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
+												<input type="file"  name="image" id="customFile4" >
+											</div>
+										<div  class="col-md-3 col-sm-6  form-group has-feedback">
+
+												<select class="form-control" name="designation">
+													<option> Designation</option>
+                                                    {% for all_data in all_data %}
+														{% if  all_data.status == "Active" %}
+															<option  value="{{ all_data.ddcode }}">{{ all_data.displayname }}</option>
+													   {% endif %}
+													{% endfor %}
+												</select>
+                                        </div>-->
+
+                                        <div  class="col-md-6 col-sm-6  form-group has-feedback" >
+													<input type="hidden" name="rolename" id="rolename" />
+												<select class="form-control" name="role" id="role">
+													<option> Role</option>
+													{% for all_data2 in role_list %}
+															<option  value="{{ all_data2.role}}">{{ all_data2.role }}</option>
+													{% endfor %}
+												</select>
+                                        </div>
+										<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+													<input type="hidden" name="warehousename" id="warehousename" />
+												<select class="form-control" name="warehouseid" id="warehouseid" style="display: none;">
+														<option> selct warehouse</option>
+													{% for data in data %}
+														{% if  data.status == "Active" %}
+														<option  value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
+													{% endif %}
+													{% endfor %}
+												</select>
+                                        </div>
+										<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+											<input type="hidden" name="regionname" id="regionname" />
+												<select class="form-control" name="regionid" id="regionid" style="display: none;">
+													<option  value="">select region</option>
+												</select>
+                                        </div>
+
+										<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+											<input type="hidden" name="deponame" id="deponame" />
+												<select class="form-control" name="depoid" id="depoid" style="display: none;">
+														<option  value="">select depo</option>
+												</select>
+                                        </div>
+										<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+												<input type="hidden" name="busstationname" id="busstationname" />
+												<select class="form-control" name="busstationid" id="busstationid" style="display: none;">
+														<option  value="">select busstation</option>
+
+												</select>
+                                         </div>
+
+             <div class="row">
+            <div class="modal-footer">
+				 <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+                                        </div>
+
+          </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal custom-modal fade" id="user-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
+						<div class="modal-content style1">
 							<div class="modal-body">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
@@ -95,12 +213,12 @@
 									  <div class="modal-btn delete-action">
 									<input type="hidden" id="id" name="id"  />
 									<div class="row">
-										<div class="col-6">
-											<button class="btn btn-primary submit-btn">Yes</button>
-										</div>
-										<div class="col-6">
-											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
-										</div>
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
 									</div>
 								</div>
 								  </form>
@@ -117,6 +235,206 @@ console.log(val(id))
  function VerifyClick1(id){
 $("#id1").val(id);
 }
+
+function editDepo(id){
+      $.ajax({
+        url: "{% url 'get_user' %}",
+        type: 'POST',
+        data: {
+          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data
+          	console.log(obj.userid);
+
+             if(obj){
+             $("#userid").val(obj.userid);
+             $("#username").val(obj.username);
+             $("#mobile").val(obj.mobile);
+             $("#emailid").val(obj.emailid);
+             $("#region").val(obj.region);
+             $("#regionid").val(obj.regionid);
+             $("#warehouseid").val(obj.warehouseid);
+             $("#warehousename").val(obj.warehousename);
+             $("#depoid").val(obj.depoid);
+             $("#deponame").val(obj.deponame);
+             $("#busstationid").val(obj.busstationid);
+              $("#busstationname").val(obj.busstationname);
+             $("#role").val(obj.role2);
+             $("#rolename").val(obj.role2);
+
+             $('#depo-edit').modal('show');
+        	}
+       var  val= obj.role2;
+	  alert(val)
+	  if (val === "Admin") {
+		document.getElementById("warehouseid").style.display = "none";
+		document.getElementById("regionid").style.display = "none";
+		document.getElementById("depoid").style.display = "none";
+		document.getElementById("busstationid").style.display = "none";
+	  }
+	  else if (val === "BUS STATION CONTROLLER" || val === "DC CONTROLLER") {
+		document.getElementById("warehouseid").style.display = "block";
+		document.getElementById("regionid").style.display = "block";
+		document.getElementById("depoid").style.display = "block";
+		document.getElementById("busstationid").style.display = "block";
+	  }
+
+	  else if (val === "MARKETING EXECUTIVE" ){
+			document.getElementById("warehouseid").style.display = "block";
+			document.getElementById("regionid").style.display = "block";
+			document.getElementById("depoid").style.display = "none";
+			document.getElementById("busstationid").style.display = "none";
+		}
+
+	  else if(val === "DEPOT STORE EXECUTIVE" ) {
+	  alert('hai')
+		document.getElementById("warehouseid").style.display = "block";
+		document.getElementById("regionid").style.display = "block";
+		document.getElementById("depoid").style.display = "block";
+		document.getElementById("busstationid").style.display = "none";
+	   }
+
+		else{
+		document.getElementById("warehouseid").style.display = "block";
+		document.getElementById("regionid").style.display = "none";
+		document.getElementById("depoid").style.display = "none";
+		document.getElementById("busstationid").style.display = "none";
+		}
+
+        }
+		});
+  }
+
+
+document.getElementById("role").addEventListener("change", function() {
+	var val=$(this).find(":selected").text();
+	  if (val === "Admin") {
+		document.getElementById("warehouseid").style.display = "none";
+		document.getElementById("regionid").style.display = "none";
+		document.getElementById("depoid").style.display = "none";
+		document.getElementById("busstationid").style.display = "none";
+	  }
+	  else if (val === "BUS STATION CONTROLLER" || val === "DC CONTROLLER") {
+		document.getElementById("warehouseid").style.display = "block";
+		document.getElementById("regionid").style.display = "block";
+		document.getElementById("depoid").style.display = "block";
+		document.getElementById("busstationid").style.display = "block";
+	  }
+
+	  else if (val === "MARKETING EXECUTIVE" ){
+			document.getElementById("warehouseid").style.display = "block";
+			document.getElementById("regionid").style.display = "block";
+			document.getElementById("depoid").style.display = "none";
+			document.getElementById("busstationid").style.display = "none";
+		}
+
+	  else if(val === "DEPOT STORE EXECUTIVE" ) {
+		document.getElementById("warehouseid").style.display = "block";
+		document.getElementById("regionid").style.display = "block";
+		document.getElementById("depoid").style.display = "block";
+		document.getElementById("busstationid").style.display = "none";
+	   }
+
+		else{
+		document.getElementById("warehouseid").style.display = "block";
+		document.getElementById("regionid").style.display = "none";
+		document.getElementById("depoid").style.display = "none";
+		document.getElementById("busstationid").style.display = "none";
+		}
+	});
+
+		$(document).ready(function() {
+	    var response = $('#response').val();
+        $.ajax({
+            type: "POST",
+            url: '{% url "stk_warehouse_list" %}',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                var obj = data.data.warehouselist
+                if (obj) {
+                    $.each(obj, function(index, item) {
+                        $("#warehouseid").append("<option value='" + item.warehouseid + "'>" + item.warehousename + "</option>");
+                    });
+
+                }
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        var response = $('#response').val();
+        $.ajax({
+            type: "POST",
+            url: '{% url "stk_depot_list" %}',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                var obj = data.data.depolist
+                if (obj) {
+
+                    $.each(obj, function(index, item) {
+                         if (item.status === "Active") {
+                            $("#depoid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
+                         }
+                    });
+
+                }
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        $.ajax({
+            type: "POST",
+            url: '{% url "stk_busstation_list" %}',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                var obj = data.data.buslist
+                if (obj) {
+
+                    $.each(obj, function(index, item) {
+                         if (item.status === "Active") {
+                            $("#busstationid").append("<option value='" + item.busatationid + "'>" + item.busstationname + "</option>");
+                            //$("#depotid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
+                         }
+                    });
+
+
+                }
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        $.ajax({
+            type: "POST",
+            url: '{% url "stk_region_list" %}',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                var obj = data.data.regionlist
+                console.log(obj)
+                alert(obj[0].region_id)
+                if (obj) {
+
+                    $.each(obj, function(index, item) {
+
+                            $("#regionid").append("<option value='" + item.region_id + "'>" + item.regionname + "</option>");
+
+                    });
+
+                }
+            }
+        });
+    });
+
 </script>
 {% endblock %}
 
