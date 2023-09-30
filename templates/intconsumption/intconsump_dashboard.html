@@ -31,10 +31,11 @@
               <h3 style="font-size:20px; font-weight:600;">Internal Consumption  Dashboard</h3>
             </div>
           </div>
-
+ {% if request.session.role == 'Admin' %}
                    <div class="x_panel">
 				      	<form  method="POST" action=""   enctype="multipart/form-data">
 											{% csrf_token %}
+
                             	<div  class="col-md-3 col-sm-3  form-group has-feedback">
 													<label> Depot</label>
 												 <select class="form-control select2" name="depoid" id="depoid" required>
@@ -51,6 +52,7 @@
                         </form>
                    </div>
               </div>
+        {% endif %}
                         <div class="col-md-4 col-sm-4 ">
         <div class="x_panel">
           <div class="page-title">

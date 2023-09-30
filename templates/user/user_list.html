@@ -100,7 +100,7 @@
 								</button>
             </div>
             <div class="modal-body">
-               <form  method="POST" action="depo_edit"   enctype="multipart/form-data">
+               <form  method="POST" action="/user_edit"   enctype="multipart/form-data">
 											{% csrf_token %}
 										 <div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>User Id </label>
@@ -185,12 +185,12 @@
 												</select>
                                          </div>
 
-             <div class="row">
+
             <div class="modal-footer">
 				 <button type="submit" class="btn btn-primary">Save</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
             </div>
-                                        </div>
+
 
           </form>
         </div>
@@ -235,6 +235,30 @@ console.log(val(id))
  function VerifyClick1(id){
 $("#id1").val(id);
 }
+$("#role").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#rolename").val(selectedOptionText);
+});
+$("#level").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#levelname").val(selectedOptionText);
+});
+$("#warehouse").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#warehousename").val(selectedOptionText);
+});
+$("#region").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regionname").val(selectedOptionText);
+});
+$("#depo").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#deponame").val(selectedOptionText);
+});
+$("#busstation").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#busstationname").val(selectedOptionText);
+});
 
 function editDepo(id){
       $.ajax({
@@ -252,7 +276,7 @@ function editDepo(id){
              $("#username").val(obj.username);
              $("#mobile").val(obj.mobile);
              $("#emailid").val(obj.emailid);
-             $("#region").val(obj.region);
+             $("#regionname").val(obj.region);
              $("#regionid").val(obj.regionid);
              $("#warehouseid").val(obj.warehouseid);
              $("#warehousename").val(obj.warehousename);
@@ -266,7 +290,6 @@ function editDepo(id){
              $('#depo-edit').modal('show');
         	}
        var  val= obj.role2;
-	  alert(val)
 	  if (val === "Admin") {
 		document.getElementById("warehouseid").style.display = "none";
 		document.getElementById("regionid").style.display = "none";
@@ -288,7 +311,6 @@ function editDepo(id){
 		}
 
 	  else if(val === "DEPOT STORE EXECUTIVE" ) {
-	  alert('hai')
 		document.getElementById("warehouseid").style.display = "block";
 		document.getElementById("regionid").style.display = "block";
 		document.getElementById("depoid").style.display = "block";
@@ -421,7 +443,6 @@ document.getElementById("role").addEventListener("change", function() {
             success: function(data) {
                 var obj = data.data.regionlist
                 console.log(obj)
-                alert(obj[0].region_id)
                 if (obj) {
 
                     $.each(obj, function(index, item) {

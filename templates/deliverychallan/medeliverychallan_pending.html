@@ -34,7 +34,7 @@
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
-						<form  method="POST" action="/medeliver_challan_pending"  enctype="multipart/form-data">
+						<form  method="POST" action="/medeliver_challan_pending" id="myform" enctype="multipart/form-data">
 									{% csrf_token %}
                         {% if request.session.role == 'Admin' %}
                              <div class="col-md-12 col-sm-12 ">
@@ -137,7 +137,7 @@
 
                 {% endif %}
 
-                               <div class="col-md-2 col-sm-2  form-group has-feedback">
+                           <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>
                         </form>
@@ -581,39 +581,27 @@ $(document).ready(function(){
     if (selectedOption == 'Custom Dates') {
       $('#date-range-fields').show();
       $('#tdate').show();
-     // show the date fields if custom option is selected
-      displayResults();
     } else {
       $('#date-range-fields').hide();
       $('#tdate').hide();// hide the date fields if another option is selected
-          displayOtherResults(selectedOption);
     }
 });
+
 $(document).ready(function(){
   $('#daterangeselect').change(function() {
     var selectedOption = $(this).find(":selected").text();
     if (selectedOption == 'Custom Dates') {
       $('#date-range-fields').show();
-      $('#tdate').show();// show the date fields if custom option is selected
-      displayResults();
+      $('#tdate').show();
     } else {
       $('#date-range-fields').hide();
-      $('#tdate').hide();// hide the date fields if another option is selected
-          displayOtherResults(selectedOption);
+      $('#tdate').hide();
     }
   });
 });
-function displayResults() {
-  var fromDate = $('#date-range-fields').val();
-  var toDate = $('#tdate').val();
-  // Use the selected dates to display results
-  // Code to display results...
-}
 
-function displayOtherResults(selectedOption) {
-  // Use the selected option to display results for other options
-  // Code to display results...
-}
+
+
 
 $(document).ready(function() {
   $('.btnSubmit').click(function() {
@@ -633,6 +621,9 @@ $(document).ready(function() {
 $(".btnSelectAll").click(function() {
     $("tbody td input[type=checkbox]").prop("checked", this.checked);
     })
+
+
+
  </script>
 {% endblock %}
 

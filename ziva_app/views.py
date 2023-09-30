@@ -2583,34 +2583,43 @@ def get_storebus(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    accesskey = request.session['accesskey']
-    warehouse = request.POST.get('warehouse')
-    region = request.POST.get('region')
-    depo=request.POST.get('depo')
-    if depo:
-        depo=depo
-    else:
-        depo='All'
-    if warehouse:
-        warehouse = warehouse
-    else:
-        warehouse='All'
-    if region:
-        region=region
-    else:
-        region='All'
-    url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster-all.php"
+    try:
+            accesskey = request.session['accesskey']
+            warehouse = request.POST.get('warehouse')
+            region = request.POST.get('region')
+            depo=request.POST.get('depo')
+            if depo:
+                depo=depo
+            else:
+                depo='All'
+            if warehouse:
+                warehouse = warehouse
+            else:
+                warehouse='All'
+            if region:
+                region=region
+            else:
+                region='All'
+            url = "http://13.235.112.1/ziva/mobile-api/dropdownlist-storemaster-all.php"
 
-    payload = json.dumps({"accesskey": accesskey, "type": "Bus Station",
-                          "warehousename": warehouse,
-                          "regionid": region,
-                          "depoid":depo})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return JsonResponse({'data': data})
+            payload = json.dumps({"accesskey": accesskey, "type": "Bus Station",
+                                  "warehousename": warehouse,
+                                  "regionid": region,
+                                  "depoid":depo})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                return JsonResponse({'data': data})
+            else:
+                data = response.json()
+                return JsonResponse({'data': data})
+    except Exception as e:
+                messages.error(request, str(e))
+                return JsonResponse({'data': str(e)})
+
 
 def get_proformabus(request):
     if 'accesskey' not in request.session:
@@ -2903,27 +2912,25 @@ def user_edit(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     if request.method == "POST":
+        accesskey = request.session['accesskey']
         url = "http://13.235.112.1/ziva/mobile-api/edit-user.php"
-
         payload = json.dumps({
-
             "accesskey": accesskey,
             "username": request.POST.get('username'),
             "mobile": request.POST.get('mobile'),
             "userid": request.POST.get('uid'),
             "emailid": request.POST.get('email'),
             "region": request.POST.get('regionname'),
-            "regionid": request.POST.get('region'),
+            "regionid": request.POST.get('regionid'),
             "warehousename": request.POST.get('warehousename'),
-            "depo": request.POST.get('depo'),
-            "level": request.POST.get('level'),
+            "level": request.POST.get('levelname'),
             "role": request.POST.get('role'),
             "userattachfilename": "",
             "designation": "",
             "deponame": request.POST.get('deponame'),
-            "depoid": request.POST.get('depo'),
+            "depoid": request.POST.get('depoid'),
             "busstationname": request.POST.get('busstationname'),
-            "busstationid": request.POST.get('busstation'),
+            "busstationid": request.POST.get('busstationid'),
             "userimage": ""
         })
         headers = {
@@ -2948,52 +2955,56 @@ def user_edit(request):
 
 
 def user_list(request):
-    if 'accesskey' not in request.session:
-        messages.error(request, 'Access denied!')
-        return redirect('/login')
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/role-dropdownlist.php"
+    try:
+            if 'accesskey' not in request.session:
+                messages.error(request, 'Access denied!')
+                return redirect('/login')
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/role-dropdownlist.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
+            payload = json.dumps({"accesskey": accesskey})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
 
-    response3 = requests.request("GET", url, headers=headers, data=payload)
-    data2 = response3.json()
+            response3 = requests.request("GET", url, headers=headers, data=payload)
+            data2 = response3.json()
 
-    role_list = data2['roledropdownlist']
+            role_list = data2['roledropdownlist']
 
-    url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
-    payload = json.dumps({"accesskey": accesskey, "name": "LEVEL"})
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-    response4 = requests.request("GET", url, headers=headers, data=payload)
-    data3 = response4.json()
-    level_list = data3['itemmasterlist']
-    url = "http://13.235.112.1/ziva/mobile-api/user-list.php"
+            payload = json.dumps({"accesskey": accesskey, "name": "LEVEL"})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response4 = requests.request("GET", url, headers=headers, data=payload)
+            data3 = response4.json()
+            level_list = data3['itemmasterlist']
+            url = "http://13.235.112.1/ziva/mobile-api/user-list.php"
 
-    payload = json.dumps({
-            "accesskey": accesskey
-        })
-    headers = {
-            'Content-Type': 'application/json'
-        }
+            payload = json.dumps({
+                    "accesskey": accesskey
+                })
+            headers = {
+                    'Content-Type': 'application/json'
+                }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
-            data = response.json()
-            user_list = data['userlist']
-            return render(request, 'user/user_list.html', {"list": user_list,'menuname':menuname,'role_list':role_list,'level_list':level_list})
-    if response.status_code == 400:
-            data = response.json()
-            messages.error(request,data['message'])
-            return redirect('/login')
-    else:
-            return render(request, 'user/user_list.html',{'menuname':menuname,'role_list':role_list,'level_list':level_list})
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                    data = response.json()
+                    user_list = data['userlist']
+                    return render(request, 'user/user_list.html', {"list": user_list,'menuname':menuname,'role_list':role_list,'level_list':level_list})
+            if response.status_code == 400:
+                    data = response.json()
+                    messages.error(request,data['message'])
+                    return redirect('/login')
+            else:
+                    return render(request, 'user/user_list.html',{'menuname':menuname,'role_list':role_list,'level_list':level_list})
+    except Exception as e:
+        messages.error(request, str(e))
+        return render(request, 'user/user_list.html', {"menuname": menuname})
 
 def user_status_active(request):
     if 'accesskey' not in request.session:
@@ -3791,30 +3802,39 @@ def grn_list1(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         wh_masterlist = data['warehouselist']
-        url = "http://13.235.112.1/ziva/mobile-api/grn-list.php"
+        role = request.session['role']
+        if role == 'Admin':
+            url = "http://13.235.112.1/ziva/mobile-api/grn-list-admin.php"
 
-        payload = json.dumps({"accesskey":accesskey,"status":"All"})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
+            payload = json.dumps({"accesskey":accesskey,"status":"All"})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            grn_list = data['grnlist']
-            return render(request, 'grn/grn_list1.html', {'all_data': grn_list,'menuname':menuname,'vendor_masterlist':vendor_masterlist,'wh_masterlist':wh_masterlist})
-        elif response.status_code == 400:
-            data = response.json()
-            messages.error(request,data['message'])
-            return render(request,'login1.html')
-        else:
-            return render(request, 'grn/grn_list1.html',{'menuname':menuname})
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                grn_list = data['grnlist']
+                return render(request, 'grn/grn_list1.html', {'all_data': grn_list,'menuname':menuname,'vendor_masterlist':vendor_masterlist,'wh_masterlist':wh_masterlist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return redirect('/internal_consumption')
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+
+            else:
+                return render(request, 'grn/grn_list1.html',{'menuname':menuname})
+
     except:
         if response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
             return render(request, 'login1.html')
     return render(request, 'grn/grn_list1.html', {'menuname': menuname})
+
 
 def grn_new_verified_status(request):
     if 'accesskey' not in request.session:
@@ -4007,7 +4027,6 @@ def sale_item_list(request):
                       'stname':stname,'stid':stid,'data2':data2,'data3':data2[0],'taxinvoice':taxinvoice,'menuname':menuname})
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
             return render(request, 'login1.html')
         else:
             return render(request, 'sales/sales_new.html',
@@ -7290,10 +7309,10 @@ def depo_edit(request):
             "licenseno": request.POST.get('license1'),
             "depo_manager":request.POST.get('depomanager1'),
             "depo_contact_no":request.POST.get('mobileno1'),
-            "warehouseid":request.POST.get('whid'),
-            "warehouse":request.POST.get('whname'),
-            "regionid": request.POST.get('regionid1'),
-            "region":request.POST.get('regionname1'),
+            "warehouseid":request.POST.get('warehouseid'),
+            "warehouse":request.POST.get('warehousename'),
+            "regionid": request.POST.get('regionid'),
+            "region":request.POST.get('regionname'),
         })
         headers = {
             'Content-Type': 'application/json'
@@ -15752,7 +15771,7 @@ def intconsump_dashboard_data(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
+    role = request.session['role']
     fdate = request.POST.get('fdate')
     cdate = request.POST.get('cdate')
     tdate = datetime.date.today()
@@ -15765,32 +15784,63 @@ def intconsump_dashboard_data(request):
         todate = cdate
     else:
         todate = tdate
-    payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame": request.POST.get('depoid'),
-               }
-    payload = json.dumps(payload, cls=BytesEncoder)
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
+        payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame": request.POST.get('depoid'),
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data': data})
-    elif response.status_code == 400:
-        data = response.json()
-        if data['message'] == 'Sorry! some details are missing':
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
             return JsonResponse({'data': data})
-        else:
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
+    if role == 'Depo':
+        deponame = request.session['deponame']
+        url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
+        payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "deponame":deponame,
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
-            return redirect('\login')
-    elif response.status_code == 503:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'data': data})
-    elif response.status_code == 500:
-        messages.error(request, "Internal Server Error")
-        return JsonResponse({'data': "Internal Server Error"})
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
 
 
 def service_wise_shortage(request):

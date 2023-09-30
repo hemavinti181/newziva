@@ -173,7 +173,7 @@
                                              <input type="hidden" class="form-control" name="mrp" id="mrp">
 
                                       	<div class="col-md-2 col-sm-2  offset-md-12">
-                                           <button type="submit" id="collectorder" name="add" style="margin-top: 25px;" class="btn btn-primary">Collect Order</button>
+                                           <button type="submit" id="collectorder" name="add" style="margin-top: 28px;" class="btn btn-primary">Collect Order</button>
                                        </div>
 
                                        <input type="hidden" id="store_id" name="store_id" />
@@ -220,8 +220,8 @@
                            <td>{{all_data.manufacturer}}</td>
 
                        <td>
-                            <a href="/delete_sale_item/{{ all_data.id }}/"><i class="fa fa-trash"></i></a>
-                            <a class="/edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><i class="fa fa-edit"></i></a>
+                            <a href="/delete_sale_item/{{ all_data.id }}/"><span class="badge badge-danger"><i class="fa fa-trash"></i></span></a>
+                            <a class="/edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                        </td>
                             </tbody>
                            <!--<tfoot>
