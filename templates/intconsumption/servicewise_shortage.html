@@ -73,7 +73,7 @@
                                 <p></p>
                         <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">
                                 <table id="datatable" class="display table-striped table-bordered" style="width:100%">-->
-                                    <table id="datatable" class="display table-striped table-bordered" style="width:100%">
+                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
                       <thead>
                         <tr>
                                     <th>S No</th>
@@ -117,8 +117,7 @@
                             <div class="card-box table-responsive">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-
-                        <table id="datatable-buttons" class="display  table-bordered" style="width:100%">
+             <table  class="datatable-buttons1  display  table-striped table-bordered" style="width:100%">
 
                      <thead>
                                     <tr>
@@ -223,7 +222,42 @@ $("#depoid").change(function() {
 });
 
 
-$(document).on('click', '.driver_shortlist', function () {
+$(document).ready(function () {
+    var dataTable = $(".datatable-buttons1").DataTable({
+        dom: "Blfrtip",
+        buttons: [
+            {
+                extend: "copy",
+                className: "btn-sm"
+            },
+            {
+                extend: "csv",
+                className: "btn-sm"
+            },
+            {
+                extend: "excel",
+                className: "btn-sm"
+            },
+            {
+                extend: "pdfHtml5",
+                className: "btn-sm"
+            },
+            {
+                extend: "print",
+                className: "btn-sm"
+            },
+        ],
+        responsive: true,
+          columns: [
+            { data: 'date' },
+            { data: 'service_id' },
+            { data: 'noofbottles_recieve' },
+            { data: 'noofbottles_recieve' },
+            { data: 'return_no_of_bottles' },
+            { data: 'shortage' },
+        ],
+    });
+    $(".driver_shortlist").on('click', function () {
     let service_id = $(this).data('id');
     let deponame = $(this).data('deponame');
     let fdate = $(this).data('fdate');
@@ -248,8 +282,8 @@ $(document).on('click', '.driver_shortlist', function () {
             } else {
                 $('.driver').show();
                 var responseData = data.data.shortagelist;
-                var tableBody = $('#datatable-buttons tbody');
-                table = $('#demoApi').DataTable();
+                 dataTable.clear().rows.add(responseData).draw();
+                var tableBody = $('.datatable-buttons1 tbody');
                 var count = responseData.length;
                 tableBody.empty();
 
@@ -274,7 +308,7 @@ $(document).on('click', '.driver_shortlist', function () {
         }
     });
 });
-
+});
 
 </script>
 {% endblock %}

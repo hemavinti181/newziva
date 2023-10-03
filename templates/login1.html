@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <!-- Created By CodingLab - www.codinglabweb.com -->
@@ -125,6 +126,158 @@ form .signup-link a:hover{
   border: 2px solid #14c38e;
   }
     </style>
+
+
+       <style>
+    {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+.round {
+  border-radius: 50%;
+}
+
+.fab {
+  transition: all 300ms ease-in-out;
+  width: 56px;
+  height: 56px;
+  background-color: #FF4081;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 30px;
+  bottom: 15px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
+  color: white;
+  font-size: 2em;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.16);
+}
+.fab1 {
+  transition: all 300ms ease-in-out;
+  width: 56px;
+  height: 56px;
+  background-color: #003aa5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 30px;
+  bottom: 15px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
+  color: white;
+  font-size: 2em;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.16);
+}
+
+.fab i {
+  transition: all 300ms ease-in-out;
+  will-change: transform;
+}
+
+.inner-fabs .fab {
+  width: 40px;
+  height: 40px;
+  right: 38px;
+  bottom: 23px;
+  font-size: 1.5em;
+  will-change: bottom;
+}
+
+.inner-fabs.show .fab:nth-child(1) {
+  bottom: 80px;
+}
+
+.inner-fabs.show .fab:nth-child(2) {
+  bottom: 130px;
+}
+
+.inner-fabs.show .fab:nth-child(3) {
+  bottom: 180px;
+}
+
+.inner-fabs.show .fab:nth-child(4) {
+  bottom: 230px;
+}
+
+.inner-fabs.show .fab:nth-child(5) {
+  bottom: 280px;
+}
+
+.inner-fabs.show .fab:nth-child(6) {
+  bottom: 330px;
+}
+.inner-fabs.show .fab:nth-child(7) {
+  bottom: 380px;
+}
+.inner-fabs.show .fab:nth-child(8) {
+  bottom: 430px;
+}
+.inner-fabs.show .fab:nth-child(9) {
+  bottom: 430px;
+}
+.inner-fabs.show .fab:nth-child(9) {
+  bottom: 480px;
+}
+.inner-fabs.show + .fab i {
+  transform: rotate(135deg);
+}
+
+.fab:before {
+  content: attr(data-tooltip);
+  transition: opacity 150ms cubic-bezier(0.4, 0, 1, 1);
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  color: #ececec;
+  right: 50px;
+  top: 25%;
+  background-color: rgba(70, 70, 70, 0.9);
+  font-size: 0.5em;
+  line-height: 1em;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 2px;
+  padding: 6px 8px;
+  max-width: 200px;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+.inner-fabs.show .fab:hover:before {
+  content: attr(data-tooltip);
+  visibility: visible;
+  opacity: 1;
+}
+   .tooltiptext {
+    visibility: hidden;
+    width: auto;
+    background-color: #898787;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 3px 10px;
+    position: absolute;
+    z-index: 1;
+    /* bottom: 19%;
+    left: 50%; */
+    margin-left: -130px;
+    opacity: 1;
+    transition: opacity 1s;
+    font-size: 15px;
+}
+</style>
   </head>
   <body>
     <div class="container">
@@ -153,56 +306,10 @@ form .signup-link a:hover{
         </form>
       </div>
     </div>
-
-
-<div class="modal custom-modal fade"  id="return" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content style1">
-                                               <div class="modal-body">
-
-                                             <form method="POST" action="/return_bussupply" enctype="multipart/form-data">
-                                                    {% csrf_token %}
-                              <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-
-                                    <h3  id="myModalLabel3" style="text-align:center;">Forgot Password</h3>
-                                                 <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                     <input type="hidden" id="bott" name="bott" />
-											<label>User id *</label>
-										    <input type="text" class="form-control" placeholder="tickets" name="tickets" id="tickets" required>
-										</div>
-
-                                            <input type="hidden" name="service_id" id="service_id" />
-                                                 <input type="hidden" name="count" id="count" />
-										<div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label> *</label>
-										    <input type="text" class="form-control" placeholder="bottles" name="bottlesreturn" id="bottlesreturn" readonly>
-										</div>
-                                                 <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Actual Return  *</label>
-										    <input type="text" class="form-control" placeholder="bottles" name="actbottlesreturn" id="actbottlesreturn" required>
-										</div>
-                                          <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Shortage *</label>
-										    <input type="text" class="form-control" placeholder="bottles" name="shortbottlesreturn" id="shortbottlesreturn" readonly>
-										</div>
-
-                                                 </div>
-                                            <div class="col-md-6 col-sm-6  offset-md-4">
-                                                 <button type="submit" class="btn btn-primary" style="margin-top:-30px;">Save</button>
-                                                 <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-top:-30px;">Cancel</button>
-                                            </div>
-                                                <p></p>
-                                                 </form>
-                                         </div>
-    </div>
-</div>
-</div>
-
+  </div>
   </body>
 </html>
+</div>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script>
@@ -231,7 +338,6 @@ setTimeout("preventBack()", 0);
 		}
 	{% endfor %}
 
-
 $('.message a').click(function(){
    $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
 });
@@ -247,5 +353,4 @@ $('.message a').click(function(){
             passwordInput.setAttribute('type', 'password');
         }
     });
-
   </script>

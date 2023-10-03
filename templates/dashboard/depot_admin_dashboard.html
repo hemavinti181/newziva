@@ -33,19 +33,19 @@
           </div>
 
                    {% if request.session.role == 'Admin' %}
-                 <div class="x_panel">
-				      	<form  method="POST" action=""   enctype="multipart/form-data">
-											{% csrf_token %}
-                            	<div  class="col-md-3 col-sm-3  form-group has-feedback">
-													<label> Depot</label>
-												<select class="form-control" name="depoid2" id="depoid2" hidden>
-                            		                    <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
-												</select>
-											 <input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
-													<option value="All"> All</option>
-												</select>
-                                </div>
+                         <div class="x_panel">
+                                <form  method="POST" action=""   enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                        <div  class="col-md-3 col-sm-3  form-group has-feedback">
+                                                            <label> Depot</label>
+                                                        <select class="form-control" name="depoid2" id="depoid2" hidden>
+                                                                <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
+                                                        </select>
+                                                     <input type="hidden" name="deponame" id="deponame" />
+                                                        <select class="form-control" name="depoid" id="depoid">
+                                                            <option value="All"> All</option>
+                                                        </select>
+                                        </div>
 									<!--<div  class="col-md-3 col-sm-3  form-group has-feedback">
 													<label> Warehouse</label>
 

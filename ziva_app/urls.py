@@ -323,7 +323,8 @@ urlpatterns = [
     path('wh_item_list_admin',views.wh_item_list_admin,name='wh_item_list_admin'),
     path('complete_stk_admin',views.complete_stk_admin,name='complete_stk_admin'),
     path('get_ps_stock',views.get_ps_stock,name='get_ps_stock'),
-    path('get_user',views.get_user,name='get_user')
+    path('get_user',views.get_user,name='get_user'),
+    path('get_ps',views.get_ps,name='get_ps')
 
 
 ]

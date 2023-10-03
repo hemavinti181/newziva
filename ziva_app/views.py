@@ -4657,7 +4657,7 @@ def delete_salesitem(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/delete-saleitem-delivery-pending.php"
+    url = "http://13.235.112.1/ziva/mobile-api/delete-sale-item.php"
     id=request.POST.get('deletesono')
     payload = json.dumps({
         "accesskey": accesskey,
@@ -4671,7 +4671,6 @@ def delete_salesitem(request):
     if response.status_code == 200:
         data = response.json()
         messages.success(request, data['message'])
-
         url = reverse('sales_item_list_pending', args=[id])
         return redirect(url)
     elif response.status_code == 400:
@@ -7311,8 +7310,8 @@ def depo_edit(request):
             "depo_contact_no":request.POST.get('mobileno1'),
             "warehouseid":request.POST.get('warehouseid'),
             "warehouse":request.POST.get('warehousename'),
-            "regionid": request.POST.get('regionid'),
-            "region":request.POST.get('regionname'),
+            "regionid": request.POST.get('regionid1'),
+            "region":request.POST.get('regionname1'),
         })
         headers = {
             'Content-Type': 'application/json'
@@ -8528,6 +8527,37 @@ def get_user(request):
             messages.error(request, data['message'])
             return redirect('/login')
 
+def get_ps(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/product-superviserlist.php"
+    payload = json.dumps({
+        "accesskey": accesskey,"depoid":request.POST.get('depo')
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    else:
+        return redirect('/internal_consumption')
+
+
 def wh_search(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -8800,6 +8830,8 @@ def delete_stkbus_item(request,id):
         except:
                 messages.error(request, response.text)
         return redirect('stock_transfer')
+
+
 def delete_stkdepo_item(request,id):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -8880,6 +8912,8 @@ def edit_stk_item(request):
     else:
         return redirect('stock_transfer')
 
+
+
 def complete_stk_admin(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -8916,6 +8950,9 @@ def complete_stk_admin(request):
         except Exception as e:
             messages.error(request, str(e))
         return redirect('stock_tranfer_admin')
+
+
+
 
 
 def complete_whinv(request):
@@ -13858,11 +13895,19 @@ def depo_servicenum(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = response.json()
-        servicemasterlist = data['servicemasterlist']
-        return JsonResponse({'data':servicemasterlist})
+        return JsonResponse({'data':data})
     elif response.status_code == 400:
         data = response.json()
-        return redirect('/login')
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    else:
+        return redirect('/internal_consumption')
 
 def service_details(request):
     if 'accesskey' not in request.session:
@@ -14458,11 +14503,15 @@ def internal_consump_stock(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-    role = request.session['role']
-    if role == 'Admin':
+    depoid = request.session['depoid']
+    role = request.session['displayrole']
+    if role == 'Admin' or 'DEPO MANAGER':
         url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
-        payload = {"accesskey": accesskey, 'depoid': request.POST.get('depoid')
-                   }
+        if role == 'DEPO MANAGER':
+            payload = { "accesskey": accesskey, 'depoid':depoid  }
+        else:
+            payload = {"accesskey": accesskey, 'depoid': request.POST.get('depoid')
+               }
         payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
             'Content-Type': 'application/json'
@@ -14471,7 +14520,6 @@ def internal_consump_stock(request):
 
         if response.status_code == 200:
             data = response.json()
-
             return JsonResponse({'data': data})
         elif response.status_code == 400:
             data = response.json()
@@ -15877,6 +15925,7 @@ def service_wise_shortage(request):
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")
             return JsonResponse({'data': "Internal Server Error"})
+
 
 
 def driverwise_sub_shortage(request):

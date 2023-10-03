@@ -156,11 +156,12 @@
 												<select class="form-control depot" name="depoid1" id="depoid1" required>
                                                     <option value=""> depot</option>
                                                     {% for data in depolist %}
-                                                            {% if data.depoid == 'DEPO0094' %}
-													            <option value="{{ data.depoid  }}" selected>{{  data.deponame  }}</option>
+                                                            <!--{% if data.depoid == 'DEPO0094' %}
+													            <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
                                                             {% else %}
                                                                 <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
-                                                            {% endif %}
+                                                            {% endif %}-->
+													 <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
                                                     {% endfor %}
 												</select>
 										</div>
@@ -169,7 +170,7 @@
 											<label>Product Supervisor</label>
 											 <input type="hidden" name="supervisor" id="supervisor" />
 												<select class="form-control" name="supervisorid" id="supervisorid" style="width:180px !important;" required>
-													<option value=""></option>
+													<option value="">select</option>
 												</select>
 										</div>
                              {% endif %}
@@ -410,12 +411,12 @@
                                                     {% endfor %}
 												</select>
 										</div>
-                             <!--{% if request.session.role == 'Admin' %}
+                            <!--{% if request.session.role == 'Admin' %}
                                          <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Product Supervisor</label>
 											 <input type="hidden" name="supervisor1" id="supervisor1" />
 												<select class="form-control" name="supervisorid1" id="supervisorid1" style="width:180px !important;" required>
-													<option value=""></option>
+													<option value="">select</option>
 												</select>
 										</div>
                              {% endif %}-->
@@ -574,6 +575,8 @@ $("#deletesono").val(id1);
 
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
+    		 var $serviceSelect = $("#service");
+    	     $serviceSelect.trigger('select2:destroy');
         	$.ajax({
             	type: "POST",
             	url: '{% url "depo_servicenum" %}',
@@ -581,41 +584,55 @@ $("#depoid1").change(function() {
                 	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data
-					if(obj) {
-			 		$("#service").empty();
-                	$.each(obj, function (index, item) {
-                    $("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
-					});
-                	}
-             	}
-        	});
+			 		var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+					}
+					else {
+                        var obj = data.data.servicemasterlist
+						$("#service").empty();
+						$("#service").append("<option  value=''>Choose service</option>");
+						$.each(obj, function (index, item) {
+						$("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
+						});
+
+				 $serviceSelect.select2();
+					}
+				}
+			});
 });
 
 
-//$("#depoid1").change(function() {
-$(document).ready(function() {
-    		var depo = $('#depoid1').find(":selected").text();
+$("#depoid1").change(function() {
+    		var depo = $('#depoid1').val();
+
         	$.ajax({
             	type: "POST",
-            	url: '{% url "depo_servicenum" %}',
+            	url: '{% url "get_ps" %}',
             	data: {
                 	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data
+			 		var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+					}
+					else {
+                        var obj = data.data.productsuperviserlist
+						$("#supervisorid").empty();
+						$("#supervisorid").append("<option  value=''>select</option>");
+						$.each(obj, function (index, item) {
+						$("#supervisorid").append("<option value='" + item.busstationid+ "'>" + item.busstationname+ "</option>");
+						});
 
-					if(obj) {
-			 		$("#service").empty();
-			 		$("#service").append("<option  value=''>choose service</option>");
-                	$.each(obj, function (index, item) {
-                    $("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
-					});
-                	}
-             	}
-        	});
+					}
+				}
+			});
 });
-
 
 $(document).ready(function() {
     $("#service").select2();
@@ -632,7 +649,6 @@ $(document).ready(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-
 					if(obj) {
 			 		$("#oprs").val(obj[0].oprs);
                 	$("#departure").val(obj[0].depot);
@@ -644,10 +660,8 @@ $(document).ready(function() {
 });
 
 
-//$("#depoid1").change(function() {
-$(document).ready(function() {
+$("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
-
         	$.ajax({
             	type: "POST",
             	url: '{% url "staffnumber" %}',
@@ -655,8 +669,8 @@ $(document).ready(function() {
                 	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data
 
+			 		var obj = data.data
 
 					if(obj) {
 			 		$("#staffnumb").empty();
@@ -677,7 +691,7 @@ $(document).ready(function() {
 
 
 
-$(document).ready(function() {
+$("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
         	$.ajax({
             	type: "POST",
@@ -701,7 +715,7 @@ $(document).ready(function() {
 });
 
 
-$(document).ready(function() {
+$("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
         	$.ajax({
             	type: "POST",
@@ -724,8 +738,7 @@ $(document).ready(function() {
 });
 
 
-//$("#depoid1").change(function() {
-$(document).ready(function() {
+$("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
         	$.ajax({
             	type: "POST",
@@ -750,7 +763,7 @@ $(document).ready(function() {
 
 
 
-$(document).ready(function() {
+$("#depoid1").change(function() {
     $("#vehicalnumb").select2();
     $("#vehicalnumb").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
@@ -786,9 +799,6 @@ $(document).ready(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data
-
-
-
 					if(obj) {
 			 		$("#staffname").val(obj[0].name);
                 	}

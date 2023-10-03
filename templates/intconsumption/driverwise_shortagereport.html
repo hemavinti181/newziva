@@ -315,12 +315,10 @@ $(document).ready(function () {
                         var row = $('<tr>');
                         row.append($('<td>').text(i + 1));
                         row.append($('<td>').text(item.date));
-
                         if (i === 0) {
                             row.append($('<td rowspan="' + responseData.length + '">').text(item.staff_number));
                             row.append($('<td rowspan="' + responseData.length + '">').text(item.staff_name));
                         }
-
                         row.append($('<td>').text(item.noofbottles_recieve));
                         row.append($('<td>').text(item.return_no_of_bottles));
                         row.append($('<td>').text(item.shortage));
@@ -335,6 +333,5 @@ $(document).ready(function () {
         });
     });
 });
-
 </script>
 {% endblock %}
