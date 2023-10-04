@@ -13840,7 +13840,18 @@ def return_bussupply(request):
         else:
             ticketattach_data = None
             ticketattach_name = None
-
+        staffnumret1 = request.POST.get('staffnumret1')
+        staffnumret11 = request.POST.get('staffnumret1')
+        staffnumret2 = request.POST.get('staffnumret2')
+        staffnumret22 = request.POST.get('staffnumret2')
+        if staffnumret1:
+            staffnumret1 = staffnumret1
+        else:
+            staffnumret1 = staffnumret11
+        if staffnumret2:
+            staffnumret2 = staffnumret2
+        else:
+            staffnumret2 = staffnumret22
 
         url = "http://13.235.112.1/ziva/mobile-api/busservice-supply-logs-return.php"
         payload = {
@@ -13849,8 +13860,8 @@ def return_bussupply(request):
             "return_no_of_bottles":request.POST.get('actbottlesreturn'),
             "return_drivername":request.POST.get('staffname3'),
             "return_drivername_two":request.POST.get('staffname4'),
-            "return_staffno":request.POST.get('staffnumret1'),
-            "return_staffno_two":request.POST.get('staffnumret2'),
+            "return_staffno":staffnumret1,
+            "return_staffno_two":staffnumret2,
             "service_id":request.POST.get('service_id'),
             "ticketattach":ticketattach_data,
             "ticketattachfilename":ticketattach_name,
@@ -13863,13 +13874,15 @@ def return_bussupply(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
             data = response.json()
-            messages.success(request, data['message'])
-            return redirect('internal_consumption')
+            response = response.status_code
+            data['status'] = response
+            return JsonResponse({'response': data})
         elif response.status_code == 400:
             data = response.json()
             if data['message']  == 'Sorry! some details are missing':
-                messages.error(request, data['message'])
-                return redirect('/internal_consumption')
+                response = response.status_code
+                data['status'] = response
+                return JsonResponse({'response': data})
             else:
                 messages.error(request, data['message'])
                 return redirect('/login')
@@ -13878,6 +13891,7 @@ def return_bussupply(request):
     except Exception as e:
         messages.error(request, str(e))
         return redirect('internal_consumption')
+
 def depo_servicenum(request):
 
     if 'accesskey' not in request.session:
@@ -13930,7 +13944,18 @@ def service_details(request):
         return JsonResponse({'data':servicedependentlist})
     elif response.status_code == 400:
         data = response.json()
-        return redirect('/login')
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    else:
+        return redirect('/internal_consumption')
+
 
 def staffname(request):
     if 'accesskey' not in request.session:
@@ -13949,11 +13974,14 @@ def staffname(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = response.json()
-        staffnamelist = data['staffnamelist']
-        return JsonResponse({'data': staffnamelist})
+        return JsonResponse({'data': data})
     elif response.status_code == 400:
         data = response.json()
-        return redirect('/login')
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
 
 
 def staffnumber(request):
@@ -14325,6 +14353,156 @@ def create_busindent(request):
             return redirect('/create_indent_admin')
     else:
         return redirect('/create_indent_admin')
+
+
+
+def get_sms(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/ziva-sms-new.php"
+        mobile = request.POST.get('mobile')
+        payload = {"accesskey": accesskey,
+                   "service_id": request.POST.get('serviceid1'),
+                   "mobile": mobile
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            response = response.status_code
+            data['status'] = response
+            return JsonResponse({'response': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                response = response.status_code
+                data['status'] = response
+                return JsonResponse({'response': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            response = response.status_code
+            data['status'] = response
+            return JsonResponse({'response': data})
+        elif response.status_code == 500:
+            response = response.status_code
+            response = response.status_code
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'response': response})
+        else:
+            return redirect('/internal_consumption')
+    except:
+        if response.status_code == 400:
+            return redirect('/login')
+    return redirect('/internal_consumption')
+def submitreturn_sms(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/driver-return-authorization-otp.php"
+        staffno = request.POST.get('auth')
+        payload = {"accesskey": accesskey,
+                   "service_id": request.POST.get('serviceid1'),
+                   "otp": request.POST.get('otp'),
+                   "staffno": staffno
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            response = response.status_code
+            data['status'] = response
+            return JsonResponse({'response': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                response = response.status_code
+                data['status'] = response
+                return JsonResponse({'response': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            response = response.status_code
+            data['status'] = response
+            return JsonResponse({'response': data})
+        elif response.status_code == 500:
+            response = response.status_code
+
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'response': response})
+        else:
+            return redirect('/internal_consumption')
+    except:
+        if response.status_code == 400:
+            return redirect('/login')
+    return redirect('/internal_consumption')
+
+def submit_sms(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/driver-authorization-otp.php"
+        staffno = request.POST.get('auth')
+        payload = {"accesskey": accesskey,
+                   "service_id": request.POST.get('serviceid1'),
+                   "otp": request.POST.get('otp'),
+                   "staffno": staffno
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            response = response.status_code
+            data['status'] = response
+            return JsonResponse({'response': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                response = response.status_code
+                data['status'] = response
+                return JsonResponse({'response': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            response = response.status_code
+            data['status'] = response
+            return JsonResponse({'response': data})
+        elif response.status_code == 500:
+            response = response.status_code
+            response = response.status_code
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'response': response})
+        else:
+            return redirect('/internal_consumption')
+    except:
+        if response.status_code == 400:
+            return redirect('/login')
+    return redirect('/internal_consumption')
 
 def authorize_staffid(request):
     if 'accesskey' not in request.session:

@@ -324,7 +324,10 @@ urlpatterns = [
     path('complete_stk_admin',views.complete_stk_admin,name='complete_stk_admin'),
     path('get_ps_stock',views.get_ps_stock,name='get_ps_stock'),
     path('get_user',views.get_user,name='get_user'),
-    path('get_ps',views.get_ps,name='get_ps')
+    path('get_ps',views.get_ps,name='get_ps'),
+    path('get_sms',views.get_sms,name='get_sms'),
+    path('submit_sms',views.submit_sms,name='submit_sms'),
+    path('submitreturn_sms', views.submitreturn_sms, name='submitreturn_sms'),
 
 
 ]

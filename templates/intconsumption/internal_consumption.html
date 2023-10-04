@@ -15,7 +15,7 @@
 	}
 	.style2{
 	position: absolute !important;
-	width: 60% !important;
+	width: 65% !important;
 	margin-left:80px !important;
 	}
 	 .modal1{
@@ -111,7 +111,7 @@
                                                           <i class="fa fa-trash"></i></span></a>
                                           <a href="#" class="depoedit" onclick="editConsumption('{{ data.service_id }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                     {% endif %}
-                                      <span class="badge bg-green" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.staffnumber }}','{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+                                      <span class="badge bg-green" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
 								{% else %}
 								{% if request.session.role == 'Admin' %}
 
@@ -119,7 +119,7 @@
                                                           <i class="fa fa-trash"></i></span></a>
                                           <a href="#" class="depoedit" onclick="editConsumption('{{ data.service_id }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                 {% endif %}
-								<span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}')"  data-target="#return">RETURN</span>
+								<span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}','{{ data.deponame }}','{{ data.staffnumber }}','{{ data.staffnumbertwo }}')"  data-target="#return">RETURN</span>
 								{% endif %}
                             </td>
                                 </tr>
@@ -292,7 +292,7 @@
                                             <div class="modal-content style1">
                                                <div class="modal-body">
 
-                                             <form method="POST" action="/return_bussupply" enctype="multipart/form-data">
+                                             <form method="POST" action="" enctype="multipart/form-data">
                                                     {% csrf_token %}
                               <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -307,7 +307,8 @@
 										</div>
 
                                             <input type="hidden" name="service_id" id="service_id" />
-                                                 <input type="hidden" name="count" id="count" />
+												 <input type="hidden" name="count" id="count" />
+											  <input type="hidden" name="deponamereturn" id="deponamereturn" />
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>To be return  *</label>
 										    <input type="text" class="form-control" placeholder="bottles" name="bottlesreturn" id="bottlesreturn" readonly>
@@ -338,6 +339,7 @@
                                                   <div class="col-md-6 col-sm-6  form-group has-feedback" id="list1">
 
 										     <input type="hidden" name="staffnumret" id="staffnumret" />
+												<input type="hidden" name="staffnumret11" id="staffnumret11" />
 												<select class="form-control select2" name="staffnumret1" id="staffnumret1" style="width:180px !important;">
 													<option value=""> Driver ID1</option>
 												</select>
@@ -355,7 +357,7 @@
 
 										</div>-->
                                          <div class="col-md-6 col-sm-6  form-group has-feedback" id="list2"  style="display:none;">
-
+											 <input type="hidden" name="staffnumret22" id="staffnumret22" />
 										     <input type="hidden" name="staffnameret2" id="staffnameret2" />
 												<select class="form-control select2" name="staffnumret2" id="staffnumret2"  style="width:180px !important;">
 													<option value=""> Driver ID2</option>
@@ -367,7 +369,7 @@
 										</div>
                                                  </div>
                                             <div class="col-md-6 col-sm-6  offset-md-4">
-                                                 <button type="submit" class="btn btn-primary" style="margin-top:-30px;">Save</button>
+                                                 <button type="button" id="save"   class="btn btn-primary" style="margin-top:-30px;">Save</button>
                                                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-top:-30px;">Cancel</button>
                                             </div>
                                                 <p></p>
@@ -506,20 +508,72 @@
                                             <div class="modal-content style2">
                                                <div class="modal-body">
 
-                                             <form method="POST" action=" ">
+                                             <form method="POST" action="">
                                                     {% csrf_token %}
                               <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-                                    <h3  id="myModalLabel4" style="text-align:center;">Authorization</h3>
-                                                 <label for="sno">Employee id *</label>
-                                                  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="sno">
-                                                 <input type="hidden" name="serviceid1" id="serviceid1" />
+                                    <h3  id="myModalLabel4" style="text-align:center;">Verification</h3>
+												  <div class="col-md-12 col-sm-12 form-group has-feedback" id="staffdisplay" style="display:none;">
+													 <label for="sno">Employee id *</label>
+													  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="sno">
+													 <input type="hidden" name="serviceid1" id="serviceid1" />
 
+												  </div>
+												 <p></p>
+												  <div class="col-md-12 col-sm-12 form-group has-feedback" id="mobiledisplay">
+													 <label for="sno">Enter mobile no *</label>
+													 <input type="text" class="form-control" placeholder="mobile number" name="mobile"  id="mobile" pattern= "[6789][0-9]{9}">
+												  </div>
+												 <div class="col-md-12 col-sm-12 form-group has-feedback" id="otpdisplay" style="display:none;">
+												   <label for="sno">Enter  OTP *</label>
+													 <input type="text" class="form-control" placeholder="otp" name="otp" id="otp">
+												 </div>
                                             <p></p>
-                                            <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="button" class="btn btn-primary" id="authorize1" style="margin-left:-30px;">Authorize</button>
+                                            <div class="col-md-6 col-sm-6  offset-md-4" style="margin-top:10px;">
+                                                  <button type="button" class="btn btn-primary" id="authorize1" style="margin-left:-30px;">GET OTP</button>
+												   <button type="button" class="btn btn-primary" id="submit" style="margin-left:-30px;display:none;">SUBMIT</button
+                                            </div>
+                                        </div>
+                                                </form>
+                                        </div>
+                                    </div>
+                                </div>
+</div>
+</div>
+
+<div class="modal custom-modal fade"  id="bs-example-modal-sm1" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content style2">
+                                               <div class="modal-body">
+
+                                             <form method="POST" action="">
+                                                    {% csrf_token %}
+                              <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+                                    <h3  id="myModalLabel41" style="text-align:center;">Verification</h3>
+												  <div class="col-md-12 col-sm-12 form-group has-feedback" id="staffdisplay1" style="display:none;">
+													 <label for="sno">Employee id *</label>
+													  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="sno1">
+
+
+												  </div>
+												 <p></p>
+												  <div class="col-md-12 col-sm-12 form-group has-feedback" id="mobiledisplay1">
+													 <label for="sno">Enter mobile no *</label>
+													 <input type="text" class="form-control" placeholder="mobile number" name="mobile1"  id="mobile1" pattern= "[6789][0-9]{9}">
+												  </div>
+												 <div class="col-md-12 col-sm-12 form-group has-feedback" id="otpdisplay1" style="display:none;">
+												   <label for="sno">Enter  OTP *</label>
+													 <input type="text" class="form-control" placeholder="otp" name="otp1" id="otp1">
+												 </div>
+                                            <p></p>
+                                            <div class="col-md-6 col-sm-6  offset-md-4" style="margin-top:10px;">
+                                                  <button type="button" class="btn btn-primary" id="authorize2" style="margin-left:-30px;">GET OTP</button>
+												   <button type="button" class="btn btn-primary" id="submitreturn" style="margin-left:-30px;display:none;">SUBMIT</button>
                                             </div>
                                         </div>
                                                 </form>
@@ -560,7 +614,7 @@
 						</div>
 					</div>
 
-
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -589,6 +643,8 @@ $("#depoid1").change(function() {
 					if (error === true) {
 						alertify.set('notifier', 'position', 'top-center');
 						alertify.error(message);
+						$("#service").empty();
+						$("#service").append("<option  value=''>not available</option>");
 					}
 					else {
                         var obj = data.data.servicemasterlist
@@ -607,7 +663,6 @@ $("#depoid1").change(function() {
 
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').val();
-
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_ps" %}',
@@ -620,11 +675,13 @@ $("#depoid1").change(function() {
 					if (error === true) {
 						alertify.set('notifier', 'position', 'top-center');
 						alertify.error(message);
+						$("#supervisorid").empty();
+						$("#supervisorid").append("<option  value=''>not available</option>");
+
 					}
 					else {
                         var obj = data.data.productsuperviserlist
 						$("#supervisorid").empty();
-						$("#supervisorid").append("<option  value=''>select</option>");
 						$.each(obj, function (index, item) {
 						$("#supervisorid").append("<option value='" + item.busstationid+ "'>" + item.busstationname+ "</option>");
 						});
@@ -655,6 +712,7 @@ $(document).ready(function() {
                 	$("#route").val(obj[0].route);
                 	}
              	}
+
         	});
     });
 });
@@ -662,6 +720,10 @@ $(document).ready(function() {
 
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
+    		 var $driverdata = $("#staffnumb");
+    	     $driverdata.trigger('select2:destroy');
+    	     var $driverdata1 = $("#staffnumb1");
+    	     $driverdata1.trigger('select2:destroy');
         	$.ajax({
             	type: "POST",
             	url: '{% url "staffnumber" %}',
@@ -674,15 +736,17 @@ $("#depoid1").change(function() {
 
 					if(obj) {
 			 		$("#staffnumb").empty();
-			 		$("#staffnumb").append("<option  value=''> staff number</option>");
+			 		$("#staffnumb").append("<option  value=''> choose driver</option>");
                 	$.each(obj, function (index, item) {
                     $("#staffnumb").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
                     });
                     $("#staffnumb1").empty();
-			 		$("#staffnumb1").append("<option  value=''> staff number</option>");
+			 		$("#staffnumb1").append("<option  value=''> choose driver</option>");
                 	$.each(obj, function (index, item) {
                     $("#staffnumb1").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
                     });
+                    $driverdata.select2();
+                    $driverdata1.select2();
                 	}
              	}
         	});
@@ -693,53 +757,8 @@ $("#depoid1").change(function() {
 
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "staffnumber" %}',
-            	data: {
-                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data
-
-
-					if(obj) {
-			 		$("#staffnumret2").empty();
-			 		$("#staffnumret2").append("<option  value=''> driver id</option>");
-                	$.each(obj, function (index, item) {
-                    $("#staffnumret2").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
-                    });
-                	}
-             	}
-        	});
-});
-
-
-$("#depoid1").change(function() {
-    		var depo = $('#depoid1').find(":selected").text();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "staffnumber" %}',
-            	data: {
-                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data
-
-					if(obj) {
-			 		$("#staffnumret1").empty();
-			 		$("#staffnumret1").append("<option  value=''>driver id</option>");
-                	$.each(obj, function (index, item) {
-                    $("#staffnumret1").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
-                    });
-                	}
-             	}
-        	});
-});
-
-
-$("#depoid1").change(function() {
-    		var depo = $('#depoid1').find(":selected").text();
+    		 var $serviceSelect = $("#vehicalnumb");
+    	     $serviceSelect.trigger('select2:destroy');
         	$.ajax({
             	type: "POST",
             	url: '{% url "vehicallist" %}',
@@ -749,13 +768,13 @@ $("#depoid1").change(function() {
 			 	success: function(data){
 			 		var obj = data.data
 
-
 					if(obj) {
 			 		$("#vehicalnumb").empty();
-			 		$("#vehicalnumb").append("<option  value=''> vehical number</option>");
+			 		$("#vehicalnumb").append("<option  value=''> choose vehical </option>");
                 	$.each(obj, function (index, item) {
                     $("#vehicalnumb").append("<option value='" + item.vehicleno+ "'>" + item.vehicleno+ "</option>");
                     });
+                     $serviceSelect.select2();
                 	}
              	}
         	});
@@ -831,14 +850,15 @@ $("#staffnumb1").change(function() {
 });
 });
 
-$(document).ready(function() {
 
+$(document).ready(function() {
     $("#staffnumret1").select2();
      $("#checked").click(function() {
      if ($(this).is(":checked")) {
         $("#staffnumret1").show();
         $("#staffnumret1").change(function() {
-    		var depo = $('#depoid1').find(":selected").text();
+    		var depo = $('#deponamereturn').val();
+    		alert(depo)
             var staffnumb = $('#staffnumret1').find(":selected").text();
         	$.ajax({
             	type: "POST",
@@ -847,9 +867,10 @@ $(document).ready(function() {
                 	'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data
-
-
+			 		var obj = data.data.staffnamelist
+			 		console.log(obj)
+			 		alert(obj.name)
+			 		console.log(obj[0].name)
 					if(obj) {
 			 		$("#staffname3").val(obj[0].name);
                 	}
@@ -862,14 +883,16 @@ $(document).ready(function() {
       }
 });
 });
-$(document).ready(function() {
 
+
+
+$(document).ready(function() {
      $("#checked").click(function() {
       if ($(this).is(":checked")) {
         $("#staffnumret2").show();
         $("#staffnumret2").select2();
         $("#staffnumret2").change(function() {
-                var depo = $('#depoid1').find(":selected").text();
+                var depo =  $('#deponamereturn').val();
                 var staffnumb = $('#staffnumret2').find(":selected").text();
                 $.ajax({
                     type: "POST",
@@ -878,8 +901,7 @@ $(document).ready(function() {
                         'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
                     },
                     success: function(data){
-                        var obj = data.data
-
+                        var obj = data.data.staffnamelist
                         if(obj) {
                         $("#staffname4").val(obj[0].name);
                         }
@@ -893,6 +915,7 @@ $(document).ready(function() {
       }
      });
   });
+
 
 $(document).ready(function() {
     $('.edit_item').click(function() {
@@ -923,8 +946,7 @@ $(document).ready(function() {
     });
   });
 
-  function VerifyClick(id, id1) {
-        var auth = $("#sno").val(id);
+  function VerifyClick(id1) {
         var serviceid1 = $("#serviceid1").val(id1)
 
     }
@@ -965,7 +987,7 @@ $("#id1").val(id);
   $("#supervisor").val(selectedOptionText);
 });
 
-function VerifyClick1(id,id1,id2){
+function VerifyClick1(id,id1,id2,id3,id4,id5){
 $("#tickets").val(" ");
 $("#bottlesreturn").val(" ");
 $("#actbottlesreturn").val(" ");
@@ -975,6 +997,32 @@ $("#staffnameret2").val(" ");
 $("#service_id").val(id);
 $("#bott").val(id1);
 $("#count").val(id2);
+$("#deponamereturn").val(id3);
+$("#staffnumret11").val(id4);
+$("#staffnumret22").val(id5);
+		$.ajax({
+            	type: "POST",
+            	url: '{% url "staffnumber" %}',
+            	data: {
+                	'depo':id3,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+					if(obj) {
+			 		$("#staffnumret2").empty();
+			 		$("#staffnumret2").append("<option  value=''> choose driver </option>");
+                	$.each(obj, function (index, item) {
+                    $("#staffnumret2").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
+                     });
+                    $("#staffnumret1").empty();
+			 		$("#staffnumret1").append("<option  value=''> choose driver</option>");
+                	$.each(obj, function (index, item) {
+                    $("#staffnumret1").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
+					});
+                	}
+             	}
+        });
 }
 
 $('#tickets').on('input', function() {
@@ -1025,37 +1073,115 @@ $('#tickets').on('input', function() {
   });
 
 
+
 $(document).ready(function () {
     $("#authorize1").click(function() {
     		var auth = $('#sno').val();
             var serviceid1 = $('#serviceid1').val();
+            var mobile = $('#mobile').val();
             $.ajax({
-               url: "{% url 'authorize_staffid' %}",
+               url: "{% url 'get_sms' %}",
                 type: 'POST',
                 data: {
-                  'auth': auth,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                  'mobile': mobile,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
               success: function (response) {
-              alert('hello')
+
               var message = response.response.message;
               var response = response.response.status
-              alert(response)
-              alert(message)
+
               console.log(response)
                if(response === 200){
-
-                 $("#return").show();
-                 $("#bs-example-modal-sm").hide();
-                 window.location.reload();
-                  alertify.set('notifier', 'position', 'top-center');
-                  alertify.success(message);
+                 $("#otpdisplay").show();
+                 $("#staffdisplay").show();
+                 $("#mobiledisplay").hide();
+                 $("#submit").show();
+                 $('#authorize1').hide();
                }
                else{
-                    alert(false)
                     alertify.set('notifier', 'position', 'top-center');
                     alertify.error(message);
-                    $("#bs-example-modal-sm").modal("hide");
+                   // $("#bs-example-modal-sm").modal("hide");
                     window.location.reload();
+               }
+            },
+              error: function (xhr, status, error) {
+                console.error(error);
+              }
+            });
+  });
+  });
+
+
+$(document).ready(function () {
+    $("#authorize2").click(function() {
+    		var auth = $('#sno').val();
+            var serviceid1 = $('#service_id').val();
+            var mobile = $('#mobile1').val();
+            $.ajax({
+               url: "{% url 'get_sms' %}",
+                type: 'POST',
+                data: {
+                  'mobile': mobile,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+              success: function (response) {
+
+              var message = response.response.message;
+              var response = response.response.status
+
+              console.log(response)
+               if(response === 200){
+                 $("#otpdisplay1").show();
+                 $("#staffdisplay1").show();
+                 $("#mobiledisplay1").hide();
+                 $("#submitreturn").show();
+                 $('#authorize2').hide();
+               }
+               else{
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                   // $("#bs-example-modal-sm").modal("hide");
+                    window.location.reload();
+               }
+            },
+              error: function (xhr, status, error) {
+                console.error(error);
+              }
+            });
+  });
+  });
+
+
+
+$(document).ready(function () {
+    $("#submit").click(function() {
+    		var auth = $('#sno').val();
+            var serviceid1 = $('#serviceid1').val();
+            var otp = $('#otp').val();
+            $.ajax({
+               url: "{% url 'submit_sms' %}",
+                type: 'POST',
+                data: {
+                  'auth':auth,'otp': otp,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+              success: function (response) {
+              var message = response.response.message;
+              var response = response.response.status
+              console.log(response)
+               if(response === 200){
+                 $("#return").show();
+                 //$("#bs-example-modal-sm").hide();
+                 window.location.reload();
+                 alertify.set('notifier', 'position', 'top-center');
+                 alertify.success(message);
+               }
+               else{
+
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                    //$("#bs-example-modal-sm").modal("hide");
+                     window.location.reload();
+
                }
               },
               error: function (xhr, status, error) {
@@ -1064,6 +1190,98 @@ $(document).ready(function () {
             });
   });
   });
+
+
+$(document).ready(function () {
+    $("#submitreturn").click(function() {
+    		var auth = $('#sno1').val();
+            var serviceid1 = $('#service_id').val();
+            var otp = $('#otp1').val();
+            $.ajax({
+               url: "{% url 'submitreturn_sms' %}",
+                type: 'POST',
+                data: {
+                  'auth':auth,'otp': otp,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+              success: function (response) {
+              var message = response.response.message;
+              var response = response.response.status
+              console.log(response)
+               if(response === 200){
+                 $("#return").show();
+                 //$("#bs-example-modal-sm").hide();
+                 window.location.reload();
+                 alertify.set('notifier', 'position', 'top-center');
+                 alertify.success(message);
+               }
+               else{
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                     window.location.reload();
+
+               }
+              },
+              error: function (xhr, status, error) {
+                console.error(error);
+              }
+            });
+  });
+  });
+
+
+
+
+$(document).ready(function () {
+    $("#save").click(function() {
+        var tickets = $('#tickets').val();
+        var service_id = $('#service_id').val();
+        var actbottlesreturn = $('#actbottlesreturn').val();
+        var staffname3 = $('#staffname3').val();
+        var staffname4 = $('#staffname4').val();
+        var ticketsimg = $('#ticketsimg').val();
+        var staffnumret1 = $('#staffnumret1').val();
+        var staffnumret2 = $('#staffnumret2').val();
+        var staffnumret11 = $('#staffnumret11').val();
+        var staffnumret21 = $('#staffnumret22').val();
+
+        $.ajax({
+            url: "{% url 'return_bussupply' %}",
+            type: 'POST',
+            data: {
+                'tickets': tickets,
+                'actbottlesreturn': actbottlesreturn,
+                'staffname3': staffname3,
+                'staffname4': staffname4,
+                'service_id': service_id,
+                'ticketsimg': ticketsimg,
+                'staffnumret1': staffnumret1,
+                'staffnumret2': staffnumret2,
+                'staffnumret11': staffnumret11,
+                'staffnumret22': staffnumret22,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (response) {
+                var message = response.response.message;
+                var responseCode = response.response.status;
+                console.log("Response Code: " + responseCode);
+                if (responseCode === 200) {
+                    $("#return").modal("hide");
+                    $("#bs-example-modal-sm1").modal("show");
+                } else {
+                    console.log("Error: " + message);
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                    window.location.reload();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+});
+
+
 
 
 $(document).ready(function () {
@@ -1089,6 +1307,7 @@ $(document).ready(function () {
               }
             });
   });
+
 
 
 function editConsumption(id){
@@ -1132,6 +1351,8 @@ function editConsumption(id){
         }
       });
   }
+
+
 $("#depoid2").change(function() {
     		var depo = $('#depoid2').find(":selected").text();
         	$.ajax({
@@ -1151,6 +1372,7 @@ $("#depoid2").change(function() {
              	}
         	});
 });
+
 
 //$("#depoid1").change(function() {
 $(document).ready(function() {
@@ -1174,6 +1396,7 @@ $(document).ready(function() {
              	}
         	});
 });
+
 
 $(document).ready(function() {
     $("#service1").select2();
@@ -1200,6 +1423,9 @@ $(document).ready(function() {
         	});
     });
 });
+
+
+
 //$("#depoid2").change(function() {
 $(document).ready(function() {
     		var depo = $('#depoid2').find(":selected").text();
@@ -1229,6 +1455,7 @@ $(document).ready(function() {
              	}
         	});
 });
+
 
 //$("#depoid2").change(function() {
 $(document).ready(function() {
