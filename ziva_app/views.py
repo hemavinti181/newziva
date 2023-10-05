@@ -13840,18 +13840,6 @@ def return_bussupply(request):
         else:
             ticketattach_data = None
             ticketattach_name = None
-        staffnumret1 = request.POST.get('staffnumret1')
-        staffnumret11 = request.POST.get('staffnumret1')
-        staffnumret2 = request.POST.get('staffnumret2')
-        staffnumret22 = request.POST.get('staffnumret2')
-        if staffnumret1:
-            staffnumret1 = staffnumret1
-        else:
-            staffnumret1 = staffnumret11
-        if staffnumret2:
-            staffnumret2 = staffnumret2
-        else:
-            staffnumret2 = staffnumret22
 
         url = "http://13.235.112.1/ziva/mobile-api/busservice-supply-logs-return.php"
         payload = {
@@ -13860,8 +13848,8 @@ def return_bussupply(request):
             "return_no_of_bottles":request.POST.get('actbottlesreturn'),
             "return_drivername":request.POST.get('staffname3'),
             "return_drivername_two":request.POST.get('staffname4'),
-            "return_staffno":staffnumret1,
-            "return_staffno_two":staffnumret2,
+            "return_staffno": request.POST.get('staffnumret1'),
+            "return_staffno_two":request.POST.get('staffnumret2'),
             "service_id":request.POST.get('service_id'),
             "ticketattach":ticketattach_data,
             "ticketattachfilename":ticketattach_name,
