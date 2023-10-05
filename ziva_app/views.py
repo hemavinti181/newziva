@@ -16260,12 +16260,18 @@ def servicewise_shortage(request):
             else:
                 deponame = 'All'
             range = request.POST.get('from')
-            if range == 'Custom Dates':
-                fdate = request.POST.get('fdate')
-                tdate = request.POST.get('tdate')
+
+
+            if range:
+                if range == 'Custom Dates':
+                    fdate = request.POST.get('fdate')
+                    tdate = request.POST.get('tdate')
+                else:
+                    fdate = request.POST.get('from')
+                    tdate = request.POST.get('from')
             else:
-                fdate = request.POST.get('from')
-                tdate = request.POST.get('from')
+                fdate = "Current Month"
+                tdate = "Current Month"
 
             payload = json.dumps({
                     "accesskey": accesskey,

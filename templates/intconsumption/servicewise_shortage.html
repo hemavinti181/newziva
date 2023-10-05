@@ -42,7 +42,7 @@
                             </div>
                               <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
                                   <label  for="end-date">To Date</label>
-                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
+                              <input type="date" id="end-date" name="tdate" class="form-control" value="{{ request.POST.tdate }}">
                             </div>
 
 
@@ -262,6 +262,7 @@ $(document).ready(function () {
     let deponame = $(this).data('deponame');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
+
     $.ajax({
         url: '{% url "service_wise_shortage" %}',
         type: 'POST',
