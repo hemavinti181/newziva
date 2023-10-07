@@ -458,9 +458,11 @@ color:#14c38e !important;
 <nav class="nav navbar-nav">
 <ul class=" navbar-right">
 <li class="nav-item dropdown open" >
+
 <a href="javascript:;" class="user-profile" aria-haspopup="true" aria-expanded="false">
 <img src="{% static 'build/images/user.png' %}" alt=""> Hello  {{ request.session.username }}
 </a>
+      <!--<a class="user-profile" href="/signout"><i class="fa fa-sign-out pull-right" style="font-size: 2em;"></i></a>-->
     <a class="user-profile" href="/signout"><i class="fa fa-sign-out pull-right" style="font-size: 2em;"></i></a>
 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
 <a class="dropdown-item" href="javascript:;"> Profile</a>

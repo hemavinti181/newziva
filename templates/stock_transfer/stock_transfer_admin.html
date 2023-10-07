@@ -59,6 +59,7 @@
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
                                             <input type="hidden" name="actionname" id="actionname" />
                                              <input type="hidden" name="response" id="response"  value="{{ response }}"/>
+                                             <input type="hidden" name="status" id="status"  value="{{ status }}"/>
 
 											<label>Stock Transfer From  *</label>
                                             <select class="form-control" name="wh2" id="wh2" hidden>
@@ -69,6 +70,8 @@
                                                      <option value="">select warehouse</option>
                                                 </select>
 										</div>
+
+
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Stock Transfer To *</label>
                                              <select class="form-control" name="depocode2" id="depocode2" hidden>
@@ -79,12 +82,14 @@
                                                      <option value="">select depot</option>
                                                 </select>
                                         </div>
+
                                         <div class="col-md-6 col-sm-2 form-group has-feedback">
 												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
-											</div>
+                                        </div>
                                     </form>
                 </div>
               </div>
+
 
      <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel bus_div" style="display:none">
@@ -92,7 +97,9 @@
 									<form class="form-label-left input_mask"  method="POST" action="/generate_transid_bust"   enctype="multipart/form-data">
 										{% csrf_token %}
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
-
+                                             <select class="form-control" name="busid2" id="busid2" hidden>
+                            		                    <option value="{{ request.POST.busid1 }}">{{ request.POST.busname1 }}</option>
+												    </select>
 											<label>Stock Transfer From  *</label>
                                                    <input type="hidden" name="busname1" id="busname1" />
 										    	 <select class="form-control items" name="busid1" id="busid1" required>
@@ -101,6 +108,9 @@
                                                 </select>
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                               <select class="form-control" name="depotid1" id="depotid1" hidden>
+                            		                    <option value="{{ request.POST.depotid }}">{{ request.POST.depotname1 }}</option>
+												    </select>
 											<label>Stock Transfer To *</label>
                                             <input type="hidden" name="depotname1" id="depotname1" />
                                             <select class="form-control items" name="depotid" id="depotid" required>
@@ -169,8 +179,7 @@
                   </div>
               </div>
 
-
-    <div class="col-md-12 col-sm-12 ">
+               <div class="col-md-12 col-sm-12 ">
                     <div class="x_panel"  style="display:none;"  id="divItemsAdd">
                    <div class="x_content">
                                     <div class="row">
@@ -249,34 +258,32 @@
                                             </div>
                                         </div>
                                     </div>
+                   </div>
+                    </div>
+    </div>
 
-
-                                    </div>
-
-
-                        <div class="col-md-12 col-sm-12 ">
-       <div class="x_panel" id="items-div"  style="display:none;">
-           	<form class="form-label-left input_mask"  method="POST" action="/wh_item_add_admin"   enctype="multipart/form-data">
+<div class="col-md-12 col-sm-12 ">
+       <div class="x_panel" id="items-bus"  style="display:none;">
+           	<form class="form-label-left input_mask"  method="POST" action="/bust_item_add_admin"   enctype="multipart/form-data">
 										{% csrf_token %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-                                              <input id="whitemname" name="whitemname" type="hidden"/>
-                                             <input id="freequantity" name="freequantity" type="hidden"/>
-                                             <input id="whexpdate" name="whexpdate" type="hidden"/>
-                                             <input id="whbatchno" name="whbatchno" type="hidden"/>
-                                             <input id="whcp_sno" name="whcp_sno" type="hidden"/>
-                                            <input id="whuom" name="whuom" type="hidden"/>
-                                            <input id="whnob" name="whnob" type="hidden"/>
-                                            <input id="whexpirydate" name="whexpirydate" type="hidden"/>
+                                              <input id="busname" name="busname" type="hidden"/>
+                                             <input id="busexpdate" name="busexpdate" type="hidden"/>
+                                             <input id="busbatchno" name="busbatchno" type="hidden"/>
+                                             <input id="buscp_sno" name="buscp_sno" type="hidden"/>
+                                            <input id="busuom" name="busuom" type="hidden"/>
+                                            <input id="busnob" name="busnob" type="hidden"/>
+
 											<label>Select Items *</label>
-										    	 <select class="form-control select2" name="itemcode1" id="itemcode1" required>
+										    	 <select class="form-control select2" name="busitemcode" id="busitemcode" required>
 													<option value="">Items</option>
 
                                                 </select>
 										</div>
                                         	 <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
                                             <label>Type</label>
-                                            <input id="typename" name="typename" type="hidden"/>
-                                            <select class="form-control items" id="typeid" name="typeid" required>
+                                            <input id="bustypename" name="bustypename" type="hidden"/>
+                                            <select class="form-control items" id="bustypeid" name="bustypeid" required>
                                                 <option value="">Type</option>
                                                 {% for data1 in type %}
                                                 <option value="{{ data1.type }}">{{ data1.type }}</option>
@@ -285,13 +292,13 @@
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Cases) </label>
-                                            <input class="form-control" id="quantity" name="quantity"
+                                            <input class="form-control" id="busquantity" name="busquantity"
                                                    placeholder="cases"
                                                    type="text">
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Bottles)</label>
-                                            <input class="form-control" id="nob" name="nob" placeholder="bottles"
+                                            <input class="form-control" id="busnobt" name="busnobt" placeholder="bottles"
                                                    type="text">
                                         </div>
 										 <div class="col-md-2 col-sm-2  form-group has-feedback">
@@ -305,12 +312,10 @@
 
  </div>
                   </div>
-              </div>
-            </div>
-             </div>
 
 
-                    <div class="x_panel"  style="display:none;"  id="divItemsAdd">
+<div class="col-md-12 col-sm-12 ">
+                    <div class="x_panel"  style="display:none;"  id="bust_items">
                    <div class="x_content">
                                     <div class="row">
                                         <div class="col-sm-12">
@@ -318,7 +323,7 @@
                                                 <p class="text-muted font-13 m-b-30">
                                                 </p>
 
-                                                <table class="display  table-bordered" id="datatable"
+                                                <table class="display  table-bordered" id="datatable-buttons"
                                                        style="width:100%">
                                                     <thead>
                                                     <tr>
@@ -350,7 +355,7 @@
 
                                                         <td>
                                                               <a
-                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status"><i
+                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" id="bus_delete"><i
                                                                     class="fa fa-trash"></i></span></a>
                                                             <span class="badge badge-info"
                                                                   data-target="#edit_stk_item"
@@ -374,7 +379,7 @@
                                                     <td colspan="9" style="color:#06911A">
                                                         <b>Invoice No: {{ taxinvoice }}</b>
 
-                                                            <span style="float:right;"><span class="badge-warning"
+                                                            <span style="float:right;"><span id="buscomplete" class="badge-warning"
                                                                                              data-target="#complete"
                                                                                              data-toggle="modal"
                                                                                              onclick="VerifyClick('{{data.so_number}}')"
@@ -398,6 +403,10 @@
           </div>
 </div>
 
+
+
+
+
 <div class="modal custom-modal fade" id="complete" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content style1">
@@ -408,7 +417,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/complete_stk_admin"  method="POST">
+                <form action="/complete_stk_admin" id="completeform" method="POST">
                     {% csrf_token %}
                     <input id="txtHdnId" name="txtHdnId" type="hidden"/>
 
@@ -526,6 +535,7 @@ $("#depocode1").change(function() {
 
     $(document).ready(function() {
         var response = $('#response').val();
+
         $.ajax({
             type: "POST",
             url: '{% url "stk_depot_list" %}',
@@ -546,12 +556,18 @@ $("#depocode1").change(function() {
                         var optionValue = $("#depocode2").val();
                         $("#depocode1").find("option[value='" + optionValue + "']").prop("selected", true);
                      }
+                     if (response === "Bus200") {
+                        var optionValue = $("#depotid1").val();
+                        $("#depotid").find("option[value='" + optionValue + "']").prop("selected", true);
+                     }
                 }
             }
         });
     });
 
+
     $(document).ready(function() {
+       var response = $('#response').val();
         $.ajax({
             type: "POST",
             url: '{% url "stk_busstation_list" %}',
@@ -565,23 +581,24 @@ $("#depocode1").change(function() {
                     $.each(obj, function(index, item) {
                          if (item.status === "Active") {
                             $("#busid1").append("<option value='" + item.busatationid + "'>" + item.busstationname + "</option>");
-                            //$("#depotid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
+
                          }
                     });
-
-
+                     if (response === "Bus200") {
+                        var optionValue = $("#busid2").val();
+                        $("#busid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                     }
                 }
             }
         });
     });
 
-    $(document).ready(function() {
 
+    $(document).ready(function() {
         $.ajax({
             type: "POST",
             url: '{% url "warehouseinventory_search" %}',
             data: {
-
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
             },
             success: function(data) {
@@ -597,7 +614,31 @@ $("#depocode1").change(function() {
                             $select.append($option);
 
                     });
+                    $select.select2();
+                }
+            }
+        });
+    });
 
+$(document).ready(function() {
+        $.ajax({
+            type: "POST",
+            url: '{% url "businventory_search" %}',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                var obj = data.data.warehouseinventorylist;
+                console.log(obj[0].itemname);
+                if (obj) {
+                    var $select = $('#busitemcode');
+
+                    $.each(obj, function(index, item) {
+
+                            var optionText = `${item.itemname} (Batch: ${item.batchcode}, Expiry: ${item.expirydate}, MRP: ${item.mrp})`;
+                            var $option = $('<option>', { value: item.itemcode, text: optionText });
+                            $select.append($option);
+                    });
                     $select.select2();
                 }
             }
@@ -661,6 +702,64 @@ $('#quantity').on('input', function()  {
 
 
 
+ $(document).ready(function () {
+            $('#busitemcode').change(function() {
+                    //$("#busitem_id").select2();
+                    var code = $('#busid2').val();
+                     var busitemcode = $(this).val();
+                     var searchterm = $(this).find(":selected").text();
+                    $.ajax({
+                      data: {"searchterm":searchterm,
+                      'code':code,'busitemcode':busitemcode,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_busstation_item' %}",
+                      type: 'POST',
+                      success: function(data){
+
+                        var obj = data.data
+                         console.log(obj);
+                          console.log(obj.busmrp);
+                        if(obj){
+                            $("#busmrp").val(obj.busmrp);
+                            $("#busuom").val(obj.busuom);
+                            $("#busexpdate").val(obj.busexpdate);
+                            $("#buscp_sno").val(obj.buscp_sno);
+
+                        }
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+            })
+ })
+
+
+$('#busquantity').on('input', function()  {
+            $("#busnobt").val(" ");
+    	    val  = $("#busquantity").val();
+            val1 = $("#busuom").val();
+            val2 =    (val * val1)
+            $("#busnobt").val(val2);
+});
+
+ $('#busnobt').on('input', function()  {
+            $("#busquantity").val(" ");
+    	    val  = $("#busnobt").val();
+            val1 = $("#busuom").val();
+            val2 =    (val / val1)
+            if (Number.isInteger(val2)) {
+                    val2 = val2.toFixed(0); // For integers, remove decimal places
+            } else {
+                    val2 = val2.toFixed(2); // For decimal values, keep two decimal places
+            }
+            $("#busquantity").val(val2);
+ });
+
+
+
+
+
+
 $(document).ready(function(){
  var response = $('#response').val();
   if ( response === '200') {
@@ -676,7 +775,18 @@ $(document).ready(function(){
    }
 });
 
+$(document).ready(function(){
+ var response = $('#response').val();
+ var status =  $('#status').val();
+  if ( response === 'Bus200') {
 
+         $('.bus_div').show();
+          $('#items-bus').show();
+  }
+  if (response === 'Bus200' &&  status === 'ok') {
+          $('#bust_items').show();
+  }
+});
 
 $('#getdate').val(new Date().toJSON().slice(0,10));
 $('.form-control').change(function() {
@@ -711,14 +821,40 @@ $(document).ready(function() {
       }
     });
 });
+
+
 $(document).ready(function() {
+    $("#bustypeid").on("change", function() {
+      var selectedOption = $(this).val();
+      if (selectedOption === "Bottles") {
+        $("#busquantity").prop("readonly", true);
+        $("#busnobt").prop("readonly", false);
+      } else if (selectedOption === "Cases") {
+        $("#busquantity").prop("readonly", false);
+        $("#busnobt").prop("readonly", true);
+      }
+    });
+});
+
+$('#buscomplete').click(function(){
+      $('#completeform').attr('action', '{% url  "complete_busstk_admin"  %}'); // set the new action URL
+    });
+
+/* $(document).ready(function() {
     $('#store-status').on('show.bs.modal', function(event) {
         var modalLink = $(this).find('#modalLink');
         var sno = $(event.relatedTarget).data('sno');
         var modalUrl = '/delete_stk_item/' + sno + '/';
          $('#myForm1').attr('action', modalUrl);
     });
-});
+}); */
+
    $('#getdate1').val(new Date().toJSON().slice(0,10));
+
+   $('#bus_delete').click(function(){
+     var sno = $(this).data('sno');
+     var modalUrl = '/delete_stkbus_item/' + sno + '/';
+     $('#myForm1').attr('action', modalUrl);
+    });
 </script>
 {% endblock %}

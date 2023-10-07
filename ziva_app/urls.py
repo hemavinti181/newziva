@@ -328,7 +328,10 @@ urlpatterns = [
     path('get_sms',views.get_sms,name='get_sms'),
     path('submit_sms',views.submit_sms,name='submit_sms'),
     path('submitreturn_sms', views.submitreturn_sms, name='submitreturn_sms'),
-
+    path('businventory_search',views.businventory_search,name='businventory_search'),
+    path('bus_item_list_admin',views.bus_item_list_admin,name='bus_item_list_admin'),
+    path('bust_item_add_admin',views.bust_item_add_admin,name='bust_item_add_admin'),
+    path('complete_busstk_admin',views.complete_busstk_admin,name='complete_busstk_admin'),
 
 ]
 

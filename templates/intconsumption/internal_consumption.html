@@ -165,6 +165,7 @@
                                                     {% endfor %}
 												</select>
 										</div>
+
                              {% if request.session.role == 'Admin' %}
                                          <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Product Supervisor</label>
@@ -329,15 +330,15 @@
 											</div>
 										</div>
 
-                                                      <!--<div class="col-md-10 col-sm-10  form-group has-feedback">
+                                                     <div class="col-md-10 col-sm-10  form-group has-feedback">
                                                         <label>Do you want update driver details?
                                                             <input type="checkbox" id="checked" class="js-switch"  /></label>
                                                     </div>
-                                               <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
 										   <input type="text" class="form-control" placeholder="Driver Name" name="drivername" id="drivername" style="display:none;" />
 										</div>-->
 
-                                                  <div class="col-md-6 col-sm-6  form-group has-feedback" id="list1">
+                                                  <div class="col-md-6 col-sm-6  form-group has-feedback" id="list1" style="display:none;">
 
 										     <input type="hidden" name="staffnumret" id="staffnumret" />
 												<input type="hidden" name="staffnumret11" id="staffnumret11" />
@@ -346,20 +347,20 @@
 													<option value=""> Driver ID1</option>
 												</select>
 										</div>
-                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback" id="staffname33" style="display:none;">
 											  <label>Staff name </label>
 										    <input type="text" class="form-control" placeholder="driver name" name="staffname3" id="staffname3"  readonly>
                                          </div>
 
-                                                 <!--<div class="col-md-10 col-sm-10  form-group has-feedback">
+                                                 <div class="col-md-10 col-sm-10  form-group has-feedback">
                                              <label>Do you want add another  driver?
                                                  <input type="checkbox" id="checked1" class="js-switch"   /></label>
                                          </div>
 
-                                           <button type="button"  class="btn btn-primary"  id="checked1" name="search" style="display:none;margin-left:-20px;"><i class="fa fa-plus-square"></i></button>
+                                           <!--<button type="button"  class="btn btn-primary"  id="checked1" name="search" style="display:none;margin-left:-20px;"><i class="fa fa-plus-square"></i></button>
 
 										</div>-->
-                                         <div class="col-md-6 col-sm-6  form-group has-feedback" id="list2"  >
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback" id="list2"  style="display:none;" >
 											 <input type="hidden" name="staffnumret22" id="staffnumret22" />
 										     <input type="hidden" name="staffnameret2" id="staffnameret2" />
 											 <label>Select Staff2</label>
@@ -368,7 +369,7 @@
 												</select>
 										</div>
 
-                                         <div class="col-md-6 col-sm-6  form-group has-feedback" >
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback" id="staffname44" style="display:none;">
 											   <label>Staff name </label>
 										    <input type="text" class="form-control" placeholder="driver name" name="staffname4" id="staffname4"   readonly>
 										</div>
@@ -410,11 +411,7 @@
 												<select class="form-control depot" name="depoid2" id="depoid2" required>
                                                     <option value=""> depot</option>
                                                     {% for data in depolist %}
-                                                            {% if data.depoid == 'DEPO0094' %}
-													            <option value="{{ data.depoid  }}" selected>{{  data.deponame  }}</option>
-                                                            {% else %}
-                                                                <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
-                                                            {% endif %}
+													            <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
                                                     {% endfor %}
 												</select>
 										</div>
@@ -529,7 +526,7 @@
 												 <p></p>
 												  <div class="col-md-12 col-sm-12 form-group has-feedback" id="mobiledisplay">
 													 <label for="sno">Enter mobile no *</label>
-													 <input type="text" class="form-control" placeholder="mobile number" name="mobile"  id="mobile" pattern= "[6789][0-9]{9}">
+													 <input type="text" class="form-control" placeholder="mobile number" name="mobile"  id="mobile" pattern= "[6789][0-9]{9}" required>
 												  </div>
 												 <div class="col-md-12 col-sm-12 form-group has-feedback" id="otpdisplay" style="display:none;">
 												   <label for="sno">Enter  OTP *</label>
@@ -538,8 +535,14 @@
                                             <p></p>
                                             <div class="col-md-6 col-sm-6  offset-md-4" style="margin-top:10px;">
                                                   <button type="button" class="btn btn-primary" id="authorize1" style="margin-left:-30px;">GET OTP</button>
-												   <button type="button" class="btn btn-primary" id="submit" style="margin-left:-10px;display:none;">VERIFY</button>
-                                            </div>
+											</div>
+												<div class="col-md-6 col-sm-6">
+												   <button type="button" class="btn btn-primary" id="submit" style="margin-left:40px;display:none;">VERIFY</button>
+												</div>
+												<div class="col-md-6 col-sm-6">
+												  <button type="button" class="btn btn-info" id="resend1" style="display:none;">RESEND</button>
+												</div>
+
                                         </div>
                                                 </form>
                                         </div>
@@ -578,7 +581,13 @@
                                             <p></p>
                                             <div class="col-md-6 col-sm-6  offset-md-4" style="margin-top:10px;">
                                                   <button type="button" class="btn btn-primary" id="authorize2" style="margin-left:-30px;">GET OTP</button>
-												   <button type="button" class="btn btn-primary" id="submitreturn" style="margin-left:-10px;display:none;">VERIFY</button>
+											</div>
+												 <div class="col-md-6 col-sm-6">
+												   <button type="button" class="btn btn-primary" id="submitreturn" style="margin-left:40px;display:none;">VERIFY</button>
+												 </div>
+												 <div class="col-md-6 col-sm-6">
+												    <button type="button" class="btn btn-danger" id="resend" style="display:none;">RESEND</button>
+												 </div>
                                             </div>
                                         </div>
                                                 </form>
@@ -682,7 +691,6 @@ $("#depoid1").change(function() {
 						alertify.error(message);
 						$("#supervisorid").empty();
 						$("#supervisorid").append("<option  value=''>not available</option>");
-
 					}
 					else {
                         var obj = data.data.productsuperviserlist
@@ -710,7 +718,6 @@ $(document).ready(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data
-
 					if(obj) {
 			 		$("#oprs").val(obj[0].oprs);
                 	$("#departure").val(obj[0].depot);
@@ -985,26 +992,19 @@ $(document).ready(function() {
  function VerifyClick1(id){
 $("#id1").val(id);
 }
- /* $(document).ready(function() {
+
 
     $("#checked").click(function() {
       if ($(this).is(":checked")) {
-        $("#staffnumret1").show();
-        $("#staffname3").show();
-        $("#staffnumret2").show();
+        $("#staffname33").show();
         $("#list1").show()
-        $("#list2").hide();
-        $("#staffname4").hide();
       } else {
-        $("#staffnumret1").hide();
-        $("#staffname3").hide();
-        $("#staffnumret2").hide();
+        $("#staffname33").hide();
         $("#list1").hide();
-        $("#list2").hide();
-        $("#staffname4").hide();
+
       }
     });
-}); */
+
 
 
 $("#depoid1").change(function() {
@@ -1082,19 +1082,18 @@ $('#tickets').on('input', function() {
             $("#shortbottlesreturn").val(val4);
 
     });
-  $(document).ready(function() {
-    // When the button with ID "checked1" is clicked
+
     $("#checked1").click(function() {
            if ($(this).is(":checked")) {
-      $("#list2").show();
-      $("#staffname4").show();
-    }
+			  $("#list2").show();
+			  $("#staffname44").show();
+    		}
     else{
      $("#list2").hide();
-      $("#staffname4").hide();
+      $("#staffname44").hide();
     }
     });
-  });
+
 
 
     document.getElementById('fdate').addEventListener('change', function() {
@@ -1106,7 +1105,14 @@ $('#tickets').on('input', function() {
         form.submit();
   });
 
-
+ $("#resend1").click(function() {
+	 $("#otpdisplay").show();
+	 $("#staffdisplay").hide();
+	 $("#mobiledisplay").hide();
+	 $("#authorize1").show();
+	 $("#submit").hide();
+	 $("#resend1").hide();
+ });
 
 $(document).ready(function () {
     $("#authorize1").click(function() {
@@ -1130,6 +1136,7 @@ $(document).ready(function () {
                  $("#staffdisplay").show();
                  $("#mobiledisplay").hide();
                  $("#submit").show();
+                  $("#resend1").show();
                  $('#authorize1').hide();
                }
                else{
@@ -1192,11 +1199,13 @@ $(document).ready(function () {
     		var auth = $('#sno').val();
             var serviceid1 = $('#serviceid1').val();
             var otp = $('#otp').val();
+             var supervisorname = $('#supervisorname').val();
+
             $.ajax({
                url: "{% url 'submit_sms' %}",
                 type: 'POST',
                 data: {
-                  'auth':auth,'otp': otp,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                  'supervisorname':supervisorname,'auth':auth,'otp': otp,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
               success: function (response) {
               var message = response.response.message;
@@ -1351,8 +1360,6 @@ $(document).ready(function () {
             });
   });
 
-
-
 function editConsumption(id){
       $.ajax({
         url: "{% url 'get_consumption' %}",
@@ -1363,7 +1370,86 @@ function editConsumption(id){
         success: function(data) {
          var obj = data.data.bussupplylist
 
-             if(obj){
+         var depo = obj[0].deponame;
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "depo_servicenum" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.servicemasterlist
+
+					if(obj) {
+					$("#service1").empty();
+			 		$("#service1").append("<option  value=''>choose service</option>");
+                	$.each(obj, function (index, item) {
+                    $("#service1").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
+					});
+                	}
+             	}
+        	});
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "staffnumber" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+					if(obj) {
+
+			 		$("#staffnumbone").empty();
+
+			 		$("#staffnumbone").append("<option  value=''> staff number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#staffnumbone").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
+                    });
+
+                    $("#staffnumb2").empty();
+
+			 		$("#staffnumb2").append("<option  value=''> staff number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#staffnumb2").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
+                    });
+                	}
+             	}
+        	});
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "vehicallist" %}',
+            	data: {
+                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+
+
+					if(obj) {
+			 		$("#vehicalnumb1").empty();
+
+			 		$("#vehicalnumb1").append("<option  value=''> vehical number</option>");
+                	$.each(obj, function (index, item) {
+                    $("#vehicalnumb1").append("<option value='" + item.vehicleno+ "'>" + item.vehicleno+ "</option>");
+                    });
+                	}
+             	}
+        	});
+        	var vehicalnumb = obj[0].vehicleno;
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "producttype" %}',
+            	data: {
+                	'depo':depo,'vehicalnumb':vehicalnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data
+					if(obj) {
+			 		$("#product1").val(obj[0].product_type);
+                	}
+             	}
+        	});
+		if(obj){
               $('#service').select2();
               $('#staffnumbone').select2();
               $('#staffnumb2').select2();
@@ -1371,8 +1457,6 @@ function editConsumption(id){
              $("#serviceid").val(obj[0].service_id);
              $("#deponame2").val(obj[0].deponame);
               $("#depoid2").val(obj[0].depoid);
-             $("#service1").val(obj[0].bus_service_no);
-              $('#service1').select2().trigger('change');
               $("#servicename1").val(obj[0].bus_service_no);
              $("#oprs1").val(obj[0].oprs);
               $("#route1").val(obj[0].route);
@@ -1382,6 +1466,8 @@ function editConsumption(id){
              $("#staffnameone").val(obj[0].staffname);
              $("#staffnumb2").val(obj[0].staffnumbertwo);
              $('#staffnumb2').select2().trigger('change');
+             $("#service1").val(obj[0].bus_service_no);
+              $('#service1').select2().trigger('change');
              $("#staffname2").val(obj[0].staffnumbertwoname);
              $("#product1").val(obj[0].product_type);
               $("#vehicalname1").val(obj[0].vehicleno);
@@ -1393,6 +1479,7 @@ function editConsumption(id){
         	}
         }
       });
+
   }
 
 
@@ -1417,34 +1504,11 @@ $("#depoid2").change(function() {
 });
 
 
-//$("#depoid1").change(function() {
-$(document).ready(function() {
-    		var depo = $('#depoid2').find(":selected").text();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "depo_servicenum" %}',
-            	data: {
-                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data
-
-					if(obj) {
-			 		$("#service1").empty();
-			 		$("#service").append("<option  value=''>choose service</option>");
-                	$.each(obj, function (index, item) {
-                    $("#service1").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
-					});
-                	}
-             	}
-        	});
-});
 
 
 $(document).ready(function() {
     $("#service1").select2();
     $("#service1").on('select2:select', function (e) {
-
     		var depo = $('#depoid2').find(":selected").text();
             var service = $('#service1').find(":selected").text();
         	$.ajax({
@@ -1455,7 +1519,6 @@ $(document).ready(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data
-
 
 					if(obj) {
 			 		$("#oprs1").val(obj[0].oprs);
@@ -1469,61 +1532,8 @@ $(document).ready(function() {
 
 
 
-//$("#depoid2").change(function() {
-$(document).ready(function() {
-    		var depo = $('#depoid2').find(":selected").text();
-
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "staffnumber" %}',
-            	data: {
-                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data
 
 
-					if(obj) {
-			 		$("#staffnumbone").empty();
-			 		$("#staffnumbone").append("<option  value=''> staff number</option>");
-                	$.each(obj, function (index, item) {
-                    $("#staffnumbone").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
-                    });
-                    $("#staffnumb2").empty();
-			 		$("#staffnumb2").append("<option  value=''> staff number</option>");
-                	$.each(obj, function (index, item) {
-                    $("#staffnumb2").append("<option value='" + item.st_no+ "'>" + item.st_no+ "</option>");
-                    });
-                	}
-             	}
-        	});
-});
-
-
-//$("#depoid2").change(function() {
-$(document).ready(function() {
-    		var depo = $('#depoid2').find(":selected").text();
-
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "vehicallist" %}',
-            	data: {
-                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data
-
-
-					if(obj) {
-			 		$("#vehicalnumb1").empty();
-			 		$("#vehicalnumb1").append("<option  value=''> vehical number</option>");
-                	$.each(obj, function (index, item) {
-                    $("#vehicalnumb1").append("<option value='" + item.vehicleno+ "'>" + item.vehicleno+ "</option>");
-                    });
-                	}
-             	}
-        	});
-});
 
 
 $(document).ready(function() {
@@ -1581,9 +1591,7 @@ $(document).ready(function() {
                 	'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data
-
-
+			 		var obj = data.data.staffnamelist
 					if(obj) {
 			 		$("#staffname2").val(obj[0].name);
                 	}
@@ -1604,7 +1612,7 @@ $(document).ready(function() {
                 	'depo':depo,'staffnumb':staffnumb,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data
+			 		var obj = data.data.staffnamelist
 					if(obj) {
 			 		$("#staffnameone").val(obj[0].name);
                 	}

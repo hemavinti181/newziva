@@ -256,13 +256,13 @@ $(document).ready(function() {
 
 
                                         $('.500mlqty1').text(item.Qty);
-                                        $('.itemcode500ml1').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                                        $('.itemcode500ml1').attr('href', 'batch_codeexpry1/' + item.itemcode + '/');
 
                             }
                      }
                     else{
                            $('.500mlqty1').text(0);
-                           $('.itemcode500ml1').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                           $('.itemcode500ml1').attr('href', 'batch_codeexpry1/' + item.itemcode + '/');
                     }
 
              	}
@@ -288,6 +288,7 @@ $(document).ready(function() {
 					for (var i = 0; i < obj.length; i++) {
                         var item = obj[i];
                          if (item.itemname === '1000ml') {
+
                             $('.1000mlqty').text(item.Qty);
                             $('.itemcode1000ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
                         } else if (item.itemname === '500ml') {
