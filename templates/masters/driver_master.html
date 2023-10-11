@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+<style>
+.style{
+	position: absolute !important;
+	width: 100% !important;
+	margin-left:100px !important;
+	}
+	</style>
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Driver List</h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-6 col-sm-7 offset-md-9">
+                   <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#add-driver">Add New Driver</button></a>
+                </div>
+            </div>
+              </div>
+               <div class="clearfix"></div>
+             <div class="row">
+              <div class="col-md-12 col-sm-12">
+                               			<!-- Search Filter -->
+						<form  method="POST" action="/driver_master"  id="myform" enctype="multipart/form-data">
+									{% csrf_token %}
+
+                             <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                  <select class="form-control items" name="depoid1" id="depoid1" hidden>
+                                                     <option value="{{ request.POST.depotid }}">{{ request.POST.deponame1 }}</option>
+                                  </select>
+
+                                                        <input type="hidden" name="deponame1" id="deponame1"  value="{{ request.POST.deponame1 }}">
+
+                                 <select class="form-control items" name="depotid" id="depotid" required>
+                                     <option value="">Select depot</option>
+                                                    {% for data in depolist %}
+                                                        {% if data.status == "Active" %}
+                                                               {% if data.depoid == 'DEPO0094' %}
+                                                                        <option value="{{ data.depoid }}" selected>{{ data.deponame }}</option>
+                                                                {% endif %}
+                                                                     <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                             </div>
+                             <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>-->
+                        </form>
+              </div>
+             </div>
+              <div class="col-md-12 col-sm-12">
+            <div class="clearfix"></div>
+            <div class="row" style="display: block;">
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_content">
+                        <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%;">
+                      <thead>
+                        <tr>
+                                     <th>S NO</th>
+                                    <th>Depot</th>
+                                    <th>Driver Id</th>
+                                    <th>Driver Name</th>
+                                    <th>Mobile</th>
+                                    <th>Designation</th>
+                                    <th>Action</th>
+                        </tr>
+                      </thead>
+                               <tbody>
+                            {% for data in stafflist %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td> {{ data.depot_name }} </td>
+                                    <td>{{ data.st_no }}</td>
+                                    <td>{{ data.name }}</td>
+                                    <td>{{ data.phone_no }}</td>
+                                    <td>{{ data.designation }}</td>
+                               <td>
+
+                                         <a href="#" onclick="editStoretype('{{  data.st_no }}','{{ data.depot_name }}')"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                        <a href="#" onclick="VerifyClick1('{{ data.sno }}')" ><span class="badge badge-danger" data-toggle="modal" data-target="#des-status">
+                                          Inactive</span></a>
+
+                                </tr>
+                            {% endfor %}
+
+                      </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+
+<div class="modal custom-modal fade" id="des-status1" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								  <form method="post" action="des_status_inactive">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Inactive?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id" name="id"  />
+                                          <input type="hidden" id="status" name="status" value ="Inactive"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+<div class="modal custom-modal fade" id="des-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								  <form method="post" action="des_status_inactive">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Active?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id1" name="id"  />
+                                           <input type="hidden"  name="status" value ="Active"  />
+									<div class="row">
+										<div class="col-6">
+											<button class="btn btn-primary submit-btn">Yes</button>
+										</div>
+										<div class="col-6">
+											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
+										</div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+<div class="modal custom-modal fade" id="add-driver" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								  <form method="post" action="/add_driver_master">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Add Driver</h3>
+								</div>
+								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
+													<label>Select Depot *</label>
+											<input type="hidden" name="deponame" id="deponame" />
+												<select class="form-control" name="depoid" id="depoid">
+                                                    <option>select depot</option>
+													{% for data1 in depolist %}
+                                                       {% if data1.status == 'Active' %}
+                            							<option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+												</select>
+                                   </div>
+                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                      <label>Driver id *</label>
+                                      <input type="text" class="form-control" placeholder="driver id" name="driverid">
+                                   </div>
+                                       <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                      <label>Driver name *</label>
+                                      <input type="text" class="form-control" placeholder="driver name" name="drivername">
+                                   </div>
+                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                      <label>Mobile</label>
+                                          <input type="text" class="form-control" placeholder="mobile number" name="mobile" pattern= "[6789][0-9]{9}">
+                                    </div>
+                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                        <label>Designation</label>
+                                        <input type="text" class="form-control" placeholder="designation" name="designation">
+                                    </div>
+
+
+                                      </div>
+                                          <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                          </div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+<div class="modal custom-modal fade" id="storetype_edit" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								  <form method="post" action="/add_driver_master">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Edit Driver Details</h3>
+								</div>
+								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
+													<label>Select Depot *</label>
+											<input type="hidden" name="depotname" id="depotname" />
+												<select class="form-control" name="depotid1" id="depotid1">
+                                                    <option>select depot</option>
+													{% for data1 in depolist %}
+                                                       {% if data1.status == 'Active' %}
+                            							<option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+												</select>
+                                   </div>
+                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                      <label>Driver id *</label>
+                                      <input type="text" class="form-control" placeholder="driver id" name="driverid" id="driverid1">
+                                   </div>
+                                       <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                      <label>Driver name *</label>
+                                      <input type="text" class="form-control" placeholder="driver name" name="drivername" id="drivername">
+                                   </div>
+                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                      <label>Mobile</label>
+                                          <input type="text" class="form-control" placeholder="mobile number" name="mobile" id="mobile" pattern= "[6789][0-9]{9}">
+                                    </div>
+                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                        <label>Designation</label>
+                                        <input type="text" class="form-control" placeholder="designation" name="designation" id="designation">
+                                    </div>
+
+
+                                      </div>
+                                          <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                          </div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+<script>
+ function VerifyClick(id){
+$("#id").val(id);
+}
+function VerifyClick1(id){
+$("#id1").val(id);
+}
+ function editStoretype(id,id1){
+      $.ajax({
+        url: "{% url 'get_driver' %}",
+        type: 'POST',
+        data: {
+          'st_no': id,'deponame':id1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(data) {
+         var obj = data.data
+          	console.log(data);
+             if(obj){
+             $("#driverid1").val(obj.depotid1);
+             $("#driverid1").val(obj.depotname);
+             $("#driverid1").val(obj.st_no);
+             $("#drivername").val(obj.name);
+             $("#mobile1").val(obj.phone_no);
+              $("#designation").val(obj.designation);
+             $('#storetype_edit').modal('show');
+        	}
+        }
+      });
+  }
+ $("#depoid").change(function() {
+      var form = document.getElementById("myform");
+      var selectedOptionText = $(this).find(":selected").text();
+      $("#deponame").val(selectedOptionText);
+});
+ $("#depotid").change(function() {
+      var form = document.getElementById("myform");
+      var selectedOptionText = $(this).find(":selected").text();
+      $("#deponame1").val(selectedOptionText);
+      form.submit();
+});
+$(document).ready(function(){
+ var optionValue = $("#depoid1").val();
+  $("#depotid").find("option[value='" + optionValue + "']").prop("selected", true);
+});
+
+</script>
+{% endblock %}
+

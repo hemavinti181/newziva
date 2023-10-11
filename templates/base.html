@@ -416,17 +416,15 @@ color:#14c38e !important;
  {%  endif %}
 
     <div class="profile_pic" style="background: #14c38e; margin-top:55px;">
-
-     <h6 style="font-size: 15px;margin-top:-47px;color:white;margin-right:-100px;margin-left:9px"><b></b>{{ request.session.name }}</h6>
-{% if request.session.displayrole == 'BUS STATION CONTROLLER' or "DEPOT STORE EXECUTIVE" %}
-      <h5 style="font-size: 12px;margin-top:-3px;color:white;margin-right:-100px;margin-left:9px;">{{ request.session.displayrole }}</h5>
-  {% else %}
-      <h5 style="font-size: 15px;margin-top:-3px;color:white;margin-right:-100px;margin-left:9px;">{{ request.session.displayrole }}</h5>
-    {% endif %}
-
-<!--<img src="{% static 'build/images/logo.jpeg' %}" alt="..." class="img-circle profile_img" style="margin-top:-12px;" >-->
-</div>
-
+{% if request.session.role != "Admin" %}
+        <h6 style="font-size: 15px;margin-top:-47px;color:white;margin-right:-100px;margin-left:9px"><b></b>{{ request.session.name }}</h6>
+ {% endif %}
+        {% if request.session.role == "Admin" %}
+            <h6 style="font-size: 20px;margin-top:-47px;color:white;margin-right:-100px;margin-left:9px"><b></b>{{ request.session.role }}</h6>
+        {% else %}
+             <h5 style="font-size: 12px;margin-top:-3px;color:white;margin-right:-100px;margin-left:9px;">{{ request.session.displayrole }}</h5>
+        {% endif %}
+    </div>
 <div class="profile_info" style="background: #14c38e;">
 </div>
 </div>

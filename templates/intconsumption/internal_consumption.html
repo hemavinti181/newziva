@@ -180,7 +180,12 @@
 											 <input type="hidden" name="servicename" id="servicename" />
 											 	<select class="form-control select2 service" name="service" id="service" style="width:180px !important;" required>
 													<option value=""> service</option>
+													<option value="Extra service">Extra service</option>
 												</select>
+										</div>
+										 <div class="col-md-4 col-sm-4  form-group has-feedback" style="display:none" id="extraservice" >
+											<label>Extra Service *</label>
+										    <input type="text" class="form-control" placeholder="new service" name="exservice" id="exservice">
 										</div>
                                         <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>OPRS *</label>
@@ -662,8 +667,8 @@ $("#depoid1").change(function() {
 					}
 					else {
                         var obj = data.data.servicemasterlist
-						$("#service").empty();
-						$("#service").append("<option  value=''>Choose service</option>");
+
+						//$("#service").append("<option  value=''>Extra service</option>");
 						$.each(obj, function (index, item) {
 						$("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
 						});
@@ -707,9 +712,14 @@ $("#depoid1").change(function() {
 $(document).ready(function() {
     $("#service").select2();
     $("#service").on('select2:select', function (e) {
-
     		var depo = $('#depoid1').find(":selected").text();
             var service = $('#service').find(":selected").text();
+            if( service === 'Extra service' ){
+            $('#extraservice').show();
+			$("#oprs").prop("readonly", false);
+			$("#departure").prop("readonly", false);
+			$("#route").prop("readonly", false);
+            }
         	$.ajax({
             	type: "POST",
             	url: '{% url "service_details" %}',
@@ -1106,9 +1116,9 @@ $('#tickets').on('input', function() {
   });
 
  $("#resend1").click(function() {
-	 $("#otpdisplay").show();
+	 $("#otpdisplay").hide();
 	 $("#staffdisplay").hide();
-	 $("#mobiledisplay").hide();
+	 $("#mobiledisplay").show();
 	 $("#authorize1").show();
 	 $("#submit").hide();
 	 $("#resend1").hide();

@@ -332,6 +332,12 @@ urlpatterns = [
     path('bus_item_list_admin',views.bus_item_list_admin,name='bus_item_list_admin'),
     path('bust_item_add_admin',views.bust_item_add_admin,name='bust_item_add_admin'),
     path('complete_busstk_admin',views.complete_busstk_admin,name='complete_busstk_admin'),
+    path('service_master',views.service_master,name='service_master'),
+    path('vehical_master',views.vehical_master,name='vehical_master'),
+    path('driver_master',views.driver_master,name='driver_master'),
+    path('add_driver_master',views.add_driver_master,name='add_driver_master'),
+    path('get_driver',views.get_driver,name="get_driver")
+
 
 ]
 

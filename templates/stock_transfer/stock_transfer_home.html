@@ -937,14 +937,12 @@ $('#qty').on('input', function()  {
 $(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busname").find("option[value='" + optionValue + "']").prop("selected", true);
-})/
+})
 $('#busedit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkbus_item" %}'); // set the new action URL
-// submit the form
     });
    $('#depoedit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkdepo_item" %}'); // set the new action URL
-// submit the form
     });
  $(window).on("load", function() {
   var optionValue1 = $("#txtdeposearch1").val();

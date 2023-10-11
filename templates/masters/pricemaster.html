@@ -34,9 +34,7 @@
 												<select class="form-control" name="regionid" id="regionid">
                                                     <option>select region</option>
 													{% for data1 in regionlist %}
-                                                       {% if data1.status == 'Active' %}
-                            							<option value="{{ data1.regionid }}">{{ data1.regionname }}</option>
-                                                    {% endif %}
+                            							<option value="{{ data1.region_id }}">{{ data1.regionname }}</option>
                                                     {% endfor %}
 												</select>
 										</div>
