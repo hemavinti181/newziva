@@ -6,7 +6,6 @@
 	.style{
 	position: absolute !important;
 	width: 130% !important;
-
 	}
 		.style1{
 	position: absolute !important;
@@ -667,8 +666,9 @@ $("#depoid1").change(function() {
 					}
 					else {
                         var obj = data.data.servicemasterlist
-
-						//$("#service").append("<option  value=''>Extra service</option>");
+						$("#service").empty();
+						$("#service").append("<option  value=''>Choose  service</option>");
+						$("#service").append("<option  value=''>Extra service</option>");
 						$.each(obj, function (index, item) {
 						$("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
 						});

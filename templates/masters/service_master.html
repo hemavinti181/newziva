@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 
 {% block htmlbody %}
-
+<style>
+.style{
+	position: absolute !important;
+	width: 100% !important;
+	margin-left:100px !important;
+	}
+	 .style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:75px;
+	}
+	</style>
 
 <div class="right_col" role="main">
           <div class="">
@@ -11,13 +22,39 @@
               </div>
 
               <div class="title_right">
-                <div class="col-md-6 col-sm-7 offset-md-10">
+                <div class="col-md-6 col-sm-6 offset-md-9">
                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#add-service">Add New Service</button></a>
                 </div>
             </div>
               </div>
-            <div class="clearfix"></div>
-            <div class="row" style="display: block;">
+                 <div class="clearfix"></div>
+             <div class="row">
+              <div class="col-md-12 col-sm-12">
+                               			<!-- Search Filter -->
+						<form  method="POST" action="/service_master"  id="myform" enctype="multipart/form-data">
+									{% csrf_token %}
+
+                             <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                  <select class="form-control items" name="depoid1" id="depoid1" hidden>
+                                                     <option value="{{ request.POST.depotid }}">{{ request.POST.deponame1 }}</option>
+                                  </select>
+
+                                                        <input type="hidden" name="deponame1" id="deponame1"  value="{{ request.POST.deponame1 }}">
+
+                                 <select class="form-control items" name="depotid" id="depotid" required>
+                                                    {% for data in depolist %}
+                                                        {% if data.status == "Active" %}
+                                                                        <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                 </select>
+                             </div>
+                             <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>-->
+                        </form>
+              </div>
+             </div>
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_content">
@@ -30,28 +67,24 @@
                                     <th>Service</th>
                                     <th>OPRS</th>
                                     <th>Route</th>
-                                    <th>Departure Date & time</th>
+                                    <th>Departure Time</th>
+                                    <th>Action</th>
                         </tr>
                       </thead>
                                <tbody>
-                            {% for data in all_data %}
+                            {% for data in servicemasterlist %}
                                 <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td> {{ data.region_name }} </td>
-                                    <td>{{ data.item_name }}</td>
-                                    <td>{{ data.mrp }}</td>
+                                <td> {{ data.depot_name }} </td>
+                                    <td>{{ data.ser_no }}</td>
+                                    <td>{{ data.oprs }}</td>
+                                    <td>{{ data.route }}</td>
+                                    <td>{{ data.depot }}</td>
                                <td>
-                                      {% if data.status == "Active" %}
 
-                                         <a href="#" onclick="editStoretype('{{  data.price_code }}')"><i class="fa fa-edit"></i></a>
-
-                                          <a href="#" onclick="VerifyClick('{{ data.sno }}')"><span class="badge badge-success" data-toggle="modal" data-target="#des-status1">
-                                          Active</span></a>
-                                     {% else %}
-
+                                         <a href="#" onclick="editStoretype('{{  data.ser_no }}','{{ data.depot_name }}')"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                         <a href="#" onclick="VerifyClick1('{{ data.sno }}')" ><span class="badge badge-danger" data-toggle="modal" data-target="#des-status">
-                                          Inactive</span></a>
-                                     {% endif %}
+                                         <i class="fa fa-trash"></i></span></a>
                                 </tr>
                             {% endfor %}
 
@@ -66,21 +99,6 @@
             </div>
           </div>
 </div>
-
- <!--<div class="inner-fabs">
-                                 <div class="fab bg-green white round" id="fab3"><a href="des_list"><i class="fa fa-outdent" style="color:#fff;"></i></a> <span class="tooltiptext" style="margin-left: -142px !important;">Price List</span></div>
-                                 <div class="fab bg-blue round" id="fab2"><a href="role_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">Role List</span></div>
-                                 <div class="fab bg-orange round" id="fab4"><a href="level_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" >Level List</span></div>
-                                 <div class="fab bg-blue-sky round" id="fab5"><a href="city_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">City List</span></div>
-                                 <div class="fab bg-purple round" id="fab6"><a href="state_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">State List</span></div>
-                                 <div class="fab bg-green round" id="fab7"><a href="gst_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">GST List</span></div>
-                                 <div class="fab bg-orange round" id="fab8"><a href="category_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" style="margin-left: -155px !important;">Category List</span></div>
-                                 <div class="fab bg-blue round" id="fab9"><a href="uom_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext">CASE List</span></div>
-                                 <div class="fab bg-red round" id="fab10"><a href="storetype_list"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext" style="margin-left: -185px !important;">STORE TYPE List</span></div>
-                          </div>
-                                <div class="fab round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
-                        </div>
-              </div>-->
 <div class="modal custom-modal fade" id="des-status1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
@@ -114,27 +132,27 @@
 				</div>
 <div class="modal custom-modal fade" id="des-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
+						<div class="modal-content style1">
 							<div class="modal-body">
                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								  <form method="post" action="des_status_inactive">
+								  <form method="post" action="/delete_service">
                                                     {% csrf_token %}
 								<div class="form-header">
-									<h3>Status Update</h3>
-									<p>Are you sure want to Active?</p>
+									<h3>Delete Service</h3>
+									<p>Are you sure want to Delete?</p>
 								</div>
 									  <div class="modal-btn delete-action">
-									<input type="hidden" id="id1" name="id"  />
+									<input type="hidden" id="id1" name="id1"  />
                                            <input type="hidden"  name="status" value ="Active"  />
 									<div class="row">
-										<div class="col-6">
-											<button class="btn btn-primary submit-btn">Yes</button>
-										</div>
-										<div class="col-6">
-											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
-										</div>
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
 									</div>
 								</div>
 								  </form>
@@ -143,7 +161,6 @@
 						</div>
 					</div>
 				</div>
-
 <div class="modal custom-modal fade" id="add-service" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
@@ -151,19 +168,19 @@
                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								  <form method="post" action="des_status_inactive">
+								  <form method="post" action="/add_service_master">
                                                     {% csrf_token %}
 								<div class="form-header">
 									<h3>Add Service</h3>
 								</div>
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
 													<label>Select Depot *</label>
-											<input type="hidden" name="regionnmae" id="regionnmae" />
-												<select class="form-control" name="regionid" id="regionid">
+											<input type="hidden" name="deponame" id="deponame" />
+												<select class="form-control" name="depoid" id="depoid">
                                                     <option>select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
-                            							<option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
+                            							<option value="{{ data1.deponame }}">{{ data1.deponame }}</option>
                                                     {% endif %}
                                                     {% endfor %}
 												</select>
@@ -181,8 +198,8 @@
                                           <input type="text" class="form-control" placeholder="route" name="route" required>
                                     </div>
                                      <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                        <label>Departure Date &Time *</label>
-                                        <input type="text" class="form-control" placeholder="departure dae& time" name="departure">
+                                        <label>Departure Time *</label>
+                                        <input type="text" class="form-control" placeholder="departure time" name="departure">
                                     </div>
 
 
@@ -198,77 +215,103 @@
 					</div>
 				</div>
 </div>
-<div class="modal custom-modal fade" id="storetype_edit" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-sm modal-dialog-centered">
-                                            <div class="modal-content style">
-
-                                        <div class="modal-body">
-                                             <form method="post" action="des_status_inactive">
+<div class="modal custom-modal fade" id="storetype_edit" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								  <form method="post" action="/edit_service">
                                                     {% csrf_token %}
 								<div class="form-header">
-									<h3>Edit Driver Details</h3>
+									<h3>Edit Service</h3>
 								</div>
+                                      <input type="hidden" name="sno" id="sno" />
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
 													<label>Select Depot *</label>
-											<input type="hidden" name="regionnmae1" id="regionnmae1" />
-												<select class="form-control" name="regionid1" id="regionid1">
+											<input type="hidden" name="depotname" id="depotname" />
+												<select class="form-control" name="depotid1" id="depotid1">
                                                     <option>select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
-                            							<option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
-                                                    {% endif %}
+                            							    <option value="{{ data1.deponame }}">{{ data1.deponame }}</option>
+                                                        {% endif %}
                                                     {% endfor %}
 												</select>
                                    </div>
-                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                  <div class="col-md-6 col-sm-6  form-group has-feedback">
                                       <label>Service *</label>
-                                      <input type="text" class="form-control" placeholder="service" name="service"  id="service" required>
+                                      <input type="text" class="form-control" placeholder="service" name="service1"  id="service1" required>
                                    </div>
                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
                                       <label>OPRS *</label>
-                                      <input type="text" class="form-control" placeholder="oprs" name="oprs" id="oprs" required>
+                                      <input type="text" class="form-control" placeholder="oprs" name="oprs1" id="oprs1" required>
                                    </div>
                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
                                       <label>Route</label>
-                                          <input type="text" class="form-control" placeholder="route" name="route"  id="route" required>
+                                          <input type="text" class="form-control" placeholder="route" name="route1"  id="route1" required>
                                     </div>
                                      <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                        <label>Departure Date &Time *</label>
-                                        <input type="text" class="form-control" placeholder="departure date & time" name="departuretime" id="departuretime">
+                                        <label>Departure Time *</label>
+                                        <input type="text" class="form-control" placeholder="departure time" name="departuretime1" id="departuretime1">
                                     </div>
 
 
-                                           <div class="col-md-6 col-sm-6  offset-md-3">
-                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-primary">UPDATE</button></a>
 
-                                            </div>
-                                        </div>
-                                        </form>
+                                      </div>
+                                          <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                          </div>
+								  </form>
+							</div>
 
-                                        </div>
-                                    </div>
-                                </div>
+						</div>
+					</div>
+				</div>
+</div>
 <script>
+
+ $("#depoid").change(function() {
+      var form = document.getElementById("myform");
+      var selectedOptionText = $(this).find(":selected").text();
+      $("#deponame").val(selectedOptionText);
+});
+ $("#depotid").change(function() {
+      var form = document.getElementById("myform");
+      var selectedOptionText = $(this).find(":selected").text();
+      $("#deponame1").val(selectedOptionText);
+      form.submit();
+});
+$(document).ready(function(){
+ var optionValue = $("#depoid1").val();
+  $("#depotid").find("option[value='" + optionValue + "']").prop("selected", true);
+});
  function VerifyClick(id){
 $("#id").val(id);
 }
 function VerifyClick1(id){
 $("#id1").val(id);
 }
- function editStoretype(id){
+ function editStoretype(id,id1){
       $.ajax({
-        url: "{% url 'get_pricelist' %}",
+        url: "{% url 'get_servicelist' %}",
         type: 'POST',
         data: {
-          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+          'service_id': id,'deponame':id1,'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         success: function(data) {
          var obj = data.data
           	console.log(data);
              if(obj){
-             $("#txtHdnId").val(obj.price_code);
-             $("#price").val(obj.mrp);
-             $("#txtHdnId2").val(obj.sno);
+             $("#sno").val(obj.sno);
+             $("#depotname").val(obj.depot_name);
+             $("#depotid1").val(obj.depot_name);
+             $("#service1").val(obj.ser_no);
+             $("#oprs1").val(obj.oprs);
+             $("#departuretime1").val(obj.depot);
+              $("#route1").val(obj.route);
              $('#storetype_edit').modal('show');
         	}
         }

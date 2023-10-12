@@ -16816,44 +16816,344 @@ def delete_intconsumption(request):
 
 
 def service_master(request):
+    try:
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        depolist = data['depolist']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/service-masterlist.php"
+
+            payload = json.dumps({"accesskey": accesskey,"depot_name":request.POST.get('deponame1')})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                servicemasterlist = data['servicemasterlist']
+                return render(request, 'masters/service_master.html', {"menuname": menuname,'depolist':depolist,"servicemasterlist":servicemasterlist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'masters/service_master.html', {"menuname": menuname, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'masters/service_master.html', {"menuname": menuname, 'depolist': depolist})
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/service-masterlist.php"
+
+            payload = json.dumps({"accesskey": accesskey, "depot_name": "MANUGUR"})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                servicemasterlist = data['servicemasterlist']
+                return render(request, 'masters/service_master.html',
+                              {"menuname": menuname, 'depolist': depolist, "servicemasterlist": servicemasterlist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'masters/service_master.html', {"menuname": menuname, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'masters/service_master.html', {"menuname": menuname, 'depolist': depolist})
+
+    except Exception as e:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        else:
+            messages.error(request, str(e))
+            return render(request, 'masters/service_master.html', {"menuname": menuname})
+
+def add_service_master(request):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        accesskey = request.session['accesskey']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/service-master-submit.php"
+
+            payload = json.dumps({"accesskey": accesskey, "depot_name": request.POST.get('deponame'),
+                                  "ser_no": request.POST.get('service'),
+                                  "oprs": request.POST.get('oprs'),
+                                  "depot": request.POST.get('departure'),
+                                  "route": request.POST.get('route'),
+                                  "oprs_I": request.POST.get('oprs'),
+                                  "depot_code": ""
+                                  })
+            headers = {
+                'Content-Type': 'text/plain',
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                messages.success(request, data['message'])
+                return redirect('/service_master')
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return JsonResponse({'data': data})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return redirect('/service_master')
+
+        else:
+            return redirect('/service_master')
+
+def get_servicelist(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-
     accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+    service_id = request.POST.get('service_id')
+    deponame = request.POST.get('deponame')
+    url = "http://13.235.112.1/ziva/mobile-api/service-masterlist.php"
 
-    payload = json.dumps({"accesskey": accesskey})
+    payload = json.dumps({
+        "accesskey": accesskey, "depot_name": deponame
+    })
+
     headers = {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'application/json'
     }
-    response = requests.request("GET", url, headers=headers, data=payload)
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
     if response.status_code == 200:
         data = response.json()
-        depolist = data['depolist']
-    return render(request, 'masters/service_master.html', {"menuname": menuname, 'depolist': depolist})
+        servicemasterlist = data['servicemasterlist']
+        for i in servicemasterlist:
+            if str(i['ser_no']) == service_id:
+                data = {"sno": i["sno"], "depot_name": i["depot_name"], "ser_no": i["ser_no"], "oprs": i['oprs'],
+                        "depot": i['depot'], "route": i['route']}
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/service_master')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+        except:
+            messages.error(request, response.text)
+        return redirect('/service_master')
 
+
+def edit_service(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/edit-service-master.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "depot_name": request.POST.get('depotid1'),
+                              "ser_no": request.POST.get('service1'),
+                              "oprs": request.POST.get('oprs1'),
+                              "depot": request.POST.get('departuretime1'),
+                              "route": request.POST.get('route1'),
+                              "sno": request.POST.get('sno')
+                              })
+        headers = {
+            'Content-Type': 'text/plain',
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/service_master')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/service_master')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            return redirect('/service_master')
+    else:
+        return redirect('/service_master')
 
 def vehical_master(request):
+    try:
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        depolist = data['depolist']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/vehicle-masterslist.php"
+
+            payload = json.dumps({"accesskey": accesskey,"depotname":request.POST.get('deponame1')})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                vehiclemasterlist = data['vehiclemasterlist']
+                return render(request, 'masters/vehical_master.html', {"menuname": menuname,'depolist':depolist,"vehiclemasterlist":vehiclemasterlist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/vehicle-masterslist.php"
+
+            payload = json.dumps({"accesskey": accesskey,"depotname":"MANUGUR"})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                vehiclemasterlist = data['vehiclemasterlist']
+                return render(request, 'masters/vehical_master.html',
+                              {"menuname": menuname, 'depolist': depolist, "vehiclemasterlist": vehiclemasterlist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
+    except Exception as e:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        else:
+            messages.error(request, str(e))
+            return render(request, 'masters/vehical_master.html', {"menuname": menuname})
+
+
+def add_vehical_master(request):
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+        accesskey = request.session['accesskey']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/vehicle-master-submit.php"
+
+            payload = json.dumps({"accesskey": accesskey, "depotname": request.POST.get('deponame'),
+                                  "vehicleno": request.POST.get('vehicleno'),
+                                  "product_type": request.POST.get('product'),
+                                  })
+            headers = {
+                'Content-Type': 'text/plain',
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                messages.success(request, data['message'])
+                return redirect('/vehical_master')
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return JsonResponse({'data': data})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return redirect('/vehical_master')
+
+        else:
+            return redirect('/vehical_master')
+
+def get_vehicle(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-
     accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
-    url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+    vehicle = request.POST.get('vehicle')
+    deponame = request.POST.get('deponame')
+    url = "http://13.235.112.1/ziva/mobile-api/vehicle-masterslist.php"
 
-    payload = json.dumps({"accesskey": accesskey})
+    payload = json.dumps({
+        "accesskey": accesskey, "depotname":deponame
+    })
+
     headers = {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'application/json'
     }
-    response = requests.request("GET", url, headers=headers, data=payload)
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
     if response.status_code == 200:
         data = response.json()
-        depolist = data['depolist']
-    return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
-
+        staffmasterlist = data['staffmasterlist']
+        for i in staffmasterlist:
+            if str(i['vehicleno']) == vehicle:
+                data = {"sno": i["sno"], "depot_name": i["depotname"], "vehicleno": i["vehicleno"], "product_type": i['product_type']}
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/vehical_master')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/vehical_master')
+        except:
+            messages.error(request, response.text)
+        return redirect('/vehical_master')
 
 def driver_master(request):
     try:
@@ -16884,13 +17184,20 @@ def driver_master(request):
                 data = response.json()
                 stafflist = data['staffmasterlist']
                 return render(request, 'masters/driver_master.html', {"menuname": menuname,'depolist':depolist,"stafflist":stafflist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'masters/driver_master.html', {"menuname": menuname, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
             else:
-
                 return render(request, 'masters/driver_master.html', {"menuname": menuname, 'depolist': depolist})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/staff-masterlist.php"
 
-            payload = json.dumps({"accesskey": accesskey, "deponame": "MIYAPUR-I"})
+            payload = json.dumps({"accesskey": accesskey, "deponame": "MANUGUR"})
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -16900,8 +17207,16 @@ def driver_master(request):
                 stafflist = data['staffmasterlist']
                 return render(request, 'masters/driver_master.html',
                               {"menuname": menuname, 'depolist': depolist, "stafflist": stafflist})
-
-            return render(request, 'masters/driver_master.html', {"menuname": menuname, 'depolist': depolist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'masters/driver_master.html', {"menuname": menuname, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'masters/driver_master.html', {"menuname": menuname, 'depolist': depolist})
 
     except Exception as e:
         if response.status_code == 400:
@@ -16934,6 +17249,17 @@ def add_driver_master(request):
                 data = response.json()
                 messages.success(request,data['message'])
                 return redirect('/driver_master')
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return JsonResponse({'data': data})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return redirect('/driver_master')
+
         else:
             return redirect('/driver_master')
 
@@ -16962,7 +17288,7 @@ def get_driver(request):
         staffmasterlist = data['staffmasterlist']
         for i in staffmasterlist:
             if str(i['st_no']) == staffid:
-                data = {"sno": i["sno"], "depot_name": i["depot_name"], "st_no": i["st_no"], "name": i['name'], "name": i['name']}
+                data = {"sno": i["sno"], "depot_name": i["depot_name"], "st_no": i["st_no"], "name": i['name'], "mobile": i['phone_no'], "designation": i['designation']}
         return JsonResponse({'data': data})
     elif response.status_code == 400:
         data = response.json()
@@ -16972,6 +17298,142 @@ def get_driver(request):
         try:
             data = response.json()
             messages.error(request, data['message'])
+            return redirect('/driver_master')
         except:
             messages.error(request, response.text)
-        return redirect('/add_grnitem')
+        return redirect('/driver_master')
+
+
+def edit_driver(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/staff_master_update.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "deponame": request.POST.get('depotname'),
+                              "st_no": request.POST.get('driverid'),
+                              "name": request.POST.get('drivername'),
+                              "phone_no": request.POST.get('mobile'),
+                              "designation": request.POST.get('designation'),
+                              "sno": request.POST.get('sno')
+                              })
+        headers = {
+            'Content-Type': 'text/plain',
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/driver_master')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/driver_master')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            return redirect('/driver_master')
+    else:
+        return redirect('/driver_master')
+
+
+def delete_driver(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/delete-staffmaster.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "sno": request.POST.get('id')
+                              })
+        headers = {
+            'Content-Type': 'text/plain',
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/driver_master')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/driver_master')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            return redirect('/driver_master')
+    else:
+        return redirect('/driver_master')
+
+def delete_vehicle(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/delete-vehiclemaster.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "sno": request.POST.get('id1')
+                              })
+        headers = {
+            'Content-Type': 'text/plain',
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/vehical_master')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/vehical_master')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            return redirect('/vehical_master')
+    else:
+        return redirect('/vehical_master')
+
+def delete_service(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/delete-servicemaster.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "sno": request.POST.get('id1')
+                              })
+        headers = {
+            'Content-Type': 'text/plain',
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/service_master')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/service_master')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            return redirect('/service_master')
+    else:
+        return redirect('/service_master')

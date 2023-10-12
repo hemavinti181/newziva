@@ -7,6 +7,11 @@
 	width: 100% !important;
 	margin-left:100px !important;
 	}
+	 .style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:75px;
+	}
 	</style>
 <div class="right_col" role="main">
           <div class="">
@@ -36,16 +41,12 @@
                                                         <input type="hidden" name="deponame1" id="deponame1"  value="{{ request.POST.deponame1 }}">
 
                                  <select class="form-control items" name="depotid" id="depotid" required>
-                                     <option value="">Select depot</option>
                                                     {% for data in depolist %}
                                                         {% if data.status == "Active" %}
-                                                               {% if data.depoid == 'DEPO0094' %}
-                                                                        <option value="{{ data.depoid }}" selected>{{ data.deponame }}</option>
-                                                                {% endif %}
-                                                                     <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                                        <option value="{{ data.depoid }}">{{ data.deponame }}</option>
                                                         {% endif %}
                                                     {% endfor %}
-                                                </select>
+                                 </select>
                              </div>
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
@@ -84,7 +85,7 @@
 
                                          <a href="#" onclick="editStoretype('{{  data.st_no }}','{{ data.depot_name }}')"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                         <a href="#" onclick="VerifyClick1('{{ data.sno }}')" ><span class="badge badge-danger" data-toggle="modal" data-target="#des-status">
-                                          Inactive</span></a>
+                                          <i class="fa fa-trash"></i></span></a>
 
                                 </tr>
                             {% endfor %}
@@ -111,17 +112,17 @@
 								  <form method="post" action="des_status_inactive">
                                                     {% csrf_token %}
 								<div class="form-header">
-									<h3>Status Update</h3>
+									<h3></h3>
 									<p>Are you sure want to Inactive?</p>
 								</div>
 									  <div class="modal-btn delete-action">
 									<input type="hidden" id="id" name="id"  />
                                           <input type="hidden" id="status" name="status" value ="Inactive"  />
 									<div class="row">
-										<div class="col-6">
+										<div class="col-md-6 col-sm-6">
 											<button class="btn btn-primary submit-btn">Yes</button>
 										</div>
-										<div class="col-6">
+										<div class="col-md-6 col-sm-6">
 											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
 										</div>
 									</div>
@@ -134,12 +135,12 @@
 				</div>
 <div class="modal custom-modal fade" id="des-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
+						<div class="modal-content style1">
 							<div class="modal-body">
                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								  <form method="post" action="des_status_inactive">
+								  <form method="post" action="/delete_driver">
                                                     {% csrf_token %}
 								<div class="form-header">
 									<h3>Status Update</h3>
@@ -149,12 +150,12 @@
 									<input type="hidden" id="id1" name="id"  />
                                            <input type="hidden"  name="status" value ="Active"  />
 									<div class="row">
-										<div class="col-6">
-											<button class="btn btn-primary submit-btn">Yes</button>
-										</div>
-										<div class="col-6">
-											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
-										</div>
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
 									</div>
 								</div>
 								  </form>
@@ -183,7 +184,7 @@
                                                     <option>select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
-                            							<option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
+                            							<option value="{{ data1.deponame }}">{{ data1.deponame }}</option>
                                                     {% endif %}
                                                     {% endfor %}
 												</select>
@@ -224,11 +225,12 @@
                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								  <form method="post" action="/add_driver_master">
+								  <form method="post" action="/edit_driver">
                                                     {% csrf_token %}
 								<div class="form-header">
 									<h3>Edit Driver Details</h3>
 								</div>
+                                      	<input type="hidden" name="sno" id="sno" />
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
 													<label>Select Depot *</label>
 											<input type="hidden" name="depotname" id="depotname" />
@@ -236,7 +238,7 @@
                                                     <option>select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
-                            							<option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
+                            							<option value="{{ data1.deponame }}">{{ data1.deponame }}</option>
                                                     {% endif %}
                                                     {% endfor %}
 												</select>
@@ -251,7 +253,7 @@
                                    </div>
                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
                                       <label>Mobile</label>
-                                          <input type="text" class="form-control" placeholder="mobile number" name="mobile" id="mobile" pattern= "[6789][0-9]{9}">
+                                          <input type="text" class="form-control" placeholder="mobile number" name="mobile" id="mobile1" pattern= "[6789][0-9]{9}">
                                     </div>
                                      <div class="col-md-6 col-sm-6  form-group has-feedback">
                                         <label>Designation</label>
@@ -288,11 +290,12 @@ $("#id1").val(id);
          var obj = data.data
           	console.log(data);
              if(obj){
-             $("#driverid1").val(obj.depotid1);
-             $("#driverid1").val(obj.depotname);
+             $("#depotid1").val(obj.depot_name);
+             $("#depotname").val(obj.depot_name);
              $("#driverid1").val(obj.st_no);
              $("#drivername").val(obj.name);
-             $("#mobile1").val(obj.phone_no);
+             $("#sno").val(obj.sno);
+             $("#mobile1").val(obj.mobile);
               $("#designation").val(obj.designation);
              $('#storetype_edit').modal('show');
         	}
@@ -309,6 +312,11 @@ $("#id1").val(id);
       var selectedOptionText = $(this).find(":selected").text();
       $("#deponame1").val(selectedOptionText);
       form.submit();
+});
+ $("#depotid1").change(function() {
+      var form = document.getElementById("myform");
+      var selectedOptionText = $(this).find(":selected").text();
+      $("#depotname").val(selectedOptionText);
 });
 $(document).ready(function(){
  var optionValue = $("#depoid1").val();

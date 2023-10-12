@@ -336,9 +336,16 @@ urlpatterns = [
     path('vehical_master',views.vehical_master,name='vehical_master'),
     path('driver_master',views.driver_master,name='driver_master'),
     path('add_driver_master',views.add_driver_master,name='add_driver_master'),
-    path('get_driver',views.get_driver,name="get_driver")
-
-
+    path('get_driver',views.get_driver,name="get_driver"),
+    path('edit_driver',views.edit_driver,name='edit_driver'),
+    path('add_service_master',views.add_service_master,name='add_service_master'),
+    path('add_vehical_master',views.add_vehical_master,name='add_vehical_master'),
+    path('get_servicelist',views.get_servicelist,name='get_servicelist'),
+    path('edit_service', views.edit_service, name='edit_service'),
+    path('delete_driver',views.delete_driver,name='delete_driver'),
+    path('delete_vehicle',views.delete_vehicle,name='delete_vehicle'),
+    path('delete_service',views.delete_service,name='delete_service'),
+    path('get_vehicle',views.get_vehicle,name='get_vehicle')
 ]
 
 
