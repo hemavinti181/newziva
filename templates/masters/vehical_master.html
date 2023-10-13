@@ -81,7 +81,7 @@
                                     <td>{{ data.product_type }}</td>
                                <td>
 
-                                         <a href="#" onclick="editStoretype('{{  data.price_code }}')"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                         <a href="#" onclick="editStoretype('{{  data.vehicleno }}','{{ data.depotname }}')"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
 
                                         <a href="#" onclick="VerifyClick1('{{ data.sno }}')" ><span class="badge badge-danger" data-toggle="modal" data-target="#des-status">
                                          <i class="fa fa-trash"></i></span></a>
@@ -217,7 +217,7 @@
                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								  <form method="post" action="/add_vehical_master">
+								  <form method="post" action="/edit_vehcle">
                                                     {% csrf_token %}
 								<div class="form-header">
 									<h3>Edit Vehical</h3>
@@ -225,6 +225,7 @@
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
 													<label>Select Depot *</label>
 											<input type="hidden" name="depotname1" id="depotname1" />
+                                       	<input type="hidden" name="sno" id="sno" />
 												<select class="form-control" name="depotid1" id="depotid1">
                                                     <option>select depot</option>
 													{% for data1 in depolist %}
@@ -262,20 +263,22 @@ $("#id").val(id);
 function VerifyClick1(id){
 $("#id1").val(id);
 }
- function editStoretype(id){
+ function editStoretype(id,id1){
       $.ajax({
-        url: "{% url 'get_pricelist' %}",
+        url: "{% url 'get_vehicle' %}",
         type: 'POST',
         data: {
-          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+          'vehicle': id,'deponame':id1,'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         success: function(data) {
          var obj = data.data
           	console.log(data);
              if(obj){
-             $("#txtHdnId").val(obj.price_code);
-             $("#price").val(obj.mrp);
-             $("#txtHdnId2").val(obj.sno);
+             $("#depotid1").val(obj.depot_name);
+             $("#depotname1").val(obj.depot_name);
+             $("#sno").val(obj.sno);
+             $("#vehicleno1").val(obj.vehicleno);
+              $("#product1").val(obj.product_type);
              $('#storetype_edit').modal('show');
         	}
         }
@@ -297,7 +300,10 @@ $(document).ready(function(){
       var selectedOptionText = $(this).find(":selected").text();
       $("#deponame").val(selectedOptionText);
 });
-
+$("#depotid1").change(function() {
+      var selectedOptionText = $(this).find(":selected").text();
+      $("#depotname1").val(selectedOptionText);
+});
 
 </script>
 {% endblock %}

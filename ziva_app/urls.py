@@ -345,7 +345,12 @@ urlpatterns = [
     path('delete_driver',views.delete_driver,name='delete_driver'),
     path('delete_vehicle',views.delete_vehicle,name='delete_vehicle'),
     path('delete_service',views.delete_service,name='delete_service'),
-    path('get_vehicle',views.get_vehicle,name='get_vehicle')
+    path('get_vehicle',views.get_vehicle,name='get_vehicle'),
+    path('edit_vehcle',views.edit_vehcle,name='edit_vehcle'),
+    path('intconsumption_report',views.intconsumption_report,name='intconsumption_report'),
+    path('intconsumption_servicereport',views.intconsumption_servicereport,name='intconsumption_servicereport'),
+
+
 ]
 
 

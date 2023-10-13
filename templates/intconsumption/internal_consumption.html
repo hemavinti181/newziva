@@ -297,7 +297,7 @@
                                             <div class="modal-content style1">
                                                <div class="modal-body">
 
-                                             <form method="POST" action="" enctype="multipart/form-data">
+                                             <form method="POST" id="returnform" action="" enctype="multipart/form-data">
                                                     {% csrf_token %}
                               <!--<h3   style="text-align:center;">Delivery Challan</h3>-->
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -348,6 +348,7 @@
 												<input type="hidden" name="staffnumret11" id="staffnumret11" />
 													  <label>Select Staff1 </label>
 												<select class="form-control" name="staffnumret1" id="staffnumret1" style="width:180px !important;">
+													<option value="No driver">No driver</option>
 													<option value=""> Driver ID1</option>
 												</select>
 										</div>
@@ -369,6 +370,7 @@
 										     <input type="hidden" name="staffnameret2" id="staffnameret2" />
 											 <label>Select Staff2</label>
 												<select class="form-control" name="staffnumret2" id="staffnumret2"  style="width:180px !important;">
+													<option value="No driver">No driver</option>
 													<option value=""> Driver ID2</option>
 												</select>
 										</div>
@@ -668,7 +670,7 @@ $("#depoid1").change(function() {
                         var obj = data.data.servicemasterlist
 						$("#service").empty();
 						$("#service").append("<option  value=''>Choose  service</option>");
-						$("#service").append("<option  value=''>Extra service</option>");
+						$("#service").append("<option  value='Extra service'>Extra service</option>");
 						$.each(obj, function (index, item) {
 						$("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
 						});
@@ -715,10 +717,22 @@ $(document).ready(function() {
     		var depo = $('#depoid1').find(":selected").text();
             var service = $('#service').find(":selected").text();
             if( service === 'Extra service' ){
-            $('#extraservice').show();
-			$("#oprs").prop("readonly", false);
-			$("#departure").prop("readonly", false);
-			$("#route").prop("readonly", false);
+				$('#extraservice').show();
+				$("#oprs").val(" ");
+				$("#departure").val(" ");
+				$("#route").val(" ");
+				$("#oprs").prop("readonly", false);
+				$("#departure").prop("readonly", false);
+				$("#route").prop("readonly", false);
+            }
+            else{
+				$('#extraservice').hide();
+				 $("#oprs").empty();
+				$("#departure").empty();
+				$("#route").empty();
+				$("#oprs").prop("readonly", true);
+				$("#departure").prop("readonly", true);
+				$("#route").prop("readonly", true);
             }
         	$.ajax({
             	type: "POST",
@@ -879,7 +893,6 @@ $("#staffnumb1").change(function() {
         $("#staffnumret1").change(function() {
 
     		var depo = $('#deponamereturn').val();
-            var staffnumb = $('#staffnumret1').find(":selected").text();
 
         	$.ajax({
             	type: "POST",
@@ -913,28 +926,36 @@ $("#staffnumb1").change(function() {
     $("#staffnumret1").change(function() {
         var depo = $('#deponamereturn').val();
         var staffnumb = $('#staffnumret1').find(":selected").text();
-        $.ajax({
-            type: "POST",
-            url: '{% url "staffname" %}',
-            data: {
-                'depo': depo,
-                'staffnumb': staffnumb,
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-            },
-            success: function(data) {
-                var obj = data.data.staffnamelist;
 
-                console.log(obj[0].name);
+		if (staffnumb === 'No driver') {
 
-                if (obj) {
-                    $("#staffname3").empty();
-                    $("#staffname3").val(obj[0].name);
-                } else {
-                    $("#staffname3").empty();
-                }
+			$("#staffname3").val("No driver");
+		}
 
-            }
-        });
+		else{
+			$.ajax({
+				type: "POST",
+				url: '{% url "staffname" %}',
+				data: {
+					'depo': depo,
+					'staffnumb': staffnumb,
+					'csrfmiddlewaretoken': '{{ csrf_token }}',
+				},
+				success: function(data) {
+					var obj = data.data.staffnamelist;
+
+					console.log(obj[0].name);
+
+					if (obj) {
+						$("#staffname3").empty();
+						$("#staffname3").val(obj[0].name);
+					} else {
+						$("#staffname3").empty();
+					}
+
+				}
+			});
+		}
     });
 
 
@@ -944,6 +965,10 @@ $("#staffnumb1").change(function() {
         $("#staffnumret2").change(function() {
                 var depo =  $('#deponamereturn').val();
                 var staffnumb = $('#staffnumret2').find(":selected").text();
+                if (staffnumb === 'No driver') {
+
+				$("#staffname4").val("No driver");
+		}
                 $.ajax({
                     type: "POST",
                     url: '{% url "staffname" %}',
@@ -1089,7 +1114,11 @@ $('#tickets').on('input', function() {
             val2  = parseInt($("#bottlesreturn").val());
             val3  = $("#actbottlesreturn").val();
             val4 = (val3 - val2)
-            $("#shortbottlesreturn").val(val4);
+            if ( val4 > 0){
+            	$("#shortbottlesreturn").val("0");
+            }else {
+            	$("#shortbottlesreturn").val(val4);
+            }
 
     });
 
@@ -1122,6 +1151,15 @@ $('#tickets').on('input', function() {
 	 $("#authorize1").show();
 	 $("#submit").hide();
 	 $("#resend1").hide();
+ });
+
+ $("#resend").click(function() {
+	 $("#otpdisplay1").hide();
+	 $("#staffdisplay1").hide();
+	 $("#mobiledisplay1").show();
+	 $("#authorize2").show();
+	 $("#submitreturn").hide();
+	 $("#resend").hide();
  });
 
 $(document).ready(function () {
@@ -1186,6 +1224,7 @@ $(document).ready(function () {
                  $("#staffdisplay1").show();
                  $("#mobiledisplay1").hide();
                  $("#submitreturn").show();
+                  $("#resend").show();
                  $('#authorize2').hide();
                }
                else{
@@ -1295,33 +1334,18 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     $("#save").click(function() {
-        var tickets = $('#tickets').val();
-        var service_id = $('#service_id').val();
-        var actbottlesreturn = $('#actbottlesreturn').val();
-        var staffname3 = $('#staffname3').val();
-        var staffname4 = $('#staffname4').val();
-        var ticketsimg = $('#ticketsimg').val();
-        var staffnumret1 = $('#staffnumret1').val();
-        var staffnumret2 = $('#staffnumret2').val();
-        var staffnumret11 = $('#staffnumret11').val();
-        var staffnumret22 = $('#staffnumret22').val();
+        var form = $('#returnform');
+        var formData = new FormData(form[0]);
+
+        // Add the CSRF token to the FormData
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
         $.ajax({
             url: "{% url 'return_bussupply' %}",
             type: 'POST',
-            data: {
-                'tickets': tickets,
-                'actbottlesreturn': actbottlesreturn,
-                'staffname3': staffname3,
-                'staffname4': staffname4,
-                'service_id': service_id,
-                'ticketsimg': ticketsimg,
-                'staffnumret1': staffnumret1,
-                'staffnumret2': staffnumret2,
-                'staffnumret11': staffnumret11,
-                'staffnumret22': staffnumret22,
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-            },
+            data: formData,
+            processData: false,  // Prevent jQuery from processing the data
+            contentType: false,  // Prevent jQuery from setting the content type
             success: function (response) {
                 var message = response.response.message;
                 var responseCode = response.response.status;

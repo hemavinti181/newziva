@@ -13904,7 +13904,6 @@ def add_bussupply(request):
         else:
             service = request.POST.get('service')
         if role == 'Admin':
-
                 if request.method == 'POST':
                     supervisorname = request.POST.get('supervisorid')
                     request.session['supervisorname'] = supervisorname
@@ -17006,6 +17005,43 @@ def edit_service(request):
     else:
         return redirect('/service_master')
 
+def edit_vehcle(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/edit-vehiclemaster.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "depotname":request.POST.get('depotname1'),
+                              "vehicleno": request.POST.get('vehicleno1'),
+                              "product_type": request.POST.get('product1'),
+                              "depotcode": "",
+                              "sno":request.POST.get('sno')
+                              })
+        headers = {
+            'Content-Type': 'text/plain',
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/vehical_master')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/vehical_master')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            return redirect('/vehical_master')
+    else:
+        return redirect('/vehical_master')
+
+
 def vehical_master(request):
     try:
         if 'accesskey' not in request.session:
@@ -17112,6 +17148,8 @@ def add_vehical_master(request):
         else:
             return redirect('/vehical_master')
 
+
+
 def get_vehicle(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -17133,8 +17171,8 @@ def get_vehicle(request):
 
     if response.status_code == 200:
         data = response.json()
-        staffmasterlist = data['staffmasterlist']
-        for i in staffmasterlist:
+        vehiclemasterlist = data['vehiclemasterlist']
+        for i in vehiclemasterlist:
             if str(i['vehicleno']) == vehicle:
                 data = {"sno": i["sno"], "depot_name": i["depotname"], "vehicleno": i["vehicleno"], "product_type": i['product_type']}
         return JsonResponse({'data': data})
@@ -17154,6 +17192,8 @@ def get_vehicle(request):
         except:
             messages.error(request, response.text)
         return redirect('/vehical_master')
+
+
 
 def driver_master(request):
     try:
@@ -17437,3 +17477,22 @@ def delete_service(request):
             return redirect('/service_master')
     else:
         return redirect('/service_master')
+
+def intconsumption_report(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    menuname = request.session['mylist']
+    return render(request,'intconsumption/intconsumption_report.html',{"menuname":menuname})
+
+
+
+
+def intconsumption_servicereport(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    menuname = request.session['mylist']
+    return render(request,'intconsumption/intconsumption_servicereport.html',{"menuname":menuname})
