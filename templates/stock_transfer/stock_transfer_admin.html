@@ -49,7 +49,6 @@
                 </div>
                 </div>
 
-
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel warehouse-div" style="display:none;">
@@ -84,6 +83,59 @@
                                         </div>
 
                                         <div class="col-md-6 col-sm-2 form-group has-feedback">
+												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form>
+                </div>
+              </div>
+
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel depot-div" style="display:none;">
+									<br />
+									<form class="form-label-left input_mask" id="depoform"  method="POST" action="/generate_transid_depo"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                            <input type="hidden" name="actionname" id="actionname1" />
+											<label>Stock Transfer From  *</label>
+                                            <select class="form-control" name="depotid3" id="depotid3" hidden>
+                            		                    <option value="{{ request.POST.depotid2 }}">{{ request.POST.depotname }}</option>
+												    </select>
+                                                 <input type="hidden" name="depotname" id="depotname" />
+										    	 <select class="form-control items" name="depotid2" id="depotid2" required>
+                                                     <option value="">select depot</option>
+                                                </select>
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback" id="depowhbus">
+											<label>Stock Transfer To *</label>
+                                            <input type="hidden" name="depotransfer" id="depotransfer" />
+                                            <select class="form-control items" name="depotransfer1" id="depotransfer1" required>
+                                                     <option value="">select</option>
+                                                     <option value="Warehouse">Warehouse</option>
+                                                     <option value="Bus station">Bus station</option>
+                                                </select>
+                                        </div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback" id="depo" style="display:none;">
+											<label>Stock Transfer To  *</label>
+                                            <select class="form-control" name="warehouse" id="warehouse" hidden>
+                            		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.whname1 }}</option>
+												    </select>
+                                                   <input type="hidden" name="warehousename" id="warehousename" />
+										    	 <select class="form-control items" name="warehouseid" id="warehouseid" required>
+                                                     <option value="">select warehouse</option>
+                                                </select>
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback" id="bus" style="display:none;">
+                                             <select class="form-control" name="bustid1" id="bustid1" hidden>
+                            		                    <option value="{{ request.POST.bustid }}">{{ request.POST.bustname }}</option>
+												    </select>
+											<label>Stock Transfer To  *</label>
+                                                   <input type="hidden" name="bustname" id="bustname" />
+										    	 <select class="form-control items" name="bustid" id="bustid" required>
+                                                     <option value="">select busstation</option>
+
+                                                </select>
+										</div>
+                                        <div class="col-md-3 col-sm-3 form-group has-feedback">
 												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
                                         </div>
                                     </form>
@@ -125,6 +177,7 @@
               </div>
 
                     </div>
+
 
  <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-div"  style="display:none;">
@@ -473,6 +526,8 @@ function VerifyClick1(id){
 $("#sno").val(id);
 }
 
+
+
 $("#wh1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#whname1").val(selectedOptionText);
@@ -508,6 +563,16 @@ $("#depocode1").change(function() {
   $("#deponame1").val(selectedOptionText);
 });
 
+$("#depotid2").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#depotname").val(selectedOptionText);
+});
+
+$("#warehouseid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#warehousename").val(selectedOptionText);
+});
+
 	$(document).ready(function() {
 	    var response = $('#response').val();
         $.ajax({
@@ -521,6 +586,7 @@ $("#depocode1").change(function() {
                 if (obj) {
                     $.each(obj, function(index, item) {
                         $("#wh1").append("<option value='" + item.warehouseid + "'>" + item.warehousename + "</option>");
+                         $("#warehouseid").append("<option value='" + item.warehouseid + "'>" + item.warehousename + "</option>");
                     });
                  if (response === "200") {
                     var optionValue1 = $("#wh2").val();
@@ -550,6 +616,7 @@ $("#depocode1").change(function() {
                          if (item.status === "Active") {
                             $("#depocode1").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
                             $("#depotid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
+                            $("#depotid2").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
                          }
                     });
                      if (response === "200") {
@@ -581,7 +648,7 @@ $("#depocode1").change(function() {
                     $.each(obj, function(index, item) {
                          if (item.status === "Active") {
                             $("#busid1").append("<option value='" + item.busatationid + "'>" + item.busstationname + "</option>");
-
+                             $("#bustid").append("<option value='" + item.busatationid + "'>" + item.busstationname + "</option>");
                          }
                     });
                      if (response === "Bus200") {
@@ -608,7 +675,6 @@ $("#depocode1").change(function() {
                     var $select = $('#itemcode1');
 
                     $.each(obj, function(index, item) {
-
                             var optionText = `${item.itemname} (Batch: ${item.batchcode}, Expiry: ${item.expirydate}, MRP: ${item.mrp})`;
                             var $option = $('<option>', { value: item.itemcode, text: optionText });
                             $select.append($option);
@@ -796,19 +862,40 @@ $('.form-control').change(function() {
     }
   });
 
-   $(document).ready(function() {
-    $("#wh").on("change", function() {
-      var selectedOption = $(this).val();
-      if (selectedOption === "Warehouse") {
-        $(".warehouse-div").show();
-         $(".bus_div").hide()
-      } else if (selectedOption === "Busstation") {
-
-         $(".bus_div").show();
-         $(".warehouse-div").hide();
-      }
-    });
+  $(document).ready(function() {
+  $("#wh").on("change", function() {
+    var selectedOption = $(this).val();
+    if (selectedOption === "Warehouse") {
+      $(".warehouse-div").show();
+      $(".bus_div").hide();
+       $(".depot-div").hide();
+    } else if (selectedOption === "Depot") {
+       $(".depot-div").show();
+      $(".warehouse-div").hide();
+      $(".bus_div").hide();
+    } else if (selectedOption === "Busstation") {
+        $(".depot-div").hide();
+      $(".bus_div").show();
+      $(".warehouse-div").hide();
+    }
   });
+});
+
+$("#depotransfer1").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  if (selectedOptionText === "Warehouse") {
+    //$("#depowhbus").hide();
+    $("#depo").show();
+    $("#bus").hide();
+  } else if (selectedOptionText === "Bus station") {
+    //$("#depowhbus").hide();
+    $("#bus").show();
+    $("#depo").hide();
+  }
+});
+
+
+
 $(document).ready(function() {
     $("#typeid").on("change", function() {
       var selectedOption = $(this).val();
@@ -821,7 +908,6 @@ $(document).ready(function() {
       }
     });
 });
-
 
 $(document).ready(function() {
     $("#bustypeid").on("change", function() {

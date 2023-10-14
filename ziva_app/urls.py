@@ -349,6 +349,7 @@ urlpatterns = [
     path('edit_vehcle',views.edit_vehcle,name='edit_vehcle'),
     path('intconsumption_report',views.intconsumption_report,name='intconsumption_report'),
     path('intconsumption_servicereport',views.intconsumption_servicereport,name='intconsumption_servicereport'),
+    path('generate_transid_depo',views.generate_transid_depo,name='generate_transid_depo')
 
 
 ]

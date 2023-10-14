@@ -2083,11 +2083,16 @@ def stk_depot_list(request):
     if response.status_code == 200:
         data = response.json()
         return  JsonResponse({'data': data})
-    else:
-        if response.status_code == 400:
-            data = response.json()
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
             messages.error(request, data['message'])
-            return redirect('/login')
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return JsonResponse({'data': "Some thing went wrong"})
+    else:
+        return JsonResponse({'data': "Some thing went wrong"})
 
 
 def warehouseinventory_search(request):
@@ -15971,6 +15976,84 @@ def generate_transid_bust(request):
     except Exception as e:
         messages.error(request, str(e))
         return render(request, 'stock_transfer/stock_transfer_admin.html', {"menuname": menuname, 'response': 'Bus400'})
+
+
+def generate_transid_depo(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        depotid2 = request.POST.get('depotid2')
+        request.session['depotid2'] = depotid2
+        whtoid = request.POST.get('warehouseid')
+        if  whtoid:
+            request.session['whtoid'] = whtoid
+            toid = whtoid
+            toname = request.POST.get('warehousename')
+        else:
+            bustoid = request.POST.get('bustid')
+            request.session['bustoid'] = bustoid
+            toid = bustoid
+            toname = request.POST.get('bustname')
+
+        url = "http://13.235.112.1/ziva/mobile-api/quantitytypelist.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        type1 = data['qtyupdatedlist']
+        request.session['type1'] = type1
+        busid1 = request.POST.get('busid1')
+        request.session['busid1'] = busid1
+        url = "http://13.235.112.1/ziva/mobile-api/generate-transitid-admin.php"
+        payload = {
+            "accesskey": accesskey,
+            "fromid":  request.POST.get('depotid2'),
+            "fromname": request.POST.get('depotname'),
+            "toid": toid,
+            "toname":toname,
+            "type": "Depo"
+        }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            bustaxinvoice = data['taxinvoice']
+            request.session['bustaxinvoice'] = bustaxinvoice
+            messages.success(request, data['message'])
+            return render(request, 'stock_transfer/stock_transfer_admin.html', {"menuname": menuname, 'response': 'depo200','type':type1})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return render(request, 'stock_transfer/stock_transfer_admin.html',
+                              {"menuname": menuname, 'response': 'Bus400'})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'stock_transfer/stock_transfer_admin.html', {"menuname": menuname, 'response': 'depo503'})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return render(request, 'stock_transfer/stock_transfer_admin.html', {"menuname": menuname, 'response': 'depo500'})
+    except Exception as e:
+        messages.error(request, str(e))
+        return render(request, 'stock_transfer/stock_transfer_admin.html', {"menuname": menuname, 'response': 'depo400'})
+
+
 
 
 def generate_transid(request):
