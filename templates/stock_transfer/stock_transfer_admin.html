@@ -107,6 +107,9 @@
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback" id="depowhbus">
 											<label>Stock Transfer To *</label>
+                                              <select class="form-control" name="depotransfer2" id="depotransfer2" hidden>
+                            		                    <option value="{{ request.POST.depotransfer1 }}">{{ request.POST.depotransfer }}</option>
+                                              </select>
                                             <input type="hidden" name="depotransfer" id="depotransfer" />
                                             <select class="form-control items" name="depotransfer1" id="depotransfer1" required>
                                                      <option value="">select</option>
@@ -120,8 +123,8 @@
                             		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.whname1 }}</option>
 												    </select>
                                                    <input type="hidden" name="warehousename" id="warehousename" />
-										    	 <select class="form-control items" name="warehouseid" id="warehouseid" required>
-                                                     <option value="">select warehouse</option>
+										    	 <select class="form-control" name="warehouseid" id="warehouseid">
+                                                     <option value="">select</option>
                                                 </select>
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback" id="bus" style="display:none;">
@@ -130,10 +133,9 @@
 												    </select>
 											<label>Stock Transfer To  *</label>
                                                    <input type="hidden" name="bustname" id="bustname" />
-										    	 <select class="form-control items" name="bustid" id="bustid" required>
-                                                     <option value="">select busstation</option>
-
-                                                </select>
+										    	 <select class="form-control " name="bustid" id="bustid">
+                                                     <option value="">select</option>
+                                                 </select>
 										</div>
                                         <div class="col-md-3 col-sm-3 form-group has-feedback">
 												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
@@ -316,6 +318,143 @@
     </div>
 
 <div class="col-md-12 col-sm-12 ">
+       <div class="x_panel" id="items-depot"  style="display:none;">
+           	<form class="form-label-left input_mask"  method="POST" action="/depot_item_add_admin"   enctype="multipart/form-data">
+										{% csrf_token %}
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                              <input id="depot_name" name="depot_name" type="hidden"/>
+                                             <input id="depotexpdate" name="depotexpdate" type="hidden"/>
+                                             <input id="depotbatchno" name="depotbatchno" type="hidden"/>
+                                             <input id="depot_sno" name="depot_sno" type="hidden"/>
+                                            <input id="depot_uom" name="depot_uom" type="hidden"/>
+                                            <input id="depot_nob" name="depot_nob" type="hidden"/>
+                                              <input id="depot_mrp" name="depot_mrp" type="hidden"/>
+
+											<label>Select Items *</label>
+										    	 <select class="form-control select2" name="depot_itemcode" id="depot_itemcode" required>
+													<option value="">Items</option>
+
+                                                </select>
+										</div>
+                                        	 <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
+                                            <label>Type</label>
+                                            <input id="depot_typename" name="depot_typename" type="hidden"/>
+                                            <select class="form-control items" id="depot_typeid" name="depot_typeid" required>
+                                                <option value="">Type</option>
+                                                {% for data1 in type %}
+                                                <option value="{{ data1.type }}">{{ data1.type }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
+                                            <label>Qty(Cases) </label>
+                                            <input class="form-control" id="depot_quantity" name="depot_quantity"
+                                                   placeholder="cases"
+                                                   type="text">
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 form-group has-feedback">
+                                            <label>Qty(Bottles)</label>
+                                            <input class="form-control" id="depot_nobt" name="depot_nobt" placeholder="bottles"
+                                                   type="text">
+                                        </div>
+										 <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                            <button class="btn btn-primary" name="add" style="margin-top: 30px;"
+                                                    type="submit">Add
+                                            </button>
+                                        </div>
+
+              </div>
+                </form>
+
+ </div>
+                  </div>
+
+
+<div class="col-md-12 col-sm-12 ">
+                    <div class="x_panel"  style="display:none;"  id="depot_items">
+                   <div class="x_content">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card-box table-responsive">
+                                                <p class="text-muted font-13 m-b-30">
+                                                </p>
+
+                                                <table class="display  table-bordered" id="datatable-buttons1"
+                                                       style="width:100%">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>S No</th>
+                                                        <th>Item Name</th>
+                                                        <th>Qty(Cases)</th>
+                                                        <th>Qty(Bottles)</th>
+                                                        <th>Expiry Date</th>
+                                                        <!--<th>HSN</th>-->
+                                                        <th>Batch</th>
+                                                        <!--<th>MRP</th>-->
+                                                        <th>Manufacture</th>
+                                                        <th>Action</th>
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for all_data in wh_item_list %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ all_data.item_name }}</td>
+                                                        <td> {{ all_data.quantity }}</td>
+                                                        <td>{{ all_data.noofbottles }}</td>
+                                                        <td>{{ all_data.expiry_date }}</td>
+                                                        <!--<td>{{ all_data.hsn }}</td>-->
+                                                        <td>{{ all_data.batch_no }}</td>
+                                                        <!--<td>{{ all_data.mrp }}</td>-->
+                                                        <td>{{all_data.manufacturer}}</td>
+
+                                                        <td>
+                                                              <a
+                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" id="bus_delete"><i
+                                                                    class="fa fa-trash"></i></span></a>
+                                                            <span class="badge badge-info"
+                                                                  data-target="#edit_stk_item"
+                                                                  data-toggle="modal"
+                                                                  onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
+                                                                    class="fa fa-edit"></i></span>
+
+                                                        </td>
+                                                    </tbody>
+                                                    <tfoot>
+
+                                                    </tfoot>
+                                                    </tfoot>
+                                                    </tr>
+                                                    {% endfor %}
+
+
+                                                    <tbody>
+                                                    </tbody>
+                                                     {% if status == 'ok' %}
+                                                    <td colspan="9" style="color:#06911A">
+                                                        <b>Invoice No: {{ taxinvoice }}</b>
+
+                                                            <span style="float:right;"><span id="depotcomplete" class="badge-warning"
+                                                                                             data-target="#complete"
+                                                                                             data-toggle="modal"
+                                                                                             onclick="VerifyClick('{{data.so_number}}')"
+                                                                                             style="padding:  4px !important;">COMPLETE TRANSFER</span></span>
+                                                        {% endif %}
+                                                    </th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+             </div>
+          </div>
+
+    <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-bus"  style="display:none;">
            	<form class="form-label-left input_mask"  method="POST" action="/bust_item_add_admin"   enctype="multipart/form-data">
 										{% csrf_token %}
@@ -450,11 +589,6 @@
 
              </div>
           </div>
-</div>
-
-            </div>
-          </div>
-</div>
 
 
 
@@ -594,6 +728,14 @@ $("#warehouseid").change(function() {
                      var optionValue2 = $("#wh").val();
                     $("#wh").find("option[value='" + optionValue2 + "']").prop("selected", true);
                  }
+                  if (response === "depo200") {
+                    var optionValue1 = $("#warehouse").val();
+                    $("#warehouseid").find("option[value='" + optionValue1 + "']").prop("selected", true);
+                 }
+                  if (response === "depo200") {
+                    var optionValue1 = $("#depotransfer2").val();
+                    $("#depotransfer1").find("option[value='" + optionValue1 + "']").prop("selected", true);
+                 }
                 }
             }
         });
@@ -627,6 +769,10 @@ $("#warehouseid").change(function() {
                         var optionValue = $("#depotid1").val();
                         $("#depotid").find("option[value='" + optionValue + "']").prop("selected", true);
                      }
+                      if (response === "depo200") {
+                        var optionValue = $("#depotid3").val();
+                        $("#depotid2").find("option[value='" + optionValue + "']").prop("selected", true);
+                     }
                 }
             }
         });
@@ -654,6 +800,10 @@ $("#warehouseid").change(function() {
                      if (response === "Bus200") {
                         var optionValue = $("#busid2").val();
                         $("#busid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                     }
+                     if (response === "depo200") {
+                        var optionValue = $("#bustid1").val();
+                        $("#bustid").find("option[value='" + optionValue + "']").prop("selected", true);
                      }
                 }
             }
@@ -685,6 +835,31 @@ $("#warehouseid").change(function() {
             }
         });
     });
+
+ $(document).ready(function() {
+        $.ajax({
+            type: "POST",
+            url: '{% url "depotinventory_search" %}',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                var obj = data.data.warehouseinventorylist;
+                console.log(obj[0].itemname);
+                if (obj) {
+                    var $select = $('#depot_itemcode');
+                    $.each(obj, function(index, item) {
+                            var optionText = `${item.itemname} (Batch: ${item.batchcode}, Expiry: ${item.expirydate}, MRP: ${item.mrp})`;
+                            var $option = $('<option>', { value: item.itemcode, text: optionText });
+                            $select.append($option);
+
+                    });
+                    $select.select2();
+                }
+            }
+        });
+    });
+
 
 $(document).ready(function() {
         $.ajax({
@@ -822,6 +997,59 @@ $('#busquantity').on('input', function()  {
  });
 
 
+ $(document).ready(function () {
+            $('#depot_itemcode').change(function() {
+
+                    var code = $('#depotid3').val();
+                     var depoitemcode = $(this).val();
+                     var searchterm = $(this).find(":selected").text();
+                     alert(depoitemcode)
+                    $.ajax({
+                      data: {"searchterm":searchterm,
+                      'code':code,'depoitemcode':depoitemcode,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                      url: "{% url 'get_depo_item' %}",
+                      type: 'POST',
+                      success: function(data){
+
+                        var obj = data.data
+                         console.log(obj);
+                          console.log(obj.busmrp);
+                        if(obj){
+                            $("#depot_mrp").val(obj.depot_mrp);
+                            $("#depot_uom").val(obj.depot_uom);
+                            $("#depotexpdate").val(obj.depotexpdate);
+                            $("#depot_sno").val(obj.depot_sno);
+                        }
+                      },
+                      errors: function(e) {
+                      alert(e);
+                      }
+                    })
+            })
+ })
+
+
+
+$('#depot_quantity').on('input', function()  {
+            $("#depot_nobt").val(" ");
+    	    val  = $("#depot_quantity").val();
+            val1 = $("#depot_uom").val();
+            val2 =    (val * val1)
+            $("#depot_nobt").val(val2);
+});
+
+ $('#depot_nobt').on('input', function()  {
+            $("#depot_quantity").val(" ");
+    	    val  = $("#depot_nobt").val();
+            val1 = $("#depot_uom").val();
+            val2 =    (val / val1)
+            if (Number.isInteger(val2)) {
+                    val2 = val2.toFixed(0); // For integers, remove decimal places
+            } else {
+                    val2 = val2.toFixed(2); // For decimal values, keep two decimal places
+            }
+            $("#depot_quantity").val(val2);
+ });
 
 
 
@@ -844,13 +1072,26 @@ $(document).ready(function(){
 $(document).ready(function(){
  var response = $('#response').val();
  var status =  $('#status').val();
+ var depotransfer = $("#depotransfer2").val();
   if ( response === 'Bus200') {
-
          $('.bus_div').show();
           $('#items-bus').show();
   }
-  if (response === 'Bus200' &&  status === 'ok') {
+   if (response === 'Bus200' &&  status === 'ok') {
           $('#bust_items').show();
+  }
+    if (response === 'depo200') {
+          $('.depot-div').show();
+          $('#items-depot').show();
+  }
+  if (response === 'depo200' &&  status === 'ok') {
+          $('#depot_items').show();
+  }
+ if (depotransfer === 'Warehouse') {
+          $("#depo").show();
+  }
+  if (depotransfer === 'Bus station') {
+          $("#bus").show();
   }
 });
 
@@ -862,7 +1103,7 @@ $('.form-control').change(function() {
     }
   });
 
-  $(document).ready(function() {
+$(document).ready(function() {
   $("#wh").on("change", function() {
     var selectedOption = $(this).val();
     if (selectedOption === "Warehouse") {
@@ -909,6 +1150,7 @@ $(document).ready(function() {
     });
 });
 
+
 $(document).ready(function() {
     $("#bustypeid").on("change", function() {
       var selectedOption = $(this).val();
@@ -920,23 +1162,32 @@ $(document).ready(function() {
         $("#busnobt").prop("readonly", true);
       }
     });
+ });
+
+
+$(document).ready(function() {
+    $("#depot_typeid").on("change", function() {
+      var selectedOption = $(this).val();
+      if (selectedOption === "Bottles") {
+        $("#depot_quantity").prop("readonly", true);
+        $("#depot_nobt").prop("readonly", false);
+      } else if (selectedOption === "Cases") {
+        $("#depot_quantity").prop("readonly", false);
+        $("#depot_nobt").prop("readonly", true);
+      }
+    });
 });
+
+
 
 $('#buscomplete').click(function(){
       $('#completeform').attr('action', '{% url  "complete_busstk_admin"  %}'); // set the new action URL
     });
-
-/* $(document).ready(function() {
-    $('#store-status').on('show.bs.modal', function(event) {
-        var modalLink = $(this).find('#modalLink');
-        var sno = $(event.relatedTarget).data('sno');
-        var modalUrl = '/delete_stk_item/' + sno + '/';
-         $('#myForm1').attr('action', modalUrl);
+$('#depotcomplete').click(function(){
+      $('#completeform').attr('action', '{% url  "complete_depostk_admin"  %}'); // set the new action URL
     });
-}); */
-
+depotcomplete
    $('#getdate1').val(new Date().toJSON().slice(0,10));
-
    $('#bus_delete').click(function(){
      var sno = $(this).data('sno');
      var modalUrl = '/delete_stkbus_item/' + sno + '/';
