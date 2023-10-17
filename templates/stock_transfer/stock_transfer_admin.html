@@ -9,6 +9,7 @@
 	margin-left:70px !important;
 	}
 </style>
+
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -35,21 +36,19 @@
                                         	<div class="col-md-3 col-sm-3  form-group has-feedback">
 												 <input type="hidden" id="whr" name="whr" />
                                                 <input type="hidden" id="whname" name="whname" />
-											<label>Stock Transfer From *</label>
-										    	 <select class="form-control items" name="wh" id="wh" required>
-                                                     <option value="">Select</option>
-                                                             <option value="Warehouse">Warehouse</option>
-                                                           <option value="Depot">Depot</option>
-                                                            <option value="Busstation">Busstation</option>
-
-                                                </select>
-										</div>
-
+											    <label>Stock Transfer From *</label>
+                                                     <select class="form-control items" name="wh" id="wh" required>
+                                                         <option value="">Select</option>
+                                                                 <option value="Warehouse">Warehouse</option>
+                                                               <option value="Depot">Depot</option>
+                                                         <option value="Busstation">Busstation</option>
+                                                    </select>
+										    </div>
+                 </div>
                  </div>
                 </div>
-                </div>
+              </div>
 
-            <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel warehouse-div" style="display:none;">
 									<br />
@@ -62,7 +61,7 @@
 
 											<label>Stock Transfer From  *</label>
                                             <select class="form-control" name="wh2" id="wh2" hidden>
-                            		                    <option value="{{ request.POST.wh1 }}">{{ request.POST.whname1 }}</option>
+                            		                    <option value="{{ wh_code  }}">{{ wh_code }}</option>
 												    </select>
                                                    <input type="hidden" name="whname1" id="whname1" />
 										    	 <select class="form-control items" name="wh1" id="wh1" required>
@@ -74,7 +73,7 @@
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Stock Transfer To *</label>
                                              <select class="form-control" name="depocode2" id="depocode2" hidden>
-                            		                    <option value="{{ request.POST.depocode1 }}">{{ request.POST.deponame1 }}</option>
+                            		                    <option value="{{ depocode1 }}">{{ depocode1  }}</option>
 												    </select>
                                             <input type="hidden" name="deponame1" id="deponame1" />
                                             <select class="form-control items" name="depocode1" id="depocode1" required>
@@ -98,7 +97,7 @@
                                             <input type="hidden" name="actionname" id="actionname1" />
 											<label>Stock Transfer From  *</label>
                                             <select class="form-control" name="depotid3" id="depotid3" hidden>
-                            		                    <option value="{{ request.POST.depotid2 }}">{{ request.POST.depotname }}</option>
+                            		                    <option value="{{ fromid }}">{{ fromid }}</option>
 												    </select>
                                                  <input type="hidden" name="depotname" id="depotname" />
 										    	 <select class="form-control items" name="depotid2" id="depotid2" required>
@@ -108,7 +107,7 @@
                                         <div class="col-md-3 col-sm-3  form-group has-feedback" id="depowhbus">
 											<label>Stock Transfer To *</label>
                                               <select class="form-control" name="depotransfer2" id="depotransfer2" hidden>
-                            		                    <option value="{{ request.POST.depotransfer1 }}">{{ request.POST.depotransfer }}</option>
+                            		                    <option value="{{ toid }}">{{ toid }}</option>
                                               </select>
                                             <input type="hidden" name="depotransfer" id="depotransfer" />
                                             <select class="form-control items" name="depotransfer1" id="depotransfer1" required>
@@ -120,7 +119,7 @@
                                         <div class="col-md-3 col-sm-3  form-group has-feedback" id="depo" style="display:none;">
 											<label>Stock Transfer To  *</label>
                                             <select class="form-control" name="warehouse" id="warehouse" hidden>
-                            		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.whname1 }}</option>
+                            		                    <option value="{{ toid }}">{{ toid }}</option>
 												    </select>
                                                    <input type="hidden" name="warehousename" id="warehousename" />
 										    	 <select class="form-control" name="warehouseid" id="warehouseid">
@@ -129,7 +128,7 @@
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback" id="bus" style="display:none;">
                                              <select class="form-control" name="bustid1" id="bustid1" hidden>
-                            		                    <option value="{{ request.POST.bustid }}">{{ request.POST.bustname }}</option>
+                            		                    <option value="{{ toid }}">{{ toid }}</option>
 												    </select>
 											<label>Stock Transfer To  *</label>
                                                    <input type="hidden" name="bustname" id="bustname" />
@@ -143,49 +142,11 @@
                                     </form>
                 </div>
               </div>
-
-
-     <div class="col-md-12 col-sm-12 ">
-                <div class="x_panel bus_div" style="display:none">
-									<br />
-									<form class="form-label-left input_mask"  method="POST" action="/generate_transid_bust"   enctype="multipart/form-data">
-										{% csrf_token %}
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-                                             <select class="form-control" name="busid2" id="busid2" hidden>
-                            		                    <option value="{{ request.POST.busid1 }}">{{ request.POST.busname1 }}</option>
-												    </select>
-											<label>Stock Transfer From  *</label>
-                                                   <input type="hidden" name="busname1" id="busname1" />
-										    	 <select class="form-control items" name="busid1" id="busid1" required>
-                                                     <option value="">select busstation</option>
-
-                                                </select>
-										</div>
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-                                               <select class="form-control" name="depotid1" id="depotid1" hidden>
-                            		                    <option value="{{ request.POST.depotid }}">{{ request.POST.depotname1 }}</option>
-												    </select>
-											<label>Stock Transfer To *</label>
-                                            <input type="hidden" name="depotname1" id="depotname1" />
-                                            <select class="form-control items" name="depotid" id="depotid" required>
-                                                     <option value="">select depot</option>
-                                                </select>
-                                        </div>
-                                        <div class="col-md-6 col-sm-2 form-group has-feedback">
-												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
-											</div>
-                                    </form>
-                </div>
-              </div>
-
-                    </div>
-
-
- <div class="col-md-12 col-sm-12 ">
+                 <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-div"  style="display:none;">
            	<form class="form-label-left input_mask"  method="POST" action="/wh_item_add_admin"   enctype="multipart/form-data">
 										{% csrf_token %}
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										<div class="col-md-4 col-sm-4  form-group has-feedback">
                                               <input id="whitemname" name="whitemname" type="hidden"/>
                                              <input id="freequantity" name="freequantity" type="hidden"/>
                                              <input id="whexpdate" name="whexpdate" type="hidden"/>
@@ -225,17 +186,45 @@
                                             <button class="btn btn-primary" name="add" style="margin-top: 30px;"
                                                     type="submit">Add
                                             </button>
-                                        </div>
+                                         </div>
 
-              </div>
-                </form>
-
+            </form>
+        </div>
  </div>
-                  </div>
-              </div>
+                 <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel bus_div" style="display:none">
+									<br />
+									<form class="form-label-left input_mask"  method="POST" action="/generate_transid_bust"   enctype="multipart/form-data">
+										{% csrf_token %}
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                             <select class="form-control" name="busid2" id="busid2" hidden>
+                            		                    <option value="{{busid1 }}">{{ busid1 }}</option>
+												    </select>
+											<label>Stock Transfer From  *</label>
+                                                   <input type="hidden" name="busname1" id="busname1" />
+										    	 <select class="form-control items" name="busid1" id="busid1" required>
+                                                     <option value="">select busstation</option>
 
-               <div class="col-md-12 col-sm-12 ">
-                    <div class="x_panel"  style="display:none;"  id="divItemsAdd">
+                                                </select>
+										</div>
+                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                               <select class="form-control" name="depotid1" id="depotid1" hidden>
+                            		                    <option value="{{ depotid }}">{{ depotid }}</option>
+												    </select>
+											<label>Stock Transfer To *</label>
+                                            <input type="hidden" name="depotname1" id="depotname1" />
+                                            <select class="form-control items" name="depotid" id="depotid" required>
+                                                     <option value="">select depot</option>
+                                                </select>
+                                        </div>
+                                        <div class="col-md-6 col-sm-2 form-group has-feedback">
+												<button type="submit"  style="margin-top: 28px;"  class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form>
+                </div>
+     </div>
+
+                  <div class="x_panel"  style="display:none;"  id="divItemsAdd">
                    <div class="x_content">
                                     <div class="row">
                                         <div class="col-sm-12">
@@ -275,27 +264,21 @@
 
                                                         <td>
                                                               <a
-                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status"><i
+                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" id="wh-delete"><i
                                                                     class="fa fa-trash"></i></span></a>
                                                             <span class="badge badge-info"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
+                                                                  id="wh_edit"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
                                                                     class="fa fa-edit"></i></span>
 
                                                         </td>
                                                     </tbody>
-                                                    <tfoot>
-
-                                                    </tfoot>
-                                                    </tfoot>
-                                                    </tr>
                                                     {% endfor %}
 
-
-                                                    <tbody>
-                                                    </tbody>
                                                      {% if status == 'ok' %}
+                                                    <tr>
                                                     <td colspan="9" style="color:#06911A">
                                                         <b>Invoice No: {{ taxinvoice }}</b>
 
@@ -305,17 +288,15 @@
                                                                                              onclick="VerifyClick('{{data.so_number}}')"
                                                                                              style="padding:  4px !important;">COMPLETE TRANSFER</span></span>
                                                         {% endif %}
-                                                    </th>
                                                     </tr>
-                                                    </tfoot>
+
                                                 </table>
 
                                             </div>
                                         </div>
                                     </div>
                    </div>
-                    </div>
-    </div>
+                  </div>
 
 <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-depot"  style="display:none;">
@@ -363,11 +344,9 @@
                                             </button>
                                         </div>
 
-              </div>
                 </form>
-
- </div>
-                  </div>
+</div>
+</div>
 
 
 <div class="col-md-12 col-sm-12 ">
@@ -411,11 +390,12 @@
 
                                                         <td>
                                                               <a
-                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" id="bus_delete"><i
+                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" id="depot_delete"><i
                                                                     class="fa fa-trash"></i></span></a>
                                                             <span class="badge badge-info"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
+                                                                  id="depo_edit"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
                                                                     class="fa fa-edit"></i></span>
 
@@ -450,15 +430,15 @@
                                         </div>
                                     </div>
                                 </div>
+                    </div>
+</div>
 
-             </div>
-          </div>
 
     <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-bus"  style="display:none;">
            	<form class="form-label-left input_mask"  method="POST" action="/bust_item_add_admin"   enctype="multipart/form-data">
 										{% csrf_token %}
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										<div class="col-md-4 col-sm-4  form-group has-feedback">
                                               <input id="busname" name="busname" type="hidden"/>
                                              <input id="busexpdate" name="busexpdate" type="hidden"/>
                                              <input id="busbatchno" name="busbatchno" type="hidden"/>
@@ -498,13 +478,9 @@
                                                     type="submit">Add
                                             </button>
                                         </div>
-
-              </div>
                 </form>
-
- </div>
-                  </div>
-
+    </div>
+</div>
 
 <div class="col-md-12 col-sm-12 ">
                     <div class="x_panel"  style="display:none;"  id="bust_items">
@@ -552,22 +528,18 @@
                                                             <span class="badge badge-info"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
+                                                                   id="bus_edit"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
                                                                     class="fa fa-edit"></i></span>
 
                                                         </td>
                                                     </tbody>
-                                                    <tfoot>
 
-                                                    </tfoot>
-                                                    </tfoot>
-                                                    </tr>
                                                     {% endfor %}
 
 
-                                                    <tbody>
-                                                    </tbody>
                                                      {% if status == 'ok' %}
+                                                    <tr>
                                                     <td colspan="9" style="color:#06911A">
                                                         <b>Invoice No: {{ taxinvoice }}</b>
 
@@ -577,9 +549,9 @@
                                                                                              onclick="VerifyClick('{{data.so_number}}')"
                                                                                              style="padding:  4px !important;">COMPLETE TRANSFER</span></span>
                                                         {% endif %}
-                                                    </th>
+
                                                     </tr>
-                                                    </tfoot>
+
                                                 </table>
 
                                             </div>
@@ -587,11 +559,11 @@
                                     </div>
                                 </div>
 
+                    </div>
+                </div>
              </div>
           </div>
-
-
-
+</div>
 
 
 <div class="modal custom-modal fade" id="complete" role="dialog">
@@ -654,12 +626,94 @@
 						</div>
 					</div>
 				</div>
-<script>
 
-function VerifyClick1(id){
-$("#sno").val(id);
+<div aria-hidden="true" class="modal custom-modal fade" id="edit_stk_item" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content style">
+            <div class="modal-header">
+                <h3 style="text-align:center;">Edit Transfer Item</h3>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit_stk_item" id="editForm" method="post">
+                    {% csrf_token %}
+
+                    <div class="col-md-12 col-sm-12  form-group has-feedback">
+                        <label>Item Name </label>
+                        <input class="form-control" id="item" name="item" readonly type="text">
+                    </div>
+                    <div class="col-md-6 col-sm-6 form-group has-feedback">
+                        <label>Qty(In Cases)</label>
+                        <input class="form-control" id="qty" name="qty" type="text">
+                    </div>
+                    <div class="col-md-6 col-sm-6 form-group has-feedback">
+                        <label>Qty(In Bottles)</label>
+                        <input class="form-control" id="nob1" name="nob1" type="text">
+                    </div>
+
+                    <input id="cases" name="cases" type="hidden"/>
+
+                    <input id="edituom" name="edituom" type="hidden"/>
+                    <input id="typebus" name="typebus" type="hidden"/>
+                    <input id="editsno" name="editsno" type="hidden"/>
+                    <p></p>
+                    <div class="col-md-6 col-sm-6  offset-md-4">
+                        <button class="btn btn-primary" style="margin-bottom: 20px;" type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+function VerifyClick(id,id1,id2,id3,id4,id5){
+$("#qty").val(id);
+$("#editsno").val(id1);
+$("#item").val(id2);
+$("#edituom").val(id3);
+$("#nob1").val(id5);
+$("#typebus").val(id4);
+      if (id4 === "Bottles") {
+        $("#qty").prop("readonly", true);
+        $("#nob1").prop("readonly", false);
+      } else if (id4 === "Cases") {
+        $("#qty").prop("readonly", false);
+        $("#nob1").prop("readonly", true);
+      }
 }
 
+
+$('#qty').on('input', function()  {
+    	    val  = $("#qty").val();
+            val1 = $("#edituom").val();
+            val2 =    (val * val1)
+            $("#nob1").val(val2);
+    });
+ $('#nob1').on('input', function() {
+                $("#qty").val(" ");
+                val = parseFloat($("#nob1").val()); // Convert to a float to handle decimals
+                val1 = $("#edituom").val();
+                val2 = val / val1;
+                if (Number.isInteger(val2)) {
+                    val2 = val2.toFixed(0); // For integers, remove decimal places
+                } else {
+                    val2 = val2.toFixed(2); // For decimal values, keep two decimal places
+                }
+                $("#qty").val(val2);
+         });
+
+$('#bus_edit').click(function(){
+      $('#editForm').attr('action', '{% url "edit_stkbus_item" %}'); // set the new action URL
+});
+$('#depo_edit').click(function(){
+      $('#editForm').attr('action', '{% url "edit_stkdepo_item" %}'); // set the new action URL
+});
 
 
 $("#wh1").change(function() {
@@ -674,10 +728,16 @@ $("#buscode").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busname").val(selectedOptionText);
 });
+$("#bustid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#bustname").val(selectedOptionText);
+});
+
 $("#busid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#busname1").val(selectedOptionText);
 });
+
 $("#depotid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#depotname1").val(selectedOptionText);
@@ -771,6 +831,7 @@ $("#warehouseid").change(function() {
                      }
                       if (response === "depo200") {
                         var optionValue = $("#depotid3").val();
+                         alert(optionValue1)
                         $("#depotid2").find("option[value='" + optionValue + "']").prop("selected", true);
                      }
                 }
@@ -799,6 +860,7 @@ $("#warehouseid").change(function() {
                     });
                      if (response === "Bus200") {
                         var optionValue = $("#busid2").val();
+                        alert(optionValue)
                         $("#busid1").find("option[value='" + optionValue + "']").prop("selected", true);
                      }
                      if (response === "depo200") {
@@ -1003,7 +1065,7 @@ $('#busquantity').on('input', function()  {
                     var code = $('#depotid3').val();
                      var depoitemcode = $(this).val();
                      var searchterm = $(this).find(":selected").text();
-                     alert(depoitemcode)
+
                     $.ajax({
                       data: {"searchterm":searchterm,
                       'code':code,'depoitemcode':depoitemcode,'csrfmiddlewaretoken': '{{ csrf_token }}',},
@@ -1064,7 +1126,8 @@ $(document).ready(function(){
 
 $(document).ready(function(){
  var response = $('#response').val();
-  if ( response === '200') {
+ var status =  $('#status').val();
+  if ( response === '200'  &&  status === 'ok') {
         $('#divItemsAdd').show();
    }
 });
@@ -1076,13 +1139,16 @@ $(document).ready(function(){
   if ( response === 'Bus200') {
          $('.bus_div').show();
           $('#items-bus').show();
+
   }
    if (response === 'Bus200' &&  status === 'ok') {
           $('#bust_items').show();
+
   }
     if (response === 'depo200') {
           $('.depot-div').show();
           $('#items-depot').show();
+
   }
   if (response === 'depo200' &&  status === 'ok') {
           $('#depot_items').show();
@@ -1109,15 +1175,28 @@ $(document).ready(function() {
     if (selectedOption === "Warehouse") {
       $(".warehouse-div").show();
       $(".bus_div").hide();
-       $(".depot-div").hide();
+      $(".depot-div").hide();
+      $('#items-depot').hide();
+      $('#depot_items').hide();
+      $('#items-bus').hide();
+      $('#depot_items').hide();
+      $('#bust_items').hide();
     } else if (selectedOption === "Depot") {
        $(".depot-div").show();
       $(".warehouse-div").hide();
       $(".bus_div").hide();
+      $("#items-div").hide();
+      $("#divItemsAdd").hide();
+      $('#bust_items').hide();
+       $('#items-bus').hide();
     } else if (selectedOption === "Busstation") {
         $(".depot-div").hide();
       $(".bus_div").show();
       $(".warehouse-div").hide();
+       $('#items-depot').hide();
+       $('#depot_items').hide();
+       $("#items-div").hide();
+      $("#divItemsAdd").hide();
     }
   });
 });
@@ -1178,20 +1257,29 @@ $(document).ready(function() {
     });
 });
 
-
-
 $('#buscomplete').click(function(){
       $('#completeform').attr('action', '{% url  "complete_busstk_admin"  %}'); // set the new action URL
     });
 $('#depotcomplete').click(function(){
       $('#completeform').attr('action', '{% url  "complete_depostk_admin"  %}'); // set the new action URL
     });
-depotcomplete
    $('#getdate1').val(new Date().toJSON().slice(0,10));
    $('#bus_delete').click(function(){
      var sno = $(this).data('sno');
      var modalUrl = '/delete_stkbus_item/' + sno + '/';
      $('#myForm1').attr('action', modalUrl);
     });
+
+     $('#depot_delete').click(function(){
+     var sno = $(this).data('sno');
+     var modalUrl = '/delete_stkdepo_item/' + sno + '/';
+     $('#myForm1').attr('action', modalUrl);
+    });
+    $('#wh-delete').click(function(){
+     var sno = $(this).data('sno');
+     var modalUrl = '/delete_stk_item/' + sno + '/';
+     $('#myForm1').attr('action', modalUrl);
+    });
+
 </script>
 {% endblock %}

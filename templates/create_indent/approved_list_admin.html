@@ -136,6 +136,8 @@
                         </form>
 
 						</div>
+            </div>
+                 <div class="col-sm-12 col-md-12 form-group has-feedback">
                 <div class="x_panel">
                     <div class="clearfix"></div>
                   <div class="x_content">
@@ -169,14 +171,14 @@
                            <td></td>
                            <td>{{ forloop.counter }}</td>
                            <td>{{ all_data.modified_on }}</td>
-                                    <td>{{ all_data.dc_number }}</td>
+                                    <td> <a href="approve_item_list/{{ all_data.dc_number }}/" style="color:#075ab3">{{ all_data.dc_number }}</a></td>
                                     <td>{{ all_data.outpass_number }}</td>
                                     <td> {{ all_data.region_name }}</td>
                                     <td>{{ all_data.warehouse_name }}</td>
                                     <td>{{ all_data.modified_by }}</td>
                                     {% if all_data.status == 'Accepted' %}
                                     <td>
-                                         <a href="approve_item_list/{{ all_data.dc_number }}/"><span class="badge badge-success" > Accepted </span></a>
+                                        <span class="badge badge-success" > Accepted </span>
                                     </td>
                                     {% else %}
                                     <td>

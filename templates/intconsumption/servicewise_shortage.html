@@ -44,7 +44,19 @@
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="tdate" class="form-control" value="{{ request.POST.tdate }}">
                             </div>
-
+                             <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                  <select class="form-control items" name="regionid1" id="regionid1" hidden>
+                                                     <option value="{{ request.POST.regionid }}">{{ request.POST.regionname }}</option>
+                                  </select>
+                                 <label>Region</label>
+                                                        <input type="hidden" name="regionname" id="regionname"  value="{{ request.POST.regionname }}">
+										    	 <select class="form-control items" name="regionid" id="regioid" required>
+                                                     <option value="All">All</option>
+                                                    {% for data in regionlist %}
+                                                                <option value="{{ data.region_id }}">{{ data.regionname }}</option>
+                                                    {% endfor %}
+                                                </select>
+                             </div>
 
                              <div class="col-md-2 col-sm-2  form-group has-feedback">
                                   <select class="form-control items" name="depoid1" id="depoid1" hidden>
@@ -149,7 +161,7 @@
   var startDateInput = document.getElementById("start-date");
   var endDateInput = document.getElementById("end-date");
 
- $("#depoid, #daterangeselect,#start-date,#end-date").change(function() {
+ $("#depoid,#regionid, #daterangeselect,#start-date,#end-date").change(function() {
   var validOptions = ["1", "2", "3","4","5"];
   if (validOptions.includes(daterangeSelect.value)) {
   form.submit(); // Submit the form
@@ -176,6 +188,8 @@ form.addEventListener("submit", function(event) {
   $("#deponame").val(selectedOptionText);
   var selectedOptionText = $('#daterangeselect').find(":selected").text();
   $("#from").val(selectedOptionText);
+    var optionValue2 = $("#regionid1").val();
+  $("#regionid").find("option[value='" + optionValue1 + "']").prop("selected", true);
 });
 });
 $(document).ready(function(){
@@ -204,18 +218,26 @@ $(document).ready(function(){
 });
 
 
-
 $(document).ready(function(){
-  var optionValue = $("#depoid1").val();
-  $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
-  var optionValue1 = $("#range2").val();
-  $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
-  })
+      var optionValue = $("#depoid1").val();
+      $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
+      var optionValue1 = $("#range2").val();
+      $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
+      var optionValue2 = $("#regionid1").val();
+      $("#regionid").find("option[value='" + optionValue1 + "']").prop("selected", true);
+})
+
 
 $("#depoid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#deponame").val(selectedOptionText);
   });
+
+  $("#regionid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#regionname").val(selectedOptionText);
+  });
+
   $("#daterangeselect").change(function() {
   var selectedOptionText = $('#daterangeselect').find(":selected").text();
   $("#from").val(selectedOptionText);
@@ -310,6 +332,5 @@ $(document).ready(function () {
     });
 });
 });
-
 </script>
 {% endblock %}

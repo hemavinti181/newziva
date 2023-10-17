@@ -940,10 +940,10 @@ $(document).ready(function(){
 })
 $('#busedit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkbus_item" %}'); // set the new action URL
-    });
-   $('#depoedit').click(function(){
+});
+$('#depoedit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkdepo_item" %}'); // set the new action URL
-    });
+});
  $(window).on("load", function() {
   var optionValue1 = $("#txtdeposearch1").val();
   $("#txtDepoId").find("option[value='" + optionValue1 + "']").prop("selected", true);
