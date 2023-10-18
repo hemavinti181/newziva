@@ -77,7 +77,7 @@
 
                             {% if all_data.status == 'Ready to Ship' %}
                                 <td>
-                                  <a href="/indent_item_list1/{{ all_data.dc_number }}/"><i class="fa fa-edit"></i></a>
+                                    <a href="/indent_item_list1/{{ all_data.dc_number }}/"><span class="badge bg-green"><i class="fa fa-edit"></i></span></a>
                                     <span data-target=".custom-modal"  data-toggle="modal"  onclick="VerifyClick('{{all_data.dc_number }}','{{all_data.warehouse_name}}', '{{all_data.warehouse_id}}','{{all_data.region_name}}','{{all_data.region_id}}')" class="badge badge-info" >Generate Gate Pass </span></a>
                                 </td>
                            {% else %}

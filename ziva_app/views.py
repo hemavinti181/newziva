@@ -2130,12 +2130,12 @@ def depotinventory_search(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    depotid2 =   request.session['depotid2']
+    fromid =   request.session['fromid']
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search-new-admin.php"
     payload = json.dumps({
         "accesskey": accesskey,
-        "id": depotid2,
+        "id": fromid,
         "type": "Depo"
     })
     headers = {
@@ -2155,6 +2155,7 @@ def depotinventory_search(request):
             return redirect('/login')
     else:
         return JsonResponse({'data': "Some thing went wrong"})
+
 
 
 def businventory_search(request):
@@ -8577,7 +8578,7 @@ def get_wh_item(request):
             extracted_text = match.group()
             print(extracted_text)
 
-            url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search.php"
+            url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-searchlist.php"
 
             payload = json.dumps({
                 "accesskey": accesskey,
@@ -9316,7 +9317,7 @@ def get_depo_item(request):
             extracted_text = match.group()
             print(extracted_text)
 
-        url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search.php"
+        url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-searchlist.php"
 
         payload = json.dumps({
             "accesskey": accesskey,
@@ -9419,6 +9420,7 @@ def depo_item_add(request):
             "accesskey":accesskey,
             "cp_sno": request.POST.get('depocpsno'),
             "quantity": request.POST.get('quantity'),
+            "noofbottles": request.POST.get('deponob'),
             "freeqty": "",
             "id":code,
             "transitid": taxinvoice
@@ -9450,7 +9452,7 @@ def depo_item_add(request):
             return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'depolist':depolist,'taxinvoice':taxinvoice,'items':depoinventorylist,'data':stocktransferlistto,'depo':'active','menuname':menuname,'txtDepoId':txtDepoId})
 
     else:
-        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'depolist':depolist,'taxinvoice':taxinvoice,'items':depoinventorylist,'data':stocktransferlistto,'depo':'active','menuname':menuname,'txtDepoId':txtDepoId})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'depolist':depolist,'taxinvoice':taxinvoice,'items':depoinventorylist,'data':stocktransferlistto,'depo':'active','menuname':menuname,'txtDepoId':txtDepoId,'response':'depo200'})
 
 def depo_item_list(request):
     if 'accesskey' not in request.session:
@@ -9476,7 +9478,7 @@ def depo_item_list(request):
     if response.status_code == 200:
         data=response.json()
         depo_item_list=data['stocktransferitemlist']
-        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'txtDepoId':txtDepoId,'depolist':depo_list,'items':depoinventorylist,'taxinvoice':taxinvoice,'data':stocktransferlistto,'depo':'active','depo_item_list':depo_item_list,'menuname':menuname})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'response':'depo200','type':type,'txtDepoId':txtDepoId,'depolist':depo_list,'items':depoinventorylist,'taxinvoice':taxinvoice,'data':stocktransferlistto,'depo':'active','depo_item_list':depo_item_list,'menuname':menuname,'status':'ok'})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
@@ -9485,7 +9487,7 @@ def depo_item_list(request):
         return render(request, 'stock_transfer/stock_transfer_home.html',
                       {'txtDepoId': txtDepoId, 'depolist': depo_list, 'items': depoinventorylist,
                        'taxinvoice': taxinvoice, 'data': stocktransferlistto, 'depo': 'active',
-                        'menuname': menuname,'type':type,})
+                        'menuname': menuname,'type':type,'response':'depo200'})
 
 
 def complete_depoinv(request):
@@ -9666,6 +9668,7 @@ def busstation_add_stf(request):
     else:
         return render(request,'stock_transfer/stock_transfer_home.html',{'buslist':buslist,'bus':'active','menuname':menuname,'data':stocktransferlistto,'warehouseinventorylist':warehouseinventorylist})
 
+
 def busstation_item_add(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -9723,6 +9726,7 @@ def busstation_item_add(request):
         return render(request, 'stock_transfer/stock_transfer_home.html', {'type':type,'buslist':buslist,'taxinvoice':taxinvoice,'busstation_name': busstation_name,'bus':'active','data':stocktransferlistto,'menuname':menuname,'warehouseinventorylist':warehouseinventorylist})
 
 
+
 def busstation_item_list(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -9756,6 +9760,8 @@ def busstation_item_list(request):
     else:
         return render(request, 'stock_transfer/stock_transfer_home.html',
                       {'type':type,'buslist':buslist,'warehouseinventorylist': warehouseinventorylist, 'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'taxinvoice':taxinvoice})
+
+
 def edit_stkbus_item(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -9844,6 +9850,7 @@ def edit_stkdepo_item(request):
         if displayrole == "UPPAL ZONAL STORES":
             payload = json.dumps({
                 "accesskey": accesskey,
+                "noofbottles": request.POST.get('nob1'),
                 "sno": request.POST.get('editsno'),
                 "quantity": request.POST.get('qty'),
                 "type": "Warehouse",
@@ -9852,6 +9859,7 @@ def edit_stkdepo_item(request):
         else:
             payload = json.dumps({
                 "accesskey": accesskey,
+                "noofbottles": request.POST.get('nob1'),
                 "sno": request.POST.get('editsno'),
                 "quantity": request.POST.get('qty'),
                 "type": "Bus station",
@@ -9889,6 +9897,7 @@ def edit_stkdepo_item(request):
                 if displayrole == "UPPAL ZONAL STORES":
                     payload = json.dumps({
                         "accesskey": accesskey,
+                        "noofbottles": request.POST.get('nob1'),
                         "sno": request.POST.get('sno'),
                         "quantity": request.POST.get('qty'),
                         "type": "Warehouse",
@@ -9897,6 +9906,7 @@ def edit_stkdepo_item(request):
                 else:
                     payload = json.dumps({
                         "accesskey": accesskey,
+                        "noofbottles": request.POST.get('nob1'),
                         "sno": request.POST.get('sno'),
                         "quantity": request.POST.get('qty'),
                         "type": "Bus station",

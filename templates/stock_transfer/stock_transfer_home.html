@@ -7,6 +7,11 @@
 	width: 70% !important;
 	margin-left:100px !important;
 	}
+	.style1{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:70px !important;
+	}
 .form-group {
     margin-bottom: 20px !important;
 }
@@ -14,6 +19,7 @@
     padding: 1px !important;
 }
 </style>
+
 
 <div class="right_col" role="main">
     <div class="">
@@ -73,8 +79,8 @@
                                             Submit
                                         </button>
                                     </div>
-
                                 </form>
+
                                 <div class="x_content" id="divItems" style="display:none;">
                                     <form action="wh_item_add" class="form-label-left input_mask"
                                           enctype="multipart/form-data"
@@ -228,6 +234,8 @@
 
                             <div aria-labelledby="depo-tab" class="tab-pane fade show {{ depo }}" id="depo"
                                  role="tabpanel">
+                                  <input id="response" name="response"  value="{{ response }}"  type="hidden"/>
+                                   <input id="status" name="status" type="hidden" value="{{ status }}"/>
                                 <form action="depo_add_stf" class="form-label-left input_mask"
                                       enctype="multipart/form-data"
                                       method="POST">
@@ -249,12 +257,12 @@
                                         </button>
                                     </div>
                                 </form>
-                                <div class="x_content">
-                                    <form action="depo_item_add" class="form-label-left input_mask"
+
+                                <div class="x_content" id="depo_item"  style="display:none">
+                                    <form action="/depo_item_add" class="form-label-left input_mask"
                                           enctype="multipart/form-data"
                                           method="POST">
                                         {% csrf_token %}
-
 
                                         <div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
                                             <input id="depoitemname" name="depoitemname" type="hidden"/>
@@ -269,6 +277,7 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
+
                                         <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
 
                                             <input id="typename1" name="typename1" type="hidden"/>
@@ -280,11 +289,13 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
+
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
                                             <label>Qty(In cases) *</label>
                                             <input class="form-control" id="depoquantity" name="quantity"
                                                    placeholder="quantity" type="text">
                                         </div>
+
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
                                             <label>Qty(In bottles) *</label>
                                             <input class="form-control" id="deponob" name="deponob"
@@ -327,7 +338,7 @@
                                     </form>
                                 </div>
 
-                                <div class="x_content">
+                                <div class="x_content" id="depo_item_list" style="display:none;">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="card-box table-responsive">
@@ -342,9 +353,7 @@
                                                         <th>Item Name</th>
                                                         <th>Qty(In Cases)</th>
                                                         <th>Expiry Date</th>
-                                                        <!--<th>HSN</th>-->
                                                         <th>Batch</th>
-                                                        <!--<th>MRP</th>-->
                                                         <th>Manufacture</th>
                                                         <th>Action</th>
 
@@ -357,20 +366,15 @@
                                                         <td>{{ all_data.item_name }}</td>
                                                         <td> {{ all_data.quantity }}</td>
                                                         <td>{{ all_data.expiry_date }}</td>
-                                                        <!--<td>{{ all_data.hsn }}</td>-->
                                                         <td>{{ all_data.batch_no }}</td>
-
-                                                        <!--<td>{{ all_data.mrp }}</td>-->
                                                         <td>{{all_data.manufacturer}}</td>
-
                                                         <td>
                                                             <a class="btn btn-default btn-sm"
-                                                               href="delete_stkdepo_item/{{ all_data.sno }}/"><i
-                                                                    class="fa fa-trash"></i></a>
-                                                            <span class="btn btn-default btn-sm"
+                                                               href="delete_stkdepo_item/{{ all_data.sno }}/"><span class="badge badge-danger"><i
+                                                                    class="fa fa-trash"></i></span></a>
+                                                             <span class="badge badge-info wh_edit"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
-                                                                  id="depoedit"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
                                                                     class="fa fa-edit"></i></span>
 
@@ -538,10 +542,9 @@
                                                             <a class="btn btn-default btn-sm"
                                                                href="delete_stkbus_item/{{ all_data.sno }}/"><i
                                                                     class="fa fa-trash"></i></a>
-                                                            <span class="btn btn-default btn-sm"
+                                                            <span class="btn btn-default btn-sm depoedit"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
-                                                                  id="busedit"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
                                                                     class="fa fa-edit"></i></span>
 
@@ -587,9 +590,9 @@
 
 <div class="modal custom-modal fade" id="complete" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content style">
+        <div class="modal-content style1">
             <div class="modal-header">
-                <h4 class="modal-title text-info" class="modal-title" id="myModalLabel1">Complete Transfer</h4>
+                <h3  id="myModalLabel1">Complete Transfer</h3>
                 <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -606,7 +609,7 @@
                         <p></p>
                     </div>
                     <div class="col-md-6 col-sm-6  offset-md-3">
-                        <button class="btn btn-info" name="complete" type="submit">Complete</button>
+                        <button class="btn btn-primary" name="complete" type="submit" style="margin-bottom:20px;margin-left:10px;">Complete</button>
                     </div>
                 </form>
             </div>
@@ -617,28 +620,25 @@
 
 <div class="modal custom-modal fade" id="depocomplete" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content style">
+        <div class="modal-content style1">
             <div class="modal-header">
-                <h5 class="modal-title">Complete Transfer</h5>
+                <h3 class="modal-title"  id="myModalLabel">Complete Transfer</h3>
                 <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="complete_depoinv" method="POST">
+                <form action="/complete_depoinv" id="completeform" method="POST">
                     {% csrf_token %}
-                    <input id="id1" name="id1" type="hidden"/>
 
-                    <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
-                <label for="remarks">Delivery date</label>
-             <input type="date" class="form-control" name="date" id="date2"  placeholder="remarks" >
-         </div>-->
+                    <input id="id1" name="id1" type="hidden"/>
                     <div class="col-md-12 col-sm-12  form-group has-feedback">
                         <label for="remarks">Remarks</label>
                         <textarea class="form-control" id="remarks2" name="remarks" placeholder="remarks"></textarea>
+                        <p></p>
                     </div>
                     <div class="col-md-6 col-sm-6  offset-md-3">
-                        <button class="btn btn-info" name="complete" type="submit">Complete</button>
+                        <button class="btn btn-primary" name="complete" style="margin-bottom:20px;" type="submit">Complete</button>
                     </div>
                 </form>
             </div>
@@ -646,6 +646,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="modal custom-modal fade" id="buscomplete" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -938,10 +939,10 @@ $(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busname").find("option[value='" + optionValue + "']").prop("selected", true);
 })
-$('#busedit').click(function(){
+$('.busedit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkbus_item" %}'); // set the new action URL
 });
-$('#depoedit').click(function(){
+$('.depoedit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkdepo_item" %}'); // set the new action URL
 });
  $(window).on("load", function() {
@@ -1020,6 +1021,17 @@ $(document).ready(function() {
     });
 });
 
+$(document).ready(function(){
+ var response = $('#response').val();
+ var status =  $('#status').val();
+   if ( response === 'depo200') {
+        $('#depo_item').show();
+   }
+  if ( response === 'depo200'  &&  status === 'ok') {
+        $('#depo_item').show();
+        $('#depo_item_list').show();
+   }
+});
 
 
 

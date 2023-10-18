@@ -184,19 +184,20 @@
                                         </div>
 										 <div class="col-md-2 col-sm-2  form-group has-feedback">
                                             <button class="btn btn-primary" name="add" style="margin-top: 30px;"
-                                                    type="submit">Add
-                                            </button>
+                                                    type="submit">Add </button>
                                          </div>
 
             </form>
         </div>
  </div>
+
                  <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel bus_div" style="display:none">
 									<br />
 									<form class="form-label-left input_mask"  method="POST" action="/generate_transid_bust"   enctype="multipart/form-data">
 										{% csrf_token %}
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
+
                                              <select class="form-control" name="busid2" id="busid2" hidden>
                             		                    <option value="{{busid1 }}">{{ busid1 }}</option>
 												    </select>
@@ -264,12 +265,11 @@
 
                                                         <td>
                                                               <a
-                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" id="wh-delete"><i
+                                                               href="#"><span class="badge badge-danger wh-delete" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status"><i
                                                                     class="fa fa-trash"></i></span></a>
-                                                            <span class="badge badge-info"
+                                                            <span class="badge badge-info wh_edit"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
-                                                                  id="wh_edit"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
                                                                     class="fa fa-edit"></i></span>
 
@@ -390,12 +390,11 @@
 
                                                         <td>
                                                               <a
-                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" id="depot_delete"><i
+                                                               href="#"><span class="badge badge-danger depot_delete" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status"><i
                                                                     class="fa fa-trash"></i></span></a>
-                                                            <span class="badge badge-info"
+                                                            <span class="badge badge-info depo_edit"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
-                                                                  id="depo_edit"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
                                                                     class="fa fa-edit"></i></span>
 
@@ -523,12 +522,11 @@
 
                                                         <td>
                                                               <a
-                                                               href="#"><span class="badge badge-danger" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" id="bus_delete"><i
+                                                               href="#"><span class="badge badge-danger bus_delete" data-sno="{{ all_data.sno }}" data-toggle="modal" data-target="#store-status" ><i
                                                                     class="fa fa-trash"></i></span></a>
-                                                            <span class="badge badge-info"
+                                                            <span class="badge badge-info bus_edit"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
-                                                                   id="bus_edit"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
                                                                     class="fa fa-edit"></i></span>
 
@@ -587,7 +585,7 @@
                         <p></p>
                     </div>
                     <div class="col-md-6 col-sm-6  offset-md-3">
-                        <button class="btn btn-primary" name="complete" type="submit">Complete</button>
+                        <button class="btn btn-primary" name="complete"  type="submit">Complete</button>
                     </div>
                 </form>
             </div>
@@ -638,10 +636,10 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit_stk_item" id="editForm" method="post">
+                <form action=" " id="editForm" method="post">
                     {% csrf_token %}
 
-                    <div class="col-md-12 col-sm-12  form-group has-feedback">
+                    <div class="col-md-12 col-sm-12  form-group has-feedback"  style="margin-top: -50px;">
                         <label>Item Name </label>
                         <input class="form-control" id="item" name="item" readonly type="text">
                     </div>
@@ -649,7 +647,7 @@
                         <label>Qty(In Cases)</label>
                         <input class="form-control" id="qty" name="qty" type="text">
                     </div>
-                    <div class="col-md-6 col-sm-6 form-group has-feedback">
+                    <div class="col-md-6 col-sm-6 form-group has-feedback"  style="margin-bottom: 30px;">
                         <label>Qty(In Bottles)</label>
                         <input class="form-control" id="nob1" name="nob1" type="text">
                     </div>
@@ -661,7 +659,7 @@
                     <input id="editsno" name="editsno" type="hidden"/>
                     <p></p>
                     <div class="col-md-6 col-sm-6  offset-md-4">
-                        <button class="btn btn-primary" style="margin-bottom: 20px;" type="submit">Update</button>
+                        <button class="btn btn-primary" type="submit">Update</button>
                     </div>
                 </form>
             </div>
@@ -708,13 +706,16 @@ $('#qty').on('input', function()  {
                 $("#qty").val(val2);
          });
 
-$('#bus_edit').click(function(){
+$('.bus_edit').click(function(){
       $('#editForm').attr('action', '{% url "edit_stkbus_item" %}'); // set the new action URL
 });
-$('#depo_edit').click(function(){
+$('.depo_edit').click(function(){
       $('#editForm').attr('action', '{% url "edit_stkdepo_item" %}'); // set the new action URL
 });
-
+$('.wh_edit').click(function(){
+        alert('hai')
+      $('#editForm').attr('action', '{% url "edit_stk_item" %}'); // set the new action URL
+});
 
 $("#wh1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -831,7 +832,6 @@ $("#warehouseid").change(function() {
                      }
                       if (response === "depo200") {
                         var optionValue = $("#depotid3").val();
-                         alert(optionValue1)
                         $("#depotid2").find("option[value='" + optionValue + "']").prop("selected", true);
                      }
                 }
@@ -860,7 +860,7 @@ $("#warehouseid").change(function() {
                     });
                      if (response === "Bus200") {
                         var optionValue = $("#busid2").val();
-                        alert(optionValue)
+
                         $("#busid1").find("option[value='" + optionValue + "']").prop("selected", true);
                      }
                      if (response === "depo200") {
@@ -1061,7 +1061,6 @@ $('#busquantity').on('input', function()  {
 
  $(document).ready(function () {
             $('#depot_itemcode').change(function() {
-
                     var code = $('#depotid3').val();
                      var depoitemcode = $(this).val();
                      var searchterm = $(this).find(":selected").text();
@@ -1136,6 +1135,21 @@ $(document).ready(function(){
  var response = $('#response').val();
  var status =  $('#status').val();
  var depotransfer = $("#depotransfer2").val();
+ var bus = $('#bustid1').val();
+ var wh =$('#warehouse').val();
+
+
+  if (bus !== 'WDP0001' && bus !== 'WDP0002' &&  bus !== '') {
+
+         $('#bus').show();
+          var optionValue1 ="Bus station";
+          $("#depotransfer1").find("option[value='" + optionValue1 + "']").prop("selected", true);
+  }
+   if (wh == 'WDP0001' || wh == 'WDP0002') {
+         $('#depo').show();
+          var optionValue1 ="Warehouse";
+          $("#depotransfer1").find("option[value='" + optionValue1 + "']").prop("selected", true);
+  }
   if ( response === 'Bus200') {
          $('.bus_div').show();
           $('#items-bus').show();
@@ -1264,18 +1278,18 @@ $('#depotcomplete').click(function(){
       $('#completeform').attr('action', '{% url  "complete_depostk_admin"  %}'); // set the new action URL
     });
    $('#getdate1').val(new Date().toJSON().slice(0,10));
-   $('#bus_delete').click(function(){
+   $('.bus_delete').click(function(){
      var sno = $(this).data('sno');
      var modalUrl = '/delete_stkbus_item/' + sno + '/';
      $('#myForm1').attr('action', modalUrl);
     });
 
-     $('#depot_delete').click(function(){
+     $('.depot_delete').click(function(){
      var sno = $(this).data('sno');
      var modalUrl = '/delete_stkdepo_item/' + sno + '/';
      $('#myForm1').attr('action', modalUrl);
     });
-    $('#wh-delete').click(function(){
+    $('.wh-delete').click(function(){
      var sno = $(this).data('sno');
      var modalUrl = '/delete_stk_item/' + sno + '/';
      $('#myForm1').attr('action', modalUrl);
