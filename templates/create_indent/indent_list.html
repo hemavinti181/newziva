@@ -29,7 +29,7 @@
     <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">
             <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
-                <h1 class="text-info" style="margin-left: 30px; font-size: 25px;">{{ request.session.name }}</h1>
+                <h1 class="text-info" style="margin-left: 70px; font-size: 20px;">{{ request.session.name }}</h1>
              <!--<p class="text-info" style="font-size: 12px;">Indent from</p>-->
            </div>
 
@@ -42,10 +42,10 @@
         <div class="tile-stats">
             <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
             {% if request.session.role  == 'Depo' %}
-                <h1 class="text-info" style="margin-left: 100px; font-size: 25px;">{{ request.session.warehousename }}</h1>
+                <h1 class="text-info" style="margin-left: 70px; font-size: 20px;">{{ request.session.warehousename }}</h1>
             {% endif %}
              {% if request.session.role  == 'Bus Station' %}
-                <h1 class="text-info" style="margin-left: 100px; font-size: 25px;">{{ request.session.deponame }}</h1>
+                <h1 class="text-info" style="margin-left: 70px; font-size: 20px;">{{ request.session.deponame }}</h1>
             {% endif %}
                 <!--<p class="text-info" style="font-size: 12px;">500ml</p>-->
            </div>
@@ -93,7 +93,7 @@
                                      <td>
                                {%if all_data.status == "Pending" %}
                                 <span class="badge badge-warning">{{ all_data.status }} </span></a>
-                                <a href="#" onclick="VerifyClick('{{ all_data.indent_no }}')"><span class="badge badge-info" data-toggle="modal" data-target="#store-status">
+                                <a href="#" onclick="VerifyClick('{{ all_data.indent_no }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                          <i class="fa fa-trash"></i></span></a>
                                {% else %}
                                     <span class="badge badge-info">{{ all_data.status }} </span>

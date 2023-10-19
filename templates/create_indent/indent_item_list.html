@@ -268,7 +268,6 @@ $("#itemcode").change(function() {
 			 	success: function(data){
 
 			 		 var obj = data.data.itemmasterlist
-			 		 alert(obj[0].mrp)
                         console.log(obj[0].mrp);
                         if(obj.length>0){
                             $("#cases1").val(obj[0].uom);

@@ -5726,8 +5726,10 @@ def create_indent(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    displayrole = request.session['displayrole']
+
     try:
+        displayrole = request.session['displayrole']
+        code = request.session['codee']
         if displayrole == 'DEPOT STORE EXECUTIVE':
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
@@ -5752,20 +5754,21 @@ def create_indent(request):
                 wh_masterlist = data['warehouselist']
 
             if request.method == 'POST':
+
                 url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
 
-                payload =json.dumps( {
-                    "accesskey": accesskey,
-                    "indentno":"",
-                    "itemname": request.POST.get('itemname'),
-                    "itemcode":request.POST.get('itemcode'),
-                    "warehouseid":request.POST.get('whcode'),
-                    "warehousename": request.POST.get('whname'),
-                    "date ": request.POST.get('date'),
-                    "qty": request.POST.get('quantity'),
-                    "mrp": request.POST.get('price'),
+                payload = json.dumps({
+                        "accesskey": accesskey,
+                        "indentno": "",
+                        "itemname": request.POST.get('itemname'),
+                        "itemcode": request.POST.get('itemcode'),
+                        "warehouseid": request.POST.get('whcode'),
+                        "warehousename": request.POST.get('whname'),
+                        "date ": request.POST.get('date'),
+                        "qty": request.POST.get('quantity'),
+                        "mrp": request.POST.get('price'),
 
-                })
+                    })
                 headers = {
                     'Content-Type': 'text/plain'
                 }
@@ -5812,20 +5815,34 @@ def create_indent(request):
                 wh_masterlist = data['warehouselist']
 
             if request.method == 'POST':
-                url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+                if code == 'BSP0135':
+                    url = "http://13.235.112.1/ziva/mobile-api/create-busstation-indent-item.php"
 
-                payload = json.dumps({
-                    "accesskey": accesskey,
-                    "indentno": "",
-                    "itemname": request.POST.get('itemname'),
-                    "itemcode": request.POST.get('itemcode'),
-                    "warehouseid": deponame,
-                    "warehousename": depoid,
-                    "date ": request.POST.get('date'),
-                    "qty": request.POST.get('quantity'),
-                    "mrp": request.POST.get('price'),
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "indentno": "",
+                        "itemname": request.POST.get('itemname'),
+                        "itemcode": request.POST.get('itemcode'),
+                        "date ": request.POST.get('date'),
+                        "qty": request.POST.get('quantity'),
+                        "mrp": request.POST.get('price'),
 
-                })
+                    })
+                else:
+                    url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "indentno": "",
+                        "itemname": request.POST.get('itemname'),
+                        "itemcode": request.POST.get('itemcode'),
+                        "warehouseid": deponame,
+                        "warehousename": depoid,
+                        "date ": request.POST.get('date'),
+                        "qty": request.POST.get('quantity'),
+                        "mrp": request.POST.get('price'),
+
+                    })
                 headers = {
                     'Content-Type': 'text/plain'
                 }
@@ -6204,20 +6221,35 @@ def add_indentitem(request,id):
 
     else:
                 if request.method == 'POST':
-                    url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+                    code = request.session['codee']
+                    if code == 'BSP0135':
+                        url = "http://13.235.112.1/ziva/mobile-api/create-busstation-indent-item.php"
 
-                    payload = json.dumps({
-                        "accesskey": accesskey,
-                        "indentno": id,
-                        "itemname": request.POST.get('itemname'),
-                        "itemcode": request.POST.get('itemcode'),
-                        "warehouseid": request.POST.get('whcode'),
-                        "warehousename": request.POST.get('whname'),
-                        "date ": request.POST.get('date'),
-                        "qty": request.POST.get('quantity'),
-                        "mrp": request.POST.get('price'),
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "indentno": id,
+                            "itemname": request.POST.get('itemname'),
+                            "itemcode": request.POST.get('itemcode'),
+                            "date ": request.POST.get('date'),
+                            "qty": request.POST.get('quantity'),
+                            "mrp": request.POST.get('price'),
 
-                    })
+                        })
+                    else:
+                        url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "indentno": id,
+                            "itemname": request.POST.get('itemname'),
+                            "itemcode": request.POST.get('itemcode'),
+                            "warehouseid": request.POST.get('whcode'),
+                            "warehousename": request.POST.get('whname'),
+                            "date ": request.POST.get('date'),
+                            "qty": request.POST.get('quantity'),
+                            "mrp": request.POST.get('price'),
+
+                        })
                     headers = {
                         'Content-Type': 'text/plain'
                     }
@@ -6326,16 +6358,32 @@ def indent_item_list(request,id):
         else:
 
             if request.method == 'POST':
-                url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+                code = request.session['codee']
+                if code == 'BSP0135':
+                    url = "http://13.235.112.1/ziva/mobile-api/create-busstation-indent-item.php"
 
-                payload = json.dumps({
-                    "accesskey": accesskey,
-                    "indentno": id,
-                    "itemname": request.POST.get('itemname'),
-                    "itemcode": request.POST.get('itemcode'),
-                    "qty": request.POST.get('quantity'),
-                    "mrp": request.POST.get('mrp1'),
-                })
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "indentno": id,
+                        "itemname": request.POST.get('itemname'),
+                        "itemcode": request.POST.get('itemcode'),
+                        "date ": request.POST.get('date'),
+                        "qty": request.POST.get('quantity'),
+                        "mrp": request.POST.get('price'),
+
+                    })
+                else:
+
+                    url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                    payload = json.dumps({
+                        "accesskey": accesskey,
+                        "indentno": id,
+                        "itemname": request.POST.get('itemname'),
+                        "itemcode": request.POST.get('itemcode'),
+                        "qty": request.POST.get('quantity'),
+                        "mrp": request.POST.get('mrp1'),
+                    })
                 headers = {
                     'Content-Type': 'text/plain'
                 }
@@ -8378,7 +8426,6 @@ def stock_transfer(request):
         url = "http://13.235.112.1/ziva/mobile-api/quantitytypelist.php"
         payload = json.dumps({
             "accesskey": accesskey,
-
         })
         headers = {
             'Content-Type': 'application/json'
@@ -8398,7 +8445,6 @@ def stock_transfer(request):
             'Content-Type': 'application/json'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-
         data = response.json()
         warehouseinventorylist = data['warehouseinventorylist']
 
@@ -9050,6 +9096,7 @@ def edit_stk_item(request):
 
     accesskey = request.session['accesskey']
     role = request.session['role']
+    displayrole = request.session['displayrole']
     if role == 'Admin':
         whtaxinvoice = request.session['whtaxinvoice']
         url = "http://13.235.112.1/ziva/mobile-api/edit-stocktransfer-item.php"
@@ -9284,11 +9331,11 @@ def get_depo_item(request):
     role=request.session['role']
     if role == 'Admin':
         depoitemcode = request.POST.get('depoitemcode')
-        depotid2 =  request.session['depotid2']
+        fromid =  request.session['fromid']
         url = "http://13.235.112.1/ziva/mobile-api/warehouseinventory-search-new-admin.php"
         payload = json.dumps({
             "accesskey": accesskey,
-            "id": depotid2,
+            "id": fromid,
             "type": "Depo"
         })
         headers = {
@@ -9347,7 +9394,6 @@ def depo_add_stf(request):
     depo_list = request.session['warehouselist']
     type = request.session['type']
     if request.method  == 'POST':
-
         deponame = request.POST.get('txtdeposearch')
         request.session['deponame'] = deponame
         txtDepoId = request.POST.get('txtDepoId')
@@ -9624,6 +9670,7 @@ def get_busstation_item(request):
                 return render(request, 'login1.html')
 
 
+
 def busstation_add_stf(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -9656,8 +9703,12 @@ def busstation_add_stf(request):
             return redirect('busstation_item_add')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request,'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('depot_item_list_admin')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
             try:
                 data = response.json()
@@ -9723,7 +9774,7 @@ def busstation_item_add(request):
             return render(request, 'stock_transfer/stock_transfer_home.html', {'type':type,'buslist':buslist,'taxinvoice':taxinvoice,'busstation_name': busstation_name,'warehouseinventorylist':warehouseinventorylist,'bus':'active','data':stocktransferlistto,'menuname':menuname})
 
     else:
-        return render(request, 'stock_transfer/stock_transfer_home.html', {'type':type,'buslist':buslist,'taxinvoice':taxinvoice,'busstation_name': busstation_name,'bus':'active','data':stocktransferlistto,'menuname':menuname,'warehouseinventorylist':warehouseinventorylist})
+        return render(request, 'stock_transfer/stock_transfer_home.html', {'type':type,'buslist':buslist,'taxinvoice':taxinvoice,'busstation_name': busstation_name,'bus':'active','data':stocktransferlistto,'menuname':menuname,'warehouseinventorylist':warehouseinventorylist,'response':'bus200'})
 
 
 
@@ -9752,14 +9803,18 @@ def busstation_item_list(request):
     if response.status_code == 200:
         data=response.json()
         bus_item_list=data['stocktransferitemlist']
-        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'buslist':buslist,'warehouseinventorylist':warehouseinventorylist,'taxinvoice':taxinvoice,'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'bus_item_list':bus_item_list,'bus_item_list1':bus_item_list[0]})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'status':'ok','response':'bus200','type':type,'buslist':buslist,'warehouseinventorylist':warehouseinventorylist,'taxinvoice':taxinvoice,'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'bus_item_list':bus_item_list,'bus_item_list1':bus_item_list[0]})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('busstation_item_list')
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
     else:
         return render(request, 'stock_transfer/stock_transfer_home.html',
-                      {'type':type,'buslist':buslist,'warehouseinventorylist': warehouseinventorylist, 'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'taxinvoice':taxinvoice})
+                      {'response':'bus200','type':type,'buslist':buslist,'warehouseinventorylist': warehouseinventorylist, 'bus':'active','busstation_name': busstation_name,'data':stocktransferlistto,'menuname':menuname,'taxinvoice':taxinvoice})
 
 
 def edit_stkbus_item(request):

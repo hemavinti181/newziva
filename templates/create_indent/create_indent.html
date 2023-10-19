@@ -39,10 +39,17 @@
                                                 </select>
 										</div>
                                         {% else %}
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Depot *</label>
-                                              <input type="text" class="form-control"  name="deponame" id="depo" value="{{ deponame }}">
-                                        </div>
+                                         {% if request.session.codee == 'BSP0135' %}
+                                              <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                                <label>Depot *</label>
+                                                  <input type="text" class="form-control"  name="buswh" id="buswh" value="UPPAL" readonly>
+                                            </div>
+                                         {% else %}
+                                            <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                                <label>Depot *</label>
+                                                  <input type="text" class="form-control"  name="deponame" id="depo" value="{{ deponame }}" readonly>
+                                            </div>
+                                        {% endif %}
                                         {% endif %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Select Items *</label>

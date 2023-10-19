@@ -263,7 +263,6 @@
                                           enctype="multipart/form-data"
                                           method="POST">
                                         {% csrf_token %}
-
                                         <div class="col-md-4 col-sm-4 input-icons  form-group has-feedback">
                                             <input id="depoitemname" name="depoitemname" type="hidden"/>
                                             <label>Select item</label>
@@ -279,7 +278,6 @@
                                         </div>
 
                                         <div class="col-md-2 col-sm-2 input-icons  form-group has-feedback">
-
                                             <input id="typename1" name="typename1" type="hidden"/>
                                             <label>Select type</label>
                                             <select class="form-control items" id="typeid1" name="typeid1" required>
@@ -369,10 +367,10 @@
                                                         <td>{{ all_data.batch_no }}</td>
                                                         <td>{{all_data.manufacturer}}</td>
                                                         <td>
-                                                            <a class="btn btn-default btn-sm"
+                                                            <a
                                                                href="delete_stkdepo_item/{{ all_data.sno }}/"><span class="badge badge-danger"><i
                                                                     class="fa fa-trash"></i></span></a>
-                                                             <span class="badge badge-info wh_edit"
+                                                             <span class="badge badge-info whbus_edit"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
@@ -539,10 +537,10 @@
                                                         <td>{{all_data.manufacturer}}</td>
 
                                                         <td>
-                                                            <a class="btn btn-default btn-sm"
-                                                               href="delete_stkbus_item/{{ all_data.sno }}/"><i
-                                                                    class="fa fa-trash"></i></a>
-                                                            <span class="btn btn-default btn-sm depoedit"
+                                                          <a
+                                                               href="delete_stkbus_item/{{ all_data.sno }}/"><span class="badge badge-danger"><i
+                                                                    class="fa fa-trash"></i></span></a>
+                                                            <span class="badge badge-info busedit"
                                                                   data-target="#edit_stk_item"
                                                                   data-toggle="modal"
                                                                   onclick="VerifyClick('{{ all_data.quantity }}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.uom }}','{{ all_data.type }}','{{ all_data.noofbottles }}')"><i
@@ -648,31 +646,28 @@
 </div>
 
 
+
 <div class="modal custom-modal fade" id="buscomplete" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content style">
+        <div class="modal-content style1">
             <div class="modal-header">
-                <h5 class="modal-title">Complete Transfer</h5>
+                <h3 class="modal-title" >Complete Transfer</h3>
                 <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="complete_businv" method="POST">
+                <form action="/complete_businv"  method="POST">
                     {% csrf_token %}
-                    <input id="id" name="id" type="hidden"/>
-
-
-                    <!--<div class="col-md-12 col-sm-12  form-group has-feedback">
-                <label for="remarks">Delivery date</label>
-             <input type="date" class="form-control" name="date" id="date3"  placeholder="remarks" >
-         </div>-->
+                      <input id="id" name="id" type="hidden"/>
                     <div class="col-md-12 col-sm-12  form-group has-feedback">
                         <label for="remarks">Remarks</label>
+
                         <textarea class="form-control" id="remarks3" name="remarks" placeholder="remarks"></textarea>
+                        <p></p>
                     </div>
                     <div class="col-md-6 col-sm-6  offset-md-3">
-                        <button class="btn btn-info" name="complete" type="submit">Complete</button>
+                        <button class="btn btn-primary" name="complete"  style="margin-bottom:20px;margin-left:10px;"  type="submit">Complete</button>
                     </div>
                 </form>
             </div>
@@ -694,7 +689,6 @@
             <div class="modal-body">
                 <form action="/edit_stk_item" id="myForm" method="post">
                     {% csrf_token %}
-
                     <div class="col-md-12 col-sm-12  form-group has-feedback">
                         <label>Item Name </label>
                         <input class="form-control" id="item" name="item" readonly type="text">
@@ -942,7 +936,7 @@ $(document).ready(function(){
 $('.busedit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkbus_item" %}'); // set the new action URL
 });
-$('.depoedit').click(function(){
+$('.whbus_edit').click(function(){
       $('#myForm').attr('action', '{% url "edit_stkdepo_item" %}'); // set the new action URL
 });
  $(window).on("load", function() {
@@ -1030,6 +1024,13 @@ $(document).ready(function(){
   if ( response === 'depo200'  &&  status === 'ok') {
         $('#depo_item').show();
         $('#depo_item_list').show();
+   }
+    if ( response === 'bus200') {
+        $('#busitemsadd').show();
+   }
+  if ( response === 'bus200'  &&  status === 'ok') {
+        $('#busitemsadd').show();
+        $('#busitemslist').show();
    }
 });
 
