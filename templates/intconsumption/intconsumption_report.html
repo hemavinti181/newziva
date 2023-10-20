@@ -10,7 +10,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba">Return Items</h3>
+                <h3 style="color:#1372ba">Zonal Storewise Stock Issued To AC & Super Luxury Services</h3>
               </div>
 
               <div class="title_right">
@@ -20,26 +20,75 @@
 
             </div>
               </div>
-            <div class="clearfix"></div>
-             <div class="row">
-               <!--<div class="col-md-12 col-sm-12">
-
-						<form  method="POST" action="/returnsconsumption"  id="myForm" enctype="multipart/form-data">
+           <div class="clearfix"></div>
+                 <div class="col-md-12 col-sm-12 ">
+                               			<!-- Search Filter -->
+						<form id="myform" method="POST" action="/intconsumption_report"  enctype="multipart/form-data">
 									{% csrf_token %}
-                            <div class="col-sm-3 col-md-3 form-group has-feedback">
-									<label class="focus-label">from </label>
-									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
-                                   <input type="hidden" name="fdate_hidden" id="fdate_hidden">
-							</div>
-                             <div class="col-sm-3 col-md-3 form-group has-feedback">
-									<label class="focus-label">To</label>
-									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
-                                   <input type="hidden" name="tdate_hidden" id="tdate_hidden">
-							</div>
-                            <div class="col-md-3 col-sm-3  form-group has-feedback">
+
+                             <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
+                              <label for="start-date">From Date</label>
+                              <input type="date" name="fdate" id="start-date" class="form-control" value="{{ request.POST.fdate }}">
+                            </div>
+                              <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
+                                  <label  for="end-date">To Date</label>
+                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
+                            </div>
+                            	<div  class="col-md-2  form-group has-feedback">
+													<label> Warehouse</label>
+                                         <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+                                         </select>
+											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
+												<select class="form-control" name="warehouseid1" id="warehouseid1">
+													<option value="">All</option>
+													{% for data1 in wh_masterlist %}
+															{% if data1.status == 'Active' %}
+                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif  %}
+                                                     {% endfor %}
+                                                </select>
+                                </div>
+											<div  class="col-md-2  form-group has-feedback">
+													<label> Region</label>
+                                              <select class="form-control" name="regionid2" id="regionid2" hidden>
+                            		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+												</select>
+											 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
+												<select class="form-control" name="regionid1" id="regionid1">
+													<option value="">All</option>
+                                                    {% for data1 in regionlist %}
+                            		                    <option value="{{ data1.region_id }}">{{ data1.regionname }}</option>
+                                                     {% endfor %}
+												</select>
+										    </div>
+											<div  class="col-md-2  form-group has-feedback">
+                                                  <select class="form-control" name="depoid2" id="depoid2"  hidden>
+                            		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
+												</select>
+													<label> Depot</label>
+											 <input type="hidden" name="deponame1" id="deponame1" value="{{ request.POST.deponame1 }}" />
+												<select class="form-control" name="depoid1" id="depoid1">
+													<option value="">All</option>
+                                                    {% for data1 in depolist %}
+                            		                    <option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
+                                                     {% endfor %}
+												</select>
+
+                            </div>
+
+										<!--<div  class="col-md-2  form-group has-feedback">
+                                             <input type="hidden" name="busstationid2" id="busstationid2" value="{{ request.POST.busstationid1 }}" />
+													<label> Bus Station</label>
+											 <input type="hidden" name="busstationname1" id="busstationname1" />
+												<select class="form-control" name="busstationid1" id="busstationid1">
+													<option value=""> bus station</option>
+												</select>
+										</div>
+                               <div class="col-md-2 col-sm-2  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>
-                        </form>-->
+                                       </div>-->
+                        </form>
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_content">
@@ -65,7 +114,7 @@
                                     <th colspan="6" style="text-align:center;">Consumption</th>
                                     <th rowspan="3">Present day stock available</th>
                                     <th rowspan="3">Stock(cases) Available Days</th>
-                                    <th rowspan="3">Avg consumption</th>
+                                  <th rowspan="3">Average Consumption</th>
                         </tr>
 
                             <tr>
@@ -88,8 +137,24 @@
                       </tr>
                       </thead>
                             <tbody>
-
-
+                                {% for  data in  servicereportslist %}
+                                <td>{{ forloop.conter }}</td>
+                                <td>{{ data.warehouse_name }}</td>
+                                <td>{{ data.region_name }}</td>
+                                 <td>{{ data.depot_name }}</td>
+                                 <td>{{ data.noof_services_ac }}</td>
+                                 <td>{{ data.noof_services_sl }}</td>
+                                 <td>{{ data.noof_services_total }}</td>
+                                 <td>{{ data.con_ac_inbottles }}</td>
+                                 <td>{{ data.con_ac_incases }}</td>
+                                 <td>{{ data.con_sl_inbottles }}</td>
+                                 <td>{{ data.con_sl_incases }}</td>
+                                 <td>{{ data.con_total_inbottles }}</td>
+                                 <td>{{ data.con_total_incases }}</td>
+                                 <td>{{ data.presentday_stock_available }}</td>
+                                 <td>{{ data.stock_available_days }}</td>
+                                 <td>{{ data.avg_consumption }}</td>
+                            {% endfor %}
                       </tbody>
                       </table>
                   </div>
@@ -105,13 +170,22 @@
 </div>
 
 <script>
-      document.getElementById('fdate').addEventListener('change', function() {
-        var form = document.getElementById('myForm');
-        form.submit();
-    });
-     document.getElementById('tdate').addEventListener('change', function() {
-        var form = document.getElementById('myForm');
-        form.submit();
-    });
+
+  $("#warehouseid1, #regionid1, #depoid1").change(function() {
+    alert('hai')
+    var form = document.getElementById("myform");
+    form.submit();
+  });
+   $(document).ready(function() {
+      var selectedOptionText = $('#warehouseid1').find(":selected").text();
+      $("#warehousename1").val(selectedOptionText);
+      selectedOptionText = $('#regionid1').find(":selected").text();
+      $("#regionname1").val(selectedOptionText);
+      selectedOptionText = $('#depoid1').find(":selected").text();
+      $("#deponame1").val(selectedOptionText);
+      var selectedOptionText = $('#daterangeselect').find(":selected").text();
+      $("#from").val(selectedOptionText);
+   });
+
 </script>
 {% endblock %}

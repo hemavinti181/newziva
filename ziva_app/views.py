@@ -5755,20 +5755,35 @@ def create_indent(request):
 
             if request.method == 'POST':
 
-                url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+                if code == 'BSP0135':
+                    url = "http://13.235.112.1/ziva/mobile-api/create-busstation-indent-item.php"
 
-                payload = json.dumps({
+                    payload = json.dumps({
                         "accesskey": accesskey,
                         "indentno": "",
                         "itemname": request.POST.get('itemname'),
                         "itemcode": request.POST.get('itemcode'),
-                        "warehouseid": request.POST.get('whcode'),
-                        "warehousename": request.POST.get('whname'),
                         "date ": request.POST.get('date'),
                         "qty": request.POST.get('quantity'),
                         "mrp": request.POST.get('price'),
 
                     })
+                else:
+
+                    url = "http://13.235.112.1/ziva/mobile-api/create-indent-item.php"
+
+                    payload = json.dumps({
+                            "accesskey": accesskey,
+                            "indentno": "",
+                            "itemname": request.POST.get('itemname'),
+                            "itemcode": request.POST.get('itemcode'),
+                            "warehouseid": request.POST.get('whcode'),
+                            "warehousename": request.POST.get('whname'),
+                            "date ": request.POST.get('date'),
+                            "qty": request.POST.get('quantity'),
+                            "mrp": request.POST.get('price'),
+
+                        })
                 headers = {
                     'Content-Type': 'text/plain'
                 }
@@ -5849,8 +5864,10 @@ def create_indent(request):
                 response = requests.request("GET", url, headers=headers, data=payload)
                 if response.status_code == 200:
                     data = response.json()
+                    id = data['indentno']
                     messages.success(request, data['message'])
-                    return redirect('indent_list')
+                    url = reverse('indent_item_list', args=[id])
+                    return redirect(url)
                 else:
                     try:
                         data = response.json()
@@ -7009,7 +7026,7 @@ def approve_accept(request):
                 messages.error(request, response.text)
             return redirect('/approve_list_admin1')
     else:
-            url = "http://13.235.112.1/ziva/mobile-api/submit-items-accepted-admin.php"
+            url = "http://13.235.112.1/ziva/mobile-api/submit-items-accepted.php"
 
             payload = json.dumps({
                 "accesskey": accesskey,
@@ -7025,7 +7042,7 @@ def approve_accept(request):
             if response.status_code == 200:
                 data = response.json()
                 messages.success(request,data['message'])
-                return redirect('/approve_list_admin1')
+                return redirect('/approved_indlist_accept')
             elif response.status_code == 400:
                 data = response.json()
                 messages.error(request, data['message'])
@@ -7037,7 +7054,7 @@ def approve_accept(request):
 
                 except:
                     messages.error(request,response.text)
-                return redirect('/approve_list_admin1')
+                return redirect('/approved_indlist_accept')
 def approved_indlist_accept(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -18020,17 +18037,216 @@ def intconsumption_report(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
-    return render(request,'intconsumption/intconsumption_report.html',{"menuname":menuname})
+    try:
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
 
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            wh_masterlist = data['warehouselist']
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            regionlist = data['regionlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            depolist = data['depolist']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/stockissue-list.php"
+            depo=request.POST.get('depoid1')
+            wh= request.POST.get('warehouseid1')
+            region=request.POST.get('regionid1')
+
+            payload = json.dumps({"accesskey": accesskey,
+                                  "depot_id": request.POST.get('depoid1'),
+                                  "warehouse_id": request.POST.get('warehouseid1'),
+                                  "region_id": request.POST.get('regionid1'),
+                                  })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                servicereportslist = data['servicereportslist']
+                return render(request,'intconsumption/intconsumption_report.html',{"menuname":menuname,'wh_masterlist':wh_masterlist,'servicereportslist':servicereportslist,'regionlist':regionlist,'depolist':depolist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'intconsumption/intconsumption_report.html',
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                               'regionlist': regionlist, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                    return render(request, 'intconsumption/intconsumption_report.html',
+                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                                   'regionlist': regionlist, 'depolist': depolist})
+
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/depowise-stockissue-list.php"
+
+            payload = json.dumps({"accesskey": accesskey,
+                                  "warehouse_id": "All",
+                                  "region_id": "All",
+                                  "depot_id": 'All'
+                                  })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                depolist = data['depolist']
+                return render(request, 'intconsumption/intconsumption_report.html',
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                               'regionlist': regionlist, 'depolist': depolist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'intconsumption/intconsumption_report.html',
+                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                                   'regionlist': regionlist, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'intconsumption/intconsumption_report.html',
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                               'regionlist': regionlist, 'depolist': depolist})
+    except:
+        if response.status_code == 400:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    return render(request, 'intconsumption/intconsumption_report.html',{"menuname":menuname})
 
 
 def intconsumption_servicereport(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    accesskey = request.session['accesskey']
-    menuname = request.session['mylist']
+    try:
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            wh_masterlist = data['warehouselist']
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            regionlist = data['regionlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            depolist = data['depolist']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/depowise-interconsumption-list.php"
+
+            payload = json.dumps({"accesskey": accesskey,
+                                  "depot_id": request.POST.get('depoid1')
+                                  })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                intercondepowiselist = data['intercondepowiselist']
+                return render(request, 'intconsumption/intconsumption_servicereport.html',
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                               'regionlist': regionlist, 'depolist': depolist,
+                               "intercondepowiselist": intercondepowiselist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'intconsumption/intconsumption_servicereport.html',
+                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                                   'regionlist': regionlist, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'intconsumption/intconsumption_servicereport.html',
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                               'regionlist': regionlist, 'depolist': depolist})
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/depowise-interconsumption-list.php"
+
+            payload = json.dumps({"accesskey": accesskey,
+                                  "depot_id": 'All'
+                                  })
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                intercondepowiselist = data['intercondepowiselist']
+                return render(request, 'intconsumption/intconsumption_servicereport.html',
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                               'regionlist': regionlist, 'depolist': depolist,'intercondepowiselist':intercondepowiselist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'intconsumption/intconsumption_servicereport.html',
+                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                                   'regionlist': regionlist, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'intconsumption/intconsumption_servicereport.html',
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                               'regionlist': regionlist, 'depolist': depolist})
+    except:
+        if response.status_code == 400:
+            messages.error(request, data['message'])
+            return redirect('/login')
     return render(request,'intconsumption/intconsumption_servicereport.html',{"menuname":menuname})

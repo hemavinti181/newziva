@@ -71,7 +71,7 @@
                                     {% else %}
                                     <td>
                                          <a href="approve_item_list/{{ all_data.dc_number }}/"><span class="badge badge-warning">{{ all_data.status }} </span></a>
-                                     <span data-target=".bs-example-modal-sm"  data-toggle="modal"  onclick="VerifyClick('{{ all_data.qty }}','{{ all_data.outpass_number}}')" class="badge badge-success" > Accept </span></a>
+                                     <span data-target=".custom-modal"  data-toggle="modal"  onclick="VerifyClick('{{ all_data.qty }}','{{ all_data.outpass_number}}')" class="badge badge-success" > Accept </span></a>
 
                                     </td>
                                     {% endif %}
@@ -89,28 +89,26 @@
             </div>
           </div>
 </div>
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered">
                                             <div class="modal-content">
-
-
 
                                         <div class="modal-body">
                                             <form method="post" action="{% url 'approve_accept' %}">
                                                     {% csrf_token %}
                                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
                                             </button>
-                                            <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Acknowledgement</h4>
+                                            <h3  style="text-align:center;">Acknowledgement</h3>
 
                                                  <label for="qty">Quantity *</label>
                                                 <textarea class="form-control" rows="1"  name="qty" id="qty"></textarea>
 
-                                            <label for="remarks">Remarks *</label>
+                                            <label for="remarks">Remarks</label>
                                             <input type="hidden" id="txtHdnId" name="id" />
                                                 <textarea class="form-control" rows="2"  name="remarks" id="remarks"></textarea>
                                             <p></p>
                                            <div class="col-md-6 col-sm-6  offset-md-3">
-                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-info">UPDATE</button></a>
+                                                  <a href="add_grn_inventory"><button type="submit" class="btn btn-primary">UPDATE</button></a>
 
                                             </div>
                                         </div>
