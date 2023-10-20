@@ -18074,9 +18074,7 @@ def intconsumption_report(request):
             depolist = data['depolist']
         if request.method == 'POST':
             url = "http://13.235.112.1/ziva/mobile-api/stockissue-list.php"
-            depo=request.POST.get('depoid1')
-            wh= request.POST.get('warehouseid1')
-            region=request.POST.get('regionid1')
+
 
             payload = json.dumps({"accesskey": accesskey,
                                   "depot_id": request.POST.get('depoid1'),
@@ -18107,7 +18105,7 @@ def intconsumption_report(request):
                                    'regionlist': regionlist, 'depolist': depolist})
 
         else:
-            url = "http://13.235.112.1/ziva/mobile-api/depowise-stockissue-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/stockissue-list.php"
 
             payload = json.dumps({"accesskey": accesskey,
                                   "warehouse_id": "All",
@@ -18120,10 +18118,10 @@ def intconsumption_report(request):
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                depolist = data['depolist']
+                servicereportslist = data['servicereportslist']
                 return render(request, 'intconsumption/intconsumption_report.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               'regionlist': regionlist, 'depolist': depolist})
+                               'regionlist': regionlist, 'depolist': depolist,'servicereportslist':servicereportslist})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
@@ -18185,10 +18183,12 @@ def intconsumption_servicereport(request):
             data = response.json()
             depolist = data['depolist']
         if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/depowise-interconsumption-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/interconsumption-list.php"
 
             payload = json.dumps({"accesskey": accesskey,
-                                  "depot_id": request.POST.get('depoid1')
+                                  "depot_id": request.POST.get('depoid1'),
+                                  "region_id": request.POST.get('regioid1'),
+                                  "warehouse_id":request.POST.get('warehouseid1')
                                   })
             headers = {
                 'Content-Type': 'text/plain'
@@ -18216,10 +18216,12 @@ def intconsumption_servicereport(request):
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
                                'regionlist': regionlist, 'depolist': depolist})
         else:
-            url = "http://13.235.112.1/ziva/mobile-api/depowise-interconsumption-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/interconsumption-list.php"
 
             payload = json.dumps({"accesskey": accesskey,
-                                  "depot_id": 'All'
+                                    "depot_id": "All",
+                                    "region_id": "All",
+                                    "warehouse_id": "All"
                                   })
             headers = {
                 'Content-Type': 'text/plain'

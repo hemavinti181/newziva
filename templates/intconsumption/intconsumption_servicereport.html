@@ -127,7 +127,9 @@
 
                       </thead>
                             <tbody>
+
                             {% for data in intercondepowiselist %}
+                            <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ data.warehouse_name }}</td>
                                 <td>{{ data.region_name }}</td>
@@ -138,6 +140,7 @@
                                 <td>{{ data.issuedto_noof_services_ac }}</td>
                                 <td>{{ data.issuedto_noof_services_sl }}</td>
                                 <td>{{ data.issuedto_noof_services_total }}</td>
+                                </tr>
                             {% endfor %}
                       </tbody>
                       </table>
@@ -160,15 +163,22 @@
     var form = document.getElementById("myform");
     form.submit();
   });
-   $(document).ready(function() {
+    $("#warehouseid1").change(function() {
       var selectedOptionText = $('#warehouseid1').find(":selected").text();
       $("#warehousename1").val(selectedOptionText);
-      selectedOptionText = $('#regionid1').find(":selected").text();
-      $("#regionname1").val(selectedOptionText);
-      selectedOptionText = $('#depoid1').find(":selected").text();
-      $("#deponame1").val(selectedOptionText);
-
-   });
+    });
+      $("#regionid1").change(function() {
+          selectedOptionText2 = $('#regionid1').find(":selected").text();
+          $("#regionname1").val(selectedOptionText);
+      });
+       $("#depoid1").change(function() {
+          selectedOptionText3 = $('#depoid1').find(":selected").text();
+          $("#deponame1").val(selectedOptionText);
+       });
+    $(document).ready(function() {
+       var optionValue = $("#warehouseid2").val();
+        $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
+     });
 
 </script>
 {% endblock %}

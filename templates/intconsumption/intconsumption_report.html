@@ -41,7 +41,7 @@
                                          </select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value="">All</option>
+													<option value="All">All</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -56,7 +56,7 @@
 												</select>
 											 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
 												<select class="form-control" name="regionid1" id="regionid1">
-													<option value="">All</option>
+													<option value="All">All</option>
                                                     {% for data1 in regionlist %}
                             		                    <option value="{{ data1.region_id }}">{{ data1.regionname }}</option>
                                                      {% endfor %}
@@ -69,7 +69,7 @@
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" value="{{ request.POST.deponame1 }}" />
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value="">All</option>
+													<option value="All">All</option>
                                                     {% for data1 in depolist %}
                             		                    <option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
                                                      {% endfor %}
@@ -138,6 +138,7 @@
                       </thead>
                             <tbody>
                                 {% for  data in  servicereportslist %}
+                                <tr>
                                 <td>{{ forloop.conter }}</td>
                                 <td>{{ data.warehouse_name }}</td>
                                 <td>{{ data.region_name }}</td>
@@ -154,6 +155,8 @@
                                  <td>{{ data.presentday_stock_available }}</td>
                                  <td>{{ data.stock_available_days }}</td>
                                  <td>{{ data.avg_consumption }}</td>
+                                    </tr>
+
                             {% endfor %}
                       </tbody>
                       </table>
@@ -176,16 +179,27 @@
     var form = document.getElementById("myform");
     form.submit();
   });
-   $(document).ready(function() {
+    $("#warehouseid1").change(function() {
       var selectedOptionText = $('#warehouseid1').find(":selected").text();
       $("#warehousename1").val(selectedOptionText);
-      selectedOptionText = $('#regionid1').find(":selected").text();
+     });
+     $("#regionid1").change(function() {
+      selectedOptionText2 = $('#regionid1').find(":selected").text();
       $("#regionname1").val(selectedOptionText);
-      selectedOptionText = $('#depoid1').find(":selected").text();
-      $("#deponame1").val(selectedOptionText);
-      var selectedOptionText = $('#daterangeselect').find(":selected").text();
-      $("#from").val(selectedOptionText);
-   });
+     });
+     $("#depoid1").change(function() {
+          selectedOptionText3 = $('#depoid1').find(":selected").text();
+          $("#deponame1").val(selectedOptionText);
+     });
+    $(document).ready(function() {
+       var optionValue = $("#warehouseid2").val();
+        $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
+          var optionValue = $("#regionid2").val();
+        $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+          var optionValue = $("#depoid2").val();
+        $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+     });
+
 
 </script>
 {% endblock %}
