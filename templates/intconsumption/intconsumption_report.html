@@ -26,11 +26,11 @@
 						<form id="myform" method="POST" action="/intconsumption_report"  enctype="multipart/form-data">
 									{% csrf_token %}
 
-                             <div class="col-md-2  form-group has-feedback" id="date-range-fields" style="display:none">
+                             <div class="col-md-2  form-group has-feedback" id="date-range-fields" >
                               <label for="start-date">From Date</label>
                               <input type="date" name="fdate" id="start-date" class="form-control" value="{{ request.POST.fdate }}">
                             </div>
-                              <div class="col-md-2  form-group has-feedback" id="tdate" style="display:none">
+                              <div class="col-md-2  form-group has-feedback" id="tdate" >
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
                             </div>
@@ -174,10 +174,17 @@
 
 <script>
 
-  $("#warehouseid1, #regionid1, #depoid1").change(function() {
-    alert('hai')
+  $("#warehouseid1, #regionid1,#depoid1").change(function() {
     var form = document.getElementById("myform");
     form.submit();
+  });
+  $("#start-date,#end-date").change(function() {
+        var form = document.getElementById("myform");
+        var startDateInput = document.getElementById("start-date");
+        var endDateInput = document.getElementById("end-date");
+        if (startDateInput.value && endDateInput.value) {
+          form.submit();
+        }
   });
     $("#warehouseid1").change(function() {
       var selectedOptionText = $('#warehouseid1').find(":selected").text();

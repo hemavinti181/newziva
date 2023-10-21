@@ -18,7 +18,6 @@
     #stktabel:hover{
     overflow-x:scroll !important;
     }
-
 </style>
 
 
@@ -36,15 +35,16 @@
                          <div class="x_panel">
                                 <form  method="POST" action=""   enctype="multipart/form-data">
                                                     {% csrf_token %}
-                                        <div  class="col-md-3 col-sm-3  form-group has-feedback">
+                                        <div  class="col-md-3 col-sm-3  form-group has-feedback" >
                                                             <label> Depot</label>
                                                         <select class="form-control" name="depoid2" id="depoid2" hidden>
                                                                 <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
                                                         </select>
                                                      <input type="hidden" name="deponame" id="deponame" />
-                                                        <select class="form-control" name="depoid" id="depoid">
+                                                        <select class="form-control select2" name="depoid" id="depoid">
                                                             <option value="All"> All</option>
                                                         </select>
+
                                         </div>
 									<!--<div  class="col-md-3 col-sm-3  form-group has-feedback">
 													<label> Warehouse</label>
@@ -1229,7 +1229,8 @@ $.ajax({
 });
 });
 
-
+$(document).ready(function() {
+$('#depoid').select2();
 $('#depoid').change(function() {
 var itemcode =  $('#itemcode').val();
 var depoid = $('#depoid').val();
@@ -1340,7 +1341,7 @@ $.ajax({
   }
 });
 });
-
+});
 
 
 

@@ -39,7 +39,7 @@
 													<option value="{{ request.POST.busstationid }}">{{ request.POST.busstationname }}</option>
 												</select>
 											 <input type="hidden" name="busstationname" id="busstationname" />
-												<select class="form-control" name="busstationid" id="busstationid">
+												<select class="form-control select2" name="busstationid" id="busstationid">
 														<option value="All">All</option>
                                                     {% for data1 in bus %}
 														{% if data1.status == 'Active' %}
@@ -1208,7 +1208,8 @@ $.ajax({
 });
 
 
-
+$(document).ready(function() {
+$('#busstationid').select2();
 $('#busstationid').change(function() {
 var itemcode =  $('#itemcode').val();
 var busstationid = $('#busstationid').val();
@@ -1306,7 +1307,7 @@ $.ajax({
   }
 });
 });
-
+});
 
 $('#pdate').change(function() {
 busstationid = $('#busstationid').val();
@@ -1372,6 +1373,8 @@ $.ajax({
 });
 });
 
+$(document).ready(function() {
+$('#busstationid').select2();
 $('#busstationid').change(function() {
   var busid=$('#busstationid').val();
 $("#bust2").val(busid);
@@ -1436,6 +1439,8 @@ $.ajax({
   }
 });
 });
+});
+
 
 $(document).ready(function() {
 busstationid = $('#busstationid').val();

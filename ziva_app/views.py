@@ -18033,6 +18033,7 @@ def delete_service(request):
     else:
         return redirect('/service_master')
 
+
 def intconsumption_report(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -18073,13 +18074,15 @@ def intconsumption_report(request):
             data = response.json()
             depolist = data['depolist']
         if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/stockissue-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-stockreport.php"
 
 
             payload = json.dumps({"accesskey": accesskey,
                                   "depot_id": request.POST.get('depoid1'),
                                   "warehouse_id": request.POST.get('warehouseid1'),
                                   "region_id": request.POST.get('regionid1'),
+                                  "fdate": request.POST.get('fdate'),
+                                  "tdate": request.POST.get('ldate')
                                   })
             headers = {
                 'Content-Type': 'text/plain'
@@ -18105,12 +18108,17 @@ def intconsumption_report(request):
                                    'regionlist': regionlist, 'depolist': depolist})
 
         else:
-            url = "http://13.235.112.1/ziva/mobile-api/stockissue-list.php"
+            tdate = datetime.date.today()
+            tdate = tdate.strftime("%Y-%m-%d")
+            url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-stockreport.php"
 
             payload = json.dumps({"accesskey": accesskey,
                                   "warehouse_id": "All",
                                   "region_id": "All",
-                                  "depot_id": 'All'
+                                  "depot_id": 'All',
+                                  "fdate": tdate,
+                                  "tdate": tdate,
+
                                   })
             headers = {
                 'Content-Type': 'text/plain'
@@ -18183,12 +18191,14 @@ def intconsumption_servicereport(request):
             data = response.json()
             depolist = data['depolist']
         if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/interconsumption-list.php"
+            url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-report.php"
 
             payload = json.dumps({"accesskey": accesskey,
                                   "depot_id": request.POST.get('depoid1'),
-                                  "region_id": request.POST.get('regioid1'),
-                                  "warehouse_id":request.POST.get('warehouseid1')
+                                  "region_id": request.POST.get('regionid1'),
+                                  "warehouse_id":request.POST.get('warehouseid1'),
+                                  "fdate": request.POST.get('fdate'),
+                                  "tdate": request.POST.get('ldate'),
                                   })
             headers = {
                 'Content-Type': 'text/plain'
@@ -18216,12 +18226,16 @@ def intconsumption_servicereport(request):
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
                                'regionlist': regionlist, 'depolist': depolist})
         else:
-            url = "http://13.235.112.1/ziva/mobile-api/interconsumption-list.php"
+            tdate = datetime.date.today()
+            tdate = tdate.strftime("%Y-%m-%d")
+            url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-report.php"
 
             payload = json.dumps({"accesskey": accesskey,
                                     "depot_id": "All",
                                     "region_id": "All",
-                                    "warehouse_id": "All"
+                                    "warehouse_id": "All",
+                                   "fdate":tdate,
+                                   "tdate": tdate
                                   })
             headers = {
                 'Content-Type': 'text/plain'

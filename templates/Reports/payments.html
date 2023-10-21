@@ -85,7 +85,7 @@
                             		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
 												    </select>
 											 <input type="hidden" name="regionname1" id="regionname1" />
-												<select class="form-control" name="regionid1" id="regionid1">
+												<select class="form-control select2" name="regionid1" id="regionid1">
 													<option value="All">All</option>
 												</select>
 										    </div>
@@ -95,7 +95,7 @@
                             		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
 												</select>
 											 <input type="hidden" name="deponame1" id="deponame1" />
-												<select class="form-control" name="depoid1" id="depoid1">
+												<select class="form-control select2" name="depoid1" id="depoid1">
 													<option value="All">All</option>
 												</select>
 
@@ -107,7 +107,7 @@
                             		                    <option value="{{ request.POST.busstationid1 }}">{{ request.POST.busstationname1 }}</option>
 												</select>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
-												<select class="form-control" name="busstationid1" id="busstationid1">
+												<select class="form-control select2" name="busstationid1" id="busstationid1">
 													<option value="All">All</option>
 												</select>
 										</div>
@@ -602,29 +602,40 @@ $(document).ready(function(){
             }
         }
     });
-    	$("#regionid1").change(function() {
-    		var warehousename = $('#warehouseid1').find(":selected").text();
-        	var regionname = $('#regionid1').val();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_storedepo" %}',
-            	data: {
-                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-
-					if(obj) {
-			 		$("#depoid1").empty();
-			 		//$("#depoid1").append("<option  value='All'>All</option>");
-                	$.each(obj, function (index, item) {
-                    $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-                	}
-             	}
-        	});
-    	});
  });
+
+ $(document).ready(function() {
+    $("#regionid1").select2();
+    $("#regionid1").change(function() {
+        var selectedOptionText = $(this).find(":selected").text();
+        $("#regionname1").val(selectedOptionText);
+        var warehousename = $('#warehouseid1').find(":selected").text();
+        var regionname = $('#regionid1').val();
+
+        $.ajax({
+            type: "POST",
+            url: '{% url "get_storedepo" %}',
+            data: {
+                'warehouse': warehousename,
+                'region': regionname,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                var obj = data.data.dropdownlist;
+
+                if (obj) {
+                    $("#depoid1").empty();
+                    // $("#depoid1").append("<option value='All'>All</option>");
+                    $.each(obj, function(index, item) {
+                        $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                    });
+                }
+            }
+        });
+    });
+});
+
+
     $(document).ready(function() {
     		var warehousename = $('#warehouseid2').find(":selected").text();
         	var regionname = $('#regionid2').val();
@@ -677,10 +688,7 @@ $(document).ready(function(){
   $("#warehousename1").val(selectedOptionText);
   $('#myForm').attr('action', '{% url "payment_report" %}');
 });
-$("#regionid1").change(function() {
-  var selectedOptionText = $(this).find(":selected").text();
-  $("#regionname1").val(selectedOptionText);
-});
+
 
 $("#depoid1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -1506,7 +1514,8 @@ $(document).on('click', '.items_buslist', function () {
     });
 });
 
-
+$(document).ready(function () {
+$("#regionid1").select2();
 var dataTable;
 $("#regionid1").change(function () {
     var regionid = $('#regionid1').val();
@@ -1600,6 +1609,7 @@ $("#regionid1").change(function () {
         }
 
     });
+});
 });
 
 
