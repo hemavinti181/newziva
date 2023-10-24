@@ -846,35 +846,8 @@ $(document).ready(function() {
 });
 
 
-$(document).ready(function() {
-    var depoDataTable = $("#depo_listtable").DataTable({
-        dom: "Blfrtip",
-        buttons: [
-            {
-                extend: "copy",
-                className: "btn-sm"
-            },
-            {
-                extend: "csv",
-                className: "btn-sm"
-            },
-            {
-                extend: "excel",
-                className: "btn-sm"
-            },
-            {
-                extend: "pdfHtml5",
-                className: "btn-sm"
-            },
-            {
-                extend: "print",
-                className: "btn-sm"
-            },
-        ],
-        responsive: true,
-        "bDestroy": true, // Destroy the DataTable if it's already initialized
-    });
-    $(document).on('click', '.depo_list', function () {
+
+ $(document).on('click', '.depo_list', function () {
         let id = $(this).data('id');
         let fdate = $(this).data('fdate');
         let tdate = $(this).data('tdate');
@@ -963,45 +936,41 @@ $(document).ready(function() {
                 console.log("AJAX Error:", error);
             }
         });
-    });
-});
-
-
-
-$(document).ready(function() {
-    var busDataTable = $("#bus_listtable").DataTable({
-        dom: "Blfrtip",
-        buttons: [
-            {
-                extend: "copy",
-                className: "btn-sm"
-            },
-            {
-                extend: "csv",
-                className: "btn-sm"
-            },
-            {
-                extend: "excel",
-                className: "btn-sm"
-            },
-            {
-                extend: "pdfHtml5",
-                className: "btn-sm"
-            },
-            {
-                extend: "print",
-                className: "btn-sm"
-            },
-        ],
-        responsive: true,
-        "bDestroy": true, // Destroy the DataTable if it's already initialized
-    });
+ });
 
 
 $(document).on('click', '.bus_list', function () {
     let id = $(this).data('id');
     let fdate = $(this).data('fdate');
     let tdate = $(this).data('tdate');
+     busDataTable = $("#bus_listtable").DataTable({
+                dom: "Blfrtip",
+                "bDestroy": true,
+                buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "csv",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                ],
+                responsive: true
+            });
+
      if ($.fn.DataTable.isDataTable('#bus_listtable')) {
             busDataTable.destroy();
         }
@@ -1081,7 +1050,7 @@ $(document).on('click', '.bus_list', function () {
         }
     });
 });
-});
+
 
 
 $(document).ready(function() {
@@ -1613,6 +1582,8 @@ $("#regionid1").change(function () {
 });
 
 
+$(document).ready(function () {
+$("#depoid1").select2();
 var depo_listdataTable1;
 $("#depoid1").change(function () {
     var depoid = $('#depoid1').val();
@@ -1708,8 +1679,11 @@ $("#depoid1").change(function () {
 
     });
 });
+});
 
 
+$(document).ready(function () {
+$("#busstationid1").select2();
 var bus_listdataTable1;
 $("#busstationid1").change(function () {
     var busatationid = $('#busstationid1').val();
@@ -1792,6 +1766,8 @@ $("#busstationid1").change(function () {
 
     });
 });
+});
+
 
 
 $(document).ready(function() {

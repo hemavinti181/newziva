@@ -16541,7 +16541,7 @@ def bust_item_add_admin(request):
             return render(request, 'login1.html')
         elif response.status_code == 500:
             messages.error(request, 'Internal server error')
-            return redirect('bus_item_list_admin')
+            return redirect('stock_tranfer_admin')
         else:
             try:
                 data = response.json()
@@ -16579,8 +16579,7 @@ def bus_item_list_admin(request):
     if response.status_code == 200:
         data=response.json()
         wh_item_list=data['stocktransferitemlist']
-        return render(request,'stock_transfer/stock_transfer_admin.html',{'depotid':depotid,'busid1':busid1,'type':type1,'taxinvoice':bustaxinvoice,'wh_item_list':wh_item_list,'menuname':menuname,'wh':'active','status':'ok','response':'Bus200'})
-
+        return render(request,'stock_transfer/stock_transfer_admin.html',{'depotid':depotid,'busid1':busid1,'type':type1,'taxinvoice':bustaxinvoice,'bus_item_list':wh_item_list,'menuname':menuname,'wh':'active','status':'ok','response':'Bus200'})
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
@@ -18170,26 +18169,6 @@ def intconsumption_servicereport(request):
             data = response.json()
             wh_masterlist = data['warehouselist']
 
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
-        response = requests.request("POST", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            regionlist = data['regionlist']
-
-        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
-
-        payload = json.dumps({"accesskey": accesskey})
-        headers = {
-            'Content-Type': 'text/plain'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            depolist = data['depolist']
         if request.method == 'POST':
             url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-report.php"
 
@@ -18206,10 +18185,9 @@ def intconsumption_servicereport(request):
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                intercondepowiselist = data['intercondepowiselist']
+                intercondepowiselist = data['internalconsumptionlist']
                 return render(request, 'intconsumption/intconsumption_servicereport.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               'regionlist': regionlist, 'depolist': depolist,
                                "intercondepowiselist": intercondepowiselist})
             elif response.status_code == 400:
                 data = response.json()
@@ -18217,14 +18195,14 @@ def intconsumption_servicereport(request):
                     messages.error(request, data['message'])
                     return render(request, 'intconsumption/intconsumption_servicereport.html',
                                   {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                                   'regionlist': regionlist, 'depolist': depolist})
+                                 })
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
                 return render(request, 'intconsumption/intconsumption_servicereport.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               'regionlist': regionlist, 'depolist': depolist})
+                              })
         else:
             tdate = datetime.date.today()
             tdate = tdate.strftime("%Y-%m-%d")
@@ -18243,24 +18221,24 @@ def intconsumption_servicereport(request):
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                intercondepowiselist = data['intercondepowiselist']
+                intercondepowiselist = data['internalconsumptionlist']
                 return render(request, 'intconsumption/intconsumption_servicereport.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               'regionlist': regionlist, 'depolist': depolist,'intercondepowiselist':intercondepowiselist})
+                               'intercondepowiselist':intercondepowiselist})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
                     messages.error(request, data['message'])
                     return render(request, 'intconsumption/intconsumption_servicereport.html',
                                   {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                                   'regionlist': regionlist, 'depolist': depolist})
+                                  })
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
                 return render(request, 'intconsumption/intconsumption_servicereport.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               'regionlist': regionlist, 'depolist': depolist})
+                              })
     except:
         if response.status_code == 400:
             messages.error(request, data['message'])
