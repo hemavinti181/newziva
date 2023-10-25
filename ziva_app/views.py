@@ -14018,6 +14018,15 @@ def internal_consumption(request):
         data = response.json()
         depolist = data['depolist']
 
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        wh_masterlist = data['warehouselist']
+
         url = "http://13.235.112.1/ziva/mobile-api/noofbottleslist.php"
 
         payload = json.dumps({"accesskey": accesskey})
@@ -14040,17 +14049,17 @@ def internal_consumption(request):
                 if response.status_code == 200:
                     data = response.json()
                     busservicesupplylist = data['busservicesupplylist']
-                    return render(request,'intconsumption/internal_consumption.html',{'nobot':nobot,'busservicesupplylist':busservicesupplylist,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                    return render(request,'intconsumption/internal_consumption.html',{'nobot':nobot,'busservicesupplylist':busservicesupplylist,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate,'wh_masterlist':wh_masterlist})
                 elif response.status_code == 400:
                     data = response.json()
                     messages.error(request, data['message'])
                     return redirect('/login')
                 elif response.status_code == 500:
                     messages.error(request, 'Internal server error')
-                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate,'wh_masterlist':wh_masterlist})
                 else:
                     data = response.json()
-                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                    return render(request, 'intconsumption/internal_consumption.html',{'nobot':nobot,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate,'wh_masterlist':wh_masterlist})
         else:
             current_date = datetime.date.today()
             fdate = current_date - timedelta(days=current_date.weekday() + 7)
@@ -14070,7 +14079,7 @@ def internal_consumption(request):
                 busservicesupplylist = data['busservicesupplylist']
                 return render(request, 'intconsumption/internal_consumption.html',
                               {'nobot': nobot, 'busservicesupplylist': busservicesupplylist, "depolist": depolist,
-                               'menuname': menuname,'fdate':fdate,'tdate':tdate})
+                               'wh_masterlist':wh_masterlist,'menuname': menuname,'fdate':fdate,'tdate':tdate})
             elif response.status_code == 400:
                 data = response.json()
                 messages.error(request, data['message'])
@@ -14078,11 +14087,11 @@ def internal_consumption(request):
             elif response.status_code == 500:
                 messages.error(request, 'Internal server error')
                 return render(request, 'intconsumption/internal_consumption.html',
-                              {'nobot': nobot, "depolist": depolist, 'menuname': menuname,'fdate':fdate,'tdate':tdate})
+                              {'wh_masterlist':wh_masterlist,'nobot': nobot, "depolist": depolist, 'menuname': menuname,'fdate':fdate,'tdate':tdate})
             else:
                 data = response.json()
                 return render(request, 'intconsumption/internal_consumption.html',
-                              {'nobot': nobot, "depolist": depolist, 'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                              {'wh_masterlist':wh_masterlist,'nobot': nobot, "depolist": depolist, 'menuname':menuname,'fdate':fdate,'tdate':tdate})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -14500,9 +14509,18 @@ def returnsconsumption(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+    url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    data = response.json()
+    wh_masterlist = data['warehouselist']
     if request.method == 'POST':
-        menuname = request.session['mylist']
-        accesskey = request.session['accesskey']
+
         fdate = request.POST.get('fdate')
         tdate = request.POST.get('tdate')
         url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist.php"
@@ -14518,13 +14536,19 @@ def returnsconsumption(request):
         if response.status_code == 200:
             data = response.json()
             busservicesupplylist = data['busservicesupplylist']
-            return render(request,'intconsumption/return_consumption.html', {'menuname': menuname,'data':busservicesupplylist,'fdate':fdate,'tdate':tdate})
+            return render(request,'intconsumption/return_consumption.html', {'wh_masterlist':wh_masterlist,'menuname': menuname,'data':busservicesupplylist,'fdate':fdate,'tdate':tdate})
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request,data['message'])
-            return redirect('/login')
+            if data['message'] == 'Sorry! some details are missing':
+                response = response.status_code
+                data['status'] = response
+                return render(request, 'intconsumption/return_consumption.html',
+                              {'menuname': menuname, 'fdate': fdate, 'tdate': tdate,'wh_masterlist':wh_masterlist})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname})
+            return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname,'wh_masterlist':wh_masterlist,'wh_masterlist':wh_masterlist,})
     else:
         current_date = datetime.date.today()
         fdate = current_date - timedelta(days=current_date.weekday() + 7)
@@ -14545,17 +14569,23 @@ def returnsconsumption(request):
             data = response.json()
             busservicesupplylist = data['busservicesupplylist']
             return render(request, 'intconsumption/return_consumption.html',
-                          {'menuname': menuname, 'data': busservicesupplylist,'fdate':fdate,'tdate':tdate})
+                          {'wh_masterlist':wh_masterlist,'menuname': menuname, 'data': busservicesupplylist,'fdate':fdate,'tdate':tdate})
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return redirect('/login')
+            if data['message'] == 'Sorry! some details are missing':
+                response = response.status_code
+                data['status'] = response
+                return render(request, 'intconsumption/return_consumption.html',
+                              {'wh_masterlist':wh_masterlist,'menuname': menuname,'fdate': fdate, 'tdate': tdate})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         elif response.status_code == 503:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname,'fdate':fdate,'tdate':tdate})
+            return render(request, 'intconsumption/return_consumption.html', {'wh_masterlist':wh_masterlist,'menuname': menuname,'fdate':fdate,'tdate':tdate})
         else:
-            return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname})
+            return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname,'wh_masterlist':wh_masterlist,})
 
 
 
@@ -14894,6 +14924,8 @@ def get_sms(request):
         if response.status_code == 400:
             return redirect('/login')
     return redirect('/internal_consumption')
+
+
 def submitreturn_sms(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')

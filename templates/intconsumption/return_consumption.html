@@ -26,19 +26,52 @@
                                			<!-- Search Filter -->
 						<form  method="POST" action="/returnsconsumption"  id="myForm" enctype="multipart/form-data">
 									{% csrf_token %}
-                            <div class="col-sm-3 col-md-3 form-group has-feedback">
+                            <div class="col-sm-2 col-md-2 form-group has-feedback">
 									<label class="focus-label">from </label>
 									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
                                    <input type="hidden" name="fdate_hidden" id="fdate_hidden">
 							</div>
-                             <div class="col-sm-3 col-md-3 form-group has-feedback">
+                             <div class="col-sm-2 col-md-2 form-group has-feedback">
 									<label class="focus-label">To</label>
 									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
                                    <input type="hidden" name="tdate_hidden" id="tdate_hidden">
 							</div>
-                             <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
-                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>-->
+                                    <div  class="col-md-2  form-group has-feedback">
+													<label> Warehouse</label>
+                                         <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+                                         </select>
+											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
+												<select class="form-control" name="warehouseid1" id="warehouseid1">
+													<option value="All">All</option>
+													{% for data1 in wh_masterlist %}
+															{% if data1.status == 'Active' %}
+                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif  %}
+                                                     {% endfor %}
+                                                </select>
+                                    </div>
+											<div  class="col-md-2  form-group has-feedback">
+													<label> Region</label>
+                                              <select class="form-control" name="regionid2" id="regionid2" hidden>
+                            		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+												</select>
+											 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
+												<select class="form-control" name="regionid1" id="regionid1">
+													<option value="">select region</option>
+												</select>
+										    </div>
+											<div  class="col-md-2  form-group has-feedback">
+                                                  <select class="form-control" name="depoid2" id="depoid2"  hidden>
+                            		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
+												</select>
+													<label> Depot</label>
+                                                 <input type="hidden" name="deponame1" id="deponame1" value="{{ request.POST.deponame1 }}" />
+                                                    <select class="form-control" name="depoid1" id="depoid1">
+                                                        <option value="">select depot</option>
+                                                    </select>
+                                            </div>
+
                         </form>
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
@@ -62,7 +95,7 @@
                                     <th>OPRS</th>
                                     <th>Bottles</th>
                                     <th>Tickets</th>
-                                    <!--<th>Bottles Returned</th>-->
+                                    <th>Bottles Returned</th>
                                     <th>Shortage</th>
                                     <th>Vehical</th>
                                     <th>Staff(1)</th>
@@ -85,15 +118,14 @@
                               <td>{{ data.deponame }}</td>
                                 <td>{{ data.created_on}} {{ data.departure_time }}</td>
                               <td>{{ data.modified_on }}</td>
-                                <td><a href="{{ data.ticket_photo }}" style="color:#075ab3;" target="_blank">{{ data.bus_service_no }}</td>
-                                <td>{{ data.oprs }}</td>
-                              <td>{{ data.noofbottles_recieve }}</td>
+                                <td><a href="{{ data.ticket_photo }}" style="color:#075ab3;" target="_blank">{{ data.bus_service_no }}</td><td>{{ data.oprs }}</td>
+                                <td>{{ data.noofbottles_recieve }}</td>
                               <td>{{ data.no_of_tickets_consumed }}</td>
-                              <!--<td>{{ data.return_no_of_bottles }}</td>-->
+                                <td>{{ data.return_no_of_bottles }}</td>
                                 <td>{{ data.shortage }}</td>
                                 <td>{{ data.vehicleno }}</td>
                                 <td>{{ data.return_staffno }}</td>
-                              <td>{{ data.return_drivername }}</td>
+                                 <td>{{ data.return_drivername }}</td>
                                 <td>{{ data.staff1_shortage }}</td>
                                 <td>{{ data.return_staffno_two }}</td>
                                 <td>{{ data.return_drivername_two }}</td>
@@ -133,6 +165,94 @@
      document.getElementById('tdate').addEventListener('change', function() {
         var form = document.getElementById('myForm');
         form.submit();
+    });
+     $("#warehouseid1").change(function() {
+        	var warehousename = $(this).find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storeregion" %}',
+            	data: {
+                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#regionid1").empty();
+                	$.each(obj, function (index, item) {
+                    $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#regionid1").change(function() {
+    		var warehousename = $('#warehouseid1').find(":selected").text();
+        	var regionname = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storedepo" %}',
+            	data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#depoid1").empty();
+                	$.each(obj, function (index, item) {
+                    $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+
+    	$(document).ready(function() {
+              var warehousename = $("#warehouseid2").find(":selected").text();
+
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "get_storeregion" %}',
+                    data: {
+                        'warehouse':warehousename,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function(data) {
+                        var obj = data.data.dropdownlist
+                        if (obj) {
+                            $("#regionid1").empty();
+
+                            $.each(obj, function(index, item) {
+                            $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                             var optionValue = $("#regionid2").val();
+                            $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                        }
+                    }
+                });
+        });
+
+  $(document).ready(function() {
+    var warehousename = $("#warehouseid2").find(":selected").text();
+    var regionname = $("#regionid2").val();
+    $.ajax({
+        type: "POST",
+        url: '{% url "get_storedepo" %}',
+      data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+        success: function(data) {
+            var obj = data.data.dropdownlist
+            if (obj) {
+                $("#depoid1").empty();
+
+                $.each(obj, function(index, item) {
+                    $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                });
+                 var optionValue = $("#depoid2").val();
+                 $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+            }
+        }
+      });
     });
 </script>
 {% endblock %}

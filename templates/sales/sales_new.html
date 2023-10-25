@@ -65,8 +65,8 @@
 
 
                                                     {% if request.session.displayrole == 'BUS STATION CONTROLLER' %}
-                                                         <input type="text"  class="form-control" name="deponame"  value="{{ busdeponame }}"  required/>
-                                                        <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}" />
+                                                         <input type="text"  class="form-control" name="deponame"  value="{{ busdeponame }}"  readonly/>
+                                                        <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}"  />
                                                     {% else %}
                                                      <input type="hidden" name="deponame" id="deponame" />
                                                        <input type="hidden" name="depoid1" id="depoid1"  value="{{  deponame }}" />

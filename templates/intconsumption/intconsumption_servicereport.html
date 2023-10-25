@@ -65,24 +65,13 @@
 												</select>
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" value="{{ request.POST.deponame1 }}" />
-												<select class="form-control" name="depoid1" id="depoid1">
-													<option value="">select depot</option>
+												<select class="form-control select2" name="depoid1" id="depoid1">
+													<option value="">All</option>
 												</select>
 
                             </div>
-
-										<!--<div  class="col-md-2  form-group has-feedback">
-                                             <input type="hidden" name="busstationid2" id="busstationid2" value="{{ request.POST.busstationid1 }}" />
-													<label> Bus Station</label>
-											 <input type="hidden" name="busstationname1" id="busstationname1" />
-												<select class="form-control" name="busstationid1" id="busstationid1">
-													<option value=""> bus station</option>
-												</select>
-										</div>
-                               <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-                                       </div>-->
                         </form>
+
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_content">
@@ -152,9 +141,16 @@
 
 <script>
 
-  $("#warehouseid1, #regionid1, #depoid1").change(function() {
+  $("#warehouseid1, #regionid1").change(function() {
     var form = document.getElementById("myform");
     form.submit();
+  });
+
+  $(document).ready(function () {
+    $('#depoid1').select2();
+    $('#depoid1').on('change', function () {
+        $('#myform').submit(); // Submit the form when an option is changed
+    });
   });
 
   $("#start-date,#end-date").change(function() {
@@ -165,6 +161,7 @@
           form.submit();
         }
   });
+
     $("#warehouseid1").change(function() {
       var selectedOptionText = $('#warehouseid1').find(":selected").text();
       $("#warehousename1").val(selectedOptionText);
@@ -265,7 +262,6 @@
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
-
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });

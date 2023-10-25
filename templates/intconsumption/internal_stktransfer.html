@@ -23,7 +23,7 @@
 										{% csrf_token %}
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Depot *</label>
-                                            <input type="text"  name="deponame1" class="form-control" id="deponame1" value="{{ request.session.deponame }}"  />
+                                            <input type="text"  name="deponame1" class="form-control" id="deponame1" value="{{ request.session.deponame }}"  readonly/>
                                         </div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>select stockpoint *</label>
