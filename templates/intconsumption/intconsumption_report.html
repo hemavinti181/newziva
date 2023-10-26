@@ -28,11 +28,11 @@
 
                              <div class="col-md-2  form-group has-feedback" id="date-range-fields" >
                               <label for="start-date">From Date</label>
-                              <input type="date" name="fdate" id="start-date" class="form-control" value="{{ request.POST.fdate }}">
+                              <input type="date" name="fdate" id="start-date" class="form-control" value="{{ fdate }}">
                             </div>
                               <div class="col-md-2  form-group has-feedback" id="tdate" >
                                   <label  for="end-date">To Date</label>
-                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
+                              <input type="date" id="end-date" name="ldate" class="form-control" value="{{ tdate }}">
                             </div>
                             	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
@@ -41,7 +41,7 @@
                                          </select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value="All">All</option>
+													<option value="All">select warehouse</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -95,7 +95,7 @@
                                     <th rowspan="3">Depot</th>
                                     <th colspan="3" style="text-align:center;">No Of Services</th>
                                     <th colspan="6" style="text-align:center;">Consumption</th>
-                                    <th rowspan="3">Present day stock available</th>
+                                    <th rowspan="3">Present day stock available(Cases)</th>
                                     <th rowspan="3">Stock(cases) Available Days</th>
                                   <th rowspan="3">Average Consumption</th>
                         </tr>
@@ -165,7 +165,7 @@
         var form = document.getElementById("myform");
         var startDateInput = document.getElementById("start-date");
         var endDateInput = document.getElementById("end-date");
-        if (startDateInput.value && endDateInput.value) {
+        if (startDateInput.value || endDateInput.value) {
           form.submit();
         }
   });

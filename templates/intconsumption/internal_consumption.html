@@ -54,40 +54,42 @@
 									<label class="focus-label">To</label>
 									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
 							</div>
-							<div  class="col-md-2  form-group has-feedback">
-													<label> Warehouse</label>
-                                         <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
-                            		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
-                                         </select>
-											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
-												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value="All">All</option>
-													{% for data1 in wh_masterlist %}
-                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
-                                                     {% endfor %}
-                                                </select>
-                                </div>
-											<div  class="col-md-2  form-group has-feedback">
-													<label> Region</label>
-                                              <select class="form-control" name="regionid2" id="regionid2" hidden>
-                            		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
-												</select>
-											 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
-												<select class="form-control" name="regionid1" id="regionid1">
-													<option value="">select region</option>
-												</select>
-										    </div>
-											<div  class="col-md-2  form-group has-feedback">
-                                                  <select class="form-control" name="depoid2" id="depoid22"  hidden>
-                            		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
-												</select>
-													<label> Depot</label>
-											 <input type="hidden" name="deponame1" id="deponame11" value="{{ request.POST.deponame1 }}" />
-												<select class="form-control select2" name="depoid1" id="depoid11">
-													<option value="All">All</option>
-												</select>
+							{% if request.session.role == 'Admin' %}
+									<div  class="col-md-2  form-group has-feedback">
+															<label> Warehouse</label>
+												 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+																<option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+												 </select>
+													 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
+														<select class="form-control" name="warehouseid1" id="warehouseid1">
+															<option value="All">All</option>
+															{% for data1 in wh_masterlist %}
+																<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+															 {% endfor %}
+														</select>
+										</div>
+													<div  class="col-md-2  form-group has-feedback">
+															<label> Region</label>
+													  <select class="form-control" name="regionid2" id="regionid2" hidden>
+																<option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+														</select>
+													 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
+														<select class="form-control" name="regionid1" id="regionid1">
+															<option value="All">All</option>
+														</select>
+													</div>
+													<div  class="col-md-2  form-group has-feedback">
+														  <select class="form-control" name="depoid2" id="depoid22"  hidden>
+																<option value="{{ request.POST.depoid11 }}">{{ request.POST.deponame11 }}</option>
+														</select>
+															<label> Depot</label>
+													 <input type="hidden" name="deponame11" id="deponame11" value="{{ request.POST.deponame1 }}" />
+														<select class="form-control select2" name="depoid11" id="depoid11">
+															<option value="All">All</option>
+														</select>
 
-                            </div>
+									</div>
+							{% endif %}
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>-->
@@ -682,6 +684,7 @@ $("#deletesono").val(id1);
 }
 
 
+
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
     		 var $serviceSelect = $("#service");
@@ -715,6 +718,8 @@ $("#depoid1").change(function() {
 				}
 			});
 });
+
+
 
 
 $("#depoid1").change(function() {
@@ -1081,6 +1086,7 @@ $("#depoid1").change(function() {
   var selectedOptionText = $('#depoid1').find(":selected").text();
   $("#deponame1").val(selectedOptionText);
 });
+
  $(document).ready(function() {
   var selectedOptionText = $('#supervisorid').find(":selected").text();
   $("#supervisor").val(selectedOptionText);
@@ -1178,6 +1184,7 @@ $('#tickets').on('input', function() {
     var form = document.getElementById("myForm");
     form.submit();
   });
+
   });
   $("#fdate,#tdate").change(function() {
         var form = document.getElementById("myForm");
@@ -1253,7 +1260,7 @@ $(document).ready(function () {
             var serviceid1 = $('#service_id').val();
             var mobile = $('#mobile1').val();
             $.ajax({
-               url: "{% url 'get_sms' %}",
+               url: "{% url 'return_otp' %}",
                 type: 'POST',
                 data: {
                   'mobile': mobile,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
@@ -1742,7 +1749,6 @@ $(document).ready(function() {
 
     	$(document).ready(function() {
               var warehousename = $("#warehouseid2").find(":selected").text();
-
                 $.ajax({
                     type: "POST",
                     url: '{% url "get_storeregion" %}',
@@ -1757,14 +1763,18 @@ $(document).ready(function() {
                             $.each(obj, function(index, item) {
                             $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                             });
-                             var optionValue = $("#regionid2").val();
+                            var optionValue = $("#regionid2").val();
                             $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+
+
                         }
                     }
                 });
         });
 
+
   $(document).ready(function() {
+
     var warehousename = $("#warehouseid2").find(":selected").text();
     var regionname = $("#regionid2").val();
     $.ajax({
@@ -1780,13 +1790,16 @@ $(document).ready(function() {
                 $.each(obj, function(index, item) {
                     $("#depoid11").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
-                 var optionValue = $("#depoid2").val();
-                 $("#depoid11").find("option[value='" + optionValue + "']").prop("selected", true);
+
             }
         }
       });
     });
 
+$(document).ready(function() {
+	 var optionValue = $("#warehouseid2").val();
+     $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
+});
 </script>
 {% endblock %}
 

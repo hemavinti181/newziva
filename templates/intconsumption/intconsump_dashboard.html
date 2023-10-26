@@ -35,8 +35,30 @@
                    <div class="x_panel">
 				      	<form  method="POST" action=""   enctype="multipart/form-data">
 											{% csrf_token %}
-
-                            	<div  class="col-md-3 col-sm-3  form-group has-feedback">
+                                        <div  class="col-md-3  form-group has-feedback">
+															<label> Warehouse</label>
+												 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+																<option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+												 </select>
+													 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
+														<select class="form-control" name="warehouseid1" id="warehouseid1">
+															<option value="">select warehouse</option>
+															{% for data1 in wh_masterlist %}
+																<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+															 {% endfor %}
+														</select>
+										</div>
+                                        <div  class="col-md-3  form-group has-feedback">
+															<label> Region</label>
+													  <select class="form-control" name="regionid2" id="regionid2" hidden>
+																<option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+														</select>
+													 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
+														<select class="form-control" name="regionid1" id="regionid1">
+															<option value="">select region</option>
+														</select>
+                                        </div>
+                            	            <div  class="col-md-3 col-sm-3  form-group has-feedback">
 													<label> Depot</label>
 												 <select class="form-control select2" name="depoid" id="depoid" required>
                                                      <option value="All">All</option>
@@ -46,7 +68,7 @@
                                                         {% endif %}
                                                     {% endfor %}
                                                 </select>
-                                </div>
+                                            </div>
 
 
                         </form>
@@ -934,6 +956,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 var depoid = $('#depoid').val();
+alert(depoid)
 $.ajax({
   type: "POST",
   url: "{% url 'internal_consump_stock' %}",
@@ -968,7 +991,48 @@ $.ajax({
   }
 });
 });
+$("#warehouseid1").change(function() {
+        	var warehousename = $(this).find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storeregion" %}',
+            	data: {
+                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+					 $("#regionid1").empty();
+                	$.each(obj, function (index, item) {
+                    $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+$(document).ready(function() {
+              var warehousename = $("#warehouseid2").find(":selected").text();
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "get_storeregion" %}',
+                    data: {
+                        'warehouse':warehousename,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function(data) {
+                        var obj = data.data.dropdownlist
+                        if (obj) {
+                            $("#regionid1").empty();
+                            $.each(obj, function(index, item) {
+                            $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                            var optionValue = $("#regionid2").val();
+                            $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
 
+                        }
+                    }
+                });
+        });
 
 $(document).ready(function() {
 $('#depoid').select2();
@@ -1009,6 +1073,86 @@ $.ajax({
     // Handle the error case here, if required
   }
 });
+});
+});
+
+
+$('#warehouseid1').change(function() {
+var warehouseid1 = $('#warehouseid1').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'internal_consump_stock' %}",
+  data: {
+  'warehouseid1':warehouseid1, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     message = data.data.message
+      console.log(data);
+
+      if(message != "Data found")
+      {
+       $("#lblNoStock").html(data.message);
+       $("#lblNoStock").show();
+       $("#echart-depot1").hide();
+      }else{
+         updateEchartPieChart1(total);
+      }
+      for (var i = 0; i < total.length; i++) {
+                  var item = total[i];
+                  $('.stock_cases').text(item.stock_cases);
+                  $('.stock_botteles').text(item.stock_botteles);
+                  $('.consumption_cases').text(item.consumption_cases);
+                  $('.consumption_botteles').text(item.consumption_botteles);
+                  $('.indays').text(item.indays);
+
+      }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+
+$('#regionid1').change(function() {
+var regionid1 = $('#regionid1').val();
+$.ajax({
+  type: "POST",
+  url: "{% url 'internal_consump_stock' %}",
+  data: {
+  'regionid1':regionid1, 'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+     var total =  data.data.totallist;
+     message = data.data.message
+      console.log(data);
+
+      if(message != "Data found")
+      {
+       $("#lblNoStock").html(data.message);
+       $("#lblNoStock").show();
+       $("#echart-depot1").hide();
+      }else{
+         updateEchartPieChart1(total);
+      }
+      for (var i = 0; i < total.length; i++) {
+                  var item = total[i];
+                  $('.stock_cases').text(item.stock_cases);
+                  $('.stock_botteles').text(item.stock_botteles);
+                  $('.consumption_cases').text(item.consumption_cases);
+                  $('.consumption_botteles').text(item.consumption_botteles);
+                  $('.indays').text(item.indays);
+
+      }
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
 });
 });
 
