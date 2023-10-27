@@ -21,10 +21,23 @@
 									<br />
 									<form class="form-label-left input_mask"  method="POST" action="/internal_stktransfer"   enctype="multipart/form-data">
 										{% csrf_token %}
-                                        <div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Depot *</label>
-                                            <input type="text"  name="deponame1" class="form-control" id="deponame1" value="{{ request.session.deponame }}"  readonly/>
-                                        </div>
+                                        {% if request.session.role == 'Admin' %}
+                                            <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                                <label>Depot *</label>
+                                                 <input type="hidden" name="depot_name" id="depot_name" />
+										    	 <select class="form-control items" name="depotid" id="depotid" required>
+                                                     <option value="">select depot</option>
+                                                     {% for data in depolist %}
+                                                            <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                     {% endfor %}
+                                                </select>
+                                            </div>
+                                        {% else %}
+                                            <div class="col-md-3 col-sm-3  form-group has-feedback">
+                                                <label>Depot *</label>
+                                                <input type="text"  name="deponame1" class="form-control" id="deponame1" value="{{ request.session.deponame }}"  readonly/>
+                                            </div>
+                                        {% endif %}
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>select stockpoint *</label>
                                                    <input type="hidden" name="stockpoint_name" id="stockpoint_name" />
@@ -82,10 +95,37 @@ $("#stockpoint").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#stockpoint_name").val(selectedOptionText);
 });
+
+$("#depotid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#depot_name").val(selectedOptionText);
+});
 $('#quantity').on('input', function()  {
     	    val  = $("#quantity").val();
             val2 =    (val * 24)
             $("#nob").val(val2);
     });
+
+    $("#depotid").change(function() {
+    		var depotid = $('#depotid').val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_stocklist" %}',
+            	data: {
+                	'depotid':depotid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.stockpointlist
+					if(obj) {
+			 		$("#stockpoint").empty();
+                	$.each(obj, function (index, item) {
+                    $("#stockpoint").append("<option value='" + item.busstationid+ "'>" + item.busstationname+ "</option>");
+                     $("#stockpoint_name").val(item.busstationname);
+				});
+
+                	}
+             	}
+        	});
+    	});
 </script>
 {% endblock %}

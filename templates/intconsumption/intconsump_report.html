@@ -67,15 +67,15 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
-                                    <!--<th>Depot</th>-->
+                                    <th>Depot</th>
                                     <th>Date</th>
-                                    <th>Service No</th>
+                                    <th>Service</th>
                                     <th>Route</th>
                                      <th>Type Of Bus</th>
                                     <th>Staff Name(1)</th>
-                                    <th>Staff Id(1)</th>
+                                    <th>Staff(1)</th>
                                     <th>Staff Name(2)</th>
-                                    <th>Staff Id(2)</th>
+                                    <th>Staff(2)</th>
                                     <th>Bootles Issued</th>
                                     <th>No of tickets</th>
                                     <th>Bottles Returned</th>
@@ -87,6 +87,7 @@
                             {% for data in data %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
+                                <td>{{ data.deponame }}</td>
                                 <td>{{ data.created_on }}</td>
                                 <td>{{ data.bus_service_no }}</td>
                                 <td>{{ data.route }}</td>

@@ -7301,7 +7301,7 @@ def get_sale_item_data(request):
     headers = {
         'Content-Type': 'application/json'
     }
-    print(payload)
+
     if response.status_code == 200:
         data = requests.request("POST", url, headers=headers, data=payload)
         data2 = data.json()
@@ -17363,59 +17363,125 @@ def internal_stktransfer(request):
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
-        url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-stockpoints.php"
+        role = request.session['role']
 
-        payload = json.dumps({
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
-            "accesskey": accesskey
-        })
+        payload = json.dumps({"accesskey": accesskey})
         headers = {
-            'Content-Type': 'application/json'
-        }
+                'Content-Type': 'text/plain'
+            }
         response = requests.request("GET", url, headers=headers, data=payload)
-        data1 = response.json()
-        stockpointlist = data1['stockpointlist']
-        if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/stock-transfer-internal.php"
+        data = response.json()
+        depolist = data['depolist']
+
+
+        if role == 'Admin':
+                url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+                payload = json.dumps({"accesskey": accesskey})
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                data = response.json()
+                depolist = data['depolist']
+                if request.method == 'POST':
+                    url = "http://13.235.112.1/ziva/mobile-api/stock-transfer-internal-admin.php"
+
+                    payload = json.dumps({
+
+                        "accesskey": accesskey,
+                        "fromname": request.POST.get('depot_name'),
+                        "fromid": request.POST.get('depotid'),
+                        "toname": request.POST.get('stockpoint_name'),
+                        "toid": request.POST.get('stockpoint'),
+                        "quantity": request.POST.get('quantity'),
+                        "noofbottles":request.POST.get('nob')
+                    })
+                    headers = {
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.request("GET", url, headers=headers, data=payload)
+                    if response.status_code == 200:
+                        data = response.json()
+                        messages.success(request, data['message'])
+                        return render(request, 'intconsumption/internal_stktransfer.html',
+                                      {"menuname": menuname, 'depolist':depolist})
+                    elif response.status_code == 400:
+                        data = response.json()
+                        if data['message'] == 'Sorry! some details are missing':
+                            messages.error(request, data['message'])
+                            return render(request, 'intconsumption/internal_stktransfer.html',
+                                          {"menuname": menuname, 'depolist':depolist})
+                        else:
+                            messages.error(request, data['message'])
+                            return redirect('/login')
+                    elif response.status_code == 503:
+                        data = response.json()
+                        messages.error(request, data['message'])
+                        return render(request, 'intconsumption/internal_stktransfer.html',
+                                      {"menuname": menuname, 'depolist':depolist})
+                else:
+                    return render(request,'intconsumption/internal_stktransfer.html',{"menuname":menuname,'depolist':depolist})
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-stockpoints.php"
 
             payload = json.dumps({
-
                 "accesskey": accesskey,
-                "toname": request.POST.get('stockpoint_name'),
-                "toid": request.POST.get('stockpoint'),
-                "quantity": request.POST.get('quantity'),
-                "noofbottles":request.POST.get('nob')
+                "depoid": ""
             })
+
             headers = {
                 'Content-Type': 'application/json'
             }
             response = requests.request("GET", url, headers=headers, data=payload)
-            if response.status_code == 200:
-                data = response.json()
-                messages.success(request, data['message'])
-                return render(request, 'intconsumption/internal_stktransfer.html',
-                              {"menuname": menuname, 'stockpointlist': stockpointlist})
-            elif response.status_code == 400:
-                data = response.json()
-                if data['message'] == 'Sorry! some details are missing':
+            data1 = response.json()
+            stockpointlist = data1['stockpointlist']
+
+            if request.method == 'POST':
+                url = "http://13.235.112.1/ziva/mobile-api/stock-transfer-internal.php"
+
+                payload = json.dumps({
+
+                    "accesskey": accesskey,
+                    "toname": request.POST.get('stockpoint_name'),
+                    "toid": request.POST.get('stockpoint'),
+                    "quantity": request.POST.get('quantity'),
+                    "noofbottles": request.POST.get('nob')
+                })
+                headers = {
+                    'Content-Type': 'application/json'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    messages.success(request, data['message'])
+                    return render(request, 'intconsumption/internal_stktransfer.html',
+                                  {"menuname": menuname, 'stockpointlist': stockpointlist, 'depolist': depolist})
+                elif response.status_code == 400:
+                    data = response.json()
+                    if data['message'] == 'Sorry! some details are missing':
+                        messages.error(request, data['message'])
+                        return render(request, 'intconsumption/internal_stktransfer.html',
+                                      {"menuname": menuname, 'stockpointlist': stockpointlist})
+                    else:
+                        messages.error(request, data['message'])
+                        return redirect('/login')
+                elif response.status_code == 503:
+                    data = response.json()
                     messages.error(request, data['message'])
                     return render(request, 'intconsumption/internal_stktransfer.html',
                                   {"menuname": menuname, 'stockpointlist': stockpointlist})
-                else:
-                    messages.error(request, data['message'])
-                    return redirect('/login')
-            elif response.status_code == 503:
-                data = response.json()
-                messages.error(request, data['message'])
+            else:
                 return render(request, 'intconsumption/internal_stktransfer.html',
                               {"menuname": menuname, 'stockpointlist': stockpointlist})
-        else:
-            return render(request,'intconsumption/internal_stktransfer.html',{"menuname":menuname,'stockpointlist':stockpointlist})
     except:
         if response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
             return redirect('/login')
+    return render(request, 'intconsumption/internal_stktransfer.html', {"menuname": menuname})
 
 def delete_sales(request):
     if 'accesskey' not in request.session:
@@ -18459,3 +18525,37 @@ def intconsumption_servicereport(request):
             messages.error(request, data['message'])
             return redirect('/login')
     return render(request,'intconsumption/intconsumption_servicereport.html',{"menuname":menuname})
+
+def get_stocklist(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
+
+    url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-stockpoints.php"
+
+    payload = json.dumps({"accesskey": accesskey,
+                          "depoid": request.POST.get('depotid')})
+    headers = {
+        'Content-Type': 'text/plain'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return render(request, 'intconsumption/internal_stktransfer.html', {'menuname': menuname})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+        except:
+            messages.error(request, response.text)
+        return render(request, 'intconsumption/internal_stktransfer.html', {'menuname': menuname})

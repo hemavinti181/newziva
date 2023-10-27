@@ -354,8 +354,9 @@ urlpatterns = [
     path('depotinventory_search',views.depotinventory_search,name='depotinventory_search'),
     path('depot_item_list_admin',views.depot_item_list_admin,name='depot_item_list_admin'),
     path('complete_depostk_admin',views.complete_depostk_admin,name='complete_depostk_admin'),
-    path('return_otp',views.return_otp,name='return_otp')
-
+    path('return_otp',views.return_otp,name='return_otp'),
+    path('get_stocklist',views.get_stocklist,name='get_stocklist'),
+    #path('internal_stktransfer_admin',views.internal_stktransfer_admin,name='internal_stktransfer'),
 ]
 
 
