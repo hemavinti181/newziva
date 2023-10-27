@@ -42,7 +42,7 @@
 												 </select>
 													 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
 														<select class="form-control" name="warehouseid1" id="warehouseid1">
-															<option value="">select warehouse</option>
+															<option value="All">All</option>
 															{% for data1 in wh_masterlist %}
 																<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
 															 {% endfor %}
@@ -939,6 +939,82 @@ $("#depoid").change(function() {
 });
 });
 
+
+$("#warehouseid1").change(function() {
+ warehouseid1 = $('#warehouseid1').find(":selected").text();
+ fdate = $('#fdate').val();
+ tdate = $('#tdate').val();
+  $.ajax({
+  type: "POST",
+  url: "{% url 'intconsump_dashboard_data' %}",
+  data: {
+  'fdate':fdate,'cdate':tdate,'warehousename':warehouseid1, 'csrfmiddlewaretoken': '{{ csrf_token }}',
+  },
+  success: function(data) {
+     var itemslist =  data.data.consumptionlist;
+     message = data.data.message
+     console.log(message);
+      if(message != "data found")
+      {
+       $("#lblNoStock").show();
+       $("#echart-depot1").hide();
+      }else{
+       updateEchartPieChart(itemslist);
+      }
+
+                     $('.issued_bottles').text(itemslist[0].issued);
+                    $('.consumed_botteles').text(itemslist[0].no_of_services);
+                    $('.shortage').text(itemslist[0].shortage);
+                    $('.tobe_return').text(itemslist[0].to_be_returned);
+                    $('.passenger').text(itemslist[0].no_of_tickets);
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+
+$("#regionid1").change(function() {
+ regionid1 = $('#regionid1').find(":selected").text();
+ fdate = $('#fdate').val();
+ tdate = $('#tdate').val();
+  $.ajax({
+  type: "POST",
+  url: "{% url 'intconsump_dashboard_data' %}",
+  data: {
+  'fdate':fdate,'cdate':tdate,'regionname':regionid1, 'csrfmiddlewaretoken': '{{ csrf_token }}',
+  },
+  success: function(data) {
+     var itemslist =  data.data.consumptionlist;
+     message = data.data.message
+     console.log(message);
+      if(message != "data found")
+      {
+       $("#lblNoStock").show();
+       $("#echart-depot1").hide();
+      }else{
+       updateEchartPieChart(itemslist);
+      }
+
+                     $('.issued_bottles').text(itemslist[0].issued);
+                    $('.consumed_botteles').text(itemslist[0].no_of_services);
+                    $('.shortage').text(itemslist[0].shortage);
+                    $('.tobe_return').text(itemslist[0].to_be_returned);
+                    $('.passenger').text(itemslist[0].no_of_tickets);
+
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
+
+
+
 $(document).ready(function() {
     $("#checked1").click(function() {
       if ($(this).is(":checked")) {
@@ -956,7 +1032,6 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 var depoid = $('#depoid').val();
-alert(depoid)
 $.ajax({
   type: "POST",
   url: "{% url 'internal_consump_stock' %}",
@@ -1009,7 +1084,8 @@ $("#warehouseid1").change(function() {
                 	}
              	}
         	});
-    	});
+});
+
 $(document).ready(function() {
               var warehousename = $("#warehouseid2").find(":selected").text();
                 $.ajax({

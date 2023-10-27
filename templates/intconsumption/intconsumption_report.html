@@ -41,7 +41,7 @@
                                          </select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value="All">select warehouse</option>
+													<option value="">selcet warehouse</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -57,6 +57,9 @@
 											 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
 												<select class="form-control" name="regionid1" id="regionid1">
 													<option value="">select region</option>
+                                                    {% for data1 in regionlist %}
+                            		                    <option value="{{ data1.region_id }}">{{ data1.regionname }}</option>
+                                                     {% endfor %}
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
@@ -66,7 +69,10 @@
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" value="{{ request.POST.deponame1 }}" />
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value="">select depot</option>
+													<option value="All">All</option>
+                                                    {% for data1 in depolist %}
+                            		                    <option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
+                                                     {% endfor %}
 												</select>
 
                             </div>
@@ -156,8 +162,21 @@
 </div>
 
 <script>
-
-  $("#warehouseid1, #regionid1,#depoid1").change(function() {
+  $("#warehouseid1").change(function() {
+     $("#depoid1").val('');
+     $("#regionid1").val('');
+    var form = document.getElementById("myform");
+    form.submit();
+  });
+  $("#regionid1").change(function() {
+    $("#depoid1").val('');
+    $("#warehouseid1").val('');
+    var form = document.getElementById("myform");
+    form.submit();
+  });
+  $("#depoid1").change(function() {
+     $("#warehouseid1").val('');
+    $("#regionid1").val('');
     var form = document.getElementById("myform");
     form.submit();
   });
@@ -169,18 +188,20 @@
           form.submit();
         }
   });
-    $("#warehouseid1").change(function() {
+  $("#warehouseid1").change(function() {
       var selectedOptionText = $('#warehouseid1').find(":selected").text();
       $("#warehousename1").val(selectedOptionText);
-     });
-     $("#regionid1").change(function() {
+
+  });
+  $("#regionid1").change(function() {
       selectedOptionText2 = $('#regionid1').find(":selected").text();
       $("#regionname1").val(selectedOptionText);
-     });
-     $("#depoid1").change(function() {
+
+  });
+  $("#depoid1").change(function() {
           selectedOptionText3 = $('#depoid1').find(":selected").text();
           $("#deponame1").val(selectedOptionText);
-     });
+  });
     $(document).ready(function() {
        var optionValue = $("#warehouseid2").val();
         $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
@@ -188,97 +209,6 @@
         $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
           var optionValue = $("#depoid2").val();
         $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
-     });
-     $("#warehouseid1").change(function() {
-        	var warehousename = $(this).find(":selected").text();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_storeregion" %}',
-            	data: {
-                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#regionid1").empty();
-			 		$("#regionid1").append("<option  value=''>Choose region</option>");
-                	$.each(obj, function (index, item) {
-                    $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-                	}
-             	}
-        	});
-    	});
-    	$("#regionid1").change(function() {
-    		var warehousename = $('#warehouseid1').find(":selected").text();
-        	var regionname = $(this).val();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_storedepo" %}',
-            	data: {
-                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value=''>Choose Depo</option>");
-                	$.each(obj, function (index, item) {
-                    $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-                	}
-             	}
-        	});
-    	});
-
-    	$(document).ready(function() {
-              var warehousename = $("#warehouseid2").find(":selected").text();
-
-                $.ajax({
-                    type: "POST",
-                    url: '{% url "get_storeregion" %}',
-                    data: {
-                        'warehouse':warehousename,
-                        'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    },
-                    success: function(data) {
-                        var obj = data.data.dropdownlist
-                        if (obj) {
-                            $("#regionid1").empty();
-
-                            $.each(obj, function(index, item) {
-                            $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                            });
-                             var optionValue = $("#regionid2").val();
-                            $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
-                        }
-                    }
-                });
-        });
-
-  $(document).ready(function() {
-    var warehousename = $("#warehouseid2").find(":selected").text();
-    var regionname = $("#regionid2").val();
-    $.ajax({
-        type: "POST",
-        url: '{% url "get_storedepo" %}',
-      data: {
-                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-        success: function(data) {
-            var obj = data.data.dropdownlist
-            if (obj) {
-                $("#depoid1").empty();
-
-                $.each(obj, function(index, item) {
-                    $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                });
-                 var optionValue = $("#depoid2").val();
-                 $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
-            }
-        }
-      });
     });
-
 </script>
 {% endblock %}

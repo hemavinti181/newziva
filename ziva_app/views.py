@@ -9224,8 +9224,6 @@ def complete_busstk_admin(request):
 
 
 
-
-
 def complete_stk_admin(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -9262,9 +9260,6 @@ def complete_stk_admin(request):
         except Exception as e:
             messages.error(request, str(e))
         return redirect('stock_tranfer_admin')
-
-
-
 
 
 def complete_whinv(request):
@@ -14577,6 +14572,7 @@ def returnsconsumption(request):
                             "accesskey":accesskey,
                             "depot_id": request.POST.get('depoid1'),
                             "region_id": request.POST.get('regionid1'),
+                            "warehouse_id": request.POST.get('warehouseid1'),
                             "fdate":fdate,
                             "tdate":tdate
                 })
@@ -14607,8 +14603,9 @@ def returnsconsumption(request):
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
+
             else:
-                return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname,'wh_masterlist':wh_masterlist,'wh_masterlist':wh_masterlist,})
+                return render(request, 'intconsumption/return_consumption.html', {'menuname': menuname,'wh_masterlist':wh_masterlist})
         else:
             current_date = datetime.date.today()
             fdate = current_date - timedelta(days=current_date.weekday() + 7)
@@ -14624,6 +14621,7 @@ def returnsconsumption(request):
                     "accesskey": accesskey,
                     "depot_id": 'All',
                     "region_id": 'All',
+                    "warehouse_id": "All",
                     "fdate": fdate,
                     "tdate": tdate
                 })
@@ -14632,6 +14630,7 @@ def returnsconsumption(request):
                     "accesskey": accesskey,
                     "depot_id": "",
                     "region_id": "",
+                    "warehouse_id":"",
                     "fdate": fdate,
                     "tdate": tdate
                 })
@@ -16996,9 +16995,20 @@ def intconsump_dashboard_data(request):
     else:
         todate = tdate
     if role == 'Admin':
-        url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
-        payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame": request.POST.get('depoid'),
-                   }
+        depoid = request.POST.get('depoid')
+        warehouseid = request.POST.get('warehousename')
+        regionid = request.POST.get('depoid')
+        if depoid:
+            url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
+            payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame": request.POST.get('depoid'),                       }
+        if warehouseid:
+            url = "http://13.235.112.1/ziva/mobile-api/consum-regdashboard.php"
+            payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "regionname": request.POST.get('depoid'),
+                       }
+        if regionid:
+            url = "http://13.235.112.1/ziva/mobile-api/consum-whdashboard.php"
+            payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "warehouse": request.POST.get('depoid'),
+                       }
         payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
             'Content-Type': 'application/json'
@@ -18261,7 +18271,7 @@ def intconsumption_report(request):
             region_id =  request.POST.get('regionid1')
             fdate = request.POST.get('fdate')
             tdate = request.POST.get('ldate')
-            if warehouse_id != 'All':
+            if warehouse_id:
                 url = "http://13.235.112.1/ziva/mobile-api/warehousewise-stockissue-list.php"
 
                 payload = json.dumps({"accesskey": accesskey,
@@ -18269,7 +18279,15 @@ def intconsumption_report(request):
                                       "fdate": request.POST.get('fdate'),
                                       "tdate": request.POST.get('ldate')
                                       })
-            if depot_id != 'All' or  fdate:
+            if region_id:
+                url = "http://13.235.112.1/ziva/mobile-api/regionwise-stockissue-list.php"
+
+                payload = json.dumps({"accesskey": accesskey,
+                                      "region_id": request.POST.get('regionid1'),
+                                      "fdate": request.POST.get('fdate'),
+                                      "tdate": request.POST.get('ldate')
+                                      })
+            if depot_id:
 
                 url = "http://13.235.112.1/ziva/mobile-api/depowise-stockissue-list.php"
 
@@ -18278,14 +18296,7 @@ def intconsumption_report(request):
                                       "fdate": request.POST.get('fdate'),
                                       "tdate": request.POST.get('ldate')
                                       })
-            if region_id != 'All':
-                url = "http://13.235.112.1/ziva/mobile-api/regionwise-stockissue-list.php"
 
-                payload = json.dumps({"accesskey": accesskey,
-                                      "region_id": request.POST.get('regionid1'),
-                                      "fdate": request.POST.get('fdate'),
-                                      "tdate": request.POST.get('ldate')
-                                      })
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -18308,20 +18319,19 @@ def intconsumption_report(request):
                     return render(request, 'intconsumption/intconsumption_report.html',
                                   {"menuname": menuname, 'wh_masterlist': wh_masterlist,
                                    'fdate': fdate,'tdate': tdate, 'regionlist': regionlist, 'depolist': depolist})
-
         else:
+            current_date = datetime.date.today()
+            fdate = current_date - timedelta(days=current_date.weekday() + 7)
+            fdate = fdate.strftime("%Y-%m-%d")
             tdate = datetime.date.today()
             tdate = tdate.strftime("%Y-%m-%d")
-            url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-stockreport.php"
+            url = "http://13.235.112.1/ziva/mobile-api/depowise-stockissue-list.php"
 
             payload = json.dumps({"accesskey": accesskey,
-                                  "warehouse_id": "All",
-                                  "region_id": "All",
-                                  "depot_id": 'All',
-                                  "fdate": tdate,
-                                  "tdate": tdate,
-
-                                  })
+                                      "depot_id": 'All',
+                                      "fdate": fdate,
+                                      "tdate": tdate
+                                      })
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -18330,22 +18340,22 @@ def intconsumption_report(request):
                 data = response.json()
                 servicereportslist = data['servicereportslist']
                 return render(request, 'intconsumption/intconsumption_report.html',
-                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               'regionlist': regionlist, 'depolist': depolist,'servicereportslist':servicereportslist,'fdate':tdate,'tdate':tdate})
+                              {'fdate': fdate, 'tdate': tdate, "menuname": menuname, 'wh_masterlist': wh_masterlist,
+                               'servicereportslist': servicereportslist, 'regionlist': regionlist, 'depolist': depolist})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
                     messages.error(request, data['message'])
                     return render(request, 'intconsumption/intconsumption_report.html',
-                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                                   'regionlist': regionlist,'fdate':tdate,'tdate':tdate, 'depolist': depolist})
+                                  {'fdate': fdate, 'tdate': tdate, "menuname": menuname, 'wh_masterlist': wh_masterlist,
+                                   'regionlist': regionlist, 'depolist': depolist})
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
                 return render(request, 'intconsumption/intconsumption_report.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               'fdate': tdate, 'tdate': tdate, 'regionlist': regionlist, 'depolist': depolist})
+                               'fdate': fdate, 'tdate': tdate, 'regionlist': regionlist, 'depolist': depolist})
     except:
         if response.status_code == 400:
             messages.error(request, data['message'])

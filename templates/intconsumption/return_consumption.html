@@ -59,7 +59,7 @@
 												</select>
 											 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
 												<select class="form-control" name="regionid1" id="regionid1">
-													<option value="">select region</option>
+													<option value="All">All</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
@@ -268,5 +268,9 @@
         }
       });
     });
+    $(document).ready(function() {
+	 var optionValue = $("#warehouseid2").val();
+     $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
+});
 </script>
 {% endblock %}
