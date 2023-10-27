@@ -16997,18 +16997,20 @@ def intconsump_dashboard_data(request):
     if role == 'Admin':
         depoid = request.POST.get('depoid')
         warehouseid = request.POST.get('warehousename')
-        regionid = request.POST.get('depoid')
-        if depoid:
-            url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
-            payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame": request.POST.get('depoid'),                       }
+        regionid = request.POST.get('regionname')
         if warehouseid:
-            url = "http://13.235.112.1/ziva/mobile-api/consum-regdashboard.php"
-            payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "regionname": request.POST.get('depoid'),
+            url = "http://13.235.112.1/ziva/mobile-api/consum-whdashboard.php"
+            payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "warehouse": warehouseid,
                        }
         if regionid:
-            url = "http://13.235.112.1/ziva/mobile-api/consum-whdashboard.php"
-            payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "warehouse": request.POST.get('depoid'),
+            url = "http://13.235.112.1/ziva/mobile-api/consum-regdashboard.php"
+            payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "regionname": regionid,
                        }
+        if depoid:
+            url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
+            payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame":depoid
+                       }
+
         payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
             'Content-Type': 'application/json'

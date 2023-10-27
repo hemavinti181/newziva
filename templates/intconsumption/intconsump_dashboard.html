@@ -953,7 +953,7 @@ $("#warehouseid1").change(function() {
   success: function(data) {
      var itemslist =  data.data.consumptionlist;
      message = data.data.message
-     console.log(message);
+     console.log(itemslist);
       if(message != "data found")
       {
        $("#lblNoStock").show();
@@ -961,8 +961,7 @@ $("#warehouseid1").change(function() {
       }else{
        updateEchartPieChart(itemslist);
       }
-
-                     $('.issued_bottles').text(itemslist[0].issued);
+                    $('.issued_bottles').text(itemslist[0].issued);
                     $('.consumed_botteles').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist[0].shortage);
                     $('.tobe_return').text(itemslist[0].to_be_returned);
@@ -975,6 +974,7 @@ $("#warehouseid1").change(function() {
   }
 });
 });
+
 
 
 $("#regionid1").change(function() {
