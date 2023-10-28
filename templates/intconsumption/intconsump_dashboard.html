@@ -743,7 +743,7 @@ function updateEchartPieChart(itemslist) {
                });
                  count++;
                }
-                if(item[0].shortage!="0" ){
+                if(item[0].shortage != "0" ){
                seriesData.push({
                     value: item[0].shortage,
                     name: 'Shortage'
@@ -752,7 +752,6 @@ function updateEchartPieChart(itemslist) {
                }
 
             legendData.push('Issued','No of services','Shortage');
-
           if(count === 0){
           $("#echart-depot1").hide();
            $("#lblNoStock").show();
@@ -954,7 +953,7 @@ $("#warehouseid1").change(function() {
      var itemslist =  data.data.consumptionlist;
      message = data.data.message
      console.log(itemslist);
-      if(message != "data found")
+      if(message != "Data Found")
       {
        $("#lblNoStock").show();
        $("#echart-depot1").hide();
@@ -991,7 +990,8 @@ $("#regionid1").change(function() {
      var itemslist =  data.data.consumptionlist;
      message = data.data.message
      console.log(message);
-      if(message != "data found")
+
+      if(message != "Data Found")
       {
        $("#lblNoStock").show();
        $("#echart-depot1").hide();
@@ -1164,8 +1164,6 @@ $.ajax({
   success: function(data) {
      var total =  data.data.totallist;
      message = data.data.message
-      console.log(data);
-
       if(message != "Data found")
       {
        $("#lblNoStock").html(data.message);
