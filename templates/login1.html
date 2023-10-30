@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <!-- Created By CodingLab - www.codinglabweb.com -->
@@ -8,14 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <title>Log In | Ziva </title>
     <link rel="stylesheet" href="style.css">
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
-      <style>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+			<!-- Default theme -->
+		<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+    <style>
       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 *{
   margin: 0;
@@ -71,7 +69,7 @@ body{
   transition: all 0.3s ease;
 }
 .left-aligned-label {
-    margin-left:220px;
+    margin-left:200px;
     color:#14c38e;
 }
 form .row input:focus{
@@ -284,11 +282,7 @@ form .signup-link a:hover{
     transition: opacity 1s;
     font-size: 15px;
 }
- .style1{
-	position: absolute !important;
-	width: 60% !important;
-	margin-left:75px;
-	}
+
 .modal {
 	-webkit-overflow-scrolling: touch;
 }
@@ -380,9 +374,6 @@ body{
   </head>
   <body>
     <div class="container">
-
-
-
       <div class="wrapper border">
         <!--<img src="{% static 'build/images/logo2.jpeg' %}" alt="..." class="img-circle profile_img">-->
         <div class="title"><span>Sign In</span></div>
@@ -398,61 +389,30 @@ body{
             <i class="fas fa-lock"></i>
             <input type="password" class="form-control" name="Password"  placeholder="Password" style = "margin-bottom: 30px;" required>
           </div>
-           <label for="showPasswordCheckbox" class="show-password-label" style="margin-left:20px;color:#14c38e;">Show Password</label>
-            <input type="checkbox" class="form-control" id="showPasswordCheckbox" style="margin-top:-25px;width: 18px; height: 18px;">
-          <div class="row button" style="margin-top:20px;">
+          <input type="checkbox" class="form-control" id="showPasswordCheckbox" style = "margin-bottom: 40px;">
+          <label for="showPasswordCheckbox" class="show-password-label" style="color: #14c38e;">Show Password</label>
+
+          <div class="row button">
             <input type="submit" value="Login">
           </div>
-          <div class="row" style="margin-bottom:-6px;">
-             <label class="left-aligned-label"  data-toggle="modal" data-target="#myModal">Forgot Password?</label></a>
+          <div class="row">
+
+
+              <div class="modal custom-modal fade" id="forgot" role="dialog">
+             <!--<label class="left-aligned-label" data-toggle="modal" data-target="forgot">Forgot Password?</label></a>-->
             </div>
           <!--<div class="signup-link">Not a member? <a href="#">Signup now</a></div>-->
         </form>
       </div>
     </div>
   </div>
+  <!-- Modal -->
+
 
   </body>
-  <div class="modal custom-modal fade" id="myModal" role="dialog">
-					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content style1">
-							<div class="modal-body">
-                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-								  <form method="post" action="/edit_vehcle">
-                                                    {% csrf_token %}
-								<div class="form-header">
-									<h3 style="color:#14c38e">Edit Vehical</h3>
-								</div>
-											<input type="hidden" name="depotname1" id="depotname1" />
-                                   <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                      <label>Employee id *</label>
-                                      <input type="text" class="form-control" placeholder="employee id" name="employee"  id="employee">
-                                   </div>
-                                       <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                      <label>Date of birth *</label>
-                                      <input type="date" class="form-control" placeholder="" name="dob"  id="dob">
-                                   </div>
-                                       <div class="col-md-12 col-sm-12  form-group has-feedback">
-                                      <label>New password *</label>
-                                      <input type="password" class="form-control" placeholder="new password" name="pwd"  id="pwd">
-                                   </div>
-                                    <div class="row">
-											<div class="col-md-6 col-sm-6">
-                                                 <button type="submit" class="btn btn-primary" style="margin-left:100px;" >Yes</button>
-                                        </div>
-                                        	<div class="col-md-6 col-sm-6">
-                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                                            </div>
-									</div>
-								</div>
-								  </form>
-							</div>
 
-						</div>
-					</div>
-				</div>
+</html>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
@@ -498,3 +458,6 @@ $('.message a').click(function(){
         }
     });
   </script>
+
+
+
