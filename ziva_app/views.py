@@ -8770,7 +8770,7 @@ def wh_add_stf(request):
 
         payload = json.dumps({
             "accesskey": accesskey,
-            "id": request.POST.get('warehouseid') ,
+            "id": request.POST.get('warehouseid'),
             "name": request.POST.get('warehousename'),
             "type": "Warehouse"
 
@@ -8904,14 +8904,14 @@ def wh_item_list(request):
     if response.status_code == 200:
         data=response.json()
         wh_item_list=data['stocktransferitemlist']
-        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'taxinvoice':taxinvoice,'warehouseinventorylist':warehouseinventorylist,'warehouselist':warehouselist[0],'wh_item_list':wh_item_list,'menuname':menuname,'data':stocktransferlistto,'wh':'active','status':'ok','buslist':buslist})
+        return render(request,'stock_transfer/stock_transfer_home.html',{'type':type,'taxinvoice':taxinvoice,'warehouseinventorylist':warehouseinventorylist,'warehouselist':warehouselist[0],'wh_item_list':wh_item_list,'menuname':menuname,'data':stocktransferlistto,'wh':'active','status':'ok','buslist':buslist,'response':'wh200'})
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
         return render(request, 'login1.html')
     else:
         return render(request, 'stock_transfer/stock_transfer_home.html',
-                      {'type':type,'warehouseinventorylist' : warehouseinventorylist, 'menuname': menuname,'data':stocktransferlistto,'taxinvoice':taxinvoice,'wh':'active','wh':'active','warehouselist':warehouselist[0],'buslist':buslist})
+                      {'response':'wh200','type':type,'warehouseinventorylist' : warehouseinventorylist, 'menuname': menuname,'data':stocktransferlistto,'taxinvoice':taxinvoice,'wh':'active','warehouselist':warehouselist[0],'buslist':buslist})
 
 def delete_stk_item(request,id):
     if 'accesskey' not in request.session:
@@ -14673,30 +14673,28 @@ def intconsump_report(request):
             messages.error(request, 'Access denied!')
             return redirect('/login')
         accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
-
+        url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
         payload = json.dumps({"accesskey": accesskey})
         headers = {
             'Content-Type': 'text/plain'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
-        depolist = data['depolist']
+        wh_masterlist = data['warehouselist']
+
         if request.method == 'POST':
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
             fdate = request.POST.get('fdate')
             tdate = request.POST.get('tdate')
-            deponame=request.POST.get('deponame')
-            if deponame:
-                deponame = deponame
-            else:
-                deponame = 'All'
             url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
 
             payload = json.dumps({
                 "accesskey": accesskey, "fdate": fdate,
-                "tdate": tdate,"deponame":deponame,
+                "depot_id": request.POST.get('depoid1'),
+                "region_id": request.POST.get('regionid1'),
+                "warehouse_id": request.POST.get('warehouseid1'),
+                "tdate": tdate,
             })
             headers = {
                 'Content-Type': 'text/plain'
@@ -14706,13 +14704,13 @@ def intconsump_report(request):
                 data = response.json()
                 busservicesupplylist = data['busservicesupplylist']
                 return render(request, 'intconsumption/intconsump_report.html',
-                              {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
+                              {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'wh_masterlist':wh_masterlist})
             elif response.status_code == 400:
                 data = response.json()
                 messages.error(request, data['message'])
                 return redirect('/login')
             else:
-                return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'depolist':depolist,'fdate': fdate, 'tdate': tdate})
+                return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'wh_masterlist':wh_masterlist,'fdate': fdate, 'tdate': tdate})
         else:
             current_date = datetime.date.today()
             fdate = current_date - timedelta(days=current_date.weekday() + 7)
@@ -14724,7 +14722,13 @@ def intconsump_report(request):
             url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
 
             payload = json.dumps({
-                "accesskey": accesskey, "fdate": fdate, "tdate": tdate,"deponame":"All"})
+                "accesskey": accesskey,
+                "fdate": fdate,
+                "tdate": tdate,
+                "depot_id": "All",
+                "region_id": "All",
+                "warehouse_id": "All",
+            })
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -14733,7 +14737,7 @@ def intconsump_report(request):
                 data = response.json()
                 busservicesupplylist = data['busservicesupplylist']
                 return render(request, 'intconsumption/intconsump_report.html',
-                              {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
+                              {'menuname': menuname, 'data': busservicesupplylist, 'fdate': fdate, 'tdate': tdate,'wh_masterlist':wh_masterlist})
             elif response.status_code == 400:
                 data = response.json()
                 messages.error(request, data['message'])
@@ -14742,9 +14746,9 @@ def intconsump_report(request):
                 data = response.json()
                 messages.error(request, data['message'])
                 return render(request, 'intconsumption/intconsump_report.html',
-                              {'menuname': menuname, 'fdate': fdate, 'tdate': tdate,'depolist':depolist})
+                              {'menuname': menuname, 'fdate': fdate, 'tdate': tdate,'wh_masterlist':wh_masterlist})
             else:
-                return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'depolist':depolist})
+                return render(request, 'intconsumption/intconsump_report.html', {'menuname': menuname,'wh_masterlist':wh_masterlist})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -16109,6 +16113,70 @@ def zonal_dashboard_data1(request):
             elif response.status_code == 500:
                 messages.error(request, "Internal Server Error")
                 return JsonResponse({'data': "Internal Server Error"})
+def depots_less_stock(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    role = request.session['role']
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/warehouse-stock-admin-report.php"
+        payload = {"accesskey": accesskey, "warehouseid": request.POST.get('warehouseid')
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/depo-lesss-stock.php"
+        payload = {"accesskey": accesskey,
+                   }
+        payload = json.dumps(payload, cls=BytesEncoder)
+
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
 
 def zonal_dashboard_data(request):
     if 'accesskey' not in request.session:
@@ -18559,3 +18627,84 @@ def get_stocklist(request):
         except:
             messages.error(request, response.text)
         return render(request, 'intconsumption/internal_stktransfer.html', {'menuname': menuname})
+
+
+def forgot_pwd(request):
+
+    try:
+
+        url = "http://13.235.112.1/ziva/mobile-api/forgotpassword-new.php"
+
+        payload = json.dumps({
+                              "empid":request.POST.get('employee'),
+                               "dob":request.POST.get('dob'),
+                               "newpassword": request.POST.get('pwd')
+                              })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+            except:
+                messages.error(request, response.text)
+            return render(request, 'login1.html')
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        messages.error(request, response.text)
+    return render(request, 'login1.html')
+
+def change_pwd(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/forgotpassword-new.php"
+
+        payload = json.dumps({
+            "empid": request.POST.get('employee'),
+            "dob": request.POST.get('dob'),
+            "newpassword": request.POST.get('pwd')
+        })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        elif response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+            except:
+                messages.error(request, response.text)
+            return render(request, 'login1.html')
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        messages.error(request, response.text)
+    return render(request, 'login1.html')

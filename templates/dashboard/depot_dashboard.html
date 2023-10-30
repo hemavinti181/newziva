@@ -72,7 +72,7 @@
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indays" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;">{{ total. }}</div>
+                <div class="count indays" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;">{{  }}</div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">(Days)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Available Up to </p>
               </div>
@@ -802,21 +802,21 @@ function updateEchartPieChart2(itemslist){
 
   if ($('#graph_bar').length) {
        var date=new Date(); //$("#getdate").val();
-       var today_date=date.getDate()+"/"+ (parseInt(date.getMonth())+1);
+       //var today_date=date.getDate()+"/"+ (parseInt(date.getMonth())+1);
        var data = [];
-
         // Iterate through the itemslist and create data objects
         for (var i = 0; i < itemslist.length; i++) {
           var item = itemslist[i];
-          var deviceName = today_date + ' ' + item.itemname;
+          //var deviceName = today_date + ' ' + item.itemname;
+          var deviceName = item.itemname;
           var geekbenchValue = parseInt(item.amount);
           data.push({ device: deviceName, geekbench: geekbenchValue });
         }
 
         // Add the Total data objects
-        data.push({ device: 'Total 1000ml', geekbench: parseInt(itemslist[0].MTD_amount) });
-        data.push({ device: 'Total 500ml', geekbench: parseInt(itemslist[1].MTD_amount) });
-        data.push({ device: 'Total 250ml', geekbench: parseInt(itemslist[2].MTD_amount) });
+        data.push({ device: 'MTD 1000ml', geekbench: parseInt(itemslist[0].MTD_amount) });
+        data.push({ device: 'MTD 500ml', geekbench: parseInt(itemslist[1].MTD_amount) });
+        data.push({ device: 'MTD 250ml', geekbench: parseInt(itemslist[2].MTD_amount) });
 
           Morris.Bar({
               element: 'graph_bar',

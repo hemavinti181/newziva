@@ -356,7 +356,9 @@ urlpatterns = [
     path('complete_depostk_admin',views.complete_depostk_admin,name='complete_depostk_admin'),
     path('return_otp',views.return_otp,name='return_otp'),
     path('get_stocklist',views.get_stocklist,name='get_stocklist'),
-    #path('internal_stktransfer_admin',views.internal_stktransfer_admin,name='internal_stktransfer'),
+    path('depots_less_stock',views.depots_less_stock,name='depots_less_stock'),
+    path('forgot_pwd',views.forgot_pwd,name='forgot_pwd'),
+    path('change_pwd',views.change_pwd,name='change_pwd')
 ]
 
 

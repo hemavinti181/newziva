@@ -3,8 +3,6 @@
 {% block htmlbody %}
 
 
-
-
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -25,27 +23,49 @@
 						<form  method="POST" action="/intconsump_report"  id="myForm" enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-sm-2 col-md-2 form-group has-feedback">
-									<!--<label class="focus-label">from </label>-->
+									<label class="focus-label">from </label>
 									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
                                    <input type="hidden" name="fdate_hidden" id="fdate_hidden">
 							</div>
                              <div class="col-sm-2 col-md-2 form-group has-feedback">
-									<!--<label class="focus-label">To</label>-->
+									<label class="focus-label">To</label>
 									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
                                    <input type="hidden" name="tdate_hidden" id="tdate_hidden">
 							</div>
+                             <div  class="col-md-2  form-group has-feedback">
+													<label> Warehouse</label>
+                                         <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+                            		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+                                         </select>
+											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
+												<select class="form-control" name="warehouseid1" id="warehouseid1">
+													<option value="All">All</option>
+													{% for data1 in wh_masterlist %}
+															{% if data1.status == 'Active' %}
+                            		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+														{% endif  %}
+                                                     {% endfor %}
+                                                </select>
+                                    </div>
+											<div  class="col-md-2  form-group has-feedback">
+													<label> Region</label>
+                                              <select class="form-control" name="regionid2" id="regionid2" hidden>
+                            		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+												</select>
+											 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
+												<select class="form-control" name="regionid1" id="regionid1">
+													<option value="All">All</option>
+												</select>
+										    </div>
                              <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                  <select class="form-control items" name="depoid1" id="depoid1" hidden>
-                                                     <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
+                                  <select class="form-control items" name="depoid" id="depoid" hidden>
+                                                     <option value="{{ request.POST.depoid1}}">{{ request.POST.deponame }}</option>
                                   </select>
                                                         <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
-										    	 <select class="form-control items" name="depoid" id="depoid" required>
+                                 <label> Depot</label>
+										    	 <select class="form-control items" name="depoid1" id="depoid1" required>
                                                      <option value="All">All</option>
-                                                    {% for data in depolist %}
-                                                        {% if data.status == "Active" %}
-                                                                <option value="{{ data.depoid }}">{{ data.deponame }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
+
                                                 </select>
                              </div>
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -75,7 +95,7 @@
                                     <th>Staff Name(1)</th>
                                     <th>Staff(1)</th>
                                     <th>Staff Name(2)</th>
-                                    <th>Staff(2)</th>
+                                    <th>Staff(2)    </th>
                                     <th>Bootles Issued</th>
                                     <th>No of tickets</th>
                                     <th>Bottles Returned</th>
@@ -115,29 +135,124 @@
 </div>
 </div>
 <script>
-      document.getElementById('fdate').addEventListener('change', function() {
+      $("#fdate,#tdate").change(function() {
+            var form = document.getElementById("myForm");
+            var startDateInput = document.getElementById("fdate");
+            var endDateInput = document.getElementById("tdate");
+            if (startDateInput.value && endDateInput.value) {
+              form.submit();
+            }
+      });
+      $("#warehouseid1, #regionid1").change(function() {
+            var form = document.getElementById("myForm");
+            form.submit();
+      });
+
+     document.getElementById('depoid1').addEventListener('change', function() {
         var form = document.getElementById('myForm');
+        var selectedValue = this.value; // Get the selected value of depoid
+        document.getElementById('depoid').value = selectedValue; // Update depoid field
+        var selectedOption = this.options[this.selectedIndex];
+        var selectedText = selectedOption.textContent;
+        document.getElementById('deponame').value = selectedText;
         form.submit();
-    });
-     document.getElementById('tdate').addEventListener('change', function() {
-        var form = document.getElementById('myForm');
-        form.submit();
-    });
-
-     document.getElementById('depoid').addEventListener('change', function() {
-    var form = document.getElementById('myForm');
-    var selectedValue = this.value; // Get the selected value of depoid
-
-
-    document.getElementById('depoid').value = selectedValue; // Update depoid field
-    var selectedOption = this.options[this.selectedIndex];
-    var selectedText = selectedOption.textContent;
-    document.getElementById('deponame').value = selectedText;
-    form.submit();
-});
+     });
 $(document).ready(function(){
   var optionValue = $("#depoid1").val();
   $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
+
+ $("#warehouseid1").change(function() {
+        	var warehousename = $(this).find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storeregion" %}',
+            	data: {
+                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#regionid1").empty();
+                	$.each(obj, function (index, item) {
+                    $("#regionid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+    	$("#regionid1").change(function() {
+    		var warehousename = $('#warehouseid1').find(":selected").text();
+        	var regionname = $(this).val();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_storedepo" %}',
+            	data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+					if(obj) {
+			 		$("#depoid1").empty();
+                	$.each(obj, function (index, item) {
+                    $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+					});
+                	}
+             	}
+        	});
+    	});
+
+    	$(document).ready(function() {
+              var warehousename = $("#warehouseid2").find(":selected").text();
+
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "get_storeregion" %}',
+                    data: {
+                        'warehouse':warehousename,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function(data) {
+                        var obj = data.data.dropdownlist
+                        if (obj) {
+                            $("#regionid1").empty();
+
+                            $.each(obj, function(index, item) {
+                            $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                             var optionValue = $("#regionid2").val();
+                            $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                        }
+                    }
+                });
+        });
+
+  $(document).ready(function() {
+    var warehousename = $("#warehouseid2").find(":selected").text();
+    var regionname = $("#regionid2").val();
+    $.ajax({
+        type: "POST",
+        url: '{% url "get_storedepo" %}',
+      data: {
+                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+        success: function(data) {
+            var obj = data.data.dropdownlist
+            if (obj) {
+                $("#depoid1").empty();
+
+                $.each(obj, function(index, item) {
+                    $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                });
+                 var optionValue = $("#depoid").val();
+                 $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+            }
+        }
+      });
+    });
+    $(document).ready(function() {
+	 var optionValue = $("#warehouseid2").val();
+     $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
+});
 </script>
 {% endblock %}

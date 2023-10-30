@@ -117,7 +117,7 @@
                         <div class="x_panel Consumption">
                              <h3 class="text-danger" style="margin: 168px 3px 149px 80px;display:none;" id="depotstock1">No Stock Available</h3>
                                     <div id="graph_bar_group1" style="width:100%; height:280px;"></div>
-                                      <h3 class="text-success textqty" style="margin:20px">Qty Available vs Qty Consumption progress</h3>
+                                      <h3 class="text-success textqty" style="margin:20px">Qty Available in days vs Qty Consumption</h3>
                                 </div>
                         </div>
             <div class="col-md-3 col-sm-3">
@@ -412,7 +412,7 @@
                     <input class="form-control" type="date" name="date"  id="inddate"  value="{{ request.POST.date }}"  required>
                 </div>
               <div class="col-md-1 col-sm-1">
-                <label><input type="checkbox" id="depots_indent" class="js-switch"  /></label>
+                <!--<label><input type="checkbox" id="depots_indent" class="js-switch"  /></label>-->
               </div>
             </div>
           </div>
@@ -439,13 +439,13 @@
               </div>
             </div>
 
-               <div class="col-md-4 echart-indent">
+               <div class="col-md-4 echart-indent" style="display:none;">
                    <h3 class="text-danger" style="width: 300px; height: 200px;margin-top:140px;margin-left:170px;" id="lblindent">No data Available</h3>
                                     <div id="echart-indent"   style="width: 300px; height: 200px;margin-top:-20px;margin-left:100px;"></div>
                                 </div>
           </div>
             <div class="col-md-12 col-sm-12">
-                  <table class="table table-striped" style="display:none;width=200%"; id="pendingind">
+                  <table class="table table-striped" style="width=200%"; id="pendingind">
                         <thead>
                           <tr>
                             <th class="design" rowspan="2">#</th>
@@ -488,14 +488,15 @@
               <h5 style="color:#14c38e">Depots holding less stock</h5>
             </div>
           </div>
-            <table class="table table-striped" style="display:block;width=200%"; id="depots_less_stock">
+            <table class="table table-striped" style="display:block;width=200%"; id="datatable">
                         <thead>
                           <tr>
                             <th class="design" rowspan="2">S NO</th>
                             <th class="design" rowspan="2">Depot name</th>
                               <th class="design" rowspan="2">Product</th>
-                              <th  class="design" rowspan="2">Average requirement</th>
+                              <th  class="design" rowspan="2">Average requirement(2 weeks)</th>
                                 <th class="design" rowspan="2">Stock Available(In quantity)</th>
+                             <th class="design" rowspan="2">Stock Available(In bottles)</th>
                             <th class="design" rowspan="2">Stock Available(In days)</th>
                           </tr>
 
@@ -516,7 +517,6 @@
             </div>
 </div>
 </div>
-
 
 <script>
 var theme = {
@@ -1274,11 +1274,11 @@ var theme = {
        var count1 = 0;
      for (var i = 0; i < itemslist.length; i++) {
             var item = itemslist[i];
-              if( item.stock_botteles!="0"){
+            if( item.stock_botteles!="0"){
                seriesData.push({
                  period: item.itemname,
-                 "Available": item.stock_cases,
-                 "Avg consumption": item.consumption_cases
+                  "in days": item.indays,
+                  "Avg consumption": item.consumption_cases
                });
                 count1++;
             }
@@ -1302,8 +1302,8 @@ var theme = {
             data: seriesData,
             xkey: 'period',
             barColors: ['#CD142A', '#1271D0', '#F86A1E', '#3498DB'],
-            ykeys: ["Available","Avg consumption"],
-            labels: ["Available","Avg consumption"],
+            ykeys: ["in days","Avg consumption"],
+            labels: ["in days","Avg consumption"],
             hideHover: 'auto',
             xLabelAngle: 60,
             resize: true
@@ -1777,10 +1777,11 @@ $.ajax({
        $("#lblNoStock2").show();
        $("#echart-pies2").hide();
        $("#completetabel").hide();
+
+
       }else{
        $("#graph_bar_group1").empty();
         $("#echart-zonal1").empty();
-
        for (var i = 0; i < itemslist.length; i++) {
             item = itemslist[i];
        }
@@ -1821,7 +1822,7 @@ $.ajax({
 $(document).ready(function() {
 $.ajax({
   type: "GET",
-  url: "{% url 'zonal_grn_report' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  url: "{% url 'zonal_grn_report' %}",
   data: {
   'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
@@ -1876,6 +1877,8 @@ $.ajax({
   }
 });
 });
+
+
 $('#grndate').change(function() {
     grndate = $(this).val();
     $.ajax({
@@ -1934,7 +1937,6 @@ $('#grndate').change(function() {
       }
     });
 });
-
 
 
 $(document).ready(function() {
@@ -2000,6 +2002,8 @@ $.ajax({
   }
 });
 });
+
+
 
 $('#depoid1').change(function() {
 var deponame = $('#depoid1').val();
@@ -2387,12 +2391,12 @@ $.ajax({
  $(document).ready(function() {
     $("#depots_indent").click(function() {
       if ($(this).is(":checked")) {
-       $(".echart-indent").hide();
-      $("#pendingind").show();
+       $(".echart-indent").show();
+      $("#pendingind").hide();
     }
     else{
-     $(".echart-indent").show();
-      $("#pendingind").hide();
+     $(".echart-indent").hide();
+      $("#pendingind").show();
     }
     });
   });
@@ -2426,7 +2430,37 @@ $('#grndate').val(new Date().toJSON().slice(0,10));
 $('#inddate').val(new Date().toJSON().slice(0,10));
 
 
-
+$(document).ready(function() {
+$.ajax({
+  type: "GET",
+  url: "{% url 'depots_less_stock' %}", // Replace 'your_ajax_endpoint' with the actual URL for your AJAX endpoint
+  data: {
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function(data) {
+    //var total =  data.data.totallist;
+    var itemslist = data.data.itemwiselist;
+    message = data.data.message
+    var tableBody = $('#datatable  tbody');
+             for (var i = 0; i < itemslist.length; i++) {
+                var item = itemslist[i];
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));
+                row.append($('<td>').text(item.deponame));
+                 row.append($('<td>').text(item.itemname));
+                row.append($('<td>').text(item.Average_requirement));
+                row.append($('<td>').text(item.stock_cases));
+                row.append($('<td>').text(item.stock_botteles));
+                row.append($('<td>').text(item.indays));
+                tableBody.append(row);
+            }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.error("Error occurred: " + textStatus, errorThrown);
+    // Handle the error case here, if required
+  }
+});
+});
 
 </script>
 {% endblock %}

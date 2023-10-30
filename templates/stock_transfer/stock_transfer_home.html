@@ -71,7 +71,7 @@
                                         <input class="form-control" id="warehousename" name="warehousename" readonly
                                                type="text" value="{{ request.session.warehousename  }}"/>
                                         <input id="warehouseid" name="warehouseid" type="hidden"
-                                               value="{{ warehouselist.id  }}"/>
+                                               value="{{ request.session.warehouseid }}"/>
                                     </div>
 
                                     <div class="col-md-3 col-sm-4 form-group has-feedback">
@@ -1031,6 +1031,13 @@ $(document).ready(function(){
   if ( response === 'bus200'  &&  status === 'ok') {
         $('#busitemsadd').show();
         $('#busitemslist').show();
+   }
+   if ( response === 'wh200') {
+        $('#wh_item_add').show();
+   }
+  if ( response === 'wh200'  &&  status === 'ok') {
+        $('#divItemsAdd').show();
+        $('#divItems').show();
    }
 });
 
