@@ -30,7 +30,7 @@
             <div class="clearfix"></div>
 			  <div class="row">
                  <div class="col-md-12 col-sm-12 ">
-				      	<form  method="POST" action=" "   enctype="multipart/form-data">
+				      	<form  method="POST" action=" "  id="myForm" enctype="multipart/form-data">
 											{% csrf_token %}
 									<div  class="col-md-2 col-sm-2  form-group has-feedback">
 													<label>Select Warehouse</label>
@@ -60,9 +60,9 @@
 												</select>
 										</div>
 
-							<div  class="col-md-2 col-sm-2  form-group has-feedback">
+							<!--<div  class="col-md-2 col-sm-2  form-group has-feedback">
                   <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
-				</div>
+				</div>-->
 						</form>
 			  </div>
 
@@ -285,7 +285,10 @@
       });
   }
 
-
+$("#warehouseid, #regionid,#depoid").change(function() {
+    var form = document.getElementById("myForm");
+    form.submit();
+  });
 function VerifyClick(id){
 $("#id").val(id);
 }

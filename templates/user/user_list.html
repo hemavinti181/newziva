@@ -89,7 +89,36 @@
             </div>
           </div>
 </div>
+<div class="modal custom-modal fade" id="user-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style1">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="user_status_active">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Status Update</h3>
+									<p>Are you sure want to Inactive?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="id" name="id"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:70px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
 
+						</div>
+					</div>
+				</div>
 <div id="depo-edit" class="modal custom-modal fade"  role="dialog" >
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
         <div class="modal-content style">
@@ -195,42 +224,12 @@
           </form>
         </div>
     </div>
-</div>
 
-<div class="modal custom-modal fade" id="user-status" role="dialog">
-					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content style1">
-							<div class="modal-body">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-								  <form method="post" action="user_status_active">
-                                                    {% csrf_token %}
-								<div class="form-header">
-									<h3>Status Update</h3>
-									<p>Are you sure want to Inactive?</p>
-								</div>
-									  <div class="modal-btn delete-action">
-									<input type="hidden" id="id" name="id"  />
-									<div class="row">
-											<div class="col-md-6 col-sm-6">
-                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
-                                        </div>
-                                        	<div class="col-md-6 col-sm-6">
-                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                                            </div>
-									</div>
-								</div>
-								  </form>
-							</div>
 
-						</div>
-					</div>
-				</div>
+
 <script>
      function VerifyClick(id){
 $("#id").val(id);
-console.log(val(id))
 }
  function VerifyClick1(id){
 $("#id1").val(id);
@@ -269,7 +268,6 @@ function editDepo(id){
         },
         success: function(data) {
          var obj = data.data
-          	console.log(obj.userid);
 
              if(obj){
              $("#userid").val(obj.userid);
@@ -286,7 +284,6 @@ function editDepo(id){
               $("#busstationname").val(obj.busstationname);
              $("#role").val(obj.role2);
              $("#rolename").val(obj.role2);
-
              $('#depo-edit').modal('show');
         	}
        var  val= obj.role2;

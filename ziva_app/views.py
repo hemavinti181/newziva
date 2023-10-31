@@ -587,7 +587,7 @@ def item_add(request):
                 "accesskey":accesskey ,
                 "itemname": request.POST.get('name'),
                 "hsncode": request.POST.get('hsncode'),
-                "lpp": request.POST.get('latestpurchase'),
+                "lpp": "",
                 "gst": request.POST.get("gst"),
                 "category": request.POST.get('category'),
                 "mrp": request.POST.get('mrp'),
@@ -876,13 +876,14 @@ def role(request):
 def level(request):
     if 'accesskey' not in request.session:
         return redirect('/login')
+    accesskey = request.session['accesskey']
     menuname = request.session['mylist']
     if request.method == 'POST':
 
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
 
         payload = {
-            "accesskey": "LTIwMjIxMjIwMDc2ODg1",
+            "accesskey": accesskey,
             "type": "LEVEL",
             "value": request.POST.get('level'),
         }
@@ -897,9 +898,20 @@ def level(request):
             r = response.json()
             messages.success(request, r['message'])
             return redirect('level_list')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return render(request, 'category_master/df.html', {"level": "active", "menuname": menuname})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            r = response.json()
-            messages.error(request, r['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request,response.text)
             return render(request, 'category_master/df.html',{"level": "active","menuname":menuname})
     return render(request, 'category_master/df.html',{"level": "active","menuname":menuname})
 
@@ -941,12 +953,12 @@ def state(request):
     if 'accesskey' not in request.session:
         return redirect('/login')
     menuname = request.session['mylist']
+    accesskey = request.session['accesskey']
     if request.method == 'POST':
-
         url = "http://13.235.112.1/ziva/mobile-api/addmasterdata.php"
 
         payload = {
-            "accesskey": "LTIwMjIxMjIwMDc2ODg1",
+            "accesskey":accesskey,
             "type": "STATE",
             "value": request.POST.get('state'),
         }
@@ -1152,9 +1164,18 @@ def level_list(request):
         data = response.json()
         level_list = data['itemmasterlist']
         return render(request, 'category_master/level_list.html', {"all_data": level_list,'menuname':menuname})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return render(request, 'category_master/level_list.html', {'menuname': menuname})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
     else:
         try:
             data = response.json()
+            messages.error(request, data['message'])
             return render(request, 'category_master/level_list.html',{'menuname':menuname})
         except:
             messages.error(request, response.text)
@@ -1384,33 +1405,41 @@ def des_status_inactive(request):
 def gst_status_inactive(request):
     if 'accesskey' not in request.session:
         return redirect('/login')
-        accesskey = request.session['accesskey']
+    accesskey = request.session['accesskey']
 
-        url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
 
-        payload = json.dumps({
+    payload = json.dumps({
             "accesskey": accesskey,
             "sno": request.POST.get('id'),
             "type": "Dropdownmaster",
             "status": request.POST.get('status')
-        })
-        headers = {
+    })
+    headers = {
             'Content-Type': 'application/json'
-        }
+    }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            messages.success(request, data['message'])
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/gst_list')
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
             return redirect('/gst_list')
         else:
-            try:
-                data = response.json()
-                messages.error(request, data['message'])
-                return redirect('/gst_list')
-            except:
-                messages.error(request, response.text)
+            messages.error(request, data['message'])
+            return redirect('/login')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
             return redirect('/gst_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/gst_list')
 
 
 def uom_status_inactive(request):
@@ -1589,33 +1618,42 @@ def category_status_inactive(request):
 def city_status_inactive(request):
     if 'accesskey' not in request.session:
         return redirect('/login')
-        accesskey = request.session['accesskey']
 
-        url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+    accesskey = request.session['accesskey']
 
-        payload = json.dumps({
+    url = "http://13.235.112.1/ziva/mobile-api/status-change.php"
+
+    payload = json.dumps({
             "accesskey": accesskey,
             "sno": request.POST.get('id'),
             "type": "Dropdownmaster",
             "status": request.POST.get('status')
         })
-        headers = {
+    headers = {
             'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            messages.success(request, data['message'])
-            return redirect('/city_list')
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        messages.success(request, data['message'])
+        return redirect('/city_list')
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/add_bussupply')
         else:
-            try:
-                data = response.json()
-                messages.error(request, data['message'])
-                return redirect('/city_list')
-            except:
-                messages.error(request, response.text)
+            messages.error(request, data['message'])
+            return redirect('/login')
+    else:
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
             return redirect('/city_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/city_list')
 
 def depo_add(request):
     if 'accesskey' not in request.session:
@@ -3022,12 +3060,20 @@ def user_edit(request):
             return redirect('user_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return redirect('/login')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/user_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            messages.error(request, data['message'])
-            return redirect('user_list')
-    return redirect('user_list')
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
+            return redirect('/user_list')
+    return redirect('/user_list')
 
 
 def user_list(request):
@@ -3044,19 +3090,17 @@ def user_list(request):
                 'Content-Type': 'text/plain'
             }
 
-            response3 = requests.request("GET", url, headers=headers, data=payload)
-            data2 = response3.json()
-
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data2 = response.json()
             role_list = data2['roledropdownlist']
-
             url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
 
             payload = json.dumps({"accesskey": accesskey, "name": "LEVEL"})
             headers = {
                 'Content-Type': 'text/plain'
             }
-            response4 = requests.request("GET", url, headers=headers, data=payload)
-            data3 = response4.json()
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data3 = response.json()
             level_list = data3['itemmasterlist']
             url = "http://13.235.112.1/ziva/mobile-api/user-list.php"
 
@@ -3079,7 +3123,11 @@ def user_list(request):
             else:
                     return render(request, 'user/user_list.html',{'menuname':menuname,'role_list':role_list,'level_list':level_list})
     except Exception as e:
-        messages.error(request, str(e))
+        if response.status_code == '400':
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        messages.error(request,response.text)
         return render(request, 'user/user_list.html', {"menuname": menuname})
 
 def user_status_active(request):
@@ -4118,7 +4166,7 @@ def sale_item_list(request):
             data = response.json()
             sale_item_list = data['saleitemlist']
             return render(request, 'sales/sales_new.html',
-                          {'depolist': depolist,
+                          {'status':'ok','response':'sale200','depolist': depolist,
                            "all_data": sale_item_list,
                            'data': sale_item_list[0],
                            'spell': spell,
@@ -4368,8 +4416,18 @@ def proformainvoice(request):
                     messages.success(request, data['message'])
                     return render(request, 'sales/sales_new.html',
                                   {'menuname': menuname,
-                                   'depolist': depolist,'busdeponame':busdeponame,'busdepoid':busdepoid,'data2':data2,'stname': stname,'stid':stid,'deponame': medepoid, 'bustation': bustname
+                                   'depolist': depolist,'busdeponame':busdeponame,'busdepoid':busdepoid,'data2':data2,'stname': stname,'stid':stid,'deponame': medepoid, 'bustation': bustname,'response':'sale200'
                                   })
+                elif response.status_code == 400:
+                    data = response.json()
+                    if data['message'] == 'Sorry! some details are missing':
+                        messages.error(request, data['message'])
+                        return render(request, 'sales/sales_new.html',
+                                      {'menuname': menuname, 'depolist': depolist, 'stname': stname, 'stid': stid,
+                                       'deponame': medepoid, 'bustation': bustname})
+                    else:
+                        messages.error(request, data['message'])
+                        return redirect('/login')
                 else:
                     try:
                         data = response.json()
@@ -4448,6 +4506,14 @@ def proformainvoice(request):
                             messages.success(request, data['message'])
                             return render(request, 'sales/sales_new.html',
                                           {'busdeponame':busdeponame,'busdepoid':busdepoid,'menuname':menuname,'depolist': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': medepoid, 'bustation': bustname})
+                        elif response.status_code == 400:
+                            data = response.json()
+                            if data['message'] == 'Sorry! some details are missing':
+                                messages.error(request, data['message'])
+                                return render(request, 'sales/sales_new.html', {'busdeponame':busdeponame,'menuname':menuname,'depolist':data1,'stname':stname,'deponame': medepoid,'bustation':bustname})
+                            else:
+                                messages.error(request, data['message'])
+                                return redirect('/login')
                         else:
                             try:
                                 data = response.json()
@@ -4530,7 +4596,7 @@ def sales_item_add(request):
                         messages.error(request, r.text)
                     return redirect('sale_item_list')
             return render(request, 'sales/sales_new.html',
-                          {'menuname': menuname, 'depolist': depolist, 'deponame': deponame, 'bustation': bustation,
+                          {'response':'sale200','menuname': menuname, 'depolist': depolist, 'deponame': deponame, 'bustation': bustation,
                            'stname': stname, 'stid': stid, 'tdate': tdate})
         else:
 
@@ -4582,7 +4648,7 @@ def sales_item_add(request):
                         except:
                             messages.error(request,r.text)
                         return redirect('sale_item_list')
-                return render(request, 'sales/sales_new.html', {'menuname':menuname,'depolist':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
+                return render(request, 'sales/sales_new.html', {'response':'sale200','menuname':menuname,'depolist':data1,'deponame': deponame,'bustation':bustation, 'stname':stname,'stid':stid,'tdate':tdate})
 
 
     except:
@@ -18519,6 +18585,8 @@ def intconsumption_servicereport(request):
             wh_masterlist = data['warehouselist']
 
         if request.method == 'POST':
+            fdate =  request.POST.get('fdate')
+            tdate = request.POST.get('ldate')
             url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-report.php"
 
             payload = json.dumps({"accesskey": accesskey,
@@ -18537,20 +18605,23 @@ def intconsumption_servicereport(request):
                 intercondepowiselist = data['internalconsumptionlist']
                 return render(request, 'intconsumption/intconsumption_servicereport.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               "intercondepowiselist": intercondepowiselist})
+                               "intercondepowiselist": intercondepowiselist, "fdate":fdate,
+                                   "tdate": tdate})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
                     messages.error(request, data['message'])
                     return render(request, 'intconsumption/intconsumption_servicereport.html',
-                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist, "fdate":fdate,
+                                   "tdate": tdate
                                  })
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
                 return render(request, 'intconsumption/intconsumption_servicereport.html',
-                              {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                              {"menuname": menuname, 'wh_masterlist': wh_masterlist, "fdate":fdate,
+                                   "tdate": tdate
                               })
         else:
             tdate = datetime.date.today()
@@ -18573,13 +18644,15 @@ def intconsumption_servicereport(request):
                 intercondepowiselist = data['internalconsumptionlist']
                 return render(request, 'intconsumption/intconsumption_servicereport.html',
                               {"menuname": menuname, 'wh_masterlist': wh_masterlist,
-                               'intercondepowiselist':intercondepowiselist})
+                               'intercondepowiselist':intercondepowiselist, "fdate":tdate,
+                                   "tdate": tdate})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
                     messages.error(request, data['message'])
                     return render(request, 'intconsumption/intconsumption_servicereport.html',
-                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist,
+                                  {"menuname": menuname, 'wh_masterlist': wh_masterlist, "fdate":tdate,
+                                   "tdate": tdate
                                   })
                 else:
                     messages.error(request, data['message'])

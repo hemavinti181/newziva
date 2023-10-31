@@ -69,6 +69,8 @@
                                                         <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}"  />
                                                     {% else %}
                                                      <input type="hidden" name="deponame" id="deponame" />
+                                                    <input type="hidden" name="status" id="status"  value="{{ status }}"/>
+                                                    <input type="hidden" name="response" id="response"  value="{{ response }}"/>
                                                        <input type="hidden" name="depoid1" id="depoid1"  value="{{  deponame }}" />
                                                     <select class="form-control items" name="depoid" id="depoid" required>
                                                       <option value="">depot </option>
@@ -122,7 +124,7 @@
                                         </form>
                 </div>
                 </div>
-                 <div class="x_panel" id="saleitemdiv">
+                 <div class="x_panel" id="saleitemdiv" style="display:none;">
                      <div class="x_content">
                                    <form class="form-label-left input_mask"  method="POST" action="sales_item_add"   enctype="multipart/form-data">
 										{% csrf_token %}
@@ -132,6 +134,7 @@
                                             <label>Select Items </label>
                                                 <select class="form-control items" name="itemname" id="saleitem" required>
 													<option value="">Items</option>
+
                                                     {% for data in data2 %}
                                                         <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
                                                     {% endfor %}
@@ -182,7 +185,7 @@
               </div>
               </div>
             </div>
-                 <div class="x_panel">
+                 <div class="x_panel" id="saleitemlist" style="display:none;">
                     <div class="clearfix"></div>
                   <div class="x_content">
                       <div class="row">
@@ -883,7 +886,21 @@ function qrResponse(event) {
     }
   });
 }
+$(document).ready(function(){
+ var response = $('#response').val();
+ var status =  $('#status').val();
 
+   if ( response === 'sale200') {
+         $('#saleitemdiv').show();
+
+  }
+   if (response === 'sale200' &&  status === 'ok') {
+          $('#saleitemdiv').show();
+           $('#saleitemlist').show();
+
+  }
+
+  });
 
 </script>
 

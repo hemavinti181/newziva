@@ -29,10 +29,10 @@
 											<label>Depot Name </label>
 										    <input type="text" class="form-control" placeholder="Depot name" name="deponame"  >
 										</div>
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
+										<!--<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Depot Code </label>
 										    <input type="text" class="form-control" placeholder="Depot code" name="depocode"  >
-										</div>
+										</div>-->
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Choose Depot Image  </label>
 											<input type="file"  name='depofile' id="customFile">
@@ -90,7 +90,6 @@
 <script>
 $("#regionid").change(function() {
   var selectedOptionText1 = $(this).val();
-  alert(selectedOptionText1)
   var selectedOptionText = $(this).find(":selected").text();
   $("#regionname").val(selectedOptionText);
 });

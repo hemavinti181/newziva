@@ -9,6 +9,11 @@
 	position: absolute !important;
 	width: 150% !important;
 	}
+	.style1{
+	position: absolute !important;
+	margin-left:85px;
+	width: 70% !important;
+	}
 </style>
 
 <div class="right_col" role="main">
@@ -157,7 +162,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content style">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Store</h5>
+                <h3 class="modal-title">Edit Store</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -292,7 +297,7 @@
 </div>
 <div class="modal custom-modal fade" id="store-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
+						<div class="modal-content style1">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -306,12 +311,12 @@
 									  <div class="modal-btn delete-action">
 									<input type="hidden" id="id" name="id"  />
 									<div class="row">
-										<div class="col-6">
-											<button class="btn btn-primary submit-btn">Yes</button>
-										</div>
-										<div class="col-6">
-											<button  data-dismiss="modal" class="btn btn-danger submit-btn">NO</button>
-										</div>
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:70px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
 									</div>
 								</div>
 								  </form>
