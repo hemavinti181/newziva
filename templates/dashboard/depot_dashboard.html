@@ -72,7 +72,7 @@
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count indays" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;">{{  }}</div>
+                <div class="count indays" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;">(Days)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Available Up to </p>
               </div>
@@ -818,18 +818,24 @@ function updateEchartPieChart2(itemslist){
         data.push({ device: 'MTD 500ml', geekbench: parseInt(itemslist[1].MTD_amount) });
         data.push({ device: 'MTD 250ml', geekbench: parseInt(itemslist[2].MTD_amount) });
 
-          Morris.Bar({
-              element: 'graph_bar',
-              data: data,
-              xkey: 'device',
-              ykeys: ['geekbench'],
-              labels: [''],
-              barRatio: 0.4,
-              barColors: ['#CD142A', '#1271D0', '#F86A1E', '#3498DB'],
-              xLabelAngle: 35,
-              hideHover: 'auto',
-              resize: true
-          });
+
+            Morris.Bar({
+            element: 'graph_bar',
+            data: data,
+            xkey: 'device',
+            ykeys: ['geekbench'],
+            labels: [''],
+            barRatio: 0.4,
+            barColors: function (row, series, type) {
+                if (row.x == 'MTD 1000ml') return '#CD142A';
+                if (row.x == 'MTD 500ml') return '#1271D0';
+                if (row.x == 'MTD 250ml') return '#F86A1E';
+                return '#3498DB'; // Default color for other bars
+            },
+            xLabelAngle: 35,
+            hideHover: 'auto',
+            resize: true
+        });
 
       }
 

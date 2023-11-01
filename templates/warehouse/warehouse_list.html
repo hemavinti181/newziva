@@ -16,7 +16,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3 style="color:#1372ba"><b>Warehouse Master</b></h3>
+                <h3 style="color:#1372ba"><b>Warehouse List</b></h3>
               </div>
 
               <div class="title_right">
@@ -102,20 +102,20 @@
 
                     <div class="col-md-6 col-sm-6  form-group has-feedback">
                         <label>Warehouse Name </label>
-                        <input type="text" class="form-control" name="warehousename1" id="warehousename1">
+                        <input type="text" class="form-control" name="warehousename1" id="warehousename1" required>
                     </div>
                     <div class="col-md-6 col-sm-6  form-group has-feedback">
                         <label>Warehouse Code </label>
-                        <input type="text" class="form-control" placeholder="warehouse_code" name="whcode" id="whcode">
+                        <input type="text" class="form-control" placeholder="warehouse_code" name="whcode" id="whcode" required>
                     </div>
                     <div class="col-md-6 col-sm-6  form-group has-feedback">
                         <label>Warehouse Manager  </label>
-                        <input type="text" class="form-control"  name="manager" id="manager" >
+                        <input type="text" class="form-control"  name="manager" id="manager" required>
                     </div>
 
                     <div class="col-md-6 col-sm-6  form-group has-feedback">
                         <label>Mobile </label>
-                        <input type="text" class="form-control"  name="mobilewh" id="mobilewh" >
+                        <input type="text" class="form-control"  name="mobilewh" id="mobilewh"   pattern= "[6789][0-9]{9}" required>
                     </div>
                    <!-- <div class="col-md-6 col-sm-6  form-group has-feedback">
                         <label>GST *</label>

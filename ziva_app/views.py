@@ -1713,16 +1713,18 @@ def depo_add(request):
                 depofile_name = None
 
             id=request.POST.get("regionid")
+
             for i in regionlist:
                 if i['region_id'] == id:
                     whid=i['warehouseid']
                     whname=i['warehousename']
                     regionname = i['regionname']
 
-                    url = "http://13.235.112.1/ziva/mobile-api/add-depomaster.php"
+            url = "http://13.235.112.1/ziva/mobile-api/add-depomaster.php"
 
-                    payload = {
+            payload = {
                         "accesskey": accesskey,
+                         "depo_code":request.POST.get("depocode"),
                         "deponame": request.POST.get("deponame"),
                         "gstnumber": request.POST.get("gstnumber"),
                         "address": request.POST.get("address"),
@@ -1741,19 +1743,19 @@ def depo_add(request):
                         "regionid": request.POST.get('regionid'),
                         "regionname": regionname
                     }
-                    payload = json.dumps(payload, cls=BytesEncoder)
-                    headers = {
-                        'Content-Type': 'application/json'
+            payload = json.dumps(payload, cls=BytesEncoder)
+            headers = {
+                    'Content-Type': 'application/json'
                     }
-                    r = requests.post(url, payload, headers=headers)
-                    if r.status_code == 200:
-                        r1 = r.json()
-                        messages.success(request, r1['message'])
-                        return redirect('/depo_list')
-                    else:
-                        r1 = r.json()
-                        messages.error(request, r1['message'])
-                        return redirect('/depo_list')
+            r = requests.post(url, payload, headers=headers)
+            if r.status_code == 200:
+                r1 = r.json()
+                messages.success(request, r1['message'])
+                return redirect('/depo_list')
+            else:
+                    r1 = r.json()
+                    messages.error(request, r1['message'])
+                    return redirect('/depo_list')
         else:
             return render(request, 'depo/depo_add.html', {'data': regionlist,'menuname':menuname})
 
@@ -2010,6 +2012,7 @@ def region_add(request):
         payload = json.dumps({"accesskey": accesskey,
                               "regionname": request.POST.get('regionname'),
                               "warehouseid":request.POST.get('whid'),
+                              "region_code":request.POST.get('region_code'),
                               "warehousename":  request.POST.get('warehousename'),
                               "region_contact_no":  request.POST.get('mobileno'),
                               "region_manager":  request.POST.get('regionmanager')
@@ -2358,7 +2361,7 @@ def warehouse_add(request):
                 licattach_name = None
             if warehouse:
                 warehouse_data = base64.b64encode(warehouse.read())
-                warehouse_name = request.FILES.get("warehouse").name
+                warehouse_name = request.FILES.get("warehousefile").name
 
             else:
                 warehouse_data = None
@@ -2368,6 +2371,7 @@ def warehouse_add(request):
             payload = {
                 "accesskey": accesskey,
                 "regionid": request.POST.get('depo'),
+                ""
                 "warehousename": request.POST.get('warehousename'),
                 "gstnumber": " ",
                 "licenseno": " ",
@@ -2661,6 +2665,7 @@ def vendor_status_inactive(request, id):
     else:
         messages.error(request, data['message'])
         return redirect('vendor_list')
+
 def get_storeregion(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -2692,6 +2697,7 @@ def get_storeregion(request):
         except:
             messages.error(request,response.text)
         return render(request,'masters/store_master_add.html',{'menuname':menuname})
+
 
 def get_storebus(request):
     if 'accesskey' not in request.session:
@@ -4259,7 +4265,7 @@ def sale_item_list(request):
                 data = response.json()
                 sale_item_list = data['saleitemlist']
                 return render(request, 'sales/sales_new.html',
-                              {'depolist':data1,'busdeponame':busdeponame,'busdepoid':busdepoid,"all_data": sale_item_list, 'deponame': medepoid,'bustation':bustation, 'data': sale_item_list[0],
+                              {'status':'ok','response':'sale200','depolist':data1,'busdeponame':busdeponame,'busdepoid':busdepoid,"all_data": sale_item_list, 'deponame': medepoid,'bustation':bustation, 'data': sale_item_list[0],
                               'stname':stname,'stid':stid,'data2':data2,'data3':data2[0],'spell':spell,'netvalue':netvalue,'taxinvoice':taxinvoice,'menuname':menuname})
             elif response.status_code == 400:
                 data = response.json()
@@ -4505,7 +4511,7 @@ def proformainvoice(request):
                             request.session['customer_mobile'] = cus_mobile
                             messages.success(request, data['message'])
                             return render(request, 'sales/sales_new.html',
-                                          {'busdeponame':busdeponame,'busdepoid':busdepoid,'menuname':menuname,'depolist': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': medepoid, 'bustation': bustname})
+                                          {'response':'sale200','busdeponame':busdeponame,'busdepoid':busdepoid,'menuname':menuname,'depolist': data1, 'data2':data2,'stname': stname,'stid':stid,'deponame': medepoid, 'bustation': bustname})
                         elif response.status_code == 400:
                             data = response.json()
                             if data['message'] == 'Sorry! some details are missing':
@@ -5703,8 +5709,12 @@ def deliver_challan_update(request):
             return redirect('sales_admin_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return render(request, 'create_indent/indent-list-admin.html')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
             data = response.json()
             messages.error(request, data['message'])
@@ -5746,8 +5756,12 @@ def deliver_challan_update(request):
                 return redirect('sales_list')
             elif response.status_code == 400:
                 data = response.json()
-                messages.error(request, data['message'])
-                return render(request, 'login1.html')
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return redirect('sales_list')
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
             else:
                 data = response.json()
                 messages.error(request, data['message'])
@@ -6830,6 +6844,7 @@ def out_pass_scanner(request):
                 messages.error(request,response.text)
             return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
     return render(request, 'create_indent/out_pass_scanner.html',{'menuname':menuname})
+
 
 
 def out_passlist1(request):
@@ -15304,6 +15319,7 @@ def depot_dashboard(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         item_masterlist = data['itemmasterlist']
+
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
         payload = json.dumps({"accesskey": accesskey})

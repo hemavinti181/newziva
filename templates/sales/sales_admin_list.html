@@ -147,7 +147,7 @@
                                 <a href="#" onclick="VerifyClick2('{{ all_data.sonumber }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                   <i class="fa fa-trash"></i></span></a>
                                     {% if all_data.status == 'Approved' %}
-                                <span class="badge  badge-success" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
+                                <span class="badge  badge-success" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}','{{all_data.total}}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
                                 {% endif %}
                             </td>
                            {% endif %}
@@ -237,7 +237,24 @@
                                                             </div>
                                                         </div>
                                                       </div>-->
-                          <div>
+
+                                                   <div class="x_panel" style="background-color:#3A8A78">
+                                                   <div class="col-md-7 col-sm-7  form-group has-feedback">
+                                                 <label style="color:white;">Order Number</label><br>
+                                                   </div>
+                                                   <div class="col-md-4 col-sm-4  form-group has-feedback" id="taxinvoice">
+                                                 <label style="color:white;"></label><br>
+                                                   </div>
+                                                     <div class="col-md-8 col-sm-8  form-group has-feedback">
+                                                         <label style="color:white;">Amount Payable </label>
+                                                     </div>
+
+                                                   <div class="col-md-4 col-sm-4  form-group has-feedback" id="netvalue">
+                                                      <label  style="color:white;">₹</label><br>
+                                                   </div>
+                                                          </div>
+                                                <div>
+
                                                  <label>Payment mode</label><br>
                                                  <label class="btn btn-round btn-warning" id="btn_cash">
                                                  <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
@@ -263,7 +280,7 @@
 
 
                                                     <div class="col-md-6 col-sm-6   offset-md-3" >
-											            <button class="btn btn-primary submit-btn" id="completebtn" onclick="submitToPayment()">Complete</button>
+											            <button class="btn btn-primary submit-btn" style="margin-top:-30px;" id="completebtn" onclick="submitToPayment()">Complete</button>
                                                         <button class="btn btn-info" id="payment_status"  onclick="qrResponse(event)" style="display:none; width: 250px;margin-left:-27px;" >Check  Payment Status </button>
                                                         <button class="btn  btn-primary submit-btn" id="paytmWithPaytm" onclick="submitFormToPayment()"  style="display:none;">Proceed to pay</button>
                                                     <p></p>
@@ -509,6 +526,9 @@ console.log(e.currentTarget);
 function VerifyClick(id,id1){
 $("#price").val(id1);
 $("#txtHdnId").val(id);
+ $("#taxinvoice label").text(id);
+$("#netvalue label").text('₹' + id1);
+
 }
 function VerifyClick1(id,id1){
 $("#txtHdnId2").val(id);
@@ -595,8 +615,9 @@ qrcodeContainer.appendChild(successMessage);
             qrButton.style.display = "none";
             completeButton.style.display = "block";
             qrCode.style.display = "none";
-             msg.style.display = "none";
-              msg1.style.display = "none";
+            msg.style.display = "none";
+            msg1.style.display = "none";
+            completeButton.style.marginTop = "";
         }
 
         if (scannerButton.checked){
@@ -633,7 +654,8 @@ function qrResponse(event) {
           $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
         $('#completebtn').show();
         $('#payment_status').hide();
-    } else {
+    }
+    else {
         $('#response_label1').hide;
        $('#response_label').html('<b>' + response.resultMsg + '</b>');
         $('#completebtn').hide();

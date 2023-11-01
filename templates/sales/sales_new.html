@@ -61,6 +61,8 @@
 												</select>
 										</div>-->
                                             	<div class="col-md-3 col-sm-4 input-icons  form-group has-feedback">
+                                                      <input type="hidden" name="status" id="status"  value="{{ status }}"/>
+                                                    <input type="hidden" name="response" id="response"  value="{{ response }}"/>
 
 
 
@@ -69,8 +71,7 @@
                                                         <input type="hidden"  class="form-control" name="deponame" id="depoid2" value="{{ busdepoid }}"  />
                                                     {% else %}
                                                      <input type="hidden" name="deponame" id="deponame" />
-                                                    <input type="hidden" name="status" id="status"  value="{{ status }}"/>
-                                                    <input type="hidden" name="response" id="response"  value="{{ response }}"/>
+
                                                        <input type="hidden" name="depoid1" id="depoid1"  value="{{  deponame }}" />
                                                     <select class="form-control items" name="depoid" id="depoid" required>
                                                       <option value="">depot </option>
@@ -287,10 +288,26 @@
                                              <form method="POST" action="complete_sale" id="saleform">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
-                                                   <input type="hidden" id="order_id_input" name="order_id_input"  />
-                                                    <input type="hidden" id="txnid" name="txnid"  />
+                                                  <div class="x_panel" style="background-color:#3A8A78">
+                                                   <div class="col-md-8 col-sm-8  form-group has-feedback">
+                                                 <label style="color:white;">Order Number</label><br>
+                                                   </div>
+                                                   <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                                 <label style="color:white;">{{ taxinvoice  }}</label><br>
+                                                   </div>
+                                                     <div class="col-md-8 col-sm-8  form-group has-feedback">
+                                                         <label style="color:white;">Amount Payable </label>
+                                                     </div>
+
+                                                   <div class="col-md-4 col-sm-4  form-group has-feedback">
+                                                      <label  style="color:white;">₹{{ netvalue  }}</label><br>
+                                                   </div>
+                                                          </div>
+
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                    <label for="remarks">Delivery date</label>
+                                                         <input type="hidden" id="order_id_input" name="order_id_input"  />
+                                                    <input type="hidden" id="txnid" name="txnid"  />
 										        <input type="date" class="form-control" name="date" id="date"  placeholder="remarks" required>
 										    </div>
                                                    <input type="hidden" name="netvalue" id="netvalue" value="{{ netvalue }}" />
@@ -305,26 +322,27 @@
                                                     {% endfor %}
 												</select>
 										</div>
-                                                <div class="col-md-12 col-sm-12  form-group has-feedback">
+
+                                                <div class="col-md-12 col-sm-12  form-group has-feedback" >
                                                  <label>Payment mode</label><br>
                                                  <label class="btn btn-round btn-warning" id="btn_cash">
-                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()"  required/> CASH
                                                 </label>
 
                                                    <!--<label class="btn btn-round btn-warning" id="btn_upi">
                                                  <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()"  /> UPI
                                                 </label>-->
                                                    <label class="btn btn-round btn-warning" id="btn_scanner">
-                                                 <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" /> SCANNER
+                                                 <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" required/> SCANNER
                                                 </label>
 
                                                   <label class="btn btn-round btn-warning" id="btn_due">
-                                                 <input type="radio" name="paymenttype" id="due" value="DUE" class="join-btn" onclick="toggleButtonVisibility()"/> DUE
+                                                 <input type="radio" name="paymenttype" id="due" value="DUE" class="join-btn" onclick="toggleButtonVisibility()" required/> DUE
                                                 </label>
 
                                                 </div>
                                                  <div id="qrcode-container" style="display:none;">
-                                                       <img id="qr-image" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
+                                                       <img id="qr-image" src="" alt="QR Code" style="max-width:200px; max-height: 200px;">
                                                          <label id="qrcodemsg" style="width:250px;margin-left:180px;color:#1372ba;">SCAN QR CODE</label>
                                                  </div>
 
@@ -334,7 +352,7 @@
                                                     <label id="response_label1" style="width:250px;margin-left:180px;color:#06911A;"></label>
                                                     </div>
 
-                                                  <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                                  <div class="col-md-12 col-sm-12  form-group has-feedback" style="margin-top:-42px;" id="remarksDiv">
                                                    <label for="remarks">Remarks</label>
 										       <textarea class="form-control" placeholder="remarks" rows="2"  name="remarks" id="remarks" ></textarea>
 										    </div>
@@ -784,16 +802,16 @@ qrcodeContainer.appendChild(successMessage);
          var qrCode = document.getElementById("qrcode-container");
          var msg = document.getElementById("response_label");
          var msg1 = document.getElementById("response_label1");
-
+        var remarksDiv = document.getElementById("remarksDiv");
 
         if (cashRadioButton.checked) {
-
             paytmButton.style.display = "none";
             qrButton.style.display = "none";
             completeButton.style.display = "block";
             qrCode.style.display = "none";
              msg.style.display = "none";
-              msg1.style.display = "none";
+             msg1.style.display = "none";
+             remarksDiv.style.marginTop = "";
         }
         if (dueRadioButton.checked) {
             paytmButton.style.display = "none";
@@ -802,6 +820,7 @@ qrcodeContainer.appendChild(successMessage);
             qrButton.style.display = "none";
              msg.style.display = "none";
               msg1.style.display = "none";
+             remarksDiv.style.marginTop = "";
         }
         if (scannerButton.checked){
             paytmButton.style.display = "none";
@@ -874,8 +893,9 @@ function qrResponse(event) {
           $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
           $('#completebtn').show();
           $('#payment_status').hide();
-    } else {
+     } else {
         $('#response_label1').hide();
+         $('#response_label').show();
        $('#response_label').html('<b>' + response.resultMsg + '</b>');
         $('#completebtn').hide();
         $('#payment_status').show();

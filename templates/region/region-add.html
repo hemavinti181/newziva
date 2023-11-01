@@ -27,21 +27,24 @@
 											{% csrf_token %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Region Name *</label>
-										    <input type="text" class="form-control" placeholder="Region name" name="regionname">
+										    <input type="text" class="form-control" placeholder="Region name" name="regionname" required>
 										</div>
-
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Region Code *</label>
+											<input type="text" class="form-control" placeholder="Region code" name="region_code" required>
+										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Region Manager *</label>
-										    <input type="text" class="form-control" placeholder="Region manager" name=" regionmanager">
+										    <input type="text" class="form-control" placeholder="Region manager" name=" regionmanager" required>
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Mobile *</label>
-										    <input type="text" class="form-control" placeholder="Mobile number" name="mobileno" >
+										    <input type="text" class="form-control" placeholder="Mobile number" name="mobileno" required>
 											</div>
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback">
 													<label>Warehouse *</label>
 											<input type="hidden" name="warehousename" id="warehousename" />
-												<select class="form-control" name="whid" id="whid" >
+												<select class="form-control items" name="whid" id="whid" required>
 													{% for data1 in data %}
                             							<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
                                                     {% endfor %}
@@ -71,6 +74,10 @@
 <script>
 $("#whid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
+  $("#warehousename").val(selectedOptionText);
+});
+$(document).ready(function() {
+  var selectedOptionText = $("#whid").find(":selected").text();
   $("#warehousename").val(selectedOptionText);
 });
 </script>

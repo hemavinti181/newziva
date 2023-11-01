@@ -27,14 +27,14 @@
 											{% csrf_token %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Bus Station  Name *</label>
-										    <input type="text" class="form-control" placeholder="bus station name" name="busname">
+										    <input type="text" class="form-control" placeholder="bus station name" name="busname" required>
 										</div>
 
                                         <div  class="col-md-3 col-sm-3  form-group has-feedback">
 
 													<label>Depo *</label>
 											<input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
+												<select class="form-control items" name="depoid" id="depoid" required>
                                                     <option value="" >select depot</option>
 													{% for data1 in data %}
                                                        {% if data1.status == 'Active' %}

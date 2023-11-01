@@ -180,20 +180,23 @@
                                                      <input type="hidden" id="order_id_input" name="order_id_input"  />
                                                         <input type="hidden" id="txnid" name="txnid"  />
 
-                                                      <!--<div style="display: inline-block;">
-                                                        <div class="top_tiles" style="width: 1000px;">
+                                                     <div class="x_panel" style="background-color:#3A8A78">
+                                                   <div class="col-md-7 col-sm-7  form-group has-feedback">
+                                                 <label style="color:white;">Order Number</label><br>
+                                                   </div>
+                                                   <div class="col-md-4 col-sm-4  form-group has-feedback" id="taxinvoice">
+                                                 <label style="color:white;"></label><br>
+                                                   </div>
+                                                     <div class="col-md-8 col-sm-8  form-group has-feedback">
+                                                         <label style="color:white;">Amount Payable </label>
+                                                     </div>
 
-                                                            <div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
-                                                                <div class="tile-stats">
-                                                                    <div class="icon1"><i class="fa fa-bottle-water"></i></div>
-                                                                    <h2 class="text-warning" style="margin-left: 10px;">
-                                                                        Order Id:         12345
-                                                                    </h2>
-                                                                    <p class="text-info" style="font-size: 12px;">Amount Payable</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                      </div>-->
+                                                   <div class="col-md-4 col-sm-4  form-group has-feedback" id="netvalue">
+                                                      <label  style="color:white;">₹</label><br>
+                                                   </div>
+                                                          </div>
+                                                <div>
+
 
                                                  <label>Payment mode</label><br>
                                                  <label class="btn btn-round btn-warning" id="btn_cash">
@@ -220,7 +223,7 @@
 
 
                                                     <div class="col-md-6 col-sm-6   offset-md-3">
-											            <button class="btn btn-primary submit-btn" id="completebtn" onclick="submitToPayment()">Complete</button>
+											            <button class="btn btn-primary submit-btn" id="completebtn"onclick="submitToPayment()">Complete</button>
                                                         <button class="btn btn-info" id="payment_status"  onclick="qrResponse(event)" style="display:none; width: 250px;margin-left:-27px;" >Check  Payment Status </button>
                                                         <button class="btn  btn-primary submit-btn" id="paytmWithPaytm" onclick="submitFormToPayment()"  style="display:none;">Proceed to pay</button>
                                                     <p></p>
@@ -258,6 +261,9 @@ console.log(e.currentTarget);
 function VerifyClick(id,id1){
 $("#price").val(id1);
 $("#txtHdnId").val(id);
+$("#taxinvoice label").text(id);
+$("#netvalue label").text('₹' + id1);
+
 }
 function VerifyClick1(id,id1){
 $("#txtHdnId2").val(id);
@@ -391,7 +397,9 @@ function qrResponse(event) {
         $('#completebtn').show();
         $('#payment_status').hide();
     } else {
+    alert('hai')
         $('#response_label1').hide;
+        $('#response_label').show();
        $('#response_label').html('<b>' + response.resultMsg + '</b>');
         $('#completebtn').hide();
         $('#payment_status').show();

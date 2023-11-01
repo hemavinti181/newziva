@@ -26,8 +26,8 @@
 									<form class="form-label-left input_mask" method="POST" action="warehouse_add1"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Warehouse Name </label>
-										    <input type="text" class="form-control" placeholder="warehouse name" name="warehousename">
+											<label>Warehouse Name *</label>
+										    <input type="text" class="form-control" placeholder="warehouse name" name="warehousename" required>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Choose warehouse Image  </label>
@@ -36,16 +36,16 @@
 											</div>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Warehouse Code * </label>
-										    <input type="text" class="form-control" placeholder="warehouse_code" name="warehouse_code">
+											<label>Warehouse Code *</label>
+										    <input type="text" class="form-control" placeholder="warehouse code" name="warehouse_code" required>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Warehouse Manager *</label>
-										    <input type="text" class="form-control" placeholder="warehouse name" name="warehousemamager">
+											<input  type="text" class="form-control" placeholder="warehouse mamager" name="warehousemamager" required></input>
 										</div>
                                          <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Mobile *</label>
-										    <input type="text" class="form-control" placeholder="mobile number" name="mobileno">
+										    <input type="text" class="form-control" placeholder="mobile number" name="mobileno"  pattern= "[6789][0-9]{9}" required>
 											</div>
 
 										<!--<div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -85,7 +85,7 @@
 										</div>-->
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Address </label>
-										    <input type="text" class="form-control" name="storeaddress"placeholder="address">
+											<textarea class="form-control" name="storeaddress" placeholder="address"></textarea>
 										</div>
 										<div  class="col-md-3 col-sm-6  form-group has-feedback">
 
