@@ -29,9 +29,10 @@
                                     <div>
                                 </div>
                             </div></div>
-                                {% if data.status == 'Pending' or data == 'Pending' %}
+                                <!--{% if data.status == 'Pending' or data == 'Pending' %}
                                         <button type="button" id="add_indentitem" style="margin-top:10px;margin-right:20px;" class="btn btn-primary">Add Indent Item</button>
-                                {% endif %}
+                                {% endif %}-->
+                                <a href="/indent_list"><button type="button"  style="margin-top:10px;margin-right:20px;" class="btn btn-primary">Indent List</button></a>
                             </div>
 
                   </div>
@@ -40,7 +41,7 @@
             </div>
                <div class="clearfix"></div>
 
-            <div class="row" id="itemrow" style="display: none;">
+            <div class="row" id="itemrow">
               <div class="col-md-12 col-sm-12">
                 <div class="x_panel">
                  <div class="x_content">
@@ -162,7 +163,7 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
                                                   <div class="modal-header">
-                              <h4 class="modal-title" id="myModalLabel2" style="text-align:center;">Update Quantity</h4>
+                              <h3 class="modal-title" id="myModalLabel2" style="text-align:center;">Update Quantity</h3>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -171,14 +172,17 @@
                                              <form method="post" action="/indent_item_update">
                                                     <input type="hidden" name="csrfmiddlewaretoken" value="HJ23sN14SJaVTiBcaTb0vm0D1qYzu5vNXILBgqRhsvdTyGPn0Ews3J7Yct14IzWw">
                                                	<div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                 <input type="hidden" id="itemname1" name="itemname" />
-                                                       <label>Select Items *</label>
-                                                <select class="form-control items" name="itemcode" id="itemcode1" required>
+                                                      <label> Item*</label>
+                                                 <input type="text"  class="form-control" id="itemname1" name="itemname" readonly />
+
+
+                                                       <input type="hidden" class="form-control" id="itemcode1" name="itemcode" />
+                                                <!--<select class="form-control items" name="itemcode" id="itemcode1" required>
                                                     <option value="">item name</option>
                                                     {% for data in item_masterlist %}
                                                         <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
                                                     {% endfor %}
-                                                </select>
+                                                </select>-->
                                                 </div>
 
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
@@ -271,7 +275,7 @@ $("#itemcode").change(function() {
                         console.log(obj[0].mrp);
                         if(obj.length>0){
                             $("#cases1").val(obj[0].uom);
-                            $("#quantity").val(" ");
+
                             $("#nob").val(" ");
                             $("#price6").val(obj[0].mrp);
                               $("#mrp1").val(obj[0].mrp);
@@ -283,46 +287,14 @@ $("#itemcode").change(function() {
     	$('#quantity').on('input', function()  {
     	    val  = $("#quantity").val();
             val1 = $("#cases1").val();
-            mrp2 = $("#price6").val( );
+            mrp2 = $("#mrp1").val( );
             val2 =    (val * val1)
             val3 = (val2 * mrp2)
             $("#nob").val(val2);
             $("#price6").val(val3);
          });
 
-         $("#itemcode1").change(function() {
-        	var itemname = $('#itemcode1').val();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_indentitem"  %}',
-            	data: {
-                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
 
-			 	success: function(data){
-			 		 var obj = data.data.itemmasterlist
-                        console.log(obj[0].mrp);
-                        if(obj.length>0){
-
-                            $("#cases").val(obj[0].uom);
-                            $("#qty").val(" ");
-                            $("#nob1").val(" ");
-                             $("#price1").val(obj[0].mrp);
-                             $("#price").val(obj[0].mrp);
-
-					}
-             	}
-        	});
-    	});
-    	$('#qty').on('input', function()  {
-    	    val  = $("#qty").val();
-            val1 = $("#cases").val();
-            mrp2 = $("#price1").val( );
-            val2 =    (val * val1)
-            val3 = (val2 * mrp2)
-            $("#nob1").val(val2);
-            $("#price1").val(val3);
-         });
          $('#getdate').val(new Date().toJSON().slice(0,10));
 $('.items').change(function() {
     console.log('Dropdown value changed');
@@ -344,6 +316,39 @@ $("#price").val(id7);
 $("#itemname1").val(id2);
 $("#itemcode1").val(id3)
 $("#price1").val(id6)
+
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_indentitem"  %}',
+            	data: {
+                	'itemname':id3,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+
+			 	success: function(data){
+			 		 var obj = data.data.itemmasterlist
+                        console.log(obj[0].mrp);
+                        if(obj.length>0){
+
+                            $("#cases").val(obj[0].uom);
+                            $("#qty").val(" ");
+                            $("#nob1").val(" ");
+                             $("#price1").val(obj[0].mrp);
+                             $("#price").val(obj[0].mrp);
+
+					}
+             	}
+        	});
+
+    	$('#qty').on('input', function()  {
+
+    	    val  = $("#qty").val();
+            val1 = $("#cases").val();
+            mrp2 = $("#price").val( );
+            val2 =    (val * val1)
+            val3 = (val2 * mrp2)
+            $("#nob1").val(val2);
+            $("#price1").val(val3);
+         });
 }
 </script>
 

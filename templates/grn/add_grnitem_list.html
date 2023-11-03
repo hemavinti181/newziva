@@ -72,15 +72,11 @@
                     <td>{{ all_data.batch_no }}</td>
                        <td>{{ all_data.purchase_price }}</td>
                        {% if request.session.role == 'Admin' %}
-                           {% if all_data.status == 'pending' %}
                             <td>
                                 <a href="#" class="depoedit" onclick="editGrnItem('{{ id }}','{{ all_data.item_code }}' )" data-id="{{ id}}" data-id1="{{ all_data.item_code }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                   <a href="#" onclick="VerifyClick2('{{ all_data.id }}','{{ all_data.grn }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                   <i class="fa fa-trash"></i></span></a>
                            </td>
-                           {% else %}
-                                <td><span class="badge badge-danger">{{ all_data.status }}</span></td>
-                           {% endif %}
                        {% endif %}
                       </tr>
                       {% endfor %}

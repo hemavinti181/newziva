@@ -1025,9 +1025,8 @@ def uom(request):
                 messages.error(request, r['message'])
             except:
                 messages.error(request,response.text)
-        return render(request, 'Category_master/df.html', {"uom": "active",'menuname':menuname})
-
-    return render(request, 'Category_master/df.html', {"uom": "active",'menuname':menuname})
+        return render(request, 'category_master/df.html', {"uom": "active",'menuname':menuname})
+    return render(request, 'category_master/df.html', {"uom": "active",'menuname':menuname})
 
 
 def storetype(request):
@@ -1057,11 +1056,12 @@ def storetype(request):
             try:
                 r = response.json()
                 messages.error(request, r['message'])
-                return render(request, 'Category_master/df.html', {"storetype": "active",'menuname':menuname})
+                return render(request, 'category_master/df.html', {"storetype": "active",'menuname':menuname})
             except:
                 messages.error(request,response.text)
-            return render(request, 'Category_master/df.html', {"storetype": "active",'menuname':menuname})
-    return render(request, 'Category_master/df.html', {"storetype": "active",'menuname':menuname})
+            return render(request, 'category_master/df.html', {"storetype": "active",'menuname':menuname})
+    else:
+        return render(request, 'category_master/df.html', {"storetype": "active",'menuname':menuname})
 
 
 
@@ -1094,8 +1094,8 @@ def gst(request):
                 messages.error(request, r['message'])
             except:
                 messages.error(request, response.text)
-            return render(request, 'Category_master/df.html', {"gst": "active",'menuname':menuname})
-    return render(request, 'Category_master/df.html', {"gst": "active",'menuname':menuname})
+            return render(request, 'category_master/df.html', {"gst": "active",'menuname':menuname})
+    return render(request, 'category_master/df.html', {"gst": "active",'menuname':menuname})
 
 
 def category(request):
@@ -1126,8 +1126,8 @@ def category(request):
                 messages.error(request, r['message'])
             except:
                 messages.error(request, response.text)
-            return render(request, 'Category_master/df.html', {"category": "active",'menuname':menuname})
-    return render(request, 'Category_master/df.html', {"category": "active",'menuname':menuname})
+            return render(request, 'category_master/df.html', {"category": "active",'menuname':menuname})
+    return render(request, 'category_master/df.html', {"category": "active",'menuname':menuname})
 
 
 def role_list(request):
@@ -1697,8 +1697,6 @@ def depo_add(request):
                 messages.error(request,response.text)
             return render(request, 'depo/depo_add.html')
 
-
-
         if request.method == "POST":
             gstattach = request.FILES.get("gstattach")
             depofile = request.FILES.get("depofile")
@@ -2077,6 +2075,7 @@ def region_edit(request):
 
         payload = json.dumps({
             "accesskey": accesskey,
+            "region_code":request.POST.get('regioncode'),
             "regionid":  request.POST.get('region_id1'),
             "regionname": request.POST.get('regionname1'),
             "region_manager": request.POST.get('regionmanager1'),
@@ -2551,15 +2550,20 @@ def vendor_add(request):
 
         if gstattach:
             gstattach_data = base64.b64encode(gstattach.read())
+            gstattach_name =  request.FILES.get("gstattach").name
 
         else:
             gstattach_data = None
+            gstattach_name = None
 
         if panattach:
             panattach_data = base64.b64encode(panattach.read())
+            panattach_data_name = request.FILES.get("gstattach").name
+
 
         else:
             panattach_data = None
+            panattach_data_name = None
 
         url = "http://13.235.112.1/ziva/mobile-api/add-vendormaster.php"
 
@@ -2585,7 +2589,9 @@ def vendor_add(request):
             "depoid": "",
             "warehouseid": "",
             "busstationid": "",
-            "busstationname": ""
+            "busstationname": "",
+            "panattachfilename":panattach_data_name,
+            "gstattachfilename":gstattach_name
 
         }
         payload = json.dumps(payload, cls=BytesEncoder)
@@ -3185,8 +3191,8 @@ def user_list(request):
             data = response.json()
             messages.error(request, data['message'])
             return redirect('/login')
-        messages.error(request,response.text)
-        return render(request, 'user/user_list.html', {"menuname": menuname})
+    messages.error(request,response.text)
+    return render(request, 'user/user_list.html', {"menuname": menuname})
 
 def user_status_active(request):
     if 'accesskey' not in request.session:
@@ -7771,58 +7777,92 @@ def get_depo(request):
         return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
-
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    else:
+        return redirect('/depo_list')
 def depo_edit(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-    if request.method == "POST":
-        url = "http://13.235.112.1/ziva/mobile-api/edit-depomaster.php"
-
-        payload = json.dumps({
-
-            "accesskey": accesskey,
-            "depoid": request.POST.get('depoid'),
-            "deponame": request.POST.get('deponame1'),
-            "gstnumber": request.POST.get('gstnumber1'),
-            "address": request.POST.get('address1'),
-            "licenseno": request.POST.get('license1'),
-            "depo_manager":request.POST.get('depomanager1'),
-            "depo_contact_no":request.POST.get('mobileno1'),
-            "warehouseid":request.POST.get('warehouseid'),
-            "warehouse":request.POST.get('warehousename'),
-            "regionid": request.POST.get('regionid1'),
-            "region":request.POST.get('regionname1'),
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
-
-        response = requests.request("GET", url, headers=headers, data=payload)
-
+    payload = json.dumps({"accesskey": accesskey})
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    url = "http://13.235.112.1/ziva/mobile-api/region-list.php"
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
         data = response.json()
-
-        if response.status_code == 200:
-            messages.success(request, data['message'])
-            return redirect('depo_list')
-        elif response.status_code == 400:
+        regionlist = data['regionlist']
+    else:
+        try:
             data = response.json()
-            text  = data['message']
-            if 'some details are missing' in text:
-                messages.error(request, data['message'])
+            messages.error(request, response.text)
+            return redirect('/depo_list')
+        except:
+            messages.error(request, response.text)
+        return redirect('/depo_list')
+    if request.method == "POST":
+        id = request.POST.get("regionid1")
+        if id:
+            for i in regionlist:
+                if i['region_id'] == id:
+                    whid = i['warehouseid']
+                    whname = i['warehousename']
+                    regionname = i['regionname']
+            url = "http://13.235.112.1/ziva/mobile-api/edit-depomaster.php"
+
+            payload = json.dumps({
+
+                "accesskey": accesskey,
+                "depoid": request.POST.get('depoid'),
+                "depocode": request.POST.get('depocode'),
+                "deponame": request.POST.get('deponame1'),
+                "gstnumber": request.POST.get('gstnumber1'),
+                "address": request.POST.get('address1'),
+                "licenseno": request.POST.get('license1'),
+                "depo_manager":request.POST.get('depomanager1'),
+                "depo_contact_no":request.POST.get('mobileno1'),
+                "warehouseid":whid,
+                "warehouse":whname,
+                "regionid": request.POST.get('regionid1'),
+                "region":request.POST.get('regionname1'),
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+
+            if response.status_code == 200:
+                data = response.json()
+                messages.success(request, data['message'])
                 return redirect('depo_list')
+            elif response.status_code == 400:
+                data = response.json()
+                text  = data['message']
+                if 'some details are missing' in text:
+                    messages.error(request, data['message'])
+                    return redirect('depo_list')
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
             else:
-                messages.error(request, data['message'])
-                return redirect('/login')
+                try:
+                    r = response.json()
+                    messages.error(request, r['message'])
+                except:
+                    messages.error(request, response.text)
+                return redirect('depo_list')
         else:
-            try:
-                r = response.json()
-                messages.error(request, r['message'])
-            except:
-                messages.error(request, response.text)
+            messages.error(request,' region id not exist')
             return redirect('depo_list')
     return redirect('depo_list')
 
@@ -13855,7 +13895,7 @@ def pending_indent_admin(request):
             if response.status_code == 200:
                 data = response.json()
                 list = data['indentlist']
-                return render(request,'create_indent/pending_indent_admin.html',{"depolist":depolist,'menuname':menuname,'wh_masterlist':wh_masterlist,'list':list})
+                return render(request,'create_indent/pending_indent_admin.html',{'data1':list[0],"depolist":depolist,'menuname':menuname,'wh_masterlist':wh_masterlist,'list':list})
             else:
                 return render(request, 'create_indent/pending_indent_admin.html',
                               {'menuname': menuname, 'wh_masterlist': wh_masterlist,"depolist":depolist})
@@ -18324,6 +18364,7 @@ def edit_vehcle(request):
         if response.status_code == 200:
             data = response.json()
             messages.success(request, data['message'])
+
             return redirect('/vehical_master')
         elif response.status_code == 400:
             data = response.json()
@@ -18383,12 +18424,7 @@ def vehical_master(request):
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
-                try:
-                    r = response.json()
-                    messages.error(request, r['message'])
-                except:
-                    messages.error(request, response.text)
-                return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
+                    return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/vehicle-masterslist.php"
 
@@ -18411,11 +18447,6 @@ def vehical_master(request):
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
-                try:
-                        r = response.json()
-                        messages.error(request, r['message'])
-                except:
-                        messages.error(request, response.text)
                 return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
     except Exception as e:
         if response.status_code == 400:
@@ -18604,7 +18635,8 @@ def add_driver_master(request):
                 return redirect('/driver_master')
             elif response.status_code == 400:
                 data = response.json()
-                if data['message'] == 'Sorry! some details are missing':
+                text = data['message']
+                if 'some details are missing' in text:
                     messages.error(request, data['message'])
                     return redirect('/driver_master')
                 else:

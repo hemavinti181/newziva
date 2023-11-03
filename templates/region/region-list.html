@@ -94,7 +94,10 @@
 											<label>Region Name *</label>
 										    <input type="text" class="form-control"  name="regionname1" id="regionname1" required>
 										</div>
-
+                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Region Code *</label>
+										    <input type="text" class="form-control"  name="regioncode" id="regioncode" required>
+										</div>
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Region Manager *</label>
 										    <input type="text" class="form-control"  name=" regionmanager1" id="regionmanager1" required>
@@ -200,6 +203,7 @@ function editRegion(id){
              if(obj){
              $("#region_id1").val(obj[0].regionid);
              $("#regionname1").val(obj[0].regionname);
+              $("#regioncode").val(obj[0].region_code)
              $("#regionmanager1").val(obj[0].region_manager);
              $("#mobileno1").val(obj[0].region_contact_no);
              $("#whid1").val(obj[0].warehouseid);

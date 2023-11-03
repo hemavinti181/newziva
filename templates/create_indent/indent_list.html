@@ -41,6 +41,9 @@
         <div class="animated flipInY  col-md-4 col-sm-4" style="margin-top: -50px;right:-1px;">
         <div class="tile-stats">
             <div class="icon1"><!--<i class="fa fa-bar-chart"></i>--></div>
+             {% if request.session.codee == 'BSP0135' %}
+                <h1 class="text-info" style="margin-left: 70px; font-size: 20px;">{{ request.session.warehousename }}</h1>
+            {% endif %}
             {% if request.session.role  == 'Depo' %}
                 <h1 class="text-info" style="margin-left: 70px; font-size: 20px;">{{ request.session.warehousename }}</h1>
             {% endif %}

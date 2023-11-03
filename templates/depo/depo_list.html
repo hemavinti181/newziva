@@ -140,20 +140,20 @@
 											{% csrf_token %}
 										<div class="col-md-6 form-group has-feedback">
 											<label>Depot Name *</label>
-										    <input type="text" class="form-control" name="deponame1"  id="deponame1">
+										    <input type="text" class="form-control" name="deponame1"  id="deponame1" required>
 										</div>
 
 										<div class="col-md-6  form-group has-feedback">
 											<label>Depot Store Executive *</label>
-										    <input type="text" class="form-control"  name=" depomanager1" id="depomanager1">
+										    <input type="text" class="form-control"  name=" depomanager1" id="depomanager1" required>
 										</div>
 				   						<div class="col-md-6  form-group has-feedback">
 											<label>Depot Code *</label>
-										    <input type="text" class="form-control"  name=" depocode" id="depocode">
+										    <input type="text" class="form-control"  name=" depocode" id="depocode" required>
 										</div>
                                         <div class="col-md-6 form-group has-feedback">
 											<label>Mobile *</label>
-										    <input type="text" class="form-control"  name="mobileno1" id="mobileno1">
+										    <input type="text" class="form-control"  name="mobileno1" id="mobileno1"  pattern= "[6789][0-9]{9}" required>
 											</div>
 
 										<!--<div class="col-md-6  form-group has-feedback">
@@ -269,7 +269,12 @@
         },
         success: function(data) {
          var obj = data.data.depolist
-
+		 var error = data.data.error;
+         var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+					}
           	console.log(obj[0].regionname);
              if(obj){
              $("#depoid").val(obj[0].depoid);
@@ -283,7 +288,7 @@
              $("#regionid1").val(obj[0].regionid);
              $("#regn").val(obj[0].regionname);
              $("#address1").val(obj[0].address);
-              $("#depocode").val(obj[0].address);
+              $("#depocode").val(obj[0].depocode);
              $('#depo-edit').modal('show');
         	}
         }

@@ -75,21 +75,25 @@
 											</div>
 										</div>
 
-
-											<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>GST Number </label>
-										    <input type="text" class="form-control" name="gstnumber" placeholder="GST Number">
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>GST Number</label>
+											<input type="text" class="form-control" name="gstnumber" placeholder="GST Number"
+												   pattern="^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{2}$"
+												   title="Enter a valid GST number (e.g., 12ABCDE1234F1Z5)">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>GST Attach</label>
 											<div class="custom-file">
-    											<input type="file"  name="gstattach"id="customFile5">
+    											<input type="file"  name="gstattach" id="customFile5">
 											</div>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>PAN Card </label>
-										    <input type="text" class="form-control" name="pancard" placeholder="Pan card">
+										    <input type="text" class="form-control" name="pancard" placeholder="Pan card"
+											   pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+           										title="Enter a valid PAN card number (e.g., ABCDE1234F)">
 										</div>
+
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>PAN Image </label>
 											<div class="custom-file">
