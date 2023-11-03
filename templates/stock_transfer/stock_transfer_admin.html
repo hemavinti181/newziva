@@ -795,7 +795,7 @@ $("#warehouseid").change(function() {
                  }
                   if (response === "depo200") {
                     var optionValue1 = $("#depotransfer2").val();
-                    $("#depotransfer1").find("option[value='" + optionValue1 + "']").prop("selected", true);
+
                  }
                 }
             }
@@ -1143,12 +1143,12 @@ $(document).ready(function(){
 
          $('#bus').show();
           var optionValue1 ="Bus station";
-          $("#depotransfer1").find("option[value='" + optionValue1 + "']").prop("selected", true);
+
   }
    if (wh == 'WDP0001' || wh == 'WDP0002') {
          $('#depo').show();
           var optionValue1 ="Warehouse";
-          $("#depotransfer1").find("option[value='" + optionValue1 + "']").prop("selected", true);
+
   }
   if ( response === 'Bus200') {
          $('.bus_div').show();

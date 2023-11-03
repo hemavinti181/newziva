@@ -32,13 +32,13 @@
 
                                         <div  class="col-md-3 col-sm-3  form-group has-feedback">
 
-													<label>Depo *</label>
+													<label>Depot *</label>
 											<input type="hidden" name="deponame" id="deponame" />
 												<select class="form-control items" name="depoid" id="depoid" required>
                                                     <option value="" >select depot</option>
 													{% for data1 in data %}
                                                        {% if data1.status == 'Active' %}
-                            							<option value="{{ data1.depoid }}">{{ data1.depo_name }}</option>
+                            							<option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
                                                     {% endif %}
                                                     {% endfor %}
 												</select>

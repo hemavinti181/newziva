@@ -44,7 +44,10 @@
                                  <select class="form-control items" name="depotid" id="depotid" required>
                                                     {% for data in depolist %}
                                                         {% if data.status == "Active" %}
-                                                                        <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                            {% if data.depoid == 'DEPO0103' %}
+                            							        <option value="{{ data.depoid }}" selected>{{ data.deponame }}</option>
+                                                            {% endif %}
+                                                                <option value="{{ data.depoid }}">{{ data.deponame }}</option>
                                                         {% endif %}
                                                     {% endfor %}
                                  </select>
@@ -176,7 +179,7 @@
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
 													<label>Select Depot *</label>
 											<input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
+												<select class="form-control items" name="depoid" id="depoid" required>
                                                     <option>select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
@@ -194,12 +197,12 @@
                                       <input type="text" class="form-control" placeholder="oprs" name="oprs" required>
                                    </div>
                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                      <label>Route</label>
+                                      <label>Route *</label>
                                           <input type="text" class="form-control" placeholder="route" name="route" required>
                                     </div>
                                      <div class="col-md-6 col-sm-6  form-group has-feedback">
                                         <label>Departure Time *</label>
-                                        <input type="text" class="form-control" placeholder="departure time" name="departure">
+                                        <input type="text" class="form-control" placeholder="departure time" name="departure" required>
                                     </div>
 
 
@@ -231,7 +234,7 @@
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
 													<label>Select Depot *</label>
 											<input type="hidden" name="depotname" id="depotname" />
-												<select class="form-control" name="depotid1" id="depotid1">
+												<select class="form-control items" name="depotid1" id="depotid1" required>
                                                     <option>select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
@@ -254,7 +257,7 @@
                                     </div>
                                      <div class="col-md-6 col-sm-6  form-group has-feedback">
                                         <label>Departure Time *</label>
-                                        <input type="text" class="form-control" placeholder="departure time" name="departuretime1" id="departuretime1">
+                                        <input type="text" class="form-control" placeholder="departure time" name="departuretime1" id="departuretime1" required>
                                     </div>
 
 

@@ -44,7 +44,10 @@
                                  <select class="form-control items" name="depotid" id="depotid" required>
                                                     {% for data in depolist %}
                                                         {% if data.status == "Active" %}
-                                                                        <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                            {% if data.depoid == 'DEPO0103' %}
+                            							        <option value="{{ data.depoid }}" selected>{{ data.deponame }}</option>
+                                                            {% endif %}
+                                                            <option value="{{ data.depoid }}">{{ data.deponame }}</option>
                                                         {% endif %}
                                                     {% endfor %}
                                  </select>
@@ -181,8 +184,8 @@
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
 													<label>Select Depot *</label>
 											<input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
-                                                    <option>select depot</option>
+												<select class="form-control items" name="depoid" id="depoid" required>
+                                                    <option value="">select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
                             							<option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
@@ -192,11 +195,11 @@
                                    </div>
                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                       <label>Vehical *</label>
-                                      <input type="text" class="form-control" placeholder="vehical" name="vehicleno">
+                                      <input type="text" class="form-control" placeholder="vehical" name="vehicleno" required>
                                    </div>
                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
                                       <label>Product type *</label>
-                                      <input type="text" class="form-control" placeholder="product type" name="product">
+                                      <input type="text" class="form-control" placeholder="product type" name="product" required>
                                    </div>
 
                                       </div>
@@ -227,16 +230,16 @@
 											<input type="hidden" name="depotname1" id="depotname1" />
                                        	<input type="hidden" name="sno" id="sno" />
 												<select class="form-control" name="depotid1" id="depotid1">
-                                                    <option>select depot</option>
+                                                    <option>select depot*</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
-                            							<option value="{{ data1.deponame }}">{{ data1.deponame }}</option>
-                                                    {% endif %}
+                                                                 <option value="{{ data1.deponame }}">{{ data1.deponame }}</option>
+                                                      {% endif %}
                                                     {% endfor %}
 												</select>
                                    </div>
                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                      <label>Vehical *</label>
+                                      <label>Vehical No*</label>
                                       <input type="text" class="form-control" placeholder="vehical" name="vehicleno1"  id="vehicleno1">
                                    </div>
                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
@@ -291,10 +294,7 @@ $("#id1").val(id);
       $("#deponame1").val(selectedOptionText);
       form.submit();
 });
-$(document).ready(function(){
- var optionValue = $("#depoid1").val();
-  $("#depotid").find("option[value='" + optionValue + "']").prop("selected", true);
-});
+
  $("#depoid").change(function() {
       var form = document.getElementById("myform");
       var selectedOptionText = $(this).find(":selected").text();
@@ -303,6 +303,10 @@ $(document).ready(function(){
 $("#depotid1").change(function() {
       var selectedOptionText = $(this).find(":selected").text();
       $("#depotname1").val(selectedOptionText);
+});
+$(document).ready(function(){
+ var optionValue = $("#depoid1").val();
+  $("#depotid").find("option[value='" + optionValue + "']").prop("selected", true);
 });
 
 </script>

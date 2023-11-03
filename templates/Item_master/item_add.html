@@ -27,12 +27,12 @@
 										{% csrf_token %}
 
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Item Name</label>
-										    <input type="text" class="form-control" placeholder="Item name" name="name" id="name">
+											<label>Item Name *</label>
+										    <input type="text" class="form-control" placeholder="Item name" name="name" id="name" required>
 										</div>
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Item Code</label>
-										    <input type="text" class="form-control" placeholder="Item code" name="code" id="code">
+											<label>Item Code *</label>
+										    <input type="text" class="form-control" placeholder="Item code" name="code" id="code" required>
 										</div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>HSN Code</label>
@@ -44,9 +44,9 @@
 										    <input type="text" class="form-control" placeholder="GST" name="gst" id="gst" >
 										</div>
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Category</label>
+													<label>Category *</label>
 
-												<select class="form-control" name="category" id="category">
+												<select class="form-control items" name="category" id="category" required>
 													<option value=" ">category</option>
 													{% for data in cat_data %}
 													 	{% if  data.status == "Active" %}
@@ -60,13 +60,13 @@
 										    <input type="text" class="form-control" placeholder="manufacture" name="manufacture" id="manufacture" >
 										</div>
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>MRP</label>
-										    <input type="text" class="form-control" placeholder="MRP" name="mrp" id="'mrp" >
+											<label>MRP *</label>
+										    <input type="text" class="form-control" placeholder="MRP" name="mrp" id="'mrp" required>
 											</div>
                                                 <div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Per Case</label>
-												<select class="form-control" name="uom">
-													<option value=" ">per case</option>
+													<label>Per Case *</label>
+												<select class="form-control items" name="uom" required>
+													<option value="">Per case </option>
 													{% for data in uom_data %}
 														{% if  data.status == "Active" %}
 															<option value="{{ data.displayname }}">{{ data.displayname }}</option>

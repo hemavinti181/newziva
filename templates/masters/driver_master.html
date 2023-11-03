@@ -35,17 +35,20 @@
 
                              <div class="col-md-2 col-sm-2  form-group has-feedback">
                                   <select class="form-control items" name="depoid1" id="depoid1" hidden>
-                                                     <option value="{{ request.POST.depotid }}">{{ request.POST.deponame1 }}</option>
+                                      <option value="{{ request.POST.depotid }}">{{ request.POST.deponame1 }}</option>
                                   </select>
 
                                                         <input type="hidden" name="deponame1" id="deponame1"  value="{{ request.POST.deponame1 }}">
 
                                  <select class="form-control items" name="depotid" id="depotid" required>
-                                                    {% for data in depolist %}
-                                                        {% if data.status == "Active" %}
-                                                                        <option value="{{ data.depoid }}">{{ data.deponame }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
+                                     {% for data in depolist %}
+                                        {% if data.status == "Active" %}
+                                            {% if data.depoid == 'DEPO0103' %}
+                                                <option value="{{ data.depoid }}" selected>{{ data.deponame }}</option>
+                                            {% endif %}
+                                                <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                            {% endif %}
+                                     {% endfor %}
                                  </select>
                              </div>
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
@@ -180,8 +183,8 @@
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
 													<label>Select Depot *</label>
 											<input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
-                                                    <option>select depot</option>
+												<select class="form-control" name="depoid" id="depoid" required>
+                                                    <option value="">select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
                             							<option value="{{ data1.deponame }}">{{ data1.deponame }}</option>
@@ -191,15 +194,15 @@
                                    </div>
                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                       <label>Driver id *</label>
-                                      <input type="text" class="form-control" placeholder="driver id" name="driverid">
+                                      <input type="text" class="form-control" placeholder="driver id" name="driverid" required>
                                    </div>
                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
                                       <label>Driver name *</label>
-                                      <input type="text" class="form-control" placeholder="driver name" name="drivername">
+                                      <input type="text" class="form-control" placeholder="driver name" name="drivername" required>
                                    </div>
                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                      <label>Mobile</label>
-                                          <input type="text" class="form-control" placeholder="mobile number" name="mobile" pattern= "[6789][0-9]{9}">
+                                      <label>Mobile *</label>
+                                          <input type="text" class="form-control" placeholder="mobile number" name="mobile" pattern= "[6789][0-9]{9}" required>
                                     </div>
                                      <div class="col-md-6 col-sm-6  form-group has-feedback">
                                         <label>Designation</label>

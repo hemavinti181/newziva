@@ -10,7 +10,6 @@
               <div class="title_left">
                 <h3 style="color:#06911A"> <b>Add Stall</b></h3>
               </div>
-
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
 					<a href="store_master"><button type="submit" class="btn btn-primary">Stall List</button></a>
@@ -28,10 +27,10 @@
 									<form class="form-label-left input_mask" method="POST" action="add_store"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label>Select Warehouse</label>
+													<label> Warehouse *</label>
 											 <input type="hidden" name="warehousename" id="warehousename" />
-												<select class="form-control" name="warehouseid" id="warehouseid">
-													<option value="">Warehouse </option>
+												<select class="form-control items" name="warehouseid" id="warehouseid" required>
+													<option value="">warehouse </option>
 													{% for data1 in warehouse %}
 														{% if data1.status == 'Active' %}
                             		                    	<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -40,24 +39,24 @@
 												</select>
 										</div>
 											<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label> Region</label>
+													<label> Region *</label>
 											 <input type="hidden" name="regionname" id="regionname" />
-												<select class="form-control" name="regionid" id="regionid">
-													<option value=""> Region</option>
+												<select class="form-control items" name="regionid" id="regionid" required>
+													<option value=""> region</option>
 												</select>
 										</div>
 											<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label> Depot</label>
+													<label> Depot *</label>
 											 <input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid">
+												<select class="form-control items" name="depoid" id="depoid" required>
 													<option value=""> depot</option>
 												</select>
 											</div>
 
 										<div  class="col-md-3 col-sm-6  form-group has-feedback">
-													<label> Bus Station</label>
+													<label> Bus Station *</label>
 											 <input type="hidden" name="busstationname" id="busstationname" />
-												<select class="form-control" name="busstationid" id="busstationid">
+												<select class="form-control items" name="busstationid" id="busstationid" required>
 													<option value=""> bus station</option>
 												</select>
 										</div>
@@ -66,8 +65,8 @@
 										    <input type="text" class="form-control" placeholder="stall name" name="storename" required>
 										</div>
 											<div class="col-md-3 col-sm-3  form-group has-feedback">
-												<label>Stall Code*</label>
-										    <input type="text" class="form-control" placeholder="stall name" name="storename" required>
+												<label>Stall Code </label>
+										    <input type="text" class="form-control" placeholder="stall code" name="stallcode">
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Stall Image Attach </label>
@@ -154,12 +153,12 @@
 												</select>
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Contact Person </label>
-										    <input type="text" class="form-control" placeholder="contact person" name="contactperson">
+											<label>Contact Person *</label>
+										    <input type="text" class="form-control" placeholder="contact person" name="contactperson" required>
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
-											<label>Mobile </label>
-										    <input type="text" class="form-control" placeholder="mobile number" name="mobile" pattern= "[6789][0-9]{9}">
+											<label>Mobile *</label>
+										    <input type="text" class="form-control" placeholder="mobile number" name="mobile" pattern= "[6789][0-9]{9}" required>
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Alternate Mobile </label>
@@ -171,7 +170,7 @@
 											</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label class="col-form-label col-md-3 col-sm-3 ">Remarks</label>
-											<textarea id="message"  name="remarks"class="form-control "   placeholder="remarks" ></textarea>
+											<textarea id="message"  name="remarks" class="form-control "   placeholder="remarks" ></textarea>
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 										    	<input type="hidden" class="form-control" name="location" placeholder="latitude"  id="location">
@@ -219,7 +218,14 @@ $("#busstationid").change(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
-
+                    var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#regionid").empty();
+						$("#regionid").append("<option  value=''>not available</option>");
+					}
 					if(obj) {
 			 		$("#regionid").empty();
 			 		$("#regionid").append("<option  value=''>Choose Region</option>");
@@ -241,7 +247,14 @@ $("#busstationid").change(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
-
+                    var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#depoid").empty();
+						$("#depoid").append("<option  value=''>not available</option>");
+					}
 					if(obj) {
 			 		$("#depoid").empty();
 			 		$("#depoid").append("<option  value=''>Choose Depo</option>");
@@ -264,6 +277,14 @@ $("#busstationid").change(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
+			 		var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#busstationid").empty();
+						$("#busstationid").append("<option  value=''>not available</option>");
+					}
 					if(obj) {
 			 		$("#busstationid").empty();
 			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");

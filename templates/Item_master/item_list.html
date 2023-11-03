@@ -47,7 +47,7 @@
                                     <th>MRP </th>
                                     <th>Category</th>
                                     <th>Manufacture</th>
-                                    <th>CASES</th>
+                                    <th>Cases</th>
                                     <th>Action</th>
                         </tr>
                       </thead>
@@ -97,7 +97,7 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Item</h5>
+                <h3 class="modal-title">Edit Item</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -108,25 +108,25 @@
                                         <input type="hidden" name="itemid" id="itemid" />
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Item Name *</label>
-										    <input type="text" class="form-control" name="nameitem" id="nameitem">
+										    <input type="text" class="form-control" name="nameitem" id="nameitem" required>
 										</div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Item Code *</label>
-										    <input type="text" class="form-control" name="codeitem" id="codeitem">
+										    <input type="text" class="form-control" name="codeitem" id="codeitem" required >
 										</div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>HSN Code *</label>
+											<label>HSN Code </label>
 										    <input type="text" class="form-control"  name="hsn1" id="hsn1">
 										</div>
 
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>GST *</label>
+											<label>GST</label>
 										    <input type="text" class="form-control"  name="gst" id="gst1">
 										</div>
                                         <div  class="col-md-6 col-sm-6  form-group has-feedback">
 													<label>Category *</label>
-												<select class="form-control" name="category" id="category1">
-                                                    	<option value=" ">category</option>
+												<select class="form-control items" name="category" id="category1" required>
+                                                    	<option value="">category</option>
 													{% for categ in category %}
                                                     {% if  categ.status == "Active" %}
 													    <option value="{{ categ.displayname }}" selected>{{ categ.displayname }}</option>
@@ -136,7 +136,7 @@
 
 										</div>
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Manufacture *</label>
+											<label>Manufacture</label>
 										    <input type="text" class="form-control"  name="manufacture" id="manufacture">
 										</div>
 
@@ -150,8 +150,8 @@
 											</div>
                                                 <div  class="col-md-6 col-sm-6  form-group has-feedback">
 													<label>Per Case *</label>
-													<select class="form-control" name="uom" id="uom">
-                                                        	<option value=" ">per case</option>
+													<select class="form-control" name="uom" id="uom" required>
+                                                        	<option value="">per case</option>
 														{% for uom in uom %}
                                                             {% if  uom.status == "Active" %}
 														        <option value="{{ uom.displayname }}" selected>{{ uom.displayname }}</option>

@@ -15,7 +15,7 @@
                 <h3> GRN Item Add</h3>
               </div>
                  <div class="title_right">
-                  <div class="col-md-4 col-sm-4 offset-md-7">
+                  <div class="col-md-6 col-sm-6  offset-md-7">
                       <div style="display: inline-block;">
                             <div class="row" style="display: inline-block;">
                                 <div class="top_tiles" style="width: 800px;">
@@ -28,11 +28,9 @@
                                     <div>
                                 </div>
                             </div></div>
-                                {% if data.status == 'Pending' %}
-                                        <button type="button" id="add_indentitem" style="margin-top:10px;margin-right:20px;" class="btn btn-primary">Add Indent Item</button>
-                                {% endif %}
-                            </div>
 
+                             <a href="{% url 'grn_list1'  %}"><button type="submit" style="margin-top:10px;margin-right:20px;" class="btn btn-primary"> GRN List</button></a>
+                            </div>
                   </div>
               </div>
             </div>
@@ -64,12 +62,12 @@
                                             </div>
                                            <input type="hidden" id="response" name="response" value="{{ response  }}" />
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                             <label>Batch Number *</label>
+                                             <label>Batch Number</label>
 										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
 										</div>
                                         <div class="col-md-1 col-sm-2  form-group has-feedback">
                                              <label>Qty(Cases)*</label>
-										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" required>
 										</div>
                                          <div class="col-md-1 col-sm-1  form-group has-feedback">
                                               <label>Qty(Bottles)*</label>
@@ -115,7 +113,7 @@
 				</div>
 			<div class="row" >
               <div class="col-md-12 col-sm-12 ">
-                <div class="x_panel" id="list" style="display:none;">
+                <div class="x_panel" id="list" >
                     <div class="clearfix"></div>
                   <div class="x_content">
                       <div class="row">
@@ -186,22 +184,24 @@
                <form  method="POST" action="/edit_grn_item"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                 <input type="hidden" id="itemname1" name="itemname" />
+                                                 <input type="hidden" id="itemcode" name="itemcode" />
+
                                                        <label>Select Items *</label>
-                                                <select class="form-control items" name="itemcode" id="itemcode1" required>
+                                                       <input type="text" class="form-control" name="itemname1" id="itemname1" readonly>
+                                               <!-- <select class="form-control items" name="itemcode" id="itemcode1" required>
                                                     <option value="">item name</option>
                                                     {% for data in data %}
                                                         <option value="{{ data.itemcode }}">{{ data.itemname }}</option>
-                                                    {% endfor %}
+                                                    {% endfor %}-->
                                                 </select>
                                         </div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
                                              <label>Batch Number *</label>
-										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno1">
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno1" required>
 										</div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
                                              <label>Qty(Cases)*</label>
-										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity1">
+										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity1" required>
 										</div>
                                          <div class="col-md-6 col-sm-6  form-group has-feedback">
                                               <label>Qty(Bottles)*</label>
@@ -290,6 +290,7 @@ function editGrnItem(id,id1){
              $("#noofbottles").val(obj.noofbottles);
              $("#batchno1").val(obj.batch_no);
              $("#itemname1").val(obj.itemname);
+             $('#itemcode').val(obj.item_code)
              $('#itemcode1').val(obj.item_code)
              $("#latestpurchase1").val(obj.purchase_price);
              var inputDate =obj.expiry_date;

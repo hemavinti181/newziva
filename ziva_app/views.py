@@ -378,6 +378,7 @@ def add_store(request):
                 'accesskey': accesskey,
                 "storename": request.POST.get("storename"),
                 'storeattachfilename':storephoto_name,
+                "storecodeid":request.POST.get('stallcode'),
                 'storephoto': storephoto_data ,
                 'legalname': request.POST.get("legalname"),
                 "depo":request.POST.get("deponame"),
@@ -477,9 +478,20 @@ def store_edit(request):
                     data = r.json()
                     messages.success(request, data['message'])
                     return redirect('/store_master')
+                elif response.status_code == 400:
+                    data = response.json()
+                    if data['message'] == 'Sorry! some details are missing':
+                        messages.error(request, data['message'])
+                        return redirect('/store_master')
+                    else:
+                        messages.error(request, data['message'])
+                        return redirect('/login')
                 else:
-                    data = r.json()
-                    messages.error(request, data['message'])
+                    try:
+                        r = response.json()
+                        messages.error(request, r['message'])
+                    except:
+                        messages.error(request, response.text)
                     return redirect('/store_master')
     return redirect('/store_master')
 
@@ -557,8 +569,9 @@ def item_add(request):
         }
 
         response = requests.request("GET", url, headers=headers, data=payload)
-        response = response.json()
-        uom = response['itemmasterlist']
+        if response.status_code == 200:
+            response = response.json()
+            uom = response['itemmasterlist']
 
         url = "http://13.235.112.1/ziva/mobile-api/dropdwn-table-list.php"
         payload = json.dumps({
@@ -2081,9 +2094,21 @@ def region_edit(request):
             data = response.json()
             messages.success(request, data['message'])
             return redirect('/region_list')
-        else:
+        elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
+            text = data['message']
+            if 'some details are missing' in text:
+                messages.error(request, data['message'])
+                return redirect('/region_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/region_list')
     return redirect('/region_list')
 
@@ -2549,9 +2574,18 @@ def vendor_add(request):
             "address": request.POST.get('storeaddress'),
             "pincode": request.POST.get('pincode'),
             "state": request.POST.get('state'),
+            "fssai":request.POST.get('fssai'),
             "city": request.POST.get('city'),
             "panattach": panattach_data,
             "gstattach": gstattach_data,
+            "region": "",
+            "depo": "",
+            "warehouse": "",
+            "regionid": "",
+            "depoid": "",
+            "warehouseid": "",
+            "busstationid": "",
+            "busstationname": ""
 
         }
         payload = json.dumps(payload, cls=BytesEncoder)
@@ -2690,13 +2724,19 @@ def get_storeregion(request):
     if response.status_code == 200:
         data = response.json()
         return JsonResponse({'data': data})
-    else:
-        try:
-            data = response.json()
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
             messages.error(request, data['message'])
-        except:
-            messages.error(request,response.text)
-        return render(request,'masters/store_master_add.html',{'menuname':menuname})
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    else:
+        data = "something went wrong"
+        return JsonResponse({'data': data})
 
 
 def get_storebus(request):
@@ -3012,11 +3052,22 @@ def user_add(request):
                 r = response.json()
                 messages.success(request, r['message'])
                 return redirect('user_list')
+            elif response.status_code == 400:
+                data = response.json()
+                text = data['message']
+                if "some details are missing" in text:
+                    messages.error(request, data['message'])
+                    return redirect('user_add')
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
             else:
-                r = response.json()
-                messages.error(request, r['message'])
-                return redirect('user_add')
-
+                try:
+                    r = response.json()
+                    messages.error(request, r['message'])
+                except:
+                    messages.error(request, response.text)
+            return redirect('user_add')
         return render(request, 'user/user_add.html',
                       {'all_data': des_list,'all_data2': role_list, 'all_data3': level_list,'data':wh_masterlist,'menuname':menuname})
     except:
@@ -3066,7 +3117,8 @@ def user_edit(request):
             return redirect('user_list')
         elif response.status_code == 400:
             data = response.json()
-            if data['message'] == 'Sorry! some details are missing':
+            text = data['message']
+            if 'some details are missing' in text:
                 messages.error(request, data['message'])
                 return redirect('/user_list')
             else:
@@ -3335,13 +3387,13 @@ def delete_grn_item(request):
     if response.status_code == 200:
         data = response.json()
         messages.success(request, data['message'])
-        url = reverse('add_grnitem_list', args=[id])
+        url = reverse('add_grnitem', args=[id])
         return redirect(url)
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
             messages.error(request, data['message'])
-            url = reverse('add_grnitem_list', args=[id])
+            url = reverse('add_grnitem', args=[id])
             return redirect(url)
         else:
             messages.error(request, data['message'])
@@ -3352,8 +3404,9 @@ def delete_grn_item(request):
             messages.error(request, data['message'])
         except:
             messages.error(request, response.text)
-        url = reverse('add_grnitem_list', args=[id])
+        url = reverse('add_grnitem', args=[id])
         return redirect(url)
+
 
 def indent_item_update(request):
     if 'accesskey' not in request.session:
@@ -3460,7 +3513,7 @@ def edit_grn_item(request):
             "accesskey": accesskey,
             "grn": request.POST.get('grn'),
             "sno":request.POST.get('id'),
-            "item_name": request.POST.get('itemname'),
+            "item_name": request.POST.get('itemname1'),
             "item_code": request.POST.get('itemcode'),
             "quantity": request.POST.get('quantity'),
             "batch_no": request.POST.get('batchno'),
@@ -3480,23 +3533,31 @@ def edit_grn_item(request):
 
         if response.status_code == 200:
             messages.success(request, data['message'])
-            url = reverse('add_grnitem_list', args=[id])
+            url = reverse('add_grnitem', args=[id])
             return redirect(url)
 
         elif response.status_code == 400:
             data = response.json()
-            if data['message'] == 'Sorry! some details are missing':
+            text = data['message']
+            if 'some details are missing' in text:
                 messages.error(request, data['message'])
-                url = reverse('add_grnitem_list', args=[id])
+                url = reverse('add_grnitem', args=[id])
                 return redirect(url)
             else:
                 messages.error(request, data['message'])
                 return redirect('/login')
+        else:
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+            except:
+                messages.error(request, response.text)
+            url = reverse('add_grnitem', args=[id])
+            return redirect(url)
 
     else:
-        return redirect('grn_list1')
-    url = reverse('add_grnitem_list', args=[id])
-    return redirect(url)
+        url = reverse('add_grnitem', args=[id])
+        return redirect(url)
 
 
 def grn_search(request):
@@ -3549,7 +3610,7 @@ def add_grnitem(request,id):
         item_masterlist = data['itemmasterlist']
 
         role = request.session['role']
-        url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
+
 
         if role == 'Admin':
             if request.method == "POST":
@@ -3591,13 +3652,71 @@ def add_grnitem(request,id):
                     }
 
                     response = requests.request("GET", url, headers=headers, data=payload)
-                    data = response.json()
-                    grn_item_list = data['grnitemlist']
-                    return render(request, 'grn/add_grnitem.html',
-                                  {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,'response':200})
-                else:
+                    if response.status_code == 200:
+                        data = response.json()
+                        grn_item_list = data['grnitemlist']
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,'response':200})
+                    elif response.status_code == 503:
+                        try:
+                            data = response.json()
+                            grn_item_list = data['grnitemlist']
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,'response':200})
+                        except:
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'data': item_masterlist, 'menuname': menuname,
+                                           'id': id, 'response': 200})
+                    else:
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'data': item_masterlist, 'menuname': menuname,
+                                       'id': id, 'response': 200})
+                elif r.status_code == 400:
                     r1 = r.json()
-                    messages.error(request, r1['message'])
+                    if r1['message'] == 'Sorry! some details are missing':
+                        messages.error(request, data['message'])
+                        url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
+
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "grnno": id
+                        })
+                        headers = {
+                            'Content-Type': 'text/plain'
+                        }
+
+                        response = requests.request("GET", url, headers=headers, data=payload)
+                        if response.status_code == '200':
+                            data = response.json()
+                            grn_item_list = data['grnitemlist']
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                           'id': id,
+                                           'response': 200})
+
+                        elif response.status_code == 503:
+                            try:
+                                data = response.json()
+                                grn_item_list = data['grnitemlist']
+                                return render(request, 'grn/add_grnitem.html',
+                                              {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                               'id': id,
+                                               'response': 200})
+                            except:
+                                return render(request, 'grn/add_grnitem.html',
+                                              {'data': item_masterlist, 'menuname': menuname,
+                                               'id': id,
+                                               'response': 200})
+                        else:
+                            return render(request, 'grn/add_grnitem.html',
+                                          { 'data': item_masterlist, 'menuname': menuname,
+                                           'id': id,
+                                           'response': 200})
+                    else:
+                        messages.error(request, data['message'])
+                        return redirect('/login')
+                else:
+
                     url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
                     payload = json.dumps({
@@ -3609,60 +3728,148 @@ def add_grnitem(request,id):
                     }
 
                     response = requests.request("GET", url, headers=headers, data=payload)
+                    if response.status_code == 200:
+                        data = response.json()
+                        grn_item_list = data['grnitemlist']
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'all_data':grn_item_list,'data': item_masterlist, 'menuname': menuname,'id':id,'response':400})
+                    elif response.status_code == 503:
+                        try:
+                            data = response.json()
+                            grn_item_list = data['grnitemlist']
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                           'id': id,
+                                           'response': 400})
+                        except:
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'data': item_masterlist, 'menuname': menuname,
+                                           'id': id, 'response': 400})
+            else:
+                url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
+
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "grnno": id
+                })
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
                     data = response.json()
                     grn_item_list = data['grnitemlist']
                     return render(request, 'grn/add_grnitem.html',
                                   {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,
-                                   'response': 200})
-            else:
-                return render(request, 'grn/add_grnitem.html',
-                              {'data': item_masterlist, 'menuname': menuname,'id':id,'response':400})
+                                   'response': 400})
+                elif response.status_code == 503:
+                    try:
+                        data = response.json()
+                        grn_item_list = data['grnitemlist']
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,
+                                       'response': 400})
+                    except:
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'data': item_masterlist, 'menuname': menuname,
+                                       'id': id, 'response': 400})
+                else:
+                    return render(request, 'grn/add_grnitem.html',
+                                          {'data': item_masterlist, 'menuname': menuname,
+                                           'id': id, 'response': 400})
+
+
         else:
-            if request.method == "POST":
                 url = "http://13.235.112.1/ziva/mobile-api/grn-item.php"
                 payload = {
-                    "accesskey": accesskey,
-                    "grnnumber": id,
-                    "itemname": request.POST.get('txtItemName'),
-                    "itemcode": request.POST.get('itemname'),
-                    "hsncode":"",
-                    "qty": request.POST.get('quantity'),
-                    "batchno": request.POST.get('batchno'),
-                    "expdate": request.POST.get('result'),
-                    "purchaseprice": request.POST.get('latestpurchase'),
-                    "mrp":request.POST.get('mrp'),
-                    "freeqty": "",
-                    "gst": " ",
-                    "uom": request.POST.get('uom'),
-                    "manufacturer": request.POST.get('manufacture'),
-                    "itemsno": request.POST.get('itemsno')
-                }
+                        "accesskey": accesskey,
+                        "grnnumber": id,
+                        "itemname": request.POST.get('txtItemName'),
+                        "itemcode": request.POST.get('itemname'),
+                        "hsncode":"",
+                        "qty": request.POST.get('quantity'),
+                        "batchno": request.POST.get('batchno'),
+                        "expdate": request.POST.get('result'),
+                        "purchaseprice": request.POST.get('latestpurchase'),
+                        "mrp":request.POST.get('mrp'),
+                        "freeqty": "",
+                        "gst": " ",
+                        "uom": request.POST.get('uom'),
+                        "manufacturer": request.POST.get('manufacture'),
+                        "itemsno": request.POST.get('itemsno')
+                    }
                 payload = json.dumps(payload, cls=BytesEncoder)
                 headers = {
-                    'Content-Type': 'application/json'
-                }
+                        'Content-Type': 'application/json'
+                    }
                 r = requests.post(url, payload, headers=headers)
 
                 if r.status_code == 200:
-                    r1 = r.json()
-                    messages.success(request, r1['message'])
-                    url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
+                        r1 = r.json()
+                        messages.success(request, r1['message'])
+                        url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
-                    payload = json.dumps({
-                        "accesskey": accesskey,
-                        "grnno": id
-                    })
-                    headers = {
-                        'Content-Type': 'text/plain'
-                    }
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "grnno": id
+                        })
+                        headers = {
+                            'Content-Type': 'text/plain'
+                        }
 
-                    response = requests.request("GET", url, headers=headers, data=payload)
-                    data = response.json()
-                    grn_item_list = data['grnitemlist']
-                    return render(request, 'grn/add_grnitem.html', {'all_data': grn_item_list,'data': item_masterlist,'menuname':menuname,'id':id,'all_data': grn_item_list,'response':200})
+                        response = requests.request("GET", url, headers=headers, data=payload)
+                        if response.status_code == 200:
+                            data = response.json()
+                            grn_item_list = data['grnitemlist']
+                            return render(request, 'grn/add_grnitem.html', {'all_data': grn_item_list,'data': item_masterlist,'menuname':menuname,'id':id,'response':200})
+                        elif response.status_code == 503:
+                            data = response.json()
+                            grn_item_list = data['grnitemlist']
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                           'id': id, 'response': 200})
+                        else:
+                            return render(request, 'grn/add_grnitem.html',
+                                          { 'data': item_masterlist, 'menuname': menuname,
+                                           'id': id,  'response': 200})
+                elif response.status_code == '400':
+                        r1 = r.json()
+                        if r1['message'] == 'Sorry! some details are missing':
+                            messages.error(request, data['message'])
+                            messages.error(request, r1['message'])
+                            url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
+
+                            payload = json.dumps({
+                                "accesskey": accesskey,
+                                "grnno": id
+                            })
+                            headers = {
+                                'Content-Type': 'text/plain'
+                            }
+
+                            response = requests.request("GET", url, headers=headers, data=payload)
+                            if response.status_code == 200:
+                                data = response.json()
+                                grn_item_list = data['grnitemlist']
+                                return render(request, 'grn/add_grnitem.html',
+                                              {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,
+                                              'response': 200})
+                            elif response.status_code == 503:
+                                data = response.json()
+                                grn_item_list = data['grnitemlist']
+                                return render(request, 'grn/add_grnitem.html',
+                                              {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                               'id': id,
+                                               'response': 200})
+                            else:
+                                return render(request, 'grn/add_grnitem.html',
+                                              {'data': item_masterlist, 'menuname': menuname,'id': id,'response': 200})
+                        else:
+                            messages.error(request, data['message'])
+                            return redirect('/login')
+
                 else:
-                    r1 = r.json()
-                    messages.error(request, r1['message'])
                     url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
                     payload = json.dumps({
@@ -3674,13 +3881,27 @@ def add_grnitem(request,id):
                     }
 
                     response = requests.request("GET", url, headers=headers, data=payload)
-                    data = response.json()
-                    grn_item_list = data['grnitemlist']
-                    return render(request, 'grn/add_grnitem.html',
-                                  {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,
-                                  'response': 200})
-            else:
-                return render(request, 'grn/add_grnitem.html', {'data': item_masterlist,'menuname':menuname,'id':id,'response':400})
+                    if response.status_code == 200:
+                        data = response.json()
+                        grn_item_list = data['grnitemlist']
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                       'id': id, 'response': 400})
+                    elif response.status_code == 503:
+                        try:
+                            data = response.json()
+                            grn_item_list = data['grnitemlist']
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                           'id': id, 'response': 400})
+                        except:
+                           pass
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'data': item_masterlist, 'menuname': menuname,
+                                       'id': id, 'response': 400})
+                    else:
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'data': item_masterlist, 'menuname': menuname, 'id': id, 'response': 400})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -7429,11 +7650,20 @@ def item_edit(request):
             return redirect('/item_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            text =  data['message']
+            if  'some details are missing' in text:
+                messages.error(request, data['message'])
+                return redirect('/item_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            messages.error(request, data['message'])
-            return redirect('/item_edit')
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
+            return redirect('/item_list')
     return redirect('/item_list')
 
 def vendor_edit(request):
@@ -7502,12 +7732,21 @@ def warehouse_edit(request):
             return redirect('/warehouse_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/warehouse_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/warehouse_list')
+
+
 
 def des_edit(request):
     pass
@@ -7571,12 +7810,21 @@ def depo_edit(request):
             return redirect('depo_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            text  = data['message']
+            if 'some details are missing' in text:
+                messages.error(request, data['message'])
+                return redirect('depo_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('depo_list')
-    return redirect('region_list')
+    return redirect('depo_list')
 
 
 def level_edit(request):
@@ -10359,11 +10607,19 @@ def bus_edit(request):
             return redirect('/bus_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            text = data['message']
+            if   'some details are missing' in text:
+                messages.error(request, data['message'])
+                return redirect('/bus_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/bus_list')
     return redirect('/bus_list')
 
@@ -10595,13 +10851,21 @@ def edit_storetype(request):
             return redirect('/storetype_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/storetype_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/storetype_list')
     return redirect('/storetype_list')
+
 
 def get_case(request):
     if 'accesskey' not in request.session:
@@ -10663,11 +10927,18 @@ def edit_case(request):
             return redirect('/uom_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/uom_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/uom_list')
     return redirect('/uom_list')
 
@@ -10722,11 +10993,18 @@ def edit_category(request):
             return redirect('/category_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/category_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/category_list')
     return redirect('/category_list')
 
@@ -10755,12 +11033,20 @@ def edit_gst(request):
             return redirect('/gst_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/gst_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/gst_list')
+
     return redirect('/gst_list')
 
 def get_gst(request):
@@ -10840,11 +11126,18 @@ def edit_city(request):
             return redirect('/city_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/city_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/city_list')
     return redirect('/city_list')
 
@@ -10902,11 +11195,18 @@ def edit_level(request):
             return redirect('/level_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/level_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/level_list')
     return redirect('/level_list')
 
@@ -10963,11 +11263,18 @@ def edit_role(request):
             return redirect('/role_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/role_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/role_list')
     return redirect('/role_list')
 
@@ -11023,11 +11330,18 @@ def edit_state(request):
             return redirect('/state_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/state_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/state_list')
     return redirect('/state_list')
 
@@ -11081,12 +11395,20 @@ def edit_price(request):
             return redirect('/des_list')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('/des_list')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
-            data = response.json()
-            messages.error(request, data['message'])
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/des_list')
+
     return redirect('/des_list')
 
 
@@ -16201,8 +16523,9 @@ def depots_less_stock(request):
         return redirect('/login')
     accesskey = request.session['accesskey']
     role = request.session['role']
+    warehouseid = request.session['warehouseid']
     if role == 'Admin':
-        url = "http://13.235.112.1/ziva/mobile-api/warehouse-stock-admin-report.php"
+        url = "http://13.235.112.1/ziva/mobile-api/depo-lesss-stock-admin.php"
         payload = {"accesskey": accesskey, "warehouseid": request.POST.get('warehouseid')
                    }
         payload = json.dumps(payload, cls=BytesEncoder)
@@ -16233,6 +16556,7 @@ def depots_less_stock(request):
     else:
         url = "http://13.235.112.1/ziva/mobile-api/depo-lesss-stock.php"
         payload = {"accesskey": accesskey,
+
                    }
         payload = json.dumps(payload, cls=BytesEncoder)
 
@@ -17877,9 +18201,10 @@ def add_service_master(request):
                 return redirect('/service_master')
             elif response.status_code == 400:
                 data = response.json()
-                if data['message'] == 'Sorry! some details are missing':
+                text = data['message']
+                if 'some details are missing' in text:
                     messages.error(request, data['message'])
-                    return JsonResponse({'data': data})
+                    return redirect('/service_master')
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
@@ -17959,14 +18284,21 @@ def edit_service(request):
             return redirect('/service_master')
         elif response.status_code == 400:
             data = response.json()
-            if data['message'] == 'Sorry! some details are missing':
+            text = data['message']
+            if   'some details are missing' in text:
                 messages.error(request, data['message'])
                 return redirect('/service_master')
             else:
                 messages.error(request, data['message'])
                 return redirect('/login')
         else:
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/service_master')
+
     else:
         return redirect('/service_master')
 
@@ -17995,13 +18327,19 @@ def edit_vehcle(request):
             return redirect('/vehical_master')
         elif response.status_code == 400:
             data = response.json()
-            if data['message'] == 'Sorry! some details are missing':
+            text = data['message']
+            if  'some details are missing' in text:
                 messages.error(request, data['message'])
                 return redirect('/vehical_master')
             else:
                 messages.error(request, data['message'])
                 return redirect('/login')
         else:
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/vehical_master')
     else:
         return redirect('/vehical_master')
@@ -18045,6 +18383,11 @@ def vehical_master(request):
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
+                try:
+                    r = response.json()
+                    messages.error(request, r['message'])
+                except:
+                    messages.error(request, response.text)
                 return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/vehicle-masterslist.php"
@@ -18068,6 +18411,11 @@ def vehical_master(request):
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
+                try:
+                        r = response.json()
+                        messages.error(request, r['message'])
+                except:
+                        messages.error(request, response.text)
                 return render(request, 'masters/vehical_master.html', {"menuname": menuname, 'depolist': depolist})
     except Exception as e:
         if response.status_code == 400:
@@ -18258,7 +18606,7 @@ def add_driver_master(request):
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
                     messages.error(request, data['message'])
-                    return JsonResponse({'data': data})
+                    return redirect('/driver_master')
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
@@ -18335,13 +18683,19 @@ def edit_driver(request):
             return redirect('/driver_master')
         elif response.status_code == 400:
             data = response.json()
-            if data['message'] == 'Sorry! some details are missing':
+            text = data['message']
+            if 'some details are missing' in text:
                 messages.error(request, data['message'])
                 return redirect('/driver_master')
             else:
                 messages.error(request, data['message'])
                 return redirect('/login')
         else:
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
             return redirect('/driver_master')
     else:
         return redirect('/driver_master')

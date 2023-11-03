@@ -27,7 +27,7 @@
 				      	<form  method="POST" action=" " id="myForm"  enctype="multipart/form-data">
 											{% csrf_token %}
 									<div  class="col-md-2 col-sm-2  form-group has-feedback">
-													<label>Select Warehouse</label>
+													<label> Warehouse</label>
 
 										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.warehousename }}</option>
@@ -136,12 +136,12 @@
             <div class="modal-body">
                <form  method="POST" action="bus_edit"   enctype="multipart/form-data">
 											{% csrf_token %}
-										<div class="col-md-6 col-sm-6 form-group has-feedback">
+										<div class="col-md-12 col-sm-12 form-group has-feedback">
 											<label>Bus Station  Name *</label>
 										    <input type="text" class="form-control" name="busname1" id="busname1">
 										</div>
 
-                                        <div  class="col-md-6 col-sm-6  form-group has-feedback">
+                                        <div  class="col-md-12 col-sm-12  form-group has-feedback">
 
 													<label>Depot *</label>
 											<input type="hidden" name="deponame1" id="deponame1" />

@@ -33,7 +33,7 @@
 				      	<form  method="POST" action=" "  id="myForm" enctype="multipart/form-data">
 											{% csrf_token %}
 									<div  class="col-md-2 col-sm-2  form-group has-feedback">
-													<label>Select Warehouse</label>
+													<label> Warehouse</label>
 
 										 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
                             		                    <option value="{{ request.POST.warehouseid }}">{{ request.POST.warehousename }}</option>
@@ -139,16 +139,20 @@
                <form  method="POST" action="depo_edit"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div class="col-md-6 form-group has-feedback">
-											<label>Depot Name </label>
+											<label>Depot Name *</label>
 										    <input type="text" class="form-control" name="deponame1"  id="deponame1">
 										</div>
 
 										<div class="col-md-6  form-group has-feedback">
-											<label>Depot Manager </label>
+											<label>Depot Store Executive *</label>
 										    <input type="text" class="form-control"  name=" depomanager1" id="depomanager1">
 										</div>
+				   						<div class="col-md-6  form-group has-feedback">
+											<label>Depot Code *</label>
+										    <input type="text" class="form-control"  name=" depocode" id="depocode">
+										</div>
                                         <div class="col-md-6 form-group has-feedback">
-											<label>Mobile</label>
+											<label>Mobile *</label>
 										    <input type="text" class="form-control"  name="mobileno1" id="mobileno1">
 											</div>
 
@@ -164,8 +168,8 @@
 
 												<div  class="col-md-6  form-group has-feedback">
 													<input type="hidden" name="regionname1" id="regn" />
-													<label>Region </label>
-												<select class="form-control" name="regionid1" id="regionid1" >
+													<label>Region *</label>
+												<select class="form-control items" name="regionid1" id="regionid1" required>
 													{% for data1 in data %}
                             							<option value="{{ data1.region_id }}" selected>{{ data1.regionname }}</option>
                                                     {% endfor %}
@@ -175,7 +179,7 @@
 
                                         <div class="col-md-6  form-group has-feedback">
 											<label>Address </label>
-										    <input type="text" class="form-control" name="address1" id="address1" />
+											<textarea  class="form-control" name="address1" id="address1"  rows="3"></textarea>
 										</div>
                                           <input type="hidden" name="depoid" id="depoid" />
                         `
@@ -279,6 +283,7 @@
              $("#regionid1").val(obj[0].regionid);
              $("#regn").val(obj[0].regionname);
              $("#address1").val(obj[0].address);
+              $("#depocode").val(obj[0].address);
              $('#depo-edit').modal('show');
         	}
         }

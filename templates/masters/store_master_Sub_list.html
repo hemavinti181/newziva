@@ -171,9 +171,9 @@
                 	<form  method="POST" action="store_edit"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div  class="col-md-4  form-group has-feedback">
-													<label> Warehouse</label>
+													<label> Warehouse *</label>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
-												<select class="form-control" name="warehouseid1" id="warehouseid1">
+												<select class="form-control items" name="warehouseid1" id="warehouseid1" required>
 													<option value=""> Warehouse</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
@@ -183,31 +183,31 @@
 												</select>
 										</div>
 											<div  class="col-md-4  form-group has-feedback">
-													<label> Region</label>
+													<label> Region *</label>
 											 <input type="hidden" name="regionname1" id="regionname1" />
-												<select class="form-control" name="regionid1" id="regionid1">
+												<select class="form-control items" name="regionid1" id="regionid1" required>
 													<option value=""> Region</option>
 												</select>
 										</div>
 											<div  class="col-md-4  form-group has-feedback">
-													<label> Depot</label>
+													<label> Depot *</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
-												<select class="form-control" name="depoid1" id="depoid1">
+												<select class="form-control items" name="depoid1" id="depoid1" required>
 													<option value=""> depot</option>
 												</select>
 											</div>
 
 										<div  class="col-md-4  form-group has-feedback">
-													<label> Bus Station</label>
+													<label> Bus Station *</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
-												<select class="form-control" name="busstationid1" id="busstationid1">
+												<select class="form-control items" name="busstationid1" id="busstationid1" required>
 													<option value=""> bus station</option>
 												</select>
 										</div>
 										<div class="col-md-4 form-group has-feedback">
                                             <input type="hidden" name="stcode" id="stcode" />
-											<label>Store Name *</label>
-										    <input type="text" class="form-control"  name="storename" id="storename1">
+											<label>Stall Name *</label>
+										    <input type="text" class="form-control"  name="storename" id="storename1" required>
 										</div>
 
 										<div class="col-md-4 form-group has-feedback">
@@ -229,11 +229,11 @@
 										    <input type="text" class="form-control" name="tradelicenceno" id="tradelicenceno1">
 										</div>
 							      <div class="col-md-4 form-group has-feedback">
-											<label>Nature Of Business *</label>
+											<label>Nature Of Business </label>
 										    <input type="text" class="form-control" placeholder="nature of business" name="natofbus1"  id="natofbus1">
 											</div>
 											<div  class="col-md-4 form-group has-feedback">
-													<label>Store Type *</label>
+													<label>Store Type </label>
 												<select class="form-control" name="store_type1" id="store_type1">
 														<option  value="">Select store type</option>
 													{% for data in storetype_list %}
@@ -269,16 +269,16 @@
     											<input type="file"  name="tlattach" id="customFile"  value="{{data.tlattach}}" required >
 										</div>-->
 											<div class="col-md-4  form-group has-feedback">
-											<label>Alternate Mobile *</label>
+											<label>Alternate Mobile</label>
 										    <input type="text" class="form-control" placeholder="alternate mobile nmber" name="mobileno2" id="mobileno2" pattern= "[6789][0-9]{9}" >
 											</div>
 
                                         <div class="col-md-4  form-group has-feedback">
-											<label>Email *</label>
+											<label>Email </label>
 										    <input type="email" name="email" id="email1" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
 											</div>
 										<div class="col-md-6 form-group has-feedback">
-											<label class="col-form-label col-md-3 col-sm-3 ">Remarks*</label>
+											<label class="col-form-label col-md-3 col-sm-3 ">Remarks</label>
 											<textarea   name="remarks" id="remarks1" class="form-control"  rows="2" ></textarea>
 										</div>
 
@@ -305,8 +305,8 @@
 								  <form method="post" action="store_status_active">
                                                     {% csrf_token %}
 								<div class="form-header">
-									<h3>Status Update</h3>
-									<p>Are you sure want to Inactive?</p>
+									<h3>Delete</h3>
+									<p>Are you sure want to Delete?</p>
 								</div>
 									  <div class="modal-btn delete-action">
 									<input type="hidden" id="id" name="id"  />

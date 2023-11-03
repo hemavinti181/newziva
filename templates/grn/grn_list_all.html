@@ -155,7 +155,8 @@
                         <tr>
                                     <th>S No</th>
                                    <!-- <th>Vendor Id</th>-->
-                                    <th>Vendor Name</th>
+                                    <th>Vendor</th>
+                                     <th>Warehouse</th>
                                     <th>GRN</th>
                                     <th>Invoice Id</th>
                                     <th>Invoice Date</th>
@@ -172,7 +173,8 @@
                            <td>{{ forloop.counter }}</td>
                             <!--<th>{{  all_data.invoice_id }}</th>-->
                      <td>{{ all_data.vendorname }}</td>
-                       <td> {{ all_data.grn }} </td>
+                           <td>{{ all_data.warehousename }}</td>
+                       <td> <a href="/add_grnitem_list1/{{ all_data.grn }}/" style="color:#14c38e;">{{ all_data.grn }} </a></td>
                        <td>{{  all_data.invoice_id}}</td>
                         <td>{{ all_data.invoicedate }}</td>
                        <td>{{ all_data.invoiceamount }}</td>
@@ -183,7 +185,7 @@
                                         <!--<span class="badge badge-success"  data-toggle="modal"  onclick="VerifyClick('{{all_data.grn}}')" data-target="#bs-example-modal-sm">
                                         Verify</span>
                                         <span class="badge badge-danger" data-toggle="modal"  onclick="VerifyClick1('{{all_data.grn}}')" data-target="#bs-example-modal-sm1">Reject</span>-->
-                                            <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge bg-warning">Pending</span>
+                                            <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge badge-warning">Pending</span>
                               {% elif all_data.status == "Verified" %}
                                      <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge bg-green">Verified</span>
                               {% else %}

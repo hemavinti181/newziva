@@ -26,7 +26,8 @@
                       <thead>
                         <tr>
                                     <th>S No</th>
-                                    <th>Vendor Name</th>
+                                    <th>Vendor</th>
+                                     <th>Warehouse</th>
                                     <th>GRN</th>
                                     <th>Invoice Id</th>
                                     <th>Invoice Date</th>
@@ -42,7 +43,14 @@
                        <tr>
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.vendorname }}</td>
-                       <td><a href="/add_grnitem_list/{{ all_data.grn }}/" style="color:#14c38e"> {{ all_data.grn }} </a></td>
+                           <td>{{ all_data.warehousename }}</td>
+                              {% if all_data.status == "pending" %}
+                                <td><a href="/add_grnitem_list/{{ all_data.grn }}/" style="color:#14c38e"> {{ all_data.grn }} </a></td>
+                              {% elif all_data.status == "Verified" %}
+                                    <td><a href="/add_grnitem_list1/{{ all_data.grn }}" style="color:#14c38e">{{ all_data.grn }}</a></td>
+                              {% else %}
+                                  <td><a href ="/add_grnitem_list1/{{ all_data.grn }}" style="color:#14c38e">{{ all_data.grn }}</a></td>
+                               {% endif %}
                        <td>{{  all_data.invoice_id}}</td>
                         <td>{{ all_data.invoicedate }}</td>
                        <td>{{ all_data.invoiceamount }}</td>
@@ -61,7 +69,6 @@
                                      <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge bg-green">Verified</span>
                               {% else %}
                                      <a href="/add_grnitem_list1/{{ all_data.grn }}"><span class="badge badge-danger">Rejected</span>
-                                <!-- /modals -->
                                 {% endif %}
                             </td>
 

@@ -25,7 +25,7 @@
 									<br />
 									<form class="form-label-left input_mask" method="POST" action="vendor_add"   enctype="multipart/form-data">
 											{% csrf_token %}
-											<!--<div  class="col-md-3 col-sm-6  form-group has-feedback">
+											<div  class="col-md-3 col-sm-6  form-group has-feedback">
 													<label>Select Warehouse</label>
 											 <input type="hidden" name="warehousename" id="warehousename" />
 												<select class="form-control items" name="warehouseid" id="warehouseid" >
@@ -37,7 +37,8 @@
 													{% endfor %}
 												</select>
 										</div>
-											<div  class="col-md-3 col-sm-6  form-group has-feedback">
+
+											<!--<div  class="col-md-3 col-sm-6  form-group has-feedback">
 													<label> Region</label>
 											 <input type="hidden" name="regionname" id="regionname" />
 												<select class="form-control" name="regionid" id="regionid">
@@ -59,6 +60,10 @@
 													<option value=""> bus station</option>
 												</select>
 										</div>-->
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label>Fssai no *</label>
+										    <input type="text" class="form-control" placeholder="fssai no" name="fssai" required>
+										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Vendor Name *</label>
 										    <input type="text" class="form-control" placeholder="vendor name" name="vendorname" required>
@@ -113,7 +118,7 @@
 										</div>
 										<div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Address *</label>
-											<textarea  class="form-control" name="storeaddress" placeholder="store address" required></textarea>
+											<textarea  class="form-control" name="storeaddress" placeholder="vendor address" maxlength="100" rows="4" cols="50" required></textarea>
                                         </div>
 										<div class="form-group row">
 											<label class="col-form-label col-md-3 col-sm-3 "></label>
