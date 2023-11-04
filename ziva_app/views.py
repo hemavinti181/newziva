@@ -7919,18 +7919,22 @@ def pending_indent_pending(request):
         headers = {
             'Content-Type': 'application/json'
         }
-
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
             data = response.json()
             data = data['indentlist']
-            return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+            return render(request, 'create_indent/wh_indent_pending.html', {'status':'pending','data': data,'menuname':menuname,'fdate':fdate,'tdate':tdate})
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return render(request, 'create_indent/wh_indent_pending.html', {'status':'pending','data': data,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+            else:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'login1.html')
         else:
-            return render(request, 'create_indent/wh_indent_pending.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate})
+            return render(request, 'create_indent/wh_indent_pending.html',{'status':'pending','menuname':menuname,'fdate':fdate,'tdate':tdate,})
     else:
         url = "http://13.235.112.1/ziva/mobile-api/warehouse-indent-list.php"
 
@@ -7948,13 +7952,13 @@ def pending_indent_pending(request):
         if response.status_code == 200:
             data = response.json()
             data = data['indentlist']
-            return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'data1':data[0] ,'menuname': menuname})
+            return render(request, 'create_indent/wh_indent_pending.html', {'data': data,'status':'pending','menuname': menuname})
         elif response.status_code == 400:
             data = response.json()
             messages.error(request, data['message'])
             return render(request, 'login1.html')
         else:
-            return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname})
+            return render(request, 'create_indent/wh_indent_pending.html', {'menuname': menuname,'status':'pending'})
 
 
 def pending_indent_pending1(request):
@@ -8316,6 +8320,7 @@ def readyto_ship1(request):
             return render(request, 'login1.html')
     messages.error(request,response.text)
     return render(request, 'create_indent/readytoship.html', {'menuname': menuname})
+
 def generate_gate_pass(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -10210,7 +10215,7 @@ def edit_stkbus_item(request):
         payload = json.dumps({
             "accesskey": accesskey,
             "noofbottles": request.POST.get('nob1'),
-            "sno": request.POST.get('sno'),
+            "sno": request.POST.get('editsno'),
             "quantity": request.POST.get('qty'),
             "type": "Bus station",
             "transitid": bustaxinvoice
@@ -16979,20 +16984,21 @@ def generate_transid_depo(request):
             if data['message'] == 'Sorry! some details are missing':
                 messages.error(request, data['message'])
                 return render(request, 'stock_transfer/stock_transfer_admin.html',
-                              {"menuname": menuname, 'response': 'Bus400'})
+                              {"menuname": menuname, 'response': 'depo200'})
             else:
                 messages.error(request, data['message'])
                 return redirect('\login')
         elif response.status_code == 503:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request, 'stock_transfer/stock_transfer_admin.html', {'fromid':fromid,'toid':toid,"menuname": menuname, 'response': 'depo503'})
+            return render(request, 'stock_transfer/stock_transfer_admin.html', {'fromid':fromid,'toid':toid,"menuname": menuname, 'response': 'depo200'})
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")
-            return render(request, 'stock_transfer/stock_transfer_admin.html', {'fromid':fromid,'toid':toid,"menuname": menuname, 'response': 'depo500'})
+            return render(request, 'stock_transfer/stock_transfer_admin.html', {'fromid':fromid,'toid':toid,"menuname": menuname, 'response': 'depo200'})
     except Exception as e:
         messages.error(request, str(e))
         return render(request, 'stock_transfer/stock_transfer_admin.html', {"menuname": menuname, 'response': 'depo400'})
+
 
 def depot_item_add_admin(request):
     if 'accesskey' not in request.session:
@@ -17039,10 +17045,10 @@ def depot_item_add_admin(request):
                 return redirect('depot_item_list_admin')
             except:
                 messages.error(request, response.text)
-            return redirect('stock_tranfer_admin')
+            return redirect('depot_item_list_admin')
 
     else:
-        return redirect('stock_tranfer_admin')
+        return redirect('depot_item_list_admin')
 
 
 
@@ -17069,7 +17075,6 @@ def depot_item_list_admin(request):
         data=response.json()
         wh_item_list=data['stocktransferitemlist']
         return render(request,'stock_transfer/stock_transfer_admin.html',{'fromid':fromid,'toid':toid,'type':type1,'taxinvoice':depot_taxinvoice,'wh_item_list':wh_item_list,'menuname':menuname,'wh':'active','status':'ok','response':'depo200'})
-
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
@@ -17080,7 +17085,7 @@ def depot_item_list_admin(request):
             return redirect('/login')
     else:
         return render(request, 'stock_transfer/stock_transfer_admin.html',
-                      {'type':type1, 'menuname': menuname,'whtaxinvoice':depot_taxinvoice,'response':'depo500','fromid':fromid,'toid':toid,})
+                      {'type':type1, 'menuname': menuname,'whtaxinvoice':depot_taxinvoice,'response':'depo200','fromid':fromid,'toid':toid,})
 
 def complete_depostk_admin(request):
     if 'accesskey' not in request.session:
@@ -17223,8 +17228,12 @@ def bust_item_add_admin(request):
             return redirect('bus_item_list_admin')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('bus_item_list_admin')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         elif response.status_code == 500:
             messages.error(request, 'Internal server error')
             return redirect('stock_tranfer_admin')
@@ -17239,6 +17248,7 @@ def bust_item_add_admin(request):
 
     else:
         return redirect('stock_tranfer_admin')
+
 
 
 def bus_item_list_admin(request):
@@ -17270,13 +17280,13 @@ def bus_item_list_admin(request):
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
             messages.error(request, data['message'])
-            return render(request,'stock_transfer/stock_transfer_admin.html',{'depotid':depotid,'busid1':busid1,'type':type1,'taxinvoice':bustaxinvoice,'menuname':menuname,'wh':'active','status':'ok','response':'Bus400'})
+            return render(request,'stock_transfer/stock_transfer_admin.html',{'depotid':depotid,'busid1':busid1,'type':type1,'taxinvoice':bustaxinvoice,'menuname':menuname,'wh':'active','status':'ok','response':'Bus200'})
         else:
             messages.error(request, data['message'])
             return redirect('/login')
     else:
         return render(request, 'stock_transfer/stock_transfer_admin.html',
-                      {'depotid':depotid,'busid1':busid1,'type':type1, 'menuname': menuname,'whtaxinvoice':bustaxinvoice,'wh':'active','wh':'active','response':'Bus500'})
+                      {'depotid':depotid,'busid1':busid1,'type':type1, 'menuname': menuname,'whtaxinvoice':bustaxinvoice,'wh':'active','response':'Bus200'})
 
 def generate_transid(request):
     if 'accesskey' not in request.session:
@@ -17385,6 +17395,12 @@ def wh_item_add_admin(request):
         else:
             try:
                 data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return redirect('wh_item_list_admin')
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
                 messages.error(request, data['message'])
                 return redirect('wh_item_list_admin')
             except:
@@ -17425,14 +17441,14 @@ def wh_item_list_admin(request):
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
             messages.error(request, data['message'])
-            return render(request,'stock_transfer/stock_transfer_admin.html',{'wh_code':wh_code,'depocode1':depocode1,'type':type1,'taxinvoice':whtaxinvoice,'menuname':menuname,'wh':'active','status':'ok','response':400})
+            return render(request,'stock_transfer/stock_transfer_admin.html',{'wh_code':wh_code,'depocode1':depocode1,'type':type1,'taxinvoice':whtaxinvoice,'menuname':menuname,'wh':'active','status':'ok','response':200})
         else:
             messages.error(request, data['message'])
             return redirect('/login')
     else:
         return render(request, 'stock_transfer/stock_transfer_admin.html',
 
-                      {'wh_code':wh_code,'depocode1':depocode1,'type':type1, 'menuname': menuname,'whtaxinvoice':whtaxinvoice,'wh':'active','wh':'active','response':500})
+                      {'wh_code':wh_code,'depocode1':depocode1,'type':type1, 'menuname': menuname,'whtaxinvoice':whtaxinvoice,'wh':'active','response':200})
 
 
 def intconsump_stocktransfer(request):

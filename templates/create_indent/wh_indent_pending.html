@@ -131,7 +131,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                  {% if data1.status == 'Pending' %}
+                  {% if status == 'pending' %}
                 <h3 >Pending Indent</h3>
                   {% else %}
                    <h3 >Verified  Indent</h3>
@@ -201,8 +201,7 @@
                                     <th>Action</th>
                         </tr>
                       </thead>
-                            {% for all_data in data %}
-
+{% for all_data in data %}
 
                                     <tr>
                                          <td>{{ forloop.counter }}</td>

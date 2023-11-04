@@ -16,7 +16,6 @@
               <div class="title_left">
                 <h3 style="color:#1372ba"> <b>Stock Transfer </b></h3>
               </div>
-
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
 					<!--<a href="indent_list"><button type="submit" class="btn btn-primary">Indent List</button></a>-->
@@ -175,12 +174,12 @@
                                             <label>Qty(Cases) </label>
                                             <input class="form-control" id="quantity" name="quantity"
                                                    placeholder="cases"
-                                                   type="text">
+                                                   type="text" required>
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Bottles)</label>
                                             <input class="form-control" id="nob" name="nob" placeholder="bottles"
-                                                   type="text">
+                                                   type="text" required>
                                         </div>
 										 <div class="col-md-2 col-sm-2  form-group has-feedback">
                                             <button class="btn btn-primary" name="add" style="margin-top: 30px;"
@@ -298,6 +297,7 @@
                    </div>
                   </div>
 
+
 <div class="col-md-12 col-sm-12 ">
        <div class="x_panel" id="items-depot"  style="display:none;">
            	<form class="form-label-left input_mask"  method="POST" action="/depot_item_add_admin"   enctype="multipart/form-data">
@@ -331,7 +331,7 @@
                                             <label>Qty(Cases) </label>
                                             <input class="form-control" id="depot_quantity" name="depot_quantity"
                                                    placeholder="cases"
-                                                   type="text">
+                                                   type="text" required>
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Bottles)</label>
@@ -465,7 +465,7 @@
                                             <label>Qty(Cases) </label>
                                             <input class="form-control" id="busquantity" name="busquantity"
                                                    placeholder="cases"
-                                                   type="text">
+                                                   type="text" required>
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Bottles)</label>
@@ -639,17 +639,17 @@
                 <form action=" " id="editForm" method="post">
                     {% csrf_token %}
 
-                    <div class="col-md-12 col-sm-12  form-group has-feedback"  style="margin-top: -50px;">
+                    <div class="col-md-12 col-sm-12  form-group has-feedback"  style="margin-top: -50px;" >
                         <label>Item Name </label>
-                        <input class="form-control" id="item" name="item" readonly type="text">
+                        <input class="form-control" id="item" name="item"  type="text" readonly>
                     </div>
                     <div class="col-md-6 col-sm-6 form-group has-feedback">
                         <label>Qty(In Cases)</label>
-                        <input class="form-control" id="qty" name="qty" type="text">
+                        <input type="text" class="form-control" id="qty" name="qty" required>
                     </div>
                     <div class="col-md-6 col-sm-6 form-group has-feedback"  style="margin-bottom: 30px;">
                         <label>Qty(In Bottles)</label>
-                        <input class="form-control" id="nob1" name="nob1" type="text">
+                        <input class="form-control" id="nob1" name="nob1" type="text" required>
                     </div>
 
                     <input id="cases" name="cases" type="hidden"/>
@@ -713,7 +713,6 @@ $('.depo_edit').click(function(){
       $('#editForm').attr('action', '{% url "edit_stkdepo_item" %}'); // set the new action URL
 });
 $('.wh_edit').click(function(){
-        alert('hai')
       $('#editForm').attr('action', '{% url "edit_stk_item" %}'); // set the new action URL
 });
 
@@ -1179,7 +1178,6 @@ $('#getdate').val(new Date().toJSON().slice(0,10));
 $('.form-control').change(function() {
     console.log('Dropdown value changed');
     if($(this).val() === '') {
-      alert('Please select an option');
     }
   });
 

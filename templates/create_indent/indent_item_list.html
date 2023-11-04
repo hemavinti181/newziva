@@ -32,9 +32,10 @@
                                 <!--{% if data.status == 'Pending' or data == 'Pending' %}
                                         <button type="button" id="add_indentitem" style="margin-top:10px;margin-right:20px;" class="btn btn-primary">Add Indent Item</button>
                                 {% endif %}-->
+                                {% if data.status == 'Pending' or data == 'Pending' %}
                                 <a href="/indent_list"><button type="button"  style="margin-top:10px;margin-right:20px;" class="btn btn-primary">Indent List</button></a>
+                             {% endif %}
                             </div>
-
                   </div>
               </div>
             </div>

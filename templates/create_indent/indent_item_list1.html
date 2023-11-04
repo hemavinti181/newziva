@@ -10,7 +10,7 @@
                 <h3 style="color:#1372ba"><b> Indent Item List</b></h3>
               </div>
                 <div class="title_right">
-             <div class="col-md-4 col-sm-4 offset-md-7">
+             <div class="col-md-6 col-sm-6 offset-md-7">
                       <div style="display: inline-block;">
                             <div class="row" style="display: inline-block;">
                                 <div class="top_tiles" style="width: 700px;">
@@ -23,8 +23,9 @@
                                     <div>
                                 </div>
                             </div></div>
-                            </div>
 
+                        <a href="{% url 'ready_toship_admin'  %}"><button type="submit" style="margin-top:10px;margin-right:20px;" class="btn btn-info">GO Back</button></a>
+                            </div>
                   </div>
               </div>
             </div>
@@ -71,7 +72,7 @@
                                     <td>{{all_data.indent_no}}</td>
                                       {% if all_data.status == 'Ready to Ship' %}
                                     <td>
-                                       <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sno}}','{{ all_data.qty }}','{{ all_data.uom }}','{{ all_data.mrp }}')"  data-target="#bs-example-modal-sm">Quantity Update</span>
+                                       <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick('{{all_data.sno}}','{{ all_data.qty }}','{{ all_data.uom }}','{{ all_data.mrp }}','{{ all_data.item_name }}')"  data-target="#bs-example-modal-sm">Quantity Update</span>
                                     </td>
                                     {% endif %}
                                 </tr>
@@ -93,7 +94,7 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content style">
                                                   <div class="modal-header">
-                              <h4 class="modal-title text-info" id="myModalLabel2" style="text-align:center;">Update Quantity</h4>
+                              <h3 class="modal-title" id="myModalLabel2" style="text-align:center;">Update Quantity</h3>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
@@ -104,16 +105,19 @@
                                                    <input type="hidden" id="dcid" name="dcid"  value="{{ id }}"/>
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
                                                  <input type="hidden" id="mrp" name="mrp"  />
-
+                                                  <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                        <label>Item name</label>
+										            <input type="text" class="form-control" placeholder="quantity" name="itemname" id="itemname" readonly>
+                                            </div>
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                         <label>Quantity (In Cases)</label>
-										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
+										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty" required>
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                          <label>No Of Bottles</label>
 										            <input type="text" class="form-control" placeholder="No Of Bottles" name="nob" id="nob" readonly>
                                             </div>
-                                           <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                           <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                 <label>Total Price</label>
 										        <input type="text" class="form-control" placeholder="Price" name="price" id="price" readonly>
 										    </div>
@@ -124,7 +128,7 @@
                                                 <input type="hidden" name="cases" id="cases" />
 
                                             <div class="col-md-6 col-sm-6  offset-md-4">
-                                                  <button type="submit" class="btn btn-info">Update</button>
+                                                  <button type="submit" class="btn btn-primary">Update</button>
                                             </div>
                                              </form>
                                         </div>
@@ -134,11 +138,12 @@
                                     </div>
                                 </div>
 <script>
-   function VerifyClick(id,id1,id2,id3){
+   function VerifyClick(id,id1,id2,id3,id4){
 $("#qty").val(id1);
 $("#cases").val(id2);
 $("#txtHdnId").val(id);
  $("#mrp").val(id3);
+ $("#itemname").val(id4);
 
 }
  $('#qty').on('input', function()  {

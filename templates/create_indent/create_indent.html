@@ -76,7 +76,7 @@
 										</div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Total Price *</label>
-										    <input type="text" class="form-control" placeholder="total price" id="mrp" name="price" readonly>
+										    <input type="text" class="form-control" placeholder="total price" id="price" name="price" readonly>
 										</div>
 
 										<div class="col-md-2 col-sm-2 form-group has-feedback">
@@ -119,13 +119,13 @@ $("#itemcode").change(function() {
 			 	success: function(data){
 			 		 var obj = data.data.itemmasterlist
                         console.log(obj[0].mrp);
+                        alert(obj[0].mrp)
                         if(obj.length>0){
                             $("#mrp1").val(obj[0].mrp);
                             $("#cases1").val(obj[0].uom);
-                            $("#quantity").val(" ");
                             $("#nob").val(" ");
-                             $("#mrp").val(obj[0].mrp);
-
+                            $("#quantity").val(" ");
+                            $("#price").val(obj[0].mrp);
 					}
              	}
         	});
@@ -137,14 +137,9 @@ $("#itemcode").change(function() {
             val2 =    (val * val1)
             val3 = (val2 * mrp2)
             $("#nob").val(val2);
-            $("#mrp").val(val3);
+            $("#price").val(val3);
          });
          $('#getdate').val(new Date().toJSON().slice(0,10));
-$('.form-control').change(function() {
-    console.log('Dropdown value changed');
-    if($(this).val() === '') {
-      alert('Please select an option');
-    }
-  });
+
 </script>
 {% endblock %}
