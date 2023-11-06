@@ -629,16 +629,16 @@ $("#save1").click(function() {
                   var message = data.data.message;
                   var error = data.data.error
                   if (error === true) {
+                      ("#myModal").modal("hide");
                             alertify.set('notifier', 'position', 'top-center');
                             alertify.error(message);
-                            $("#myModal").modal("hide");
-                             window.location.reload();
+
                         }
                 else{
+                 $("#myModal").modal("hide");
                 alertify.set('notifier', 'position', 'top-center');
                 alertify.success(message);
-                $("#myModal").modal("hide");
-                 window.location.reload();
+
                 }
             },
             error: function (xhr, status, error) {
