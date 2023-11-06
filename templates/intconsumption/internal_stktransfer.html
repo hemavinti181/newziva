@@ -116,6 +116,14 @@ $('#quantity').on('input', function()  {
             	},
 			 	success: function(data){
 			 		var obj = data.data.stockpointlist
+			 		var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#stockpoint").empty();
+						$("#stockpoint").append("<option  value=''>not available</option>");
+					}
 					if(obj) {
 			 		$("#stockpoint").empty();
                 	$.each(obj, function (index, item) {

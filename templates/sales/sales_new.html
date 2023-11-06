@@ -2,6 +2,11 @@
 
 {% block htmlbody %}
 <style>
+.style2{
+	position: absolute !important;
+	width: 60% !important;
+	margin-left:75px;
+	}
 	.style{
 	position: absolute !important;
 	width: 100% !important;
@@ -144,7 +149,7 @@
 										</div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Qty(In Cases)</label>
-										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity" onchange="myFunction(this.value)">
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity" onchange="myFunction(this.value)" required>
 										</div>
                                          <div class="col-md-2 col-sm-2 form-group has-feedback">
 											<label>Qty(In bottles)</label>
@@ -201,10 +206,10 @@
                                     <th>Item Name</th>
                                     <th>Qty(Cases)</th>
                                     <th>Qty(Bottles)</th>
-                                    <!--<th>HSN</th>-->
-                                    <th>Batch</th>
+                                    <!--<th>HSN</th>
+                                    <th>Batch</th>-->
                                     <th>Total </th>
-                                    <th>Manufacture</th>
+                                    <!--<th>Manufacture</th>-->
                                     <th>Action</th>
 
                         </tr>
@@ -218,13 +223,14 @@
                        <td> {{ all_data.quantity }} </td>
                            <td> {{ all_data.noofbottles }}</td>
 
-                        <!--<td>{{ all_data.hsn }}</td>-->
-                       <td>{{ all_data.batch_no }}</td>
+                        <!--<td>{{ all_data.hsn }}</td>
+                       <td>{{ all_data.batch_no }}</td>-->
                        <td class="text-success">₹ {{ all_data.total }}</td>
-                           <td>{{all_data.manufacturer}}</td>
+                           <!--<td>{{all_data.manufacturer}}</td>-->
 
-                       <td>
-                            <a href="/delete_sale_item/{{ all_data.id }}/"><span class="badge badge-danger"><i class="fa fa-trash"></i></span></a>
+                       <td>   <a href="#"><span class="badge badge-danger saleitem-delete" data-sno="{{ all_data.id }}" data-toggle="modal" data-target="#store-status"><i
+                                                                    class="fa fa-trash"></i></span></a>
+                            <!--<a href="/delete_sale_item/{{ all_data.id }}/"><span  class="badge badge-danger" data-toggle="modal" data-target="#store-status"><i class="fa fa-trash"></i></span></a>-->
                             <a class="/edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                        </td>
                             </tbody>
@@ -385,16 +391,20 @@
                                              <form method="POST" action="edit_sale_item">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId1" name="txtHdnId1"  />
+                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
+											<label>Item name </label>
+										    <input type="text" class="form-control" placeholder="quantity" name="saleitemname" id="saleitemname" readonly>
+										</div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
-											<label>Qty(In Cases) </label>
-										    <input type="text" class="form-control" placeholder="quantity" name="quantity" id="quantity1" onchange="myFunction(this.value)">
+											<label>Qty(In Cases) *</label>
+										    <input type="text" class="form-control" placeholder="quantity" name="quantity1" id="quantity1" onchange="myFunction(this.value)" required>
 										</div>
                                          <div class="col-md-6 col-sm-6 form-group has-feedback">
 											<label>Qty(In bottles) </label>
                                            <input type="text" class="form-control" placeholder="0" name="nbottles" id="nbottles1"  readonly/>
                                        </div>
 
-                                         <div class="col-md-12 col-sm-12 form-group has-feedback">
+                                         <div class="col-md-6 col-sm-6 form-group has-feedback">
 											<label>Price </label>
                                            <input type="text" class="form-control" placeholder="0" name="mrp" id="price1" readonly/>
                                        </div>
@@ -402,7 +412,7 @@
                                             <input type="hidden" class="form-control" name="cases" id="cases1">
                                              <input type="hidden" class="form-control" name="mrp" id="mrp1">
                                                   <div class="col-md-6 col-sm-6  offset-md-5">
-                                                  <button type="submit" name="complete" class="btn btn-primary">Edit</button>
+                                                  <button type="submit" name="complete" class="btn btn-primary" style="margin-top: 20px;">Edit</button>
                                             </div>
   </form>
                                         </div>
@@ -410,6 +420,38 @@
                                         </div>
                                     </div>
                                 </div>
+
+<div class="modal custom-modal fade" id="store-status" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content style2">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							<div class="modal-body">
+								  <form method="post" action="" id="myForm1">
+                                                    {% csrf_token %}
+								<div class="form-header">
+									<h3>Delete Sale Item</h3>
+									<p>Are you sure want to Delete?</p>
+								</div>
+									  <div class="modal-btn delete-action">
+									<input type="hidden" id="deleteid" name="deleteid"  />
+                                          <input type="hidden" id="deletesono" name="deletesono"  />
+									<div class="row">
+											<div class="col-md-6 col-sm-6">
+                                                 <button type="submit" class="btn btn-primary" style="margin-left:50px;" >Yes</button>
+                                        </div>
+                                        	<div class="col-md-6 col-sm-6">
+                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+									</div>
+								</div>
+								  </form>
+							</div>
+
+						</div>
+					</div>
+				</div>
 
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
@@ -615,9 +657,9 @@ $("#busstationid").change(function() {
                         if(obj.length>0){
                             $("#mrp").val(obj[0].mrp);
                             $("#cases").val(obj[0].uom1);
-                            $("#quantity").val(" ");
-                            $("#nbottles").val(" ");
-                            $("#price").val(" ");
+                            $("#quantity").val("");
+                            $("#nbottles").val("");
+                            $("#price").val(obj[0].mrp);
 					}
 }
         	});
@@ -645,7 +687,7 @@ $("#busstationid").change(function() {
                         if(obj.length>0){
                             $("#mrp1").val(obj[0].mrp);
                             $("#cases1").val(obj[0].uom);
-                            $("#quantity1").val(" ");
+                            //$("#quantity1").val(" ");
                             $("#nbottles1").val(" ");
                             $("#price1").val(" ");
 					}
@@ -921,7 +963,11 @@ $(document).ready(function(){
   }
 
   });
-
+$('.saleitem-delete').click(function(){
+     var sno = $(this).data('sno');
+     var modalUrl = '/delete_sale_item/' + sno + '/';
+     $('#myForm1').attr('action', modalUrl);
+    });
 </script>
 
 {% endblock %}

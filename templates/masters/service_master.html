@@ -180,7 +180,7 @@
 													<label>Select Depot *</label>
 											<input type="hidden" name="deponame" id="deponame" />
 												<select class="form-control items" name="depoid" id="depoid" required>
-                                                    <option>select depot</option>
+                                                    <option value="">select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
                             							<option value="{{ data1.deponame }}">{{ data1.deponame }}</option>

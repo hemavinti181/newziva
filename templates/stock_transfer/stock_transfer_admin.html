@@ -174,7 +174,7 @@
                                             <label>Qty(Cases) </label>
                                             <input class="form-control" id="quantity" name="quantity"
                                                    placeholder="cases"
-                                                   type="text" required>
+                                                   type="number" required>
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Bottles)</label>
@@ -329,14 +329,14 @@
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Cases) </label>
-                                            <input class="form-control" id="depot_quantity" name="depot_quantity"
-                                                   placeholder="cases"
-                                                   type="text" required>
+                                          <input class="form-control" id="depot_quantity" name="depot_quantity" placeholder="cases"
+       type="number" title="Please enter numbers only" required>
+
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Bottles)</label>
-                                            <input class="form-control" id="depot_nobt" name="depot_nobt" placeholder="bottles"
-                                                   type="text">
+                                            <input class="form-control" id="depot_nobt" name="depot_nobt" placeholder="Bottles" type="text" pattern="^[0-9]+$" title="Please enter numbers only">
+
                                         </div>
 										 <div class="col-md-2 col-sm-2  form-group has-feedback">
                                             <button class="btn btn-primary" name="add" style="margin-top: 30px;"
@@ -465,7 +465,7 @@
                                             <label>Qty(Cases) </label>
                                             <input class="form-control" id="busquantity" name="busquantity"
                                                    placeholder="cases"
-                                                   type="text" required>
+                                                   type="number" required>
                                         </div>
                                         <div class="col-md-2 col-sm-2 form-group has-feedback">
                                             <label>Qty(Bottles)</label>
@@ -965,6 +965,9 @@ $(document).ready(function() {
                          console.log(obj);
                           console.log(obj.whmrp);
                         if(obj){
+                             $("#quantity").val("");
+                            $("#nob").val("");
+                            $("#whuom").val(obj.whuom);
                             $("#whmrp").val(obj.whmrp);
                             $("#whuom").val(obj.whuom);
                             $("#whitemname").val(obj.whitemname);
@@ -1021,6 +1024,9 @@ $('#quantity').on('input', function()  {
                          console.log(obj);
                           console.log(obj.busmrp);
                         if(obj){
+
+                            $("#busquantity").val("");
+                            $("#busnobt").val("");
                             $("#busmrp").val(obj.busmrp);
                             $("#busuom").val(obj.busuom);
                             $("#busexpdate").val(obj.busexpdate);
@@ -1075,6 +1081,8 @@ $('#busquantity').on('input', function()  {
                          console.log(obj);
                           console.log(obj.busmrp);
                         if(obj){
+                             $("#depot_quantity").val("");
+                              $("#depot_nobt").val("");
                             $("#depot_mrp").val(obj.depot_mrp);
                             $("#depot_uom").val(obj.depot_uom);
                             $("#depotexpdate").val(obj.depotexpdate);

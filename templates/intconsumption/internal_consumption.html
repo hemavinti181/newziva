@@ -614,7 +614,7 @@
 												 <p></p>
 												  <div class="col-md-12 col-sm-12 form-group has-feedback" id="mobiledisplay1">
 													 <label for="sno">Enter mobile no *</label>
-													 <input type="text" class="form-control" placeholder="mobile number" name="mobile1"  id="mobile1" pattern= "[6789][0-9]{9}">
+													 <input type="text" class="form-control" placeholder="mobile number" name="mobile1"  id="mobile1" pattern= "[6789][0-9]{9}" required>
 												  </div>
 												 <div class="col-md-12 col-sm-12 form-group has-feedback" id="otpdisplay1" style="display:none;">
 												   <label for="sno">Enter  OTP *</label>
@@ -1667,7 +1667,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     $("#staffnumb2").select2();
-	$("#staffnumb2").change(function() {
+	$("#staffnumb2").ge(function() {
     		var depo = $('#depoid2').find(":selected").text();
             var staffnumb = $('#staffnumb2').find(":selected").text();
         	$.ajax({

@@ -465,7 +465,7 @@ color:#14c38e !important;
 <img src="{% static 'build/images/user.png' %}" alt=""> Hello  {{ request.session.username }}
 </a>
     <a class="user-profile" href="/signout"><i class="fa fa-sign-out pull-right" style="font-size: 1.5em;"></i></a>
-     <!--<a class="user-profile" href="/change_pwd" data-toggle="modal" data-target="#myModal"><i class="fa fa-lock pull-right" style="font-size: 1.5em;"></i></a>-->
+     <a class="user-profile" href="/change_pwd" data-toggle="modal" data-target="#myModal"><i class="fa fa-lock pull-right" style="font-size: 1.5em;"></i></a>
     <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
 <a class="dropdown-item" href="javascript:;"> Profile</a>
 
@@ -497,7 +497,8 @@ ZIVA <a href="#"></a>
                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								  <form method="post" action="/change_pwd">
+								<form method="post" action="" id="myForm">
+
                                                     {% csrf_token %}
 								<div class="form-header">
 									<h3 style="color:#14c38e">Change Password</h3>
@@ -505,7 +506,7 @@ ZIVA <a href="#"></a>
 											<input type="hidden" name="depotname1" id="depotname1" />
                                    <div class="col-md-12 col-sm-12  form-group has-feedback">
                                       <label>Old Password *</label>
-                                      <input type="text" class="form-control" placeholder="old password" name="oldpwd"  id="oldpwd">
+                                      <input type="text" class="form-control" placeholder="old password" name="oldpwd"  id="oldpwd" required>
                                         <span style="position: absolute;right:20px;top:35px;" onclick="oldhideshow()" >
 													<i id="oldslash" class="fa fa-eye-slash slash"></i>
 													<i id="oldeye" class="fa fa-eye" style="display:none;" ></i>
@@ -513,16 +514,16 @@ ZIVA <a href="#"></a>
                                    </div>
                                        <div class="col-md-12 col-sm-12  form-group has-feedback">
                                       <label>New Password *</label>
-                                      <input type="password" class="form-control" placeholder="new password" name="newpwd"  id="newpwd">
+                                      <input type="password" class="form-control" placeholder="new password" name="newpwd"  id="newpwd" required>
                                         <span style="position: absolute;right:20px;top:35px;" onclick="newhideshow()" >
 													<i id="newslash" class="fa fa-eye-slash" style="display:none;"></i>
 													<i id="neweye" class="fa fa-eye" ></i>
 												</span>
                                        </div>
-                                       <div class="col-md-12 col-sm-12  form-group has-feedback">
+                                       <div class="col-md-12 col-sm-12  form-group has-feedback" style="margin-bottom:25px;">
                                       <label>Confirm Password *</label>
 
-                                      <input type="password" class="form-control" placeholder="confirm password" name="confirmpwd"  id="pwd">
+                                      <input type="password" class="form-control" placeholder="confirm password" name="confirmpwd"  id="pwd" required>
                                            <span style="position: absolute;right:20px;top:35px;" onclick="hideshow()" >
 													<i id="slash" class="fa fa-eye-slash" style="display:none;"></i>
 													<i id="eye" class="fa fa-eye" ></i>
@@ -531,7 +532,7 @@ ZIVA <a href="#"></a>
                                    </div>
                                     <div class="row">
 											<div class="col-md-6 col-sm-6">
-                                                 <button type="submit" class="btn btn-primary" style="margin-left:75px;" >Save</button>
+                                                 <button type="button" class="btn btn-primary" style="margin-left:75px;" id="save1" >Save</button>
                                         </div>
                                         	<div class="col-md-6 col-sm-6">
                                                  <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -617,6 +618,35 @@ ZIVA <a href="#"></a>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
 <script>
+$("#save1").click(function() {
+    alert('hai')
+            var formData = $(this).serialize();
+            $.ajax({
+               url: "{% url 'change_pwd' %}",
+                type: 'POST',
+                data:{ data:formData,'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                success: function (data) {
+                  var message = data.data.message;
+                  var error = data.data.error
+                  if (error === true) {
+                            alertify.set('notifier', 'position', 'top-center');
+                            alertify.error(message);
+                            $("#myModal").modal("hide");
+                             window.location.reload();
+                        }
+                else{
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.success(message);
+                $("#myModal").modal("hide");
+                 window.location.reload();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+              }
+            });
+    });
+
 (function () {
 	window.onpageshow = function(event) {
 		if (event.persisted) {
@@ -818,6 +848,11 @@ function hideshow(){
 			}
 
 		}
+
+
+
+
+
 
 </script>
 

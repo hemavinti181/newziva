@@ -15,7 +15,7 @@
                 <h3> GRN Item Add</h3>
               </div>
                  <div class="title_right">
-                  <div class="col-md-6 col-sm-6  offset-md-7">
+                  <div class="col-md-5 col-sm-5  offset-md-6">
                       <div style="display: inline-block;">
                             <div class="row" style="display: inline-block;">
                                 <div class="top_tiles" style="width: 800px;">
@@ -327,6 +327,8 @@ $("#itemname").change(function() {
 			 	 var obj = data.data
                         console.log(obj.uom);
                         if(obj){
+                         $("#quantity").val("");
+                          $("#nob").val("");
                             $("#uom").val(obj.uom);
                             $("#itemsno").val(obj.sno);
                              $("#mrp").val(obj.mrp);
@@ -354,8 +356,8 @@ $("#itemcode1").change(function() {
 			 	 var obj = data.data
 
                         if(obj){
-                        $("#quantity1").val(" ");
-                        $("#noofbottles").val(" ");
+                        $("#quantity1").val("");
+                        $("#noofbottles").val("");
                         $("#uom1").val(obj.uom);
                         $("#itemsno1").val(obj.sno);
                         $("#mrp1").val(obj.mrp);

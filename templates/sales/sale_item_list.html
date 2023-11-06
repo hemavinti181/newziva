@@ -27,10 +27,10 @@
                                         </div>
                                     <div>
                                 </div>
-                            </div></div>
                             </div>
-
+                         <a href="/medeliver_challan_pending"><button type="button" style="margin-top:10px;"  class="btn btn-primary">Sales List</button></a>
                   </div>
+                            </div>
               </div>
             </div>
             </div>
@@ -55,10 +55,11 @@
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
                                     <th>Expiry Date</th>
-                                    <!--<th>HSN</th>-->
+                                    <!--<th>HSN</th>
                                     <th>Batch</th>
+                               <th>Manufacture</th>-->
                                     <th>Total</th>
-                                    <th>Manufacture</th>
+
                             {% if approve == 'pending' %}
                                 {% if request.session.displayrole ==  'BUS STATION CONTROLLER' or  request.session.displayrole ==  'DEPOT STORE EXECUTIVE' or  request.session.role == 'Admin' %}
                                         <th>Action</th>
@@ -74,9 +75,9 @@
                        <td> {{ all_data.quantity }} </td>
                        <td>{{  all_data.expiry_date }}</td>
                         <!--<td>{{ all_data.hsn }}</td>-->
-                       <td>{{ all_data.batch_no }}</td>
+                       <!--<td>{{ all_data.batch_no }}</td>-->
                        <td class="text-success">₹ {{ all_data.total }}</td>
-                           <td>{{all_data.manufacturer}}</td>
+                           <!--<td>{{all_data.manufacturer}}</td>-->
                            {% if approve == 'pending' %}
                                  {% if request.session.displayrole == 'BUS STATION CONTROLLER' or  request.session.displayrole == 'DEPOT STORE EXECUTIVE' or request.session.role == 'Admin' %}
                               <td>

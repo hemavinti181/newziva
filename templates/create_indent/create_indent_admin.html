@@ -182,7 +182,7 @@
 										</div>
                                         <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Total Price *</label>
-										    <input type="text" class="form-control" placeholder="total price" id="mrp2" name="mrp2" readonly>
+										    <input type="text" class="form-control" placeholder="total price" id="price2" name="mrp2" readonly>
 										</div>
 
 										<div class="col-md-2 col-sm-2 form-group has-feedback">
@@ -192,6 +192,7 @@
 										  <input type="hidden" class="form-control"  name="itemname2" id="itemname2">
                                         <input type="hidden" class="form-control"  name="whname" id="whname2">
                                         <input type="hidden" class="form-control"  name="cases2" id="cases2">
+                                          <input type="hidden" class="form-control"  name="price1" id="price1">
 
 
                                  </div>
@@ -231,6 +232,7 @@ $("#depocode1").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
   $("#deponame1").val(selectedOptionText);
 });
+
 $("#itemcode1").change(function() {
         	var itemname = $('#itemcode1').val();
         	$.ajax({
@@ -244,12 +246,13 @@ $("#itemcode1").change(function() {
 			 		 var obj = data.data.itemmasterlist
                         console.log(obj[0].mrp);
                         if(obj.length>0){
+
                             $("#mrp1").val(obj[0].mrp);
                             $("#cases1").val(obj[0].uom);
-                            $("#quantity").val(" ");
-                            $("#nob").val(" ");
-                             $("#mrp").val(obj[0].mrp);
-
+                            $("#quantity").val("");
+                           $("#nob").val("");
+                            $("#mrp").val("");
+                            $("#mrp").val(obj[0].mrp);
 					}
              	}
         	});
@@ -263,6 +266,8 @@ $("#itemcode1").change(function() {
             $("#nob").val(val2);
             $("#mrp").val(val3);
          });
+
+
          $("#itemcode").change(function() {
         	var itemname = $('#itemcode').val();
         	$.ajax({
@@ -271,36 +276,43 @@ $("#itemcode1").change(function() {
             	data: {
                 	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
-
 			 	success: function(data){
-			 		 var obj = data.data.itemmasterlist
+			 	     var error = data.data.error;
+                     var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+					}
+                    else {
+			 		    var obj = data.data.itemmasterlist
                         console.log(obj[0].mrp);
                         if(obj.length>0){
-                            $("#mrp2").val(obj[0].mrp);
+                            $("#quantity1").val("");
+                            $("#nob1").val("");
+                             $("#price2").val("");
+                            $("#price2").val(obj[0].mrp);
                             $("#cases2").val(obj[0].uom);
-                            $("#quantity").val(" ");
                             $("#nob").val(" ");
-                             $("#mrp").val(obj[0].mrp);
+                             $("#price1").val(obj[0].mrp);
+					    }
 					}
              	}
         	});
     	});
+
     	$('#quantity1').on('input', function()  {
     	    val  = $("#quantity1").val();
             val1 = $("#cases2").val();
-            mrp2 = $("#mrp2").val( );
+            mrp2 = $("#price1").val( );
             val2 =    (val * val1)
             val3 = (val2 * mrp2)
             $("#nob1").val(val2);
-            $("#mrp2").val(val3);
+            $("#price2").val(val3);
          });
          $('#getdate').val(new Date().toJSON().slice(0,10));
-$('.form-control').change(function() {
-    console.log('Dropdown value changed');
-    if($(this).val() === '') {
-      alert('Please select an option');
-    }
-  });
+
+
+
   $(document).ready(function() {
     $("#wh").on("change", function() {
       var selectedOption = $(this).val();

@@ -110,7 +110,8 @@
                                     <th>Qty(In Cases)</th>
                                     <th>Qty(In Bottles)</th>
                                     <th>MRP</th>
-                                    <th>Dispatch Qty</th>
+                                     <th>Total</th>
+                                    <!--<th>Dispatch Qty</th>-->
 
                                 {% if data.status == 'Pending' or data == 'Pending' %}
                                     <th>Action</th>
@@ -130,12 +131,13 @@
                                      <td> {{ all_data.qty }} </td>
                                      <td> {{ all_data.noofbottles }} </td>
                                     <td>{{ all_data.mrp }}</td>
-                                    <td>{{all_data.dispatch_qty}}</td>
+                                       <td>{{ all_data.totalprice }}</td>
+                                    <!--<td>{{all_data.dispatch_qty}}</td>-->
 
                                         {% if data.status == 'Pending' or data == 'Pending' %}
                                         <td>
                                              {% if request.session.role == 'Admin' %}
-                                                 <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick1('{{all_data.indent_no}}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.item_code }}','{{ all_data.qty }}','{{ all_data.noofbottles }}','{{ all_data.mrp }}')"  data-target="#bs-example-modal-sm"><i class="fa fa-edit"></i> </span>
+                                                 <span class="badge badge-info" data-toggle="modal" onclick="VerifyClick1('{{all_data.indent_no}}','{{ all_data.sno }}','{{ all_data.item_name }}','{{ all_data.item_code }}','{{ all_data.qty }}','{{ all_data.noofbottles }}','{{ all_data.totalprice }}')"  data-target="#bs-example-modal-sm"><i class="fa fa-edit"></i> </span>
                                              {% endif %}
                                             <a href="#" onclick="VerifyClick('{{ all_data.indent_no }}','{{ all_data.sno }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                             <i class="fa fa-trash"></i></span></a>
@@ -188,7 +190,7 @@
 
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                         <label>Quantity(Cases)</label>
-										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
+										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty" required>
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                          <label>Quantity(Bottles)</label>
@@ -276,8 +278,9 @@ $("#itemcode").change(function() {
                         console.log(obj[0].mrp);
                         if(obj.length>0){
                             $("#cases1").val(obj[0].uom);
-
-                            $("#nob").val(" ");
+                             $("#quantity").val("");
+                             $("#price6").val("");
+                             $("#nob").val("");
                             $("#price6").val(obj[0].mrp);
                               $("#mrp1").val(obj[0].mrp);
 
@@ -308,12 +311,11 @@ function VerifyClick(id,id1){
 $("#indentid").val(id);
 $("#sno").val(id1);
 }
-function VerifyClick1(id,id1,id2,id3,id4,id5,id6,id7){
+function VerifyClick1(id,id1,id2,id3,id4,id5,id6){
 $("#indsno").val(id1)
 $("#indentno").val(id)
 $("#qty").val(id4);
 $("#nob1").val(id5);
-$("#price").val(id7);
 $("#itemname1").val(id2);
 $("#itemcode1").val(id3)
 $("#price1").val(id6)
@@ -324,16 +326,12 @@ $("#price1").val(id6)
             	data: {
                 	'itemname':id3,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
-
 			 	success: function(data){
 			 		 var obj = data.data.itemmasterlist
                         console.log(obj[0].mrp);
                         if(obj.length>0){
 
-                            $("#cases").val(obj[0].uom);
-                            $("#qty").val(" ");
-                            $("#nob1").val(" ");
-                             $("#price1").val(obj[0].mrp);
+                             $("#cases").val(obj[0].uom);
                              $("#price").val(obj[0].mrp);
 
 					}
@@ -341,7 +339,6 @@ $("#price1").val(id6)
         	});
 
     	$('#qty').on('input', function()  {
-
     	    val  = $("#qty").val();
             val1 = $("#cases").val();
             mrp2 = $("#price").val( );

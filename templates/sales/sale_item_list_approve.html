@@ -10,7 +10,7 @@
                 <h3 style="color:#1372ba">Sales Item List</h3>
               </div>
                  <div class="title_right">
-                <div class="col-md-6 col-sm-6 offset-md-8">
+                <div class="col-md-6 col-sm-6 offset-md-6">
                       <div style="display: inline-block;">
                             <div class="row" style="display: inline-block;">
                                 <div class="top_tiles" style="width: 800px;">
@@ -22,9 +22,9 @@
                                         </div>
                                     <div>
                                 </div>
-                            </div></div>
                             </div>
-
+<a href="/medeliver_challan_pending"><button type="button" style="margin-top:10px;"  class="btn btn-primary">Sales List</button></a>
+                                </div>
                   </div>
               </div>
             </div>
@@ -49,10 +49,11 @@
                                     <th>Invoice Number</th>
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
-                                    <th>ExpDate</th>
+                                    <!--<th>ExpDate</th>
                                     <th>Batch</th>
+                                      <th>Manufacture</th>-->
                                     <th>Total</th>
-                                    <th>Manufacture</th>
+
                         </tr>
                       </thead>
                             {% for all_data in all_data %}
@@ -61,10 +62,10 @@
                            <td>{{ all_data.so_number }}</td>
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
-                       <td>{{  all_data.expiry_date }}</td>
-                       <td>{{ all_data.batch_no }}</td>
+                       <!--<td>{{  all_data.expiry_date }}</td>
+                       <td>{{ all_data.batch_no }}</td>-->
                        <td class="text-success">₹ {{ all_data.total }}</td>
-                           <td>{{all_data.manufacturer}}</td>
+                           <!--<td>{{all_data.manufacturer}}</td>-->
 
                       {% endfor %}
                       <tbody>
