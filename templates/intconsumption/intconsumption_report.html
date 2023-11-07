@@ -86,15 +86,14 @@
             <div class="card-box table-responsive" style="overflow:hidden;">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-                                <p></p>
-                        <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">
-                                <table id="datatable" class="display table-striped table-bordered" style="width:100%">-->
-                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%;overflow:hidden;">
+<p></p>
+
+                                   <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
                       <thead>
                       <tr>
                            <th colspan="16" style="text-align:center;">STATUS OF 500ML ZIVA WATER BOTTLES IN DEPOTS ISSUED TO AC & SUPER-LUXURY SERVICES</th>
-                        <tr>
-
+                        </tr>
+                             <tr>
                                     <th rowspan="3">SNo</th>
                                     <th rowspan="3">Zone</th>
                                     <th rowspan="3">Region</th>
@@ -128,7 +127,7 @@
                             <tbody>
                                 {% for  data in  servicereportslist %}
                                 <tr>
-                                <td>{{ forloop.conter }}</td>
+                                <td>{{ forloop.counter }}</td>
                                 <td>{{ data.warehouse_name }}</td>
                                 <td>{{ data.region_name }}</td>
                                  <td>{{ data.depot_name }}</td>
@@ -209,5 +208,6 @@
           var optionValue = $("#depoid2").val();
         $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
     });
+
 </script>
 {% endblock %}

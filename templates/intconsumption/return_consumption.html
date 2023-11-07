@@ -14,9 +14,10 @@
               </div>
 
               <div class="title_right">
-                <!--<div class="col-md-6 col-sm-6 offset-md-10">
-                    <a href="#"><button type="submit" data-toggle="modal" data-target="#add_consumption" class="btn btn-primary"  >Add </button></a>
-                </div>-->
+               <div class="col-md-6 col-sm-6 offset-md-6" style="margin-top:10px;">
+                    <!--<a href="#"><button type="submit" data-toggle="modal" data-target="#add_consumption" class="btn btn-primary"  >Add </button></a>-->
+
+                </div>
 
             </div>
               </div>
@@ -72,6 +73,8 @@
                                                         <option value="">All</option>
                                                     </select>
                                             </div>
+
+
                             {% endif %}
                         </form>
               <div class="col-md-12 col-sm-12 ">
@@ -150,14 +153,13 @@
           </div>
 </div>
 
-                            <div class="inner-fabs">
+     <div class="inner-fabs">
 
-                                  <div class="fab bg-green round" id="fab3"><a href="returnsconsumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Return items</span></div>
-                                 <div class="fab bg-yellow round" id="fab2"><a href="internal_consumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><span class="tooltiptext"  style="margin-left: -155px !important;">Supply items</span></div>
+                                  <div class="fab bg-green round" id="fab3"><a href="returnsconsumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><label class="tooltiptext"  style="margin-left: -155px !important;">Return items</label></div>
+                                 <div class="fab bg-yellow round" id="fab2"><a href="internal_consumption"><i class="fa fa-outdent" style="color:#fff;"></i></a><label class="tooltiptext"  style="margin-left: -155px !important;">Supply items</label></div>
                               </div>
                                <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
               </div>
-
 <script>
       $("#warehouseid1, #regionid1").change(function() {
     var form = document.getElementById("myForm");

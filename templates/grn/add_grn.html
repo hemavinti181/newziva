@@ -41,7 +41,7 @@
 									   {% if request.session.role == 'Admin' %}
 											<div class="col-md-3 col-sm-6  form-group has-feedback">
 												<label>Select Warehouse *</label>
-												<select class="form-control items" name="whname">
+												<select class="form-control items" name="whid" id="whid" >
 												{% for data in all_data1 %}
 													<option  value="{{ data.warehouseid}}">{{ data.warehousename }}</option>
 												{% endfor %}

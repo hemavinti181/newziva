@@ -569,8 +569,10 @@ $(document).ready(function() {
 			 		var message = data.data.message
                     if ( error === true) {
 
-                alertify.set('notifier', 'position', 'top-center');
-                alertify.error(message);
+                        alertify.set('notifier', 'position', 'top-center');
+                        alertify.error(message);
+                        $("#busstationid").empty();
+			 		    $("#busstationid").append("<option  value=''>no data available</option>");
           }
            else{
            var obj = data.data.dropdownlist

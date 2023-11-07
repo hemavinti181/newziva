@@ -12,6 +12,7 @@
 
 <!--<link rel="icon" href="images/favicon.ico" type="image/ico" />-->
     <title>ZIVA</title>
+
 <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
@@ -48,11 +49,10 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/smoothness/jquery-ui.css">
 
 <style>
-
 body {
     color:#6c757d  !important;
     font-family: 'Nunito' !important;
-    font-size: 1px !important;
+
 }
 .form-control:focus {
   border: 2px solid #14c38e;
@@ -62,7 +62,7 @@ body {
   border-radius: 5px;
 }
 table.display{
-font-size:14px;
+font-size:12px;
 }
 
 
@@ -359,6 +359,7 @@ a.user-profile {
 background:#14c38e !important;
 color:#fff !important;
 }
+
 .left_col {
     background: #ffffff !important;
 }
@@ -399,16 +400,95 @@ color:#14c38e !important;
 
    }
    .nav-md{
-    font-size:14px !important;
+    font-size:13px !important;
 
    }
+
+
+#loadercontainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #14c38e;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+
+  /* .dot{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: blue;
+    animation: move 700ms linear 0ms infinite;
+    margin-right: 30px;
+
+    &:first-child{
+      position: absolute;
+      top:0;
+      left:0;
+      animation: grow 700ms linear 0ms infinite;
+    }
+
+    &:last-child{
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin-right: 0;
+      animation: grow 700ms linear 10s infinite reverse;
+    }
+  }
+
+
+@keyframes grow {
+  from {transform: scale(0,0); opacity: 0;}
+  to {transform: scale(1,1); opacity: 1;}
+}
+
+@keyframes move {
+  from {transform: translateX(0px)}
+  to {transform: translateX(45px)}
+} */
 </style>
 <meta name="robots" content="noindex, nofollow">
 
 <script nonce="ce9d2011-6d9c-428f-ac26-1d16587b53aa">(function(w,d){!function(cM,cN,cO,cP){cM.zarazData=cM.zarazData||{};cM.zarazData.executed=[];cM.zaraz={deferred:[],listeners:[]};cM.zaraz.q=[];cM.zaraz._f=function(cQ){return function(){var cR=Array.prototype.slice.call(arguments);cM.zaraz.q.push({m:cQ,a:cR})}};for(const cS of["track","set","debug"])cM.zaraz[cS]=cM.zaraz._f(cS);cM.zaraz.init=()=>{var cT=cN.getElementsByTagName(cP)[0],cU=cN.createElement(cP),cV=cN.getElementsByTagName("title")[0];cV&&(cM.zarazData.t=cN.getElementsByTagName("title")[0].text);cM.zarazData.x=Math.random();cM.zarazData.w=cM.screen.width;cM.zarazData.h=cM.screen.height;cM.zarazData.j=cM.innerHeight;cM.zarazData.e=cM.innerWidth;cM.zarazData.l=cM.location.href;cM.zarazData.r=cN.referrer;cM.zarazData.k=cM.screen.colorDepth;cM.zarazData.n=cN.characterSet;cM.zarazData.o=(new Date).getTimezoneOffset();if(cM.dataLayer)for(const cZ of Object.entries(Object.entries(dataLayer).reduce(((c_,da)=>({...c_[1],...da[1]})))))zaraz.set(cZ[0],cZ[1],{scope:"page"});cM.zarazData.q=[];for(;cM.zaraz.q.length;){const db=cM.zaraz.q.shift();cM.zarazData.q.push(db)}cU.defer=!0;for(const dc of[localStorage,sessionStorage])Object.keys(dc||{}).filter((de=>de.startsWith("_zaraz_"))).forEach((dd=>{try{cM.zarazData["z_"+dd.slice(7)]=JSON.parse(dc.getItem(dd))}catch{cM.zarazData["z_"+dd.slice(7)]=dc.getItem(dd)}}));cU.referrerPolicy="origin";cU.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(cM.zarazData)));cT.parentNode.insertBefore(cU,cT)};["complete","interactive"].includes(cN.readyState)?zaraz.init():cM.addEventListener("DOMContentLoaded",zaraz.init)}(w,d,0,"script");})(window,document);</script></head>
 <body class="nav-md" onload="getLocation()" id="body">
+
 <div class="container body">
+	<div id="loadercontainer">
+        <div id="loader"></div>
+
+    </div>
+  <!--<div id="loadercontainer">
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  </div>-->
+
 <div class="main_container">
+
 <div class="col-md-3 left_col menu_fixed">
 <div class="left_col scroll-view">
 <div class="clearfix"></div>
@@ -431,7 +511,7 @@ color:#14c38e !important;
     </div>
 <div class="profile_info" style="background: #14c38e;">
 </div>
-</div>
+    </div>
 
 <br/>
 
@@ -477,18 +557,22 @@ color:#14c38e !important;
 </li>
 </ul>
 </nav>
-</div></div>
+
+</div>
 
  {% block htmlbody %} {% endblock htmlbody %}
           {% block modal %} {% endblock %}
-    <footer>
+  <!--<footer>
 <div class="pull-right">
 ZIVA <a href="#"></a>
-</div>
+</div>-->
 <div class="clearfix"></div>
 </footer>
+    </div>
 </div>
 </div>
+</div>
+
 
 <div class="modal custom-modal fade" id="myModal" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
@@ -498,7 +582,6 @@ ZIVA <a href="#"></a>
 									<span aria-hidden="true">&times;</span>
 								</button>
 								<form method="post" action="" id="myForm">
-
                                                     {% csrf_token %}
 								<div class="form-header">
 									<h3 style="color:#14c38e">Change Password</h3>
@@ -506,7 +589,7 @@ ZIVA <a href="#"></a>
 											<input type="hidden" name="depotname1" id="depotname1" />
                                    <div class="col-md-12 col-sm-12  form-group has-feedback">
                                       <label>Old Password *</label>
-                                      <input type="text" class="form-control" placeholder="old password" name="oldpwd"  id="oldpwd" required>
+                                      <input type="text" class="form-control" placeholder="old password" name="oldpwd"  id="oldpwd">
                                         <span style="position: absolute;right:20px;top:35px;" onclick="oldhideshow()" >
 													<i id="oldslash" class="fa fa-eye-slash slash"></i>
 													<i id="oldeye" class="fa fa-eye" style="display:none;" ></i>
@@ -514,7 +597,7 @@ ZIVA <a href="#"></a>
                                    </div>
                                        <div class="col-md-12 col-sm-12  form-group has-feedback">
                                       <label>New Password *</label>
-                                      <input type="password" class="form-control" placeholder="new password" name="newpwd"  id="newpwd" required>
+                                      <input type="password" class="form-control" placeholder="new password" name="newpwd"  id="newpwd">
                                         <span style="position: absolute;right:20px;top:35px;" onclick="newhideshow()" >
 													<i id="newslash" class="fa fa-eye-slash" style="display:none;"></i>
 													<i id="neweye" class="fa fa-eye" ></i>
@@ -523,7 +606,7 @@ ZIVA <a href="#"></a>
                                        <div class="col-md-12 col-sm-12  form-group has-feedback" style="margin-bottom:25px;">
                                       <label>Confirm Password *</label>
 
-                                      <input type="password" class="form-control" placeholder="confirm password" name="confirmpwd"  id="pwd" required>
+                                      <input type="password" class="form-control" placeholder="confirm password" name="confirmpwd"  id="pwd">
                                            <span style="position: absolute;right:20px;top:35px;" onclick="hideshow()" >
 													<i id="slash" class="fa fa-eye-slash" style="display:none;"></i>
 													<i id="eye" class="fa fa-eye" ></i>
@@ -618,34 +701,42 @@ ZIVA <a href="#"></a>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
 <script>
-$("#save1").click(function() {
-    alert('hai')
-            var formData = $(this).serialize();
-            $.ajax({
-               url: "{% url 'change_pwd' %}",
-                type: 'POST',
-                data:{ data:formData,'csrfmiddlewaretoken': '{{ csrf_token }}' },
-                success: function (data) {
-                  var message = data.data.message;
-                  var error = data.data.error
-                  if (error === true) {
-                      ("#myModal").modal("hide");
-                            alertify.set('notifier', 'position', 'top-center');
-                            alertify.error(message);
 
-                        }
-                else{
-                 $("#myModal").modal("hide");
+// Show the loader while the page is loading
+document.addEventListener("DOMContentLoaded", function () {
+    // Hide the loader when the page is fully loaded
+    document.getElementById("loadercontainer").style.display = "none";
+});
+
+$("#save1").click(function() {
+     var oldpwd = $('#oldpwd').val();
+     var newpwd = $('#newpwd').val();
+    $.ajax({
+        url: "{% url 'change_pwd' %}",
+        type: 'POST',
+        data: {
+                  'oldpwd':oldpwd,'newpwd':newpwd,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+        success: function(data) {
+            var message = data.data.message;
+            var error = data.data.error;
+            if (error === true) {
+                $("#myModal").modal("hide");
+                alertify.set('notifier', 'position', 'top-center');
+                alertify.error(message);
+                window.location.reload();
+            } else {
+                $("#myModal").modal("hide");
                 alertify.set('notifier', 'position', 'top-center');
                 alertify.success(message);
-
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-              }
-            });
+                window.location.reload();
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
     });
+});
 
 (function () {
 	window.onpageshow = function(event) {

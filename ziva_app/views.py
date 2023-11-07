@@ -3304,7 +3304,7 @@ def add_grn(request):
                     "vendorid": request.POST.get('vid'),
                     "invoicephoto":invoiceimage_data,
                     "invoiceattachfilename":invoiceimage_name,
-                    "whcode": warehouseid
+                    "whcode": request.POST.get('whid')
                 }
                 payload = json.dumps(payload, cls=BytesEncoder)
                 headers = {
@@ -3348,7 +3348,7 @@ def add_grn(request):
                             "vendorid": request.POST.get('vid'),
                             "invoicephoto": invoiceattach_data,
                             "invoiceattachfilename": invoiceattach_name,
-                            "whcode": warehouseid
+                            "whcode": request.POST.get('whid'),
                         }
                         payload = json.dumps(payload, cls=BytesEncoder)
                         headers = {
@@ -19235,12 +19235,12 @@ def change_pwd(request):
     try:
         menuname = request.session['mylist']
         accesskey = request.session['accesskey']
-        url = "http://13.235.112.1/ziva/mobile-api/forgotpassword-new.php"
+        url = "http://13.235.112.1/ziva/mobile-api/changepassword.php"
 
         payload = json.dumps({
-            "empid": request.POST.get('employee'),
-            "dob": request.POST.get('dob'),
-            "newpassword": request.POST.get('pwd')
+            "accesskey": accesskey,
+            "oldpassword": request.POST.get('oldpwd'),
+            "newpassword": request.POST.get('newpwd')
         })
         headers = {
             'Content-Type': 'text/plain'
@@ -19248,17 +19248,11 @@ def change_pwd(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
             data = response.json()
-            messages.error(request, data['message'])
+            messages.success(request, data['message'])
             return JsonResponse({'data': data})
         elif response.status_code == 400:
             data = response.json()
-            text = data['message']
-            if  'Sorry! Some details are missing' in text:
-                messages.error(request, data['message'])
-                return JsonResponse({'data': data})
-            else:
-                messages.error(request, data['message'])
-                return redirect('/login')
+            return JsonResponse({'data': data})
         elif response.status_code == 503:
             data = response.json()
             messages.error(request, data['message'])

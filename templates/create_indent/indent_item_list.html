@@ -300,12 +300,6 @@ $("#itemcode").change(function() {
 
 
          $('#getdate').val(new Date().toJSON().slice(0,10));
-$('.items').change(function() {
-    console.log('Dropdown value changed');
-    if($(this).val() === '') {
-      alert('Please select an option');
-    }
-  });
 
 function VerifyClick(id,id1){
 $("#indentid").val(id);

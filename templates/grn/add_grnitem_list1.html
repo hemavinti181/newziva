@@ -11,7 +11,7 @@
               </div>
 
            <div class="title_right">
-                <div class="col-md-6 col-sm-6 offset-md-9">
+                <div class="col-md-6 col-sm-6 offset-md-6">
                    <div style="display: inline-block;">
                             <div class="row" style="display: inline-block;">
                                 <div class="top_tiles" style="width: 700px;">
@@ -23,8 +23,10 @@
                                         </div>
                                     <div>
                                 </div>
-                            </div></div>
+                                    </div>
+                               <a href="/grn_pending_status"><button type="button"  style="margin-top:10px;" class="btn btn-info">Go Back</button></a>
                 </div>
+                                </div>
             </div>
               </div>
            </div>
@@ -43,6 +45,7 @@
                                     <th>Qty(In Bottles)</th>
                                     <th>Expiry Date</th>
                                     <th>Batch Code</th>
+                                    <th>Purchase price</th>
                                     <th>MRP</th>
 
 
@@ -56,6 +59,7 @@
                            <td>{{ all_data.noofbottles }}</td>
                        <td>{{  all_data.expiry_date}}</td>
                        <td>{{ all_data.batch_no }}</td>
+                           <td>{{ all_data.purchase_price }}</td>
                        <td>{{ all_data.mrp }}</td>
                       </tr>
                       {% endfor %}

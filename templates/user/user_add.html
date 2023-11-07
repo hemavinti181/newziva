@@ -4,6 +4,7 @@
 
 
 <div class="right_col" role="main">
+
           <div class="">
             <div class="page-title">
               <div class="title_left">
@@ -40,7 +41,7 @@
                                          </div>
                                          <div class="col-md-3 col-sm-3  form-group has-feedback" >
 											<label>Email *</label>
-										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" >
+										    <input type="email" name="email" class="form-control" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
 										 </div>
 											<div  class="col-md-3 col-sm-3  form-group has-feedback" >
 												<input type="hidden" name="level" id="levelname" />
@@ -80,8 +81,8 @@
                                         </div>
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
 													<input type="hidden" name="warehousename" id="warehousename" />
-												<select class="form-control" name="warehouse" id="warehouse" style="display: none;">
-														<option> selct warehouse</option>
+												<select class="form-control items" name="warehouse" id="warehouse" style="display: none;">
+														<option value=""> selct warehouse</option>
 													{% for data in data %}
 														{% if  data.status == "Active" %}
 														<option  value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
@@ -91,20 +92,20 @@
                                         </div>
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
 											<input type="hidden" name="regionname" id="regionname" />
-												<select class="form-control" name="region" id="region" style="display: none;">
+												<select class="form-control itemes" name="region" id="region" style="display: none;">
 													<option  value="">select region</option>
 												</select>
                                         </div>
 
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
 											<input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depo" id="depo" style="display: none;">
+												<select class="form-control items" name="depo" id="depo" style="display: none;">
 														<option  value="">select depo</option>
 												</select>
                                         </div>
 										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
 												<input type="hidden" name="busstationname" id="busstationname" />
-												<select class="form-control" name="busstation" id="busstation" style="display: none;">
+												<select class="form-control items" name="busstation" id="busstation" style="display: none;">
 
 														<option  value="">select busstation</option>
 
@@ -166,6 +167,11 @@ document.getElementById("role").addEventListener("change", function() {
 		document.getElementById("region").style.display = "block";
 		document.getElementById("depo").style.display = "block";
 		document.getElementById("busstation").style.display = "block";
+
+		document.getElementById("warehouse").setAttribute("required", "required");
+		document.getElementById("region").setAttribute("required", "required");
+		document.getElementById("depo").setAttribute("required", "required");
+		document.getElementById("busstation").setAttribute("required", "required");
 	  }
 
 	  else if (val === "MARKETING EXECUTIVE" ){
@@ -173,6 +179,10 @@ document.getElementById("role").addEventListener("change", function() {
 			document.getElementById("region").style.display = "block";
 			document.getElementById("depo").style.display = "none";
 			document.getElementById("busstation").style.display = "none";
+
+			document.getElementById("warehouse").setAttribute("required", "required");
+			document.getElementById("region").setAttribute("required", "required");
+
 		}
 
 	  else if(val === "DEPOT STORE EXECUTIVE" ) {
@@ -180,6 +190,11 @@ document.getElementById("role").addEventListener("change", function() {
 		document.getElementById("region").style.display = "block";
 		document.getElementById("depo").style.display = "block";
 		document.getElementById("busstation").style.display = "none";
+
+		document.getElementById("warehouse").setAttribute("required", "required");
+		document.getElementById("region").setAttribute("required", "required");
+		document.getElementById("depo").setAttribute("required", "required");
+
 	   }
 
 		else{
@@ -187,6 +202,8 @@ document.getElementById("role").addEventListener("change", function() {
 		document.getElementById("region").style.display = "none";
 		document.getElementById("depo").style.display = "none";
 		document.getElementById("busstation").style.display = "none";
+
+		document.getElementById("warehouse").setAttribute("required", "required");
 		}
 	});
 
