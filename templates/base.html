@@ -52,6 +52,7 @@
 body {
     color:#6c757d  !important;
     font-family: 'Nunito' !important;
+    background:#f7f7f7 !important;
 
 }
 .form-control:focus {
@@ -722,14 +723,20 @@ $("#save1").click(function() {
             var error = data.data.error;
             if (error === true) {
                 $("#myModal").modal("hide");
+                 setTimeout(function () {
+                    window.location.reload();
+				  }, 1000);
                 alertify.set('notifier', 'position', 'top-center');
                 alertify.error(message);
-                window.location.reload();
+
             } else {
                 $("#myModal").modal("hide");
+                 setTimeout(function () {
+                    window.location.reload();
+				  }, 1000);
                 alertify.set('notifier', 'position', 'top-center');
                 alertify.success(message);
-                window.location.reload();
+
             }
         },
         error: function(xhr, status, error) {
