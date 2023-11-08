@@ -488,6 +488,17 @@ $("#depoid").change(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
+			 		var message = data.data.message;
+                    var error = data.data.error;
+
+                if (error === true) {
+                    //alertify.set('notifier', 'position', 'top-center');
+                    //alertify.error(message);
+                    $("#busstationid1").empty();
+                    $("#busstationid1").append("<option  value=''>not available</option>");
+                }
+
+                else {
 					if(obj) {
 			 		$("#busstationid1").empty();
                     //$("#busstationid1").append("<option  value=''>All</option>");
@@ -497,6 +508,8 @@ $("#depoid").change(function() {
 					var optionValue = $("#busstationid2").val();
                     $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
                 	}
+             	}
+
              	}
         	});
 
@@ -511,14 +524,27 @@ $("#depoid").change(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
+			 		var message = data.data.message;
+                    var error = data.data.error;
+
+                if (error === true) {
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                    $("#busstationid").empty();
+                    $("#busstationid").append("<option  value=''>not available</option>");
+                }
+
+                else {
 					if(obj) {
-			 		$("#busstationid").empty();
-			 		//$("#busstationid").append("<option  value=''>All</option>");
-                	$.each(obj, function (index, item) {
-                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
+                        $("#busstationid").empty();
+                        //$("#busstationid").append("<option  value=''>All</option>");
+                        $.each(obj, function (index, item) {
+                        $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+                        });
                 	}
              	}
+
+             }
         	});
     	});
 });
@@ -532,7 +558,7 @@ $(document).ready(function(){
 })
 
 
-	$(document).ready(function() {
+$(document).ready(function() {
     var warehousename = $("#warehouseid2").find(":selected").text();
     $.ajax({
         type: "POST",
@@ -543,15 +569,25 @@ $(document).ready(function(){
         },
         success: function(data) {
             var obj = data.data.dropdownlist
-            if (obj) {
+            var message = data.data.message;
+            var error = data.data.error;
+            if (error === true) {
+                //alertify.set('notifier', 'position', 'top-center');
+                //alertify.error(message);
                 $("#regionid1").empty();
-                 //$("#regionid1").append("<option value='All'>All</option>");
-                $.each(obj, function(index, item) {
-                    $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                });
-                var optionValue = $("#regionid2").val();
-                $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                $("#regionid1").append("<option  value=''>not available</option>");
             }
+           else {
+                if (obj) {
+                    $("#regionid1").empty();
+                     //$("#regionid1").append("<option value='All'>All</option>");
+                    $.each(obj, function(index, item) {
+                        $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                    });
+                    var optionValue = $("#regionid2").val();
+                    $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                }
+           }
         }
     });
 
@@ -566,12 +602,22 @@ $(document).ready(function(){
             },
             success: function(data) {
                 var obj = data.data.dropdownlist
+                var message = data.data.message;
+                var error = data.data.error;
+                 if (error === true) {
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                    $("#regionid1").empty();
+                    $("#regionid1").append("<option  value=''> not available</option>");
+            }
+           else {
                 if (obj) {
                     $("#regionid1").empty();
                     //$("#regionid1").append("<option value='All'>All</option>");
                     $.each(obj, function(index, item) {
                         $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
+                }
                 }
             }
         });
@@ -592,14 +638,24 @@ $(document).ready(function(){
             	},
         success: function(data) {
             var obj = data.data.dropdownlist
-            if (obj) {
-                $("#depoid1").empty();
-                //$("#depoid1").append("<option value='All'>All</option>");
-                $.each(obj, function(index, item) {
-                    $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                });
-                 var optionValue = $("#depoid2").val();
-                 $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+            var message = data.data.message;
+            var error = data.data.error;
+                 if (error === true) {
+                   // alertify.set('notifier', 'position', 'top-center');
+                   // alertify.error(message);
+                    $("#depoid1").empty();
+                    $("#depoid1").append("<option  value=''> not available</option>");
+            }
+           else {
+                if (obj) {
+                    $("#depoid1").empty();
+                    //$("#depoid1").append("<option value='All'>All</option>");
+                    $.each(obj, function(index, item) {
+                        $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                    });
+                     var optionValue = $("#depoid2").val();
+                     $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                }
             }
         }
     });
@@ -623,13 +679,22 @@ $(document).ready(function(){
             },
             success: function(data) {
                 var obj = data.data.dropdownlist;
-
-                if (obj) {
-                    $("#depoid1").empty();
-                    // $("#depoid1").append("<option value='All'>All</option>");
-                    $.each(obj, function(index, item) {
-                        $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                    });
+                var message = data.data.message;
+                var error = data.data.error;
+                     if (error === true) {
+                        //alertify.set('notifier', 'position', 'top-center');
+                       // alertify.error(message);
+                        $("#depoid1").empty();
+                        $("#depoid1").append("<option  value=''> not available</option>");
+                }
+                else {
+                    if (obj) {
+                        $("#depoid1").empty();
+                        // $("#depoid1").append("<option value='All'>All</option>");
+                        $.each(obj, function(index, item) {
+                            $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                        });
+                    }
                 }
             }
         });
@@ -649,15 +714,25 @@ $(document).ready(function(){
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#busstationid1").empty();
-                    //$("#busstationid1").append("<option value='All'>All</option>");
-                	$.each(obj, function (index, item) {
-                    $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-					var optionValue = $("#busstationid2").val();
-                    $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
-                	}
+			 		var message = data.data.message;
+                    var error = data.data.error;
+                         if (error === true) {
+                            //alertify.set('notifier', 'position', 'top-center');
+                            //alertify.error(message);
+                            $("#busstationid1").empty();
+                            $("#busstationid1").append("<option  value=''> not available</option>");
+                    }
+                    else {
+                        if(obj) {
+                        $("#busstationid1").empty();
+                        //$("#busstationid1").append("<option value='All'>All</option>");
+                        $.each(obj, function (index, item) {
+                        $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+                        });
+                        var optionValue = $("#busstationid2").val();
+                        $("#busstationid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                        }
+                    }
              	}
         	});
 
@@ -673,12 +748,24 @@ $(document).ready(function(){
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
+			 		var message = data.data.message;
+                var error = data.data.error;
+                     if (error === true) {
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
+                        $("#busstationid1").empty();
+                        $("#busstationid1").append("<option  value=''> not available</option>");
+                }
+                else {
+
 					if(obj) {
 			 		$("#busstationid1").empty();
 			 		//$("#busstationid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#busstationid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
+                	}
+
                 	}
              	}
         	});

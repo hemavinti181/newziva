@@ -288,19 +288,16 @@ $("#id1").val(id);
         }
       });
   }
-
-   $("#depotid").change(function() {
+ $("#depotid").change(function() {
       var form = document.getElementById("myform");
       var selectedOptionText = $(this).find(":selected").text();
       $("#deponame1").val(selectedOptionText);
       form.submit();
 });
 
- $("#depoid").change(function() {
-      var form = document.getElementById("myform");
-      var selectedOptionText = $(this).find(":selected").text();
-      $("#deponame").val(selectedOptionText);
-});
+
+
+
 $("#depotid1").change(function() {
       var selectedOptionText = $(this).find(":selected").text();
       $("#depotname1").val(selectedOptionText);
