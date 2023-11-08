@@ -568,7 +568,6 @@ $(document).ready(function() {
 			 		var error = data.data.error;
 			 		var message = data.data.message
                     if ( error === true) {
-
                         alertify.set('notifier', 'position', 'top-center');
                         alertify.error(message);
                         $("#busstationid").empty();
@@ -603,9 +602,10 @@ $("#busstationid").change(function() {
 			 	var error = data.data.error;
 			 		var message = data.data.message
                     if ( error === true) {
-
-                alertify.set('notifier', 'position', 'top-center');
-                alertify.error(message);
+                    //alertify.set('notifier', 'position', 'top-center');
+                    //alertify.error(message);
+                    $("#stid").empty();
+                    $("#stid").append("<option  value=''>not available</option>");
           }
            else{
 
@@ -633,14 +633,24 @@ $("#busstationid").change(function() {
                 	'depo':depoid,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
+			 	   	var error = data.data.error;
+			 		var message = data.data.message
+                    if ( error === true) {
+                         //alertify.set('notifier', 'position', 'top-center');
+                         //alertify.error(message);
+                         $("#stid").empty();
+                         $("#stid").append("<option  value=''>not available</option>");
+                    }
+                    else{
 			 		var obj = data.data.adminstoremasterlistdata
-					if(obj) {
-			 		$("#stid").empty();
-			 		$("#stid").append("<option  value=''>Choose Store</option>");
-                	$.each(obj, function (index, item) {
-                    $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
-					});
-                	}
+                        if(obj) {
+                        $("#stid").empty();
+                        $("#stid").append("<option  value=''>Choose Store</option>");
+                        $.each(obj, function (index, item) {
+                        $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
+                        });
+                        }
+                    }
              	}
         	});
     	});

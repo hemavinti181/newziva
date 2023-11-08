@@ -2732,16 +2732,12 @@ def get_storeregion(request):
         return JsonResponse({'data': data})
     elif response.status_code == 400:
         data = response.json()
-        if data['message'] == 'Sorry! some details are missing':
-            return JsonResponse({'data': data})
-        else:
-            messages.error(request, data['message'])
-            return redirect('/login')
+        return JsonResponse({'data': data})
     elif response.status_code == 503:
         data = response.json()
         return JsonResponse({'data': data})
     else:
-        data = "something went wrong"
+        data = {'error':'true','messsage':'something went wrong'}
         return JsonResponse({'data': data})
 
 
@@ -2777,10 +2773,23 @@ def get_storebus(request):
             }
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
+                data2 = response.json()
+                return JsonResponse({'data': data2})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    return JsonResponse({'data': data})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            elif response.status_code == 503:
                 data = response.json()
                 return JsonResponse({'data': data})
+            elif response.status_code == 500:
+                data = {'error': 'true', 'message': 'Internal server error'}
+                return JsonResponse({'data': data})
             else:
-                data = response.json()
+                data = {'error': 'true', 'message': 'something went wrong'}
                 return JsonResponse({'data': data})
     except Exception as e:
                 messages.error(request, str(e))
@@ -2805,8 +2814,25 @@ def get_proformabus(request):
             'Content-Type': 'text/plain'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        data = response.json()
-        return JsonResponse({'data': data})
+        if response.status_code == 200:
+            data2 = response.json()
+            return JsonResponse({'data': data2})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            data = {'error': 'true', 'message': 'Internal server error'}
+            return JsonResponse({'data': data})
+        else:
+            data = {'error': 'true', 'message': 'something went wrong'}
+            return JsonResponse({'data': data})
 
     else:
         accesskey = request.session['accesskey']
@@ -2823,8 +2849,25 @@ def get_proformabus(request):
             'Content-Type': 'text/plain'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        data = response.json()
-        return JsonResponse({'data': data})
+        if response.status_code == 200:
+            data2 = response.json()
+            return JsonResponse({'data': data2})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            data = {'error': 'true', 'message': 'Internal server error'}
+            return JsonResponse({'data': data})
+        else:
+            data = {'error': 'true', 'message': 'something went wrong'}
+            return JsonResponse({'data': data})
 
 
 def get_proformastore(request):
@@ -2852,8 +2895,25 @@ def get_proformastore(request):
 
 
         response = requests.request("GET", url, headers=headers, data=payload)
-        data = response.json()
-        return JsonResponse({'data': data})
+        if response.status_code == 200:
+            data2 = response.json()
+            return JsonResponse({'data': data2})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            data = {'error': 'true', 'message': 'Internal server error'}
+            return JsonResponse({'data': data})
+        else:
+            data = {'error': 'true', 'message': 'something went wrong'}
+            return JsonResponse({'data': data})
     else:
         url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
 
@@ -2870,8 +2930,25 @@ def get_proformastore(request):
         }
 
         response = requests.request("GET", url, headers=headers, data=payload)
-        data = response.json()
-        return JsonResponse({'data': data})
+        if response.status_code == 200:
+            data2 = response.json()
+            return JsonResponse({'data': data2})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            data = {'error': 'true', 'message': 'Internal server error'}
+            return JsonResponse({'data': data})
+        else:
+            data = {'error': 'true', 'message': 'something went wrong'}
+            return JsonResponse({'data': data})
 def get_storedepo(request):
      if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -2899,8 +2976,26 @@ def get_storedepo(request):
          'Content-Type': 'text/plain'
      }
      response = requests.request("GET", url, headers=headers, data=payload)
-     data = response.json()
-     return JsonResponse({'data': data})
+     if response.status_code == 200:
+         data2 = response.json()
+         return JsonResponse({'data': data2})
+     elif response.status_code == 400:
+         data = response.json()
+         if data['message'] == 'Sorry! some details are missing':
+             return JsonResponse({'data': data})
+         else:
+             messages.error(request, data['message'])
+             return redirect('/login')
+     elif response.status_code == 503:
+         data = response.json()
+         return JsonResponse({'data': data})
+     elif response.status_code == 500:
+         data = {'error': 'true', 'message': 'Internal server error'}
+         return JsonResponse({'data': data})
+     else:
+         data = {'error': 'true', 'message': 'something went wrong'}
+         return JsonResponse({'data': data})
+
 def get_depregion(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -2914,8 +3009,25 @@ def get_depregion(request):
         'Content-Type': 'text/plain'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data2 = response.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
 
 def get_dependent_depo(request):
     if 'accesskey' not in request.session:
@@ -2935,8 +3047,25 @@ def get_dependent_depo(request):
         'Content-Type': 'text/plain'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data2 = response.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
 
 def get_dependent_bus(request):
     if 'accesskey' not in request.session:
@@ -2956,8 +3085,25 @@ def get_dependent_bus(request):
         'Content-Type': 'text/plain'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    return JsonResponse({'data': data})
+    if response.status_code == 200:
+        data2 = response.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
 
 def user_add(request):
     if 'accesskey' not in request.session:
