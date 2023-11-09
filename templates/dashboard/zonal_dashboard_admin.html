@@ -123,14 +123,14 @@
             <div class="col-md-3 col-sm-3">
                  <div class="x_panel">
                        <h3 class="text-danger" style="margin: 125px 3px 149px 100px;display:none;" id="depotstock">No Stock Available</h3>
-                          <div id="echart-zonal1" style="height:350px;margin-top:-50px;margin-left:-110px;width:600px"></div>
+                          <div id="echart-zonal1" style="height:350px;margin-top:-50px;margin-left:-150px;width:600px"></div>
                        <h3 class="text-success textqty1" style="margin-bottom:11px;margin-left:60px;"> Available Stock</h3>
                   </div>
               </div>
 
                        <div class="col-md-5 col-sm-5">
-<div class="x_panel stktabel">
-            <table class="table table-striped" style="display:block;width=200%"; id="stktabel">
+<div class="x_panel stktabel" style="padding:10px;">
+            <table class="table table-striped" style="display:block;" id="stktabel">
                         <thead>
                          <tr>
                           <th class="design1" rowspan="2">#</th>
@@ -431,7 +431,7 @@
                     <input class="form-control" type="date" name="date"  id="inddate"  value="{{ request.POST.date }}"  required>
                 </div>
               <div class="col-md-2 col-sm-2">
-                <label><input type="checkbox" id="depots_indent" class="js-switch"  /></label>
+                <label><input type="checkbox" id="depots_indent" class="js-switch"  style="display:none" /></label>
               </div>
             </div>
           </div>

@@ -149,11 +149,12 @@
 										 </div>
 											<div  class="col-md-6 col-sm-6  form-group has-feedback" >
 												<input type="hidden" name="level" id="levelname" />
+                                                <label>Level</label>
 												<select class="form-control" name="levelname" id="level">
 													<option>Level</option>
                                                     {% for all_data3 in level_list %}
 														{% if  all_data3.status == "Active" %}
-															<option  value="{{ all_data3.ddcode}}">{{ all_data3.displayname }}</option>
+															<option  value="{{ all_data3.displayname}}">{{ all_data3.displayname }}</option>
 														{% endif %}
 													{% endfor %}
 												</select>
@@ -175,17 +176,19 @@
 
                                         <div  class="col-md-6 col-sm-6  form-group has-feedback" >
 													<input type="hidden" name="rolename" id="rolename" />
-												<select class="form-control" name="role" id="role">
-													<option> Role</option>
+                                            <label>Role *</label>
+												<select class="form-control items" name="role" id="role" required>
+													<option value=""> Role</option>
 													{% for all_data2 in role_list %}
 															<option  value="{{ all_data2.role}}">{{ all_data2.role }}</option>
 													{% endfor %}
 												</select>
                                         </div>
-										<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+										<div  class="col-md-6 col-sm-6  form-group has-feedback" id="warehouseid1" style="display:none;">
+                                            <label>Warehouse *</label>
 													<input type="hidden" name="warehousename" id="warehousename" />
-												<select class="form-control" name="warehouseid" id="warehouseid" style="display: none;">
-														<option> selct warehouse</option>
+												<select class="form-control items" name="warehouseid" id="warehouseid">
+														<option value=""> selct warehouse</option>
 													{% for data in data %}
 														{% if  data.status == "Active" %}
 														<option  value="{{ data.warehouseid }}">{{ data.warehousename }}</option>
@@ -193,22 +196,25 @@
 													{% endfor %}
 												</select>
                                         </div>
-										<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+										<div  class="col-md-6 col-sm-6  form-group has-feedback" id="regionid1" style="display: none;" >
+                                            <label>Region *</label>
 											<input type="hidden" name="regionname" id="regionname" />
-												<select class="form-control" name="regionid" id="regionid" style="display: none;">
+												<select class="form-control items" name="regionid" id="regionid" >
 													<option  value="">select region</option>
 												</select>
                                         </div>
 
-										<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+										<div  class="col-md-6 col-sm-6  form-group has-feedback" id="depoid1" style="display: none;">
+                                             <label>Depot *</label>
 											<input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid" style="display: none;">
-														<option  value="">select depo</option>
+												<select class="form-control items" name="depoid" id="depoid">
+														<option  value="">select depot</option>
 												</select>
                                         </div>
-										<div  class="col-md-6 col-sm-6  form-group has-feedback" >
+										<div  class="col-md-6 col-sm-6  form-group has-feedback" id="busstationid1" style="display: none;">
+                                             <label>Busstation *</label>
 												<input type="hidden" name="busstationname" id="busstationname" />
-												<select class="form-control" name="busstationid" id="busstationid" style="display: none;">
+												<select class="form-control items" name="busstationid" id="busstationid">
 														<option  value="">select busstation</option>
 
 												</select>
@@ -282,84 +288,136 @@ function editDepo(id){
              $("#deponame").val(obj.deponame);
              $("#busstationid").val(obj.busstationid);
               $("#busstationname").val(obj.busstationname);
+             $("#level").val(obj.level);
+              $("#levelname").val(obj.level);
              $("#role").val(obj.role2);
              $("#rolename").val(obj.role2);
              $('#depo-edit').modal('show');
         	}
        var  val= obj.role2;
 	  if (val === "Admin") {
-		document.getElementById("warehouseid").style.display = "none";
-		document.getElementById("regionid").style.display = "none";
-		document.getElementById("depoid").style.display = "none";
-		document.getElementById("busstationid").style.display = "none";
+		document.getElementById("warehouseid1").style.display = "none";
+		document.getElementById("regionid1").style.display = "none";
+		document.getElementById("depoid1").style.display = "none";
+		document.getElementById("busstationid1").style.display = "none";
 	  }
 	  else if (val === "BUS STATION CONTROLLER" || val === "DC CONTROLLER") {
-		document.getElementById("warehouseid").style.display = "block";
-		document.getElementById("regionid").style.display = "block";
-		document.getElementById("depoid").style.display = "block";
-		document.getElementById("busstationid").style.display = "block";
+		document.getElementById("warehouseid1").style.display = "block";
+		document.getElementById("regionid1").style.display = "block";
+		document.getElementById("depoid1").style.display = "block";
+		document.getElementById("busstationid1").style.display = "block";
+
+		 document.getElementById("warehouseid").setAttribute("required", "required");
+		document.getElementById("regionid").setAttribute("required", "required");
+		document.getElementById("depoid").setAttribute("required", "required");
+		document.getElementById("busstationid").setAttribute("required", "required");
 	  }
 
 	  else if (val === "MARKETING EXECUTIVE" ){
-			document.getElementById("warehouseid").style.display = "block";
-			document.getElementById("regionid").style.display = "block";
-			document.getElementById("depoid").style.display = "none";
-			document.getElementById("busstationid").style.display = "none";
+			document.getElementById("warehouseid1").style.display = "block";
+			document.getElementById("regionid1").style.display = "block";
+			document.getElementById("depoid1").style.display = "none";
+			document.getElementById("busstationid1").style.display = "none";
+
+		    document.getElementById("warehouseid").setAttribute("required", "required");
+			document.getElementById("regionid").setAttribute("required", "required");
+
 		}
 
-	  else if(val === "DEPOT STORE EXECUTIVE" ) {
-		document.getElementById("warehouseid").style.display = "block";
-		document.getElementById("regionid").style.display = "block";
-		document.getElementById("depoid").style.display = "block";
-		document.getElementById("busstationid").style.display = "none";
+	  else if(val === "DEPOT STORE EXECUTIVE" || val ==="DEPO MANAGER") {
+		document.getElementById("warehouseid1").style.display = "block";
+		document.getElementById("regionid1").style.display = "block";
+		document.getElementById("depoid1").style.display = "block";
+		document.getElementById("busstationid1").style.display = "none";
+
+		document.getElementById("warehouseid").setAttribute("required", "required");
+		document.getElementById("regionid").setAttribute("required", "required");
+		document.getElementById("depoid").setAttribute("required", "required");
 	   }
+       else if(val === "ZONAL STORES" ) {
+			document.getElementById("warehouseid1").style.display = "block";
+			document.getElementById("regionid1").style.display = "none";
+			document.getElementById("depoid1").style.display = "none";
+			document.getElementById("busstationid1").style.display = "none";
 
+             document.getElementById("warehouseid").setAttribute("required", "required");
+
+	   }
 		else{
-		document.getElementById("warehouseid").style.display = "block";
-		document.getElementById("regionid").style.display = "none";
-		document.getElementById("depoid").style.display = "none";
-		document.getElementById("busstationid").style.display = "none";
-		}
-
-        }
+            document.getElementById("warehouseid1").style.display = "block";
+            document.getElementById("regionid1").style.display = "block";
+            document.getElementById("depoid1").style.display = "block";
+            document.getElementById("busstationid1").style.display = "block";
+            }
+            document.getElementById("warehouseid").setAttribute("required", "required");
+            document.getElementById("regionid").setAttribute("required", "required");
+            document.getElementById("depoid").setAttribute("required", "required");
+            document.getElementById("busstationid").setAttribute("required", "required");
+            }
 		});
   }
 
 
 document.getElementById("role").addEventListener("change", function() {
 	var val=$(this).find(":selected").text();
-	  if (val === "Admin") {
-		document.getElementById("warehouseid").style.display = "none";
-		document.getElementById("regionid").style.display = "none";
-		document.getElementById("depoid").style.display = "none";
-		document.getElementById("busstationid").style.display = "none";
+	  if (val === "Admin" || val === 'Role') {
+		document.getElementById("warehouseid1").style.display = "none";
+		document.getElementById("regionid1").style.display = "none";
+		document.getElementById("depoid1").style.display = "none";
+		document.getElementById("busstationid1").style.display = "none";
 	  }
 	  else if (val === "BUS STATION CONTROLLER" || val === "DC CONTROLLER") {
-		document.getElementById("warehouseid").style.display = "block";
-		document.getElementById("regionid").style.display = "block";
-		document.getElementById("depoid").style.display = "block";
-		document.getElementById("busstationid").style.display = "block";
+		document.getElementById("warehouseid1").style.display = "block";
+		document.getElementById("regionid1").style.display = "block";
+		document.getElementById("depoid1").style.display = "block";
+		document.getElementById("busstationid1").style.display = "block";
+
+	   document.getElementById("warehouseid").setAttribute("required", "required");
+		document.getElementById("regionid").setAttribute("required", "required");
+		document.getElementById("depoid").setAttribute("required", "required");
+		document.getElementById("busstationid").setAttribute("required", "required");
 	  }
 
 	  else if (val === "MARKETING EXECUTIVE" ){
-			document.getElementById("warehouseid").style.display = "block";
-			document.getElementById("regionid").style.display = "block";
-			document.getElementById("depoid").style.display = "none";
-			document.getElementById("busstationid").style.display = "none";
-		}
+			document.getElementById("warehouseid1").style.display = "block";
+			document.getElementById("regionid1").style.display = "block";
+			document.getElementById("depoid1").style.display = "none";
+			document.getElementById("busstationid1").style.display = "none";
 
-	  else if(val === "DEPOT STORE EXECUTIVE" ) {
-		document.getElementById("warehouseid").style.display = "block";
-		document.getElementById("regionid").style.display = "block";
-		document.getElementById("depoid").style.display = "block";
-		document.getElementById("busstationid").style.display = "none";
+			document.getElementById("warehouseid").setAttribute("required", "required");
+			document.getElementById("regionid").setAttribute("required", "required");
+	  }
+
+	  else if(val === "DEPOT STORE EXECUTIVE" || val === "DEPO MANAGER") {
+		document.getElementById("warehouseid1").style.display = "block";
+		document.getElementById("regionid1").style.display = "block";
+		document.getElementById("depoid1").style.display = "block";
+		document.getElementById("busstationid1").style.display = "none";
+
+		document.getElementById("warehouseid").setAttribute("required", "required");
+		document.getElementById("regionid").setAttribute("required", "required");
+		document.getElementById("depoid").setAttribute("required", "required");
 	   }
+       else if(val === "ZONAL STORES" ) {
+			document.getElementById("warehouseid1").style.display = "block";
+			document.getElementById("regionid1").style.display = "none";
+			document.getElementById("depoid1").style.display = "none";
+			document.getElementById("busstationid1").style.display = "none";
 
+             document.getElementById("warehouseid").setAttribute("required", "required");
+
+	   }
 		else{
-		document.getElementById("warehouseid").style.display = "block";
-		document.getElementById("regionid").style.display = "none";
-		document.getElementById("depoid").style.display = "none";
-		document.getElementById("busstationid").style.display = "none";
+		document.getElementById("warehouseid1").style.display = "block";
+		document.getElementById("regionid1").style.display = "block";
+		document.getElementById("depoid1").style.display = "block";
+		document.getElementById("busstationid1").style.display = "block";
+
+		 document.getElementById("warehouseid").setAttribute("required", "required");
+		document.getElementById("regionid").setAttribute("required", "required");
+		document.getElementById("depoid").setAttribute("required", "required");
+		document.getElementById("busstationid").setAttribute("required", "required");
+
 		}
 	});
 
@@ -393,13 +451,24 @@ document.getElementById("role").addEventListener("change", function() {
             },
             success: function(data) {
                 var obj = data.data.depolist
-                if (obj) {
+                var error = data.data.error;
+                var message = data.data.message;
+                if (error === true) {
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                    $("#depoid").empty();
+                    $("#depoid").append("<option  value=''>not available</option>");
+                }
+                else {
 
-                    $.each(obj, function(index, item) {
-                         if (item.status === "Active") {
-                            $("#depoid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
-                         }
-                    });
+                    if (obj) {
+
+                        $.each(obj, function(index, item) {
+                             if (item.status === "Active") {
+                                $("#depoid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
+                             }
+                        });
+                    }
 
                 }
             }
@@ -415,15 +484,24 @@ document.getElementById("role").addEventListener("change", function() {
             },
             success: function(data) {
                 var obj = data.data.buslist
-                if (obj) {
+                var error = data.data.error;
+                var message = data.data.message;
+                if (error === true) {
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                    $("#busstationid").empty();
+                    $("#busstationid").append("<option  value=''>not available</option>");
+                }
+                else {
+                    if (obj) {
 
-                    $.each(obj, function(index, item) {
-                         if (item.status === "Active") {
-                            $("#busstationid").append("<option value='" + item.busatationid + "'>" + item.busstationname + "</option>");
-                            //$("#depotid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
-                         }
-                    });
-
+                        $.each(obj, function(index, item) {
+                             if (item.status === "Active") {
+                                $("#busstationid").append("<option value='" + item.busatationid + "'>" + item.busstationname + "</option>");
+                                //$("#depotid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
+                             }
+                        });
+                    }
 
                 }
             }
@@ -439,20 +517,128 @@ document.getElementById("role").addEventListener("change", function() {
             },
             success: function(data) {
                 var obj = data.data.regionlist
-                console.log(obj)
-                if (obj) {
+                var error = data.data.error;
+                var message = data.data.message;
+                if (error === true) {
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+                    $("#regionid").empty();
+                    $("#regionid").append("<option  value=''>not available</option>");
+                }
+                else {
+                    console.log(obj)
+                    if (obj) {
 
-                    $.each(obj, function(index, item) {
+                        $.each(obj, function(index, item) {
 
-                            $("#regionid").append("<option value='" + item.region_id + "'>" + item.regionname + "</option>");
+                                $("#regionid").append("<option value='" + item.region_id + "'>" + item.regionname + "</option>");
 
-                    });
+                        });
 
+                    }
                 }
             }
         });
     });
+$(document).ready(function(){
+		$("#warehouseid").change(function() {
+        	var warehousename = $(this).find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_depregion" %}',
+            	data: {
+                	'warehouse':warehousename,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.regionlist
+			 		var error = data.data.error;
+					var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#regionid").empty();
+						$("#regionid").append("<option  value=''>not available</option>");
+					}
+					else {
+						if(obj) {
+							$("#regionid").empty();
+							$("#regionid").append("<option  value=''>Choose Region</option>");
+							$.each(obj, function (index, item) {
+							$("#regionid").append("<option value='" + item.regionid+ "'>" + item.regionname+ "</option>");
+							});
+				        }
+                	}
+             	}
+        	});
+    	});
+    	$("#regionid").change(function() {
+        	var region = $(this).val();
+        	var warehouse = $('#warehouseid').find(":selected").text();
+        	var role =  $("#role").find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_dependent_depo" %}',
+            	data: {
+                	'region':region,'warehouse':warehouse,'role':role,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+			 		var error = data.data.error;
+					var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#depoid").empty();
+						$("#depoid").append("<option  value=''>not available</option>");
+					}
+					else {
+						if(obj) {
+							$("#depoid").empty();
+							$("#depoid").append("<option  value=''>Choose Depo</option>");
+							$.each(obj, function (index, item) {
+							$("#depoid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+							});
+					    }
 
+                	}
+             	}
+        	});
+    	});
+    	$("#depoid").change(function() {
+        	var depo = $(this).val();
+        	var region = $('#regionid').val();
+        	var warehouse = $('#warehouseid').find(":selected").text();
+        	var role =  $("#role").find(":selected").text();
+        	$.ajax({
+            	type: "POST",
+            	url: '{% url "get_dependent_bus" %}',
+            	data: {
+                	'depo':depo,'region':region,'warehouse':warehouse,'role':role,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+            	},
+			 	success: function(data){
+			 		var obj = data.data.dropdownlist
+			 		var error = data.data.error;
+					var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#busstationid").empty();
+						$("#busstationid").append("<option  value=''>not available</option>");
+					}
+					else {
+						if(obj) {
+							$("#busstationid").empty();
+							$("#busstationid").append("<option  value=''>Choose bus station</option>");
+							$.each(obj, function (index, item) {
+							$("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+							});
+						}
+                	}
+             	}
+        	});
+    	});
+
+});
 </script>
 {% endblock %}
 

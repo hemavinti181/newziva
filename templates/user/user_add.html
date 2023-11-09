@@ -45,6 +45,7 @@
 										 </div>
 											<div  class="col-md-3 col-sm-3  form-group has-feedback" >
 												<input type="hidden" name="level" id="levelname" />
+												<label>Level</label>
 												<select class="form-control" name="levelname" id="level">
 													<option>Level</option>
                                                     {% for all_data3 in all_data3 %}
@@ -54,9 +55,7 @@
 													{% endfor %}
 												</select>
                                         </div>
-										<div class="col-md-3 col-sm-3  form-group has-feedback">
-												<input type="file"  name="image" id="customFile4" >
-											</div>
+
 										  <!--<div  class="col-md-3 col-sm-6  form-group has-feedback">
 
 												<select class="form-control" name="designation">
@@ -71,17 +70,18 @@
 
                                         <div  class="col-md-3 col-sm-6  form-group has-feedback" >
 													<input type="hidden" name="role" id="rolename" />
+											<label>Role</label>
 												<select class="form-control items" name="role1" id="role" required>
-
 													<option value=""> Role</option>
 													{% for all_data2 in all_data2 %}
 															<option  value="{{ all_data2.role}}">{{ all_data2.role }}</option>
 													{% endfor %}
 												</select>
                                         </div>
-										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
-													<input type="hidden" name="warehousename" id="warehousename" />
-												<select class="form-control items" name="warehouse" id="warehouse" style="display: none;">
+										<div  class="col-md-3 col-sm-6  form-group has-feedback" id="warehouse1" style="display: none;">
+											<label>Warehouse *</label>
+											<input type="hidden" name="warehousename" id="warehousename" />
+												<select class="form-control items" name="warehouse" id="warehouse">
 														<option value=""> selct warehouse</option>
 													{% for data in data %}
 														{% if  data.status == "Active" %}
@@ -90,27 +90,32 @@
 													{% endfor %}
 												</select>
                                         </div>
-										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+										<div  class="col-md-3 col-sm-6  form-group has-feedback" id="region1" style="display: none;">
+											<label>Region *</label>
 											<input type="hidden" name="regionname" id="regionname" />
-												<select class="form-control itemes" name="region" id="region" style="display: none;">
+												<select class="form-control itemes" name="region" id="region" >
 													<option  value="">select region</option>
 												</select>
                                         </div>
 
-										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+										<div  class="col-md-3 col-sm-6  form-group has-feedback" id="depo1" style="display: none;">
+											<label>Depot *</label>
 											<input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control items" name="depo" id="depo" style="display: none;">
-														<option  value="">select depo</option>
+												<select class="form-control items" name="depo" id="depo" >
+														<option  value="">select depot</option>
 												</select>
                                         </div>
-										<div  class="col-md-3 col-sm-6  form-group has-feedback" >
+										<div  class="col-md-3 col-sm-6  form-group has-feedback" id="busstation1" style="display: none;">
+											<label>Bus station *</label>
 												<input type="hidden" name="busstationname" id="busstationname" />
-												<select class="form-control items" name="busstation" id="busstation" style="display: none;">
-
+												<select class="form-control items" name="busstation" id="busstation" >
 														<option  value="">select busstation</option>
-
 												</select>
                                         </div>
+										<div class="col-md-3 col-sm-3  form-group has-feedback">
+											<label> User image:</label>
+												<input type="file"  name="image" id="customFile4" >
+											</div>
 
 										<div class="form-group">
 											<div class="col-md-6 col-sm-6  offset-md-5">
@@ -156,17 +161,18 @@ $("#busstation").change(function() {
 
 document.getElementById("role").addEventListener("change", function() {
 	var val=$(this).find(":selected").text();
-	  if (val === "Admin") {
-		document.getElementById("warehouse").style.display = "none";
-		document.getElementById("region").style.display = "none";
-		document.getElementById("depo").style.display = "none";
-		document.getElementById("busstation").style.display = "none";
+	 if (val === "Admin" || val === "Role") {
+	 alert(val)
+		document.getElementById("warehouse1").style.display = "none";
+		document.getElementById("region1").style.display = "none";
+		document.getElementById("depo1").style.display = "none";
+		document.getElementById("busstation1").style.display = "none";
 	  }
 	  else if (val === "BUS STATION CONTROLLER" || val === "DC CONTROLLER") {
-		document.getElementById("warehouse").style.display = "block";
-		document.getElementById("region").style.display = "block";
-		document.getElementById("depo").style.display = "block";
-		document.getElementById("busstation").style.display = "block";
+		document.getElementById("warehouse1").style.display = "block";
+		document.getElementById("region1").style.display = "block";
+		document.getElementById("depo1").style.display = "block";
+		document.getElementById("busstation1").style.display = "block";
 
 		document.getElementById("warehouse").setAttribute("required", "required");
 		document.getElementById("region").setAttribute("required", "required");
@@ -175,21 +181,21 @@ document.getElementById("role").addEventListener("change", function() {
 	  }
 
 	  else if (val === "MARKETING EXECUTIVE" ){
-			document.getElementById("warehouse").style.display = "block";
-			document.getElementById("region").style.display = "block";
-			document.getElementById("depo").style.display = "none";
-			document.getElementById("busstation").style.display = "none";
+			document.getElementById("warehouse1").style.display = "block";
+			document.getElementById("region1").style.display = "block";
+			document.getElementById("depo1").style.display = "none";
+			document.getElementById("busstation1").style.display = "none";
 
 			document.getElementById("warehouse").setAttribute("required", "required");
 			document.getElementById("region").setAttribute("required", "required");
 
 		}
 
-	  else if(val === "DEPOT STORE EXECUTIVE" ) {
-		document.getElementById("warehouse").style.display = "block";
-		document.getElementById("region").style.display = "block";
-		document.getElementById("depo").style.display = "block";
-		document.getElementById("busstation").style.display = "none";
+	  else if(val === "DEPOT STORE EXECUTIVE" || val === "DEPO MANAGER") {
+		document.getElementById("warehouse1").style.display = "block";
+		document.getElementById("region1").style.display = "block";
+		document.getElementById("depo1").style.display = "block";
+		document.getElementById("busstation1").style.display = "none";
 
 		document.getElementById("warehouse").setAttribute("required", "required");
 		document.getElementById("region").setAttribute("required", "required");
@@ -197,13 +203,30 @@ document.getElementById("role").addEventListener("change", function() {
 
 	   }
 
-		else{
-		document.getElementById("warehouse").style.display = "block";
-		document.getElementById("region").style.display = "none";
-		document.getElementById("depo").style.display = "none";
-		document.getElementById("busstation").style.display = "none";
+	    else if(val === "ZONAL STORES" ) {
+			document.getElementById("warehouse1").style.display = "block";
+			document.getElementById("region1").style.display = "none";
+			document.getElementById("depo1").style.display = "none";
+			document.getElementById("busstation1").style.display = "none";
 
-		document.getElementById("warehouse").setAttribute("required", "required");
+			document.getElementById("warehouse").setAttribute("required", "required");
+
+
+	   }
+
+
+		else{
+
+			document.getElementById("warehouse1").style.display = "block";
+			document.getElementById("region1").style.display = "block";
+			document.getElementById("depo1").style.display = "block";
+			document.getElementById("busstation1").style.display = "block";
+
+
+			document.getElementById("warehouse").setAttribute("required", "required");
+			document.getElementById("region").setAttribute("required", "required");
+			document.getElementById("depo").setAttribute("required", "required");
+			document.getElementById("busstation").setAttribute("required", "required");
 		}
 	});
 
@@ -218,12 +241,22 @@ $(document).ready(function(){
             	},
 			 	success: function(data){
 			 		var obj = data.data.regionlist
-					if(obj) {
-			 		$("#region").empty();
-			 		$("#region").append("<option  value=''>Choose Region</option>");
-                	$.each(obj, function (index, item) {
-                    $("#region").append("<option value='" + item.regionid+ "'>" + item.regionname+ "</option>");
-					});
+			 		var error = data.data.error;
+					var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#region").empty();
+						$("#region").append("<option  value=''>not available</option>");
+					}
+					else {
+						if(obj) {
+							$("#region").empty();
+							$("#region").append("<option  value=''>Choose Region</option>");
+							$.each(obj, function (index, item) {
+							$("#region").append("<option value='" + item.regionid+ "'>" + item.regionname+ "</option>");
+							});
+				        }
                 	}
              	}
         	});
@@ -240,12 +273,23 @@ $(document).ready(function(){
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#depo").empty();
-			 		$("#depo").append("<option  value=''>Choose Depo</option>");
-                	$.each(obj, function (index, item) {
-                    $("#depo").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
+			 		var error = data.data.error;
+					var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#depo").empty();
+						$("#depo").append("<option  value=''>not available</option>");
+					}
+					else {
+						if(obj) {
+							$("#depo").empty();
+							$("#depo").append("<option  value=''>Choose Depo</option>");
+							$.each(obj, function (index, item) {
+							$("#depo").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+							});
+					    }
+
                 	}
              	}
         	});
@@ -263,12 +307,22 @@ $(document).ready(function(){
             	},
 			 	success: function(data){
 			 		var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#busstation").empty();
-			 		$("#busstation").append("<option  value=''>Choose bus station</option>");
-                	$.each(obj, function (index, item) {
-                    $("#busstation").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
+			 		var error = data.data.error;
+					var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#busstation").empty();
+						$("#busstation").append("<option  value=''>not available</option>");
+					}
+					else {
+						if(obj) {
+							$("#busstation").empty();
+							$("#busstation").append("<option  value=''>Choose bus station</option>");
+							$.each(obj, function (index, item) {
+							$("#busstation").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+							});
+						}
                 	}
              	}
         	});

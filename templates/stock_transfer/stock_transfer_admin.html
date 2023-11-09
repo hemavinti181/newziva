@@ -121,7 +121,7 @@
                             		                    <option value="{{ toid }}">{{ toid }}</option>
 												    </select>
                                                    <input type="hidden" name="warehousename" id="warehousename" />
-										    	 <select class="form-control" name="warehouseid" id="warehouseid">
+										    	 <select class="form-control items" name="warehouseid" id="warehouseid" required>
                                                      <option value="">select</option>
                                                 </select>
 										</div>
@@ -131,7 +131,7 @@
 												    </select>
 											<label>Stock Transfer To  *</label>
                                                    <input type="hidden" name="bustname" id="bustname" />
-										    	 <select class="form-control " name="bustid" id="bustid">
+										    	 <select class="form-control items" name="bustid" id="bustid" required>
                                                      <option value="">select</option>
                                                  </select>
 										</div>
@@ -1170,6 +1170,9 @@ $(document).ready(function(){
           $('.depot-div').show();
           $('#items-depot').show();
 
+  }
+  if (response === 'depo503') {
+          $('.depot-div').show();
   }
   if (response === 'depo200' &&  status === 'ok') {
           $('#depot_items').show();

@@ -2124,13 +2124,24 @@ def stk_warehouse_list(request):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
+        data2 = response.json()
+        return JsonResponse({'data': data2})
+    elif response.status_code == 400:
         data = response.json()
-        return  JsonResponse({'data': data})
-    else:
-        if response.status_code == 400:
-            data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
             messages.error(request, data['message'])
             return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
 
 
 def stk_depot_list(request):
@@ -2146,18 +2157,24 @@ def stk_depot_list(request):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data = response.json()
-        return  JsonResponse({'data': data})
+        data2 = response.json()
+        return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
-            messages.error(request, data['message'])
             return JsonResponse({'data': data})
         else:
             messages.error(request, data['message'])
-            return JsonResponse({'data': "Some thing went wrong"})
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
     else:
-        return JsonResponse({'data': "Some thing went wrong"})
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
 
 
 def warehouseinventory_search(request):
@@ -2298,14 +2315,24 @@ def stk_busstation_list(request):
 
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
+                data2 = response.json()
+                return JsonResponse({'data': data2})
+            elif response.status_code == 400:
                 data = response.json()
-                bus = data['buslist']
-                return JsonResponse({'data': data})
-            else:
-                if response.status_code == 400:
-                    data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    return JsonResponse({'data': data})
+                else:
                     messages.error(request, data['message'])
                     return redirect('/login')
+            elif response.status_code == 503:
+                data = response.json()
+                return JsonResponse({'data': data})
+            elif response.status_code == 500:
+                data = {'error': 'true', 'message': 'Internal server error'}
+                return JsonResponse({'data': data})
+            else:
+                data = {'error': 'true', 'message': 'something went wrong'}
+                return JsonResponse({'data': data})
 
 
 def warehouse_list(request):
@@ -3182,13 +3209,14 @@ def user_add(request):
                 "emailid": request.POST.get('email'),
                 "region": request.POST.get('regionname'),
                 "regionid": request.POST.get('region'),
+                "warehouseid" : request.POST.get('warehouse'),
                 "warehousename": request.POST.get('warehousename'),
                 "depo": request.POST.get('depo'),
                 "level": request.POST.get('level'),
-                "role": request.POST.get('role'),
-                "userattachfilename":image_name,
-                "designation": "",
-                "deponame":request.POST.get('deponame'),
+                 "role": request.POST.get('role'),
+                 "userattachfilename":image_name,
+                 "designation": "",
+                 "deponame":request.POST.get('deponame'),
                  "depoid": request.POST.get('depo'),
                  "busstationname":request.POST.get('busstationname'),
                  "busstationid": request.POST.get('busstation'),
@@ -3245,6 +3273,7 @@ def user_edit(request):
             "emailid": request.POST.get('email'),
             "region": request.POST.get('regionname'),
             "regionid": request.POST.get('regionid'),
+            "warehouseid": request.POST.get('warehouseid'),
             "warehousename": request.POST.get('warehousename'),
             "level": request.POST.get('levelname'),
             "role": request.POST.get('role'),
@@ -3807,12 +3836,14 @@ def add_grnitem(request,id):
                     if response.status_code == 200:
                         data = response.json()
                         grn_item_list = data['grnitemlist']
+
                         return render(request, 'grn/add_grnitem.html',
                                       {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,'response':200})
                     elif response.status_code == 503:
                         try:
                             data = response.json()
                             grn_item_list = data['grnitemlist']
+                            messages.success(request, r1['message'])
                             return render(request, 'grn/add_grnitem.html',
                                           {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,'response':200})
                         except:
@@ -3868,35 +3899,43 @@ def add_grnitem(request,id):
                         messages.error(request, data['message'])
                         return redirect('/login')
                 else:
+                    try:
+                        r1 = r.json()
+                        messages.error(request, r1['message'])
+                        url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
-                    url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "grnno": id
+                        })
+                        headers = {
+                            'Content-Type': 'text/plain'
+                        }
 
-                    payload = json.dumps({
-                        "accesskey": accesskey,
-                        "grnno": id
-                    })
-                    headers = {
-                        'Content-Type': 'text/plain'
-                    }
-
-                    response = requests.request("GET", url, headers=headers, data=payload)
-                    if response.status_code == 200:
-                        data = response.json()
-                        grn_item_list = data['grnitemlist']
-                        return render(request, 'grn/add_grnitem.html',
-                                      {'all_data':grn_item_list,'data': item_masterlist, 'menuname': menuname,'id':id,'response':400})
-                    elif response.status_code == 503:
-                        try:
+                        response = requests.request("GET", url, headers=headers, data=payload)
+                        if response.status_code == 200:
                             data = response.json()
                             grn_item_list = data['grnitemlist']
+
                             return render(request, 'grn/add_grnitem.html',
-                                          {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
-                                           'id': id,
-                                           'response': 400})
-                        except:
-                            return render(request, 'grn/add_grnitem.html',
-                                          {'data': item_masterlist, 'menuname': menuname,
-                                           'id': id, 'response': 400})
+                                          {'all_data':grn_item_list,'data': item_masterlist, 'menuname': menuname,'id':id,'response':400})
+                        elif response.status_code == 503:
+                            try:
+                                data = response.json()
+                                grn_item_list = data['grnitemlist']
+                                return render(request, 'grn/add_grnitem.html',
+                                              {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                               'id': id,
+                                               'response': 400})
+                            except:
+                                return render(request, 'grn/add_grnitem.html',
+                                              {'data': item_masterlist, 'menuname': menuname,
+                                               'id': id, 'response': 400})
+                    except:
+                        messages.error(request,"some thing went wrong !")
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'data': item_masterlist, 'menuname': menuname,
+                                       'id': id, 'response': 400})
             else:
                 url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
@@ -3988,7 +4027,6 @@ def add_grnitem(request,id):
                 elif response.status_code == '400':
                         r1 = r.json()
                         if r1['message'] == 'Sorry! some details are missing':
-                            messages.error(request, data['message'])
                             messages.error(request, r1['message'])
                             url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
@@ -4022,38 +4060,46 @@ def add_grnitem(request,id):
                             return redirect('/login')
 
                 else:
-                    url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
+                    try:
+                        r1 = r.json()
+                        messages.success(request, r1['message'])
+                        url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
-                    payload = json.dumps({
-                        "accesskey": accesskey,
-                        "grnno": id
-                    })
-                    headers = {
-                        'Content-Type': 'text/plain'
-                    }
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "grnno": id
+                        })
+                        headers = {
+                            'Content-Type': 'text/plain'
+                        }
 
-                    response = requests.request("GET", url, headers=headers, data=payload)
-                    if response.status_code == 200:
-                        data = response.json()
-                        grn_item_list = data['grnitemlist']
-                        return render(request, 'grn/add_grnitem.html',
-                                      {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
-                                       'id': id, 'response': 400})
-                    elif response.status_code == 503:
-                        try:
+                        response = requests.request("GET", url, headers=headers, data=payload)
+                        if response.status_code == 200:
                             data = response.json()
                             grn_item_list = data['grnitemlist']
                             return render(request, 'grn/add_grnitem.html',
                                           {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
                                            'id': id, 'response': 400})
-                        except:
-                           pass
-                        return render(request, 'grn/add_grnitem.html',
-                                      {'data': item_masterlist, 'menuname': menuname,
-                                       'id': id, 'response': 400})
-                    else:
+                        elif response.status_code == 503:
+                            try:
+                                data = response.json()
+                                grn_item_list = data['grnitemlist']
+                                return render(request, 'grn/add_grnitem.html',
+                                              {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                               'id': id, 'response': 400})
+                            except:
+                               pass
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'data': item_masterlist, 'menuname': menuname,
+                                           'id': id, 'response': 400})
+                        else:
+                            return render(request, 'grn/add_grnitem.html',
+                                          {'data': item_masterlist, 'menuname': menuname, 'id': id, 'response': 400})
+                    except:
+                        messages.error(request,"something went wrong")
                         return render(request, 'grn/add_grnitem.html',
                                       {'data': item_masterlist, 'menuname': menuname, 'id': id, 'response': 400})
+
     except:
         if response.status_code == 400:
             data = response.json()
@@ -4066,44 +4112,52 @@ def add_grnitem_list(request,id):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
-    menuname = request.session['mylist']
-    accesskey = request.session['accesskey']
+    try:
+        menuname = request.session['mylist']
+        accesskey = request.session['accesskey']
 
-    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
+        url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-new.php"
 
-    payload = json.dumps({"accesskey": accesskey})
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    data = response.json()
-    item_masterlist = data['itemmasterlist']
-
-    url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
-
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "grnno": id
-    })
-    headers = {
-        'Content-Type': 'text/plain'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 200:
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
-        grn_item_list = data['grnitemlist']
-        return render(request, 'grn/add_grnitem_list.html', {'all_data': grn_item_list,'menuname':menuname,'id':id,'item_masterlist':item_masterlist})
-    elif response.status_code == 400:
-        data = response.json()
-        if data['message'] == 'Sorry! some details are missing':
-            messages.error(request, data['message'])
-            return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname,'id':id,'item_masterlist':item_masterlist})
+        item_masterlist = data['itemmasterlist']
+
+        url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
+
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "grnno": id
+        })
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            grn_item_list = data['grnitemlist']
+            return render(request, 'grn/add_grnitem_list.html', {'all_data': grn_item_list,'menuname':menuname,'id':id,'item_masterlist':item_masterlist})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname,'id':id,'item_masterlist':item_masterlist})
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         else:
+            return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname,'id':id,'item_masterlist':item_masterlist})
+    except:
+        if response.status_code == 400:
+            data = response.json()
             messages.error(request, data['message'])
             return redirect('/login')
-    else:
-        return render(request, 'grn/add_grnitem_list.html',{'menuname':menuname,'id':id,'item_masterlist':item_masterlist})
+    return render(request, 'grn/add_grnitem_list.html', {'menuname': menuname})
+
 
 def add_grnitem_list1(request,id):
     if 'accesskey' not in request.session:
@@ -9268,11 +9322,11 @@ def get_user(request):
         list = data['userlist']
         for i in list:
             if str(i['userid']) == userid:
-                data = {"userid": i["userid"], "username": i["username"], "mobile": i["mobile"], "emailid": i['emailid'],
+                data1 = {"userid": i["userid"], "username": i["username"], "mobile": i["mobile"], "emailid": i['emailid'],
                         "region": i['region'], "regionid": i['regionid'], "warehouseid": i['warehouseid'], "warehousename": i['warehousename'], "depoid": i['depoid'],
-                        "deponame": i['deponame'], "busstationid": i['busstationid'], "busstationname": i['busstationname'], "role": i['role'], "level": i['level'],"role2": i['role2'],
+                        "deponame": i['deponame'], "busstationid": i['busstationid'], "busstationname": i['busstationname'], "role": i['role'], "levelid": i['level'],"role2": i['role2'],"levelname": i['level']
                         }
-        return JsonResponse({'data': data})
+        return JsonResponse({'data': data1})
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
@@ -17199,14 +17253,14 @@ def generate_transid_depo(request):
             if data['message'] == 'Sorry! some details are missing':
                 messages.error(request, data['message'])
                 return render(request, 'stock_transfer/stock_transfer_admin.html',
-                              {"menuname": menuname, 'response': 'depo200'})
+                              {"menuname": menuname, 'response': 'depo503'})
             else:
                 messages.error(request, data['message'])
                 return redirect('\login')
         elif response.status_code == 503:
             data = response.json()
             messages.error(request, data['message'])
-            return render(request, 'stock_transfer/stock_transfer_admin.html', {'fromid':fromid,'toid':toid,"menuname": menuname, 'response': 'depo200'})
+            return render(request, 'stock_transfer/stock_transfer_admin.html', {'fromid':fromid,'toid':toid,"menuname": menuname, 'response': 'depo503'})
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")
             return render(request, 'stock_transfer/stock_transfer_admin.html', {'fromid':fromid,'toid':toid,"menuname": menuname, 'response': 'depo200'})
