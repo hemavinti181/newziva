@@ -360,7 +360,8 @@ function editDepo(id){
 
 document.getElementById("role").addEventListener("change", function() {
 	var val=$(this).find(":selected").text();
-	  if (val === "Admin" || val === 'Role') {
+
+	  if (val === "Admin") {
 		document.getElementById("warehouseid1").style.display = "none";
 		document.getElementById("regionid1").style.display = "none";
 		document.getElementById("depoid1").style.display = "none";

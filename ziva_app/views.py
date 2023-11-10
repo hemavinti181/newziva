@@ -4194,6 +4194,7 @@ def add_grnitem_list1(request,id):
     elif response.status_code == 400:
         data = response.json()
         messages.error(request, data['message'])
+        return redirect('/login')
     else:
         return render(request, 'grn/add_grnitem_list1.html',{'menuname':menuname,'id':id,'item_masterlist':item_masterlist})
 
@@ -4254,31 +4255,51 @@ def add_grn_inventory(request):
         url = reverse('add_grnitem_list', args=[sno])
         return redirect(url)
 def add_pending_grn_inventory(request):
-    if 'accesskey' not in request.session:
-        messages.error(request, 'Access denied!')
-        return redirect('/login')
-    accesskey = request.session['accesskey']
-    url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventory.php"
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
 
-    payload = json.dumps({
-        "accesskey": accesskey,
-        "grn_no": request.POST.get('txtHdnId'),
-        "comments": request.POST.get('comment')
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+        accesskey = request.session['accesskey']
+        url = "http://13.235.112.1/ziva/mobile-api/grn-add-inventory.php"
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+        payload = json.dumps({
+            "accesskey": accesskey,
+            "grn_no": request.POST.get('txtHdnId'),
+            "comments": request.POST.get('comment')
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
 
-    data = response.json()
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('grn_pending_status')
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return redirect('grn_pending_status')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('grn_pending_status')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('grn_pending_status')
+        elif response.status_code == 500:
+            messages.error(request, "Internal server error")
+            return redirect('grn_pending_status')
 
-    if response.status_code == 200:
-        messages.success(request, data['message'])
-        return redirect('grn_pending_status')
-    else:
-        messages.error(request, data['message'])
-        return redirect('grn_pending_status')
+        else:
+            messages.error(request,"something went wrong")
+            return redirect('grn_pending_status')
+
 
 def add_apending_grn_inventory1(request):
     if 'accesskey' not in request.session:
@@ -4331,6 +4352,7 @@ def grn_list(request):
         return render(request, 'grn/grn_list_all.html', {'all_data': grn_list,'menuname':menuname})
     else:
         return render(request, 'grn/grn_list_all.html',{'menuname':menuname})
+
 
 def grn_list1(request):
     try:
@@ -4440,6 +4462,7 @@ def grn_new_verified_status(request):
     else:
         return render(request, 'grn/grn_new_verified_status.html',{'menuname':menuname})
 
+
 def grn_verified_status(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -4517,6 +4540,8 @@ def grn_pending_status(request):
         return render(request, 'login1.html')
     else:
         return render(request, 'grn/grn_list_pending.html',{'menuname':menuname})
+
+
 
 def sale_item_list(request):
     if 'accesskey' not in request.session:
@@ -14297,7 +14322,6 @@ def taxinvoice_list_admin(request):
     return render(request,'sales/taxinvoice_list_admin.html',{'menuname':menuname})
 
 def vehcals_list(request):
-
     accesskey = request.session['accesskey']
     toid = request.POST.get('toid')
     url = "http://13.235.112.1/ziva/mobile-api/vehicle-dropdownlist-admin.php"
@@ -14309,20 +14333,25 @@ def vehcals_list(request):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data':data})
+        data2 = response.json()
+        return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
-            messages.error(request, data['message'])
-            return redirect('/internal_consumption')
+            return JsonResponse({'data': data})
         else:
             messages.error(request, data['message'])
             return redirect('/login')
-    else:
+    elif response.status_code == 503:
         data = response.json()
-        messages.error(request, data['message'])
-        return redirect('/internal_consumption')
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
+
 
 def ready_toship_admin(request):
     if 'accesskey' not in request.session:
@@ -14660,10 +14689,10 @@ def approve_list_admin1(request):
                 stocklist = data['stocklist']
                 return render(request, 'create_indent/approved_list_admin.html',
                               {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange,
-                               'stocklist': stocklist,'data':stocklist[0]})
+                               'stocklist': stocklist,'data':'Accepted'})
             else:
                 return render(request, 'create_indent/approved_list_admin.html',
-                              {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange})
+                              {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange,'data':'Accepted'})
 
         else:
             url = "http://13.235.112.1/ziva/mobile-api/departmentstock-list-admin.php"
@@ -14684,10 +14713,10 @@ def approve_list_admin1(request):
                 stocklist = data['stocklist']
                 return render(request, 'create_indent/approved_list_admin.html',
                               {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange,
-                               'stocklist': stocklist,'data':stocklist[0]})
+                               'stocklist': stocklist,'data': 'Accepted'})
             else:
                 return render(request, 'create_indent/approved_list_admin.html',
-                              {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange})
+                              {'menuname': menuname, 'wh_masterlist': wh_masterlist, "selectrange": selectrange,'data': 'Accepted'})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -19397,7 +19426,7 @@ def forgot_pwd(request):
 
         payload = json.dumps({
                               "empid":request.POST.get('employee'),
-                               "dob":request.POST.get('dob'),
+                               "mobileno":request.POST.get('mobileno'),
                                "newpassword": request.POST.get('pwd')
                               })
         headers = {
@@ -19406,7 +19435,7 @@ def forgot_pwd(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
             data = response.json()
-            messages.error(request, data['message'])
+            messages.success(request, data['message'])
             return render(request, 'login1.html')
         elif response.status_code == 400:
             data = response.json()

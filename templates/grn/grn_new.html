@@ -116,7 +116,7 @@ html, body {
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>GRN Approve List</h3>
+                <h3>GRN Pending List</h3>
               </div>
 
               <div class="title_right">
@@ -146,6 +146,8 @@ html, body {
                                     <th>Invoice Id</th>
                                     <th>Invoice Date</th>
                                     <th>Invoice Amount</th>
+                                   <th>Total Price</th>
+                                    <th>Qty(In Cases)</th>
                                     <th>Status</th>
                                     <!--<th>MRP</th>
                                     <th>Qty</th>-->
@@ -173,6 +175,8 @@ html, body {
                                             <td>{{  all_data.invoice_id}}</td>
                                             <td>{{ all_data.invoicedate }}</td>
                                             <td>{{ all_data.invoiceamount }}</td>
+                                             <td>{{ all_data.totalprice }}</td>
+                                        <td>{{ all_data.totalitems }}</td>
                                              <td>
                                              <a href="/add_grnitem_list/{{ all_data.grn }}/"><span class="badge badge-warning">Pending</span></a>
                                              </td>

@@ -48,7 +48,8 @@
                                     <th>S No</th>
                                     <th>Item code</th>
                                     <th>Item Name</th>
-                                    <th>QTY</th>
+                                    <th>Qty(In cases)</th>
+                                    <th>Qty(In bottles)</th>
                                     <th>MRP</th>
                                     <th>Dispatch Qty</th>
                                     <th>Batch Code</th>
@@ -65,6 +66,7 @@
                                     <td>{{ all_data.item_code }}</td>
                                     <td>{{ all_data.item_name }}</td>
                                      <td> {{ all_data.qty }} </td>
+                                    <td></td>
                                     <td>{{ all_data.mrp }}</td>
                                     <td>{{all_data.dispatch_qty}}</td>
                                     <td>{{ all_data.batch_code }}</td>
@@ -141,8 +143,10 @@
    function VerifyClick(id,id1,id2,id3,id4){
 $("#qty").val(id1);
 $("#cases").val(id2);
+$("#nob").val(id2);
 $("#txtHdnId").val(id);
  $("#mrp").val(id3);
+  $("#price").val(id3);
  $("#itemname").val(id4);
 
 }

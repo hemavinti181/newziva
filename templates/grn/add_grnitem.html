@@ -127,8 +127,9 @@
                                     <th>S No</th>
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
-                                    <th>Expiry Date</th>
                                     <th>Qty(In Bottles)</th>
+                                    <th>Expiry Date</th>
+
                                     <th>Purchase Per Bottle</th>
                              {% if request.session.role == 'Admin' %}
                                     <th>Action</th>
@@ -141,8 +142,9 @@
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
+                             <td>{{ all_data.noofbottles }}</td>
                        <td>{{  all_data.expiry_date}}</td>
-                       <td>{{ all_data.uom }}</td>
+
                        <td>{{ all_data.purchase_price }}</td>
                             {% if request.session.role == 'Admin' %}
                             <td>
