@@ -3291,9 +3291,10 @@ def user_edit(request):
 
         response = requests.request("GET", url, headers=headers, data=payload)
 
-        data = response.json()
+
 
         if response.status_code == 200:
+            data = response.json()
             messages.success(request, data['message'])
             return redirect('user_list')
         elif response.status_code == 400:
@@ -5420,7 +5421,7 @@ def get_sale_item(request):
     accesskey = request.session['accesskey']
 
     url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
-
+    itemcode =  request.POST.get('itemcode')
     payload = json.dumps({
         "accesskey": accesskey,
         "sonumber": request.POST.get('id'),
@@ -5429,14 +5430,33 @@ def get_sale_item(request):
         'Content-Type': 'application/json'
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    if response.status_code == 400:
+    if response.status_code == 200:
         data = response.json()
-        messages.error(request, data['message'])
-        return redirect('/login')
-    elif response.status_code == 200:
+        list = data['warehouseinventorylist']
+        for i in list:
+            if str(i['itemcode']) == itemcode:
+                data = {"saleitemname": i["saleitemname"], "saleitem1": i["saleitem1"], "cases1": i["itemname"], "nbottles1": i['cp_sno'],
+                        "price1": i['expirydate'],  "mrp1": i['expirydate'],
+                        "quantity1": i['expirydate'], "todate1": i['expirydate']
+                        }
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return  JsonResponse({'data':data})
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
+
 def edit_sale_item(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -7065,7 +7085,12 @@ def pending_indent_item_list(request,id):
         messages.error(request, data['message'])
         return render(request, 'login1.html')
     else:
-        return render(request, 'create_indent/pending_indent_item_list.html', {'menuname': menuname,"id":id})
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+            return render(request, 'create_indent/pending_indent_item_list.html', {'menuname': menuname,"id":id})
+        except:
+            return render(request, 'create_indent/pending_indent_item_list.html', {'menuname': menuname, "id": id})
 
 def delete_indent_item(request):
     if 'accesskey' not in request.session:
@@ -7805,8 +7830,21 @@ def get_price1(request):
         return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
+
 
 def get_indentitem(request):
     if 'accesskey' not in request.session:
@@ -8280,7 +8318,7 @@ def pending_indent_pending1(request):
         depolist = data['depolist']
 
         if request.method == 'POST':
-            tdate = request.POST.get('ldate')
+            tdate = request.POST.get('fdate')
             ldate = request.POST.get('ldate')
             if tdate:
                 tdate = tdate
@@ -10972,23 +11010,23 @@ def get_ps_stock(request):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data': data})
+        data2 = response.json()
+        return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
-            messages.error(request, data['message'])
             return JsonResponse({'data': data})
         else:
             messages.error(request, data['message'])
             return redirect('/login')
-    elif response.status_code == 500:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'data': data})
     elif response.status_code == 503:
         data = response.json()
-        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
         return JsonResponse({'data': data})
 
 def get_whinventory(request):
@@ -11005,24 +11043,25 @@ def get_whinventory(request):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data': data})
+        data2 = response.json()
+        return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
         if data['message'] == 'Sorry! some details are missing':
-            messages.error(request, data['message'])
-            return JsonResponse({'data':data})
+            return JsonResponse({'data': data})
         else:
             messages.error(request, data['message'])
             return redirect('/login')
-    elif response.status_code == 500:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'data': data})
     elif response.status_code == 503:
         data = response.json()
-        messages.error(request, data['message'])
         return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
+
 def live_inventory(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -14161,7 +14200,7 @@ def pending_indent_admin(request):
         depolist = data['depolist']
 
         if request.method == 'POST':
-            tdate = request.POST.get('ldate')
+            tdate = request.POST.get('fdate')
             ldate = request.POST.get('ldate')
             if tdate:
                 tdate=tdate
@@ -14191,10 +14230,10 @@ def pending_indent_admin(request):
             if response.status_code == 200:
                 data = response.json()
                 list = data['indentlist']
-                return render(request,'create_indent/pending_indent_admin.html',{'data1':list[0],"depolist":depolist,'menuname':menuname,'wh_masterlist':wh_masterlist,'list':list})
+                return render(request,'create_indent/pending_indent_admin.html',{'data1':"Pending","depolist":depolist,'menuname':menuname,'wh_masterlist':wh_masterlist,'list':list})
             else:
                 return render(request, 'create_indent/pending_indent_admin.html',
-                              {'menuname': menuname, 'wh_masterlist': wh_masterlist,"depolist":depolist})
+                              {'menuname': menuname, 'wh_masterlist': wh_masterlist,"depolist":depolist,'data1':"Pending"})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/indent-pendinglist-admin.php"
             payload = json.dumps({
@@ -14215,10 +14254,10 @@ def pending_indent_admin(request):
                 data = response.json()
                 list = data['indentlist']
                 return render(request, 'create_indent/pending_indent_admin.html',
-                              {'menuname': menuname, 'wh_masterlist': wh_masterlist,'list':list,'data1':list[0],"depolist":depolist})
+                              {'menuname': menuname, 'wh_masterlist': wh_masterlist,'list':list,'data1':"Pending","depolist":depolist})
             else:
                     return render(request, 'create_indent/pending_indent_admin.html',
-                                  {'menuname': menuname, 'wh_masterlist': wh_masterlist,"depolist":depolist})
+                                  {'menuname': menuname, 'wh_masterlist': wh_masterlist,"depolist":depolist,'data1':"Pending"})
     except:
         if response.status_code == 400:
             data = response.json()

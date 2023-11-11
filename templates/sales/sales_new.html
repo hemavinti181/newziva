@@ -231,7 +231,7 @@
                        <td>   <a href="#"><span class="badge badge-danger saleitem-delete" data-sno="{{ all_data.id }}" data-toggle="modal" data-target="#store-status"><i
                                                                     class="fa fa-trash"></i></span></a>
                             <!--<a href="/delete_sale_item/{{ all_data.id }}/"><span  class="badge badge-danger" data-toggle="modal" data-target="#store-status"><i class="fa fa-trash"></i></span></a>-->
-                            <a class="/edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}')"  data-id="{{ all_data.id }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                            <a class="/edit_sale_item" href="#" onclick="editSale('{{  all_data.so_number }}','{{  all_data.item_code }}')"  data-id="{{ all_data.id }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                        </td>
                             </tbody>
                            <!--<tfoot>
@@ -511,7 +511,17 @@ function editSale(id){
           'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         success: function(data) {
-         var obj = data.data.saleitemlist
+            var obj = data.data.saleitemlist
+            var error = data.data.error;
+            var message = data.data.message;
+            $("#nbottles1").val("");
+            $("#price1").val("");
+            $("#quantity1").val("");
+           $("#saleitemname").val("");
+            if (error === true) {
+                    alertify.set('notifier', 'position', 'top-center');
+                    alertify.error(message);
+            }
           	console.log(obj[0].so_number);
              if(obj){
              $("#saleitemname").val(obj[0].item_name);
@@ -522,7 +532,7 @@ function editSale(id){
              $("#mrp1").val(obj[0].mrp);
              $("#quantity1").val(obj[0].quantity);
              $("#todate1").val(obj[0].createdon);
-             $("#txtHdnId1").val(obj[0].id);
+             $("#txtHdnId1").val(id);
              $('#edit_sale_item').modal('show');
         	}
         }

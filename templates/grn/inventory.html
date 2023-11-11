@@ -25,7 +25,7 @@ color: #14c38e !important;
 <div class="right_col" role="main">
           <div class="">
             <div class="clearfix"></div>
-              <div class="col-md-12 col-sm-12 ">
+              <div class="col-md-12 col-sm-12" style="margin-top: 40px;">
    <h3> {{ request.session.name }}  Inventory </h3>
                   <div style="display: inline-block;">
         <div class="top_tiles" style="width: 900px">
@@ -93,6 +93,7 @@ color: #14c38e !important;
                             		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
 												</select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" />
+                <input type="hidden" name="warehouseid" id="warehouseid" value=" {{ request.session.warehouseid }}"/>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
 
 													{% for data1 in wh_masterlist %}
@@ -211,12 +212,14 @@ $("#warehouseid1").change(function() {
                             $('.500mlqty').text("0");
                             $('.250mlqty').text("0");
 
-                            alertify.set('notifier', 'position', 'top-center');
-                            alertify.error(message);
+                           alertify.set('notifier', 'position', 'top-center');
+                           alertify.error(message);
                       }
 					for (var i = 0; i < obj.length; i++) {
                         var item = obj[i];
-
+                          $('.1000mlqty').text("0");
+                          $('.500mlqty').text("0");
+                          $('.250mlqty').text("0");
                          if (item.itemname === '1000ml') {
                             $('.1000mlqty').text(item.Qty);
                             //$('.itemcode1000ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
@@ -249,16 +252,14 @@ $(document).ready(function() {
 			 		var message = data.data.message;
 			 		if (obj) {
                               if ( error === true) {
+                                    $('.500mlqty1').text("0");
                                     alertify.set('notifier', 'position', 'top-center');
                                     alertify.error(message);
                               }
                             for (var i = 0; i < obj.length; i++) {
                                 var item = obj[i];
-
-
                                         $('.500mlqty1').text(item.Qty);
                                         //$('.itemcode500ml1').attr('href', 'batch_codeexpry1/' + item.itemcode + '/');
-
                             }
                      }
                     else{
@@ -272,11 +273,13 @@ $(document).ready(function() {
 
 
 $(document).ready(function() {
+            var warehouseid = $("#warehouseid").val();
         	$.ajax({
+
             	type: "POST",
             	url: '{% url "get_whinventory" %}',
             	data: {
-                	'warehouseid':"WDP0002",'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+                	'warehouseid':warehouseid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
 			 		var obj = data.data.inventorylist
@@ -284,11 +287,16 @@ $(document).ready(function() {
 			 		var message = data.data.message;
                       if ( error === true) {
 
-                            alertify.set('notifier', 'position', 'top-center');
-                            alertify.error(message);
+                            $('.1000mlqty').text("0");
+                            $('.500mlqty').text("0");
+                            $('.250mlqty').text("0");
+
+                            //alertify.set('notifier', 'position', 'top-center');
+                            //alertify.error(message);
                       }
 					for (var i = 0; i < obj.length; i++) {
                         var item = obj[i];
+
                          if (item.itemname === '1000ml') {
 
                             $('.1000mlqty').text(item.Qty);

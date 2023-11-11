@@ -13,7 +13,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                {% if data1.status == 'Pending' %}
+                {% if data1 == 'Pending' %}
                 <h3 >Pending Indent</h3>
                   {% else %}
                    <h3 >Verified  Indent</h3>
@@ -111,14 +111,14 @@
   </colgroup>
                       <thead>
                         <tr>
-                                                <th></th>
+                                    <th></th>
                                     <th>S NO</th>
                                     <th>Indent No</th>
                                     <th>From name</th>
                                     <th>To name</th>
                                     <th>Date</th>
                                     <th>Status</th>
-                               {% if data1.status == 'Pending' %}
+                               {% if data1 == 'Pending' %}
                                     <th>Action</th>
                                {% endif %}
 
@@ -143,7 +143,7 @@
                                              <span class="badge badge-success">{{ all_data.status }}</span>
                                             </td>
                                              {% endif %}
-                                           {% if data1.status == 'Pending' %}
+                                           {% if data1 == 'Pending' %}
                                           <td>
                                             {% if all_data.status == "Pending" %}
                                                <a href="#" onclick="VerifyClick1('{{ all_data.indent_no }}','{{ all_data.status }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
@@ -190,7 +190,7 @@
 
                                             <h3 class="modal-title" style="text-align:center;" id="myModalLabel2" >Acknowledgement</h3>
 
-                                            <label for="comment">Remarks *</label>
+                                            <label for="comment">Remarks </label>
                                             <input type="hidden" id="txtHdnId" name="txtHdnId" />
                                                   <input type="hidden" id="from" name="from" />
                                                   <input type="hidden" id="to" name="to" />
@@ -203,11 +203,11 @@
 
                                             </div>
                                         </div>
-
 </form>
                                         </div>
                                     </div>
                                 </div>
+
 <div class="modal custom-modal fade" id="store-status" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content style1">
