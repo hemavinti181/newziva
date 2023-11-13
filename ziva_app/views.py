@@ -2904,6 +2904,7 @@ def get_proformastore(request):
     accesskey = request.session['accesskey']
     regionid = request.session['regionid']
     warehouseid =  request.session['warehouseid']
+    depoid =  request.session['depoid']
     role = request.session['role']
     if role == 'Admin':
         url = "http://13.235.112.1/ziva/mobile-api/adminstoremaster-list.php"
@@ -2976,6 +2977,7 @@ def get_proformastore(request):
         else:
             data = {'error': 'true', 'message': 'something went wrong'}
             return JsonResponse({'data': data})
+
 def get_storedepo(request):
      if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -4634,7 +4636,6 @@ def sale_item_list(request):
         elif response.status_code == 400:
             data = response.json()
             if data['message'] == 'Sorry! some details are missing':
-                messages.error(request, data['message'])
                 return render(request, 'sales/sales_new.html',
                               {'depolist': depolist, 'busdeponame': busdeponame, 'busdepoid': busdepoid,
                                'deponame': medepoid, 'bustation': bustation, 'stname': stname, 'data2': data2,
@@ -4864,6 +4865,7 @@ def proformainvoice(request):
                 request.session['medeponame'] = medeponame
                 bustname = request.POST.get('busstationname')
                 request.session['bustname'] = bustname
+
                 url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
                 payload = json.dumps({
                     "accesskey": accesskey,
@@ -4875,6 +4877,7 @@ def proformainvoice(request):
                 # if response.status_code == 200:
                 data = response.json()
                 data2 = data['itemmasterlist']
+
                 url = "http://13.235.112.1/ziva/mobile-api/generate-salebill-number-admin.php"
 
                 payload = {
@@ -5432,12 +5435,12 @@ def get_sale_item(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = response.json()
-        list = data['warehouseinventorylist']
+        list = data['saleitemlist']
         for i in list:
-            if str(i['itemcode']) == itemcode:
-                data = {"saleitemname": i["saleitemname"], "saleitem1": i["saleitem1"], "cases1": i["itemname"], "nbottles1": i['cp_sno'],
-                        "price1": i['expirydate'],  "mrp1": i['expirydate'],
-                        "quantity1": i['expirydate'], "todate1": i['expirydate']
+            if str(i['item_code']) == itemcode:
+                data = {"item_name": i["item_name"], "item_code": i["item_code"], "uom": i["uom"], "noofbottles": i['noofbottles'],
+                        "total": i['total'],  "mrp": i['mrp'],"id":i['id'],
+                        "expiry_date": i['expiry_date'], "todate1": i['createdon'],"quantity":i['quantity'],"so_number":i['so_number']
                         }
         return JsonResponse({'data': data})
     elif response.status_code == 400:
@@ -6132,14 +6135,24 @@ def deliver_challan_status(request):
             return redirect('medeliver_challan_pending')
         elif response.status_code == 400:
             data = response.json()
-            messages.error(request, data['message'])
-            return render(request, 'login1.html')
+            text = data['message']
+            if text in  'some details are missing':
+                return redirect('medeliver_challan_pending')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
         elif response.status_code == 503:
             data = response.json()
-            messages.error(request, data['message'])
-            return redirect('medeliver_challan_pending')
+            message = data['message']
+            if message =='Your avl quantity is 0':
+                messages.error(request, message)
+                return redirect('medeliver_challan_pending')
+            else:
+                messages.error(request, "Please  select any  check box")
+                return redirect('medeliver_challan_pending')
+
         else:
-            messages.error(request, "Please select any checkbox")
+            messages.error(request, "something went wrong")
             return redirect('medeliver_challan_pending')
 
     else:
@@ -6165,14 +6178,18 @@ def deliver_challan_status(request):
                 return redirect('deliver_challan')
             elif response.status_code == 400:
                 data = response.json()
-                messages.error(request, data['message'])
-                return render(request,'login1.html')
+                text = data['message']
+                if text in 'some details are missing':
+                    return redirect('deliver_challan')
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
             elif response.status_code == 503:
                 data = response.json()
-                messages.error(request, data['message'])
+                messages.error(request, "Please select any checkbox")
                 return redirect('deliver_challan')
             else:
-                messages.error(request,"Please select any checkbox")
+                messages.error(request,"something went wrong")
                 return redirect('deliver_challan')
 
 def deliver_challan_update(request):
@@ -7844,6 +7861,50 @@ def get_price1(request):
     else:
         data = {'error': 'true', 'message': 'something went wrong'}
         return JsonResponse({'data': data})
+def proforma_item(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    itemname = request.POST.get('itemname')
+
+    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
+
+    payload = json.dumps({
+        "accesskey": accesskey,
+    })
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        data = response.json()
+        list = data['itemmasterlist']
+        for i in list:
+            if str(i['itemcode']) == itemname:
+                data = {"itemname": i["itemname"], "itemcode": i["itemcode"], "uom": i["uom"],
+                         "mrp": i['mrp'],
+                        }
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
+
 
 
 def get_indentitem(request):
@@ -7885,6 +7946,7 @@ def get_indentitem(request):
         data = {'error':'true','message': 'something went wrong'}
         return JsonResponse({'data': data})
 
+
 @csrf_exempt
 def get_item_data(request):
     if 'accesskey' not in request.session:
@@ -7906,15 +7968,24 @@ def get_item_data(request):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     if response.status_code == 200:
-        data = requests.request("POST", url, headers=headers, data=payload)
-        data2 = data.json()
+        data2 = response.json()
         return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
-
-
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
 
 
 @csrf_exempt
@@ -7923,7 +7994,6 @@ def get_sale_item_data(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     itemname = request.POST.get('itemcode')
-
 
     url = "http://13.235.112.1/ziva/mobile-api/inventory-search.php"
 
@@ -7940,13 +8010,24 @@ def get_sale_item_data(request):
     }
 
     if response.status_code == 200:
-        data = requests.request("POST", url, headers=headers, data=payload)
-        data2 = data.json()
+        data2 = response.json()
         return JsonResponse({'data': data2})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
 
 
 def item_edit(request):

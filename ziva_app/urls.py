@@ -358,7 +358,8 @@ urlpatterns = [
     path('get_stocklist',views.get_stocklist,name='get_stocklist'),
     path('depots_less_stock',views.depots_less_stock,name='depots_less_stock'),
     path('forgot_pwd',views.forgot_pwd,name='forgot_pwd'),
-    path('change_pwd',views.change_pwd,name='change_pwd')
+    path('change_pwd',views.change_pwd,name='change_pwd'),
+    path('proforma_item',views.proforma_item,name='proforma_item'),
 ]
 
 

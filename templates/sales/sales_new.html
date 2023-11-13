@@ -294,7 +294,7 @@
                                              <form method="POST" action="complete_sale" id="saleform">
                                                     {% csrf_token %}
                                                           <input type="hidden" id="txtHdnId" name="txtHdnId"  />
-                                                  <div class="x_panel" style="background-color:#3A8A78">
+                                                  <div class="x_panel" style="background-color:#20c997">
                                                    <div class="col-md-8 col-sm-8  form-group has-feedback">
                                                  <label style="color:white;">Order Number</label><br>
                                                    </div>
@@ -503,17 +503,18 @@ $("#saleitem").change(function() {
 });
 
 
-function editSale(id){
+function editSale(id,id1){
       $.ajax({
         url: "{% url 'get_sale_item' %}",
         type: 'POST',
         data: {
-          'id': id,'csrfmiddlewaretoken': '{{ csrf_token }}',
+          'id': id,'itemcode':id1,'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         success: function(data) {
-            var obj = data.data.saleitemlist
+            var obj = data.data
             var error = data.data.error;
             var message = data.data.message;
+
             $("#nbottles1").val("");
             $("#price1").val("");
             $("#quantity1").val("");
@@ -522,22 +523,24 @@ function editSale(id){
                     alertify.set('notifier', 'position', 'top-center');
                     alertify.error(message);
             }
-          	console.log(obj[0].so_number);
+
              if(obj){
-             $("#saleitemname").val(obj[0].item_name);
-             $("#saleitem1").val(obj[0].item_code);
-             $("#cases1").val(obj[0].uom);
-             $("#nbottles1").val(obj[0].noofbottles);
-             $("#price1").val(obj[0].total);
-             $("#mrp1").val(obj[0].mrp);
-             $("#quantity1").val(obj[0].quantity);
-             $("#todate1").val(obj[0].createdon);
-             $("#txtHdnId1").val(id);
+             $("#saleitemname").val(obj.item_name);
+             $("#saleitem1").val(obj.item_code);
+             $("#cases1").val(obj.uom);
+             $("#nbottles1").val(obj.noofbottles);
+             $("#price1").val(obj.total);
+             $("#mrp1").val(obj.mrp);
+             $("#quantity1").val(obj.quantity);
+             $("#todate1").val(obj.createdon);
+             $("#txtHdnId1").val(obj.id);
              $('#edit_sale_item').modal('show');
         	}
         }
       });
   }
+
+
 
 
 
@@ -550,8 +553,8 @@ $(document).ready(function() {
                 	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data.dropdownlist
-					if(obj) {
+			 	var obj = data.data.dropdownlist
+				if(obj) {
 
 			 		$("#busstationid").empty();
 			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
@@ -559,8 +562,8 @@ $(document).ready(function() {
                     $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
                 	}
-                	}
-          });
+                }
+            });
    });
 
 
@@ -582,65 +585,36 @@ $(document).ready(function() {
                         alertify.error(message);
                         $("#busstationid").empty();
 			 		    $("#busstationid").append("<option  value=''>no data available</option>");
-          }
-           else{
-           var obj = data.data.dropdownlist
-					if(obj) {
-			 		$("#busstationid").empty();
-			 		$("#busstationid").append("<option  value=''>Choose Bus station</option>");
-                	$.each(obj, function (index, item) {
-                    $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
-					});
-                	}
+                    }
+                    else{
+                        var obj = data.data.dropdownlist
+                        if(obj) {
+                            $("#busstationid").empty();
+                            $("#busstationid").append("<option  value=''>Choose Bus station</option>");
+                            $.each(obj, function (index, item) {
+                            $("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+                            });
+                        }
+                    }
                 }
-           }
             });
    });
 
 
-
-$("#busstationid").change(function() {
-        	var depoid = $('#depoid2').val();
-        	var busid = $('#busstationid').val();
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "get_proformastore" %}',
-            	data: {
-                	'depo':depoid,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 	var error = data.data.error;
-			 		var message = data.data.message
-                    if ( error === true) {
-                    //alertify.set('notifier', 'position', 'top-center');
-                    //alertify.error(message);
-                    $("#stid").empty();
-                    $("#stid").append("<option  value=''>not available</option>");
-          }
-           else{
-
-			 		var obj = data.data.adminstoremasterlistdata
-					if(obj) {
-			 		$("#stid").empty();
-			 		$("#stid").append("<option  value=''>Choose Store</option>");
-                	$.each(obj, function (index, item) {
-                    $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
-					});
-                	}
-             	}
-            }
-        	});
-    	});
-
-
     	$("#busstationid").change(function() {
-        	var depoid = $('#depoid').val();
+        	var depo = $('#depoid2').val();
+        	if (depo){
+        	    var depo = depo
+        	}
+        	else{
+        	 var depo = $('#depoid').val();
+        	}
         	var busid = $('#busstationid').val();
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_proformastore" %}',
             	data: {
-                	'depo':depoid,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+                	'depo':depo,'busid':busid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
 			 	   	var error = data.data.error;
@@ -654,11 +628,11 @@ $("#busstationid").change(function() {
                     else{
 			 		var obj = data.data.adminstoremasterlistdata
                         if(obj) {
-                        $("#stid").empty();
-                        $("#stid").append("<option  value=''>Choose Store</option>");
-                        $.each(obj, function (index, item) {
-                        $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
-                        });
+                            $("#stid").empty();
+                            $("#stid").append("<option  value=''>Choose Store</option>");
+                            $.each(obj, function (index, item) {
+                            $("#stid").append("<option value='" + item.storecode+ "'>" + item.storename+ "</option>");
+                            });
                         }
                     }
              	}
@@ -666,27 +640,29 @@ $("#busstationid").change(function() {
     	});
 
     	$("#saleitem").change(function() {
-        	var itemname1 = $('#saleitem').val();
+        	var itemname = $('#saleitem').val();
         	$.ajax({
             	type: "POST",
-            	url: '{% url "get_price1" %}',
+            	url: '{% url "proforma_item" %}',
             	data: {
-                	'itemname':itemname1,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		 var obj = data.data.pricemasterlist
-                        console.log(obj[0].mrp);
-                        if(obj.length>0){
-                            $("#mrp").val(obj[0].mrp);
-                            $("#cases").val(obj[0].uom1);
+			 		 var obj = data.data
+                        console.log(obj.mrp);
+                        if(obj){
+                            $("#mrp").val(obj.mrp);
+                            $("#cases").val(obj.uom);
                             $("#quantity").val("");
                             $("#nbottles").val("");
-                            $("#price").val(obj[0].mrp);
+                            $("#price").val(obj.mrp);
 					}
-}
+                }
         	});
     	});
+
     	$('#quantity').on('input', function()  {
+    	alert('hai')
     	    val  = $("#quantity").val();
             val1 = $("#cases").val();
             mrp = $("#mrp").val( );
@@ -695,6 +671,7 @@ $("#busstationid").change(function() {
             $("#nbottles").val(val2);
             $("#price").val(val3);
          });
+
 	$("#saleitem1").change(function() {
         	var itemname = $('#saleitem1').val();
         	$.ajax({
@@ -725,6 +702,7 @@ $("#busstationid").change(function() {
             $("#nbottles1").val(val2);
             $("#price1").val(val3);
     });
+
 $('#todate').val(new Date().toJSON().slice(0,10));
 $('#date').val(new Date().toJSON().slice(0,10));
 $(document).ready(function(){

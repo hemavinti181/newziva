@@ -116,12 +116,12 @@
                                                 </select>
                                         </div>
                                         <div class="col-md-3 col-sm-3  form-group has-feedback" id="depo" style="display:none;">
-											<label>Stock Transfer To  *</label>
+											<label>Stock Transfer To  </label>
                                             <select class="form-control" name="warehouse" id="warehouse" hidden>
                             		                    <option value="{{ toid }}">{{ toid }}</option>
 												    </select>
                                                    <input type="hidden" name="warehousename" id="warehousename" />
-										    	 <select class="form-control items" name="warehouseid" id="warehouseid" required>
+										    	 <select class="form-control items" name="warehouseid" id="warehouseid" >
                                                      <option value="">select</option>
                                                 </select>
 										</div>
@@ -131,7 +131,7 @@
 												    </select>
 											<label>Stock Transfer To  *</label>
                                                    <input type="hidden" name="bustname" id="bustname" />
-										    	 <select class="form-control items" name="bustid" id="bustid" required>
+										    	 <select class="form-control items" name="bustid" id="bustid" >
                                                      <option value="">select</option>
                                                  </select>
 										</div>
@@ -1230,10 +1230,13 @@ $("#depotransfer1").change(function() {
     //$("#depowhbus").hide();
     $("#depo").show();
     $("#bus").hide();
+    $("#warehouseid").prop('required', true);   // Add required attribute
+
   } else if (selectedOptionText === "Bus station") {
     //$("#depowhbus").hide();
     $("#bus").show();
     $("#depo").hide();
+    $("#bustid").prop('required', true);
   }
 });
 

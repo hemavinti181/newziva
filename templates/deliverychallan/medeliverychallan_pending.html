@@ -149,10 +149,10 @@
                       <div class="row">
                           <div class="col-sm-12">
                             <div class="card-box table-responsive">
-                    <p class="text-muted font-13 m-b-30">
+                    <p class="text-muted font-13 m-b-30" style="margin-top:20px;">
                     </p>
 
-                        <table id="example1" class="display  table-bordered" style="width:100%">
+                        <table id="example1" class="display   table-bordered" style="width:100%">
                             <colgroup>
 
     <col span="1" style="visibility: collapse">
@@ -305,11 +305,6 @@ $("#agentno").val("");
 $("#vehicaldetails").val("");
 $("#remarks").val("");
 }
-
-function VerifyClick1(id,id1){
-$("#deleteid").val(id);
-$("#deletesono").val(id1);
-}
 $(document).ready(function() {
     $('#example1').DataTable( {
         columnDefs: [ {
@@ -324,6 +319,11 @@ $(document).ready(function() {
         order: [[ 1, 'asc' ]]
     } );
 } );
+function VerifyClick1(id,id1){
+$("#deleteid").val(id);
+$("#deletesono").val(id1);
+}
+
 $("#busstationid").change(function() {
     var selectedOptionText = $(this).find(":selected").text();
     $("#busstationname").val(selectedOptionText);
@@ -441,8 +441,8 @@ $(document).ready(function(){
                 var error = data.data.error;
                 var message = data.data.message;
                 if (error === true) {
-                    alertify.set('notifier', 'position', 'top-center');
-                    alertify.error(message);
+                   // alertify.set('notifier', 'position', 'top-center');
+                   // alertify.error(message);
                     $("#regionid1").empty();
                     $("#regionid1").append("<option  value=''>not available</option>");
                 }
@@ -476,8 +476,8 @@ $(document).ready(function(){
             var error = data.data.error;
             var message = data.data.message;
             if (error === true) {
-                alertify.set('notifier', 'position', 'top-center');
-                alertify.error(message);
+                //alertify.set('notifier', 'position', 'top-center');
+                //alertify.error(message);
                 $("#depoid1").empty();
                 $("#depoid1").append("<option  value=''>not available</option>");
             }
@@ -510,8 +510,8 @@ $(document).ready(function(){
                 var error = data.data.error;
                 var message = data.data.message;
 			 	if (error === true) {
-                    alertify.set('notifier', 'position', 'top-center');
-                    alertify.error(message);
+                    //alertify.set('notifier', 'position', 'top-center');
+                    //alertify.error(message);
                     $("#depoid1").empty();
                     $("#depoid1").append("<option  value=''>not available</option>");
                 }
@@ -545,8 +545,8 @@ $(document).ready(function(){
                     var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                       // alertify.set('notifier', 'position', 'top-center');
+                       // alertify.error(message);
                         $("#busstationid1").empty();
                         $("#busstationid1").append("<option  value=''>not available</option>");
                     }
@@ -581,8 +581,8 @@ $(document).ready(function(){
                     var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#busstationid1").empty();
                         $("#busstationid1").append("<option  value=''>not available</option>");
                     }
