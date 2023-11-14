@@ -44,7 +44,7 @@
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="tdate" class="form-control" value="{{ request.POST.tdate }}">
                             </div>
-                             <div class="col-md-2 col-sm-2  form-group has-feedback">
+                             <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
                                   <select class="form-control items" name="regionid1" id="regionid1" hidden>
                                                      <option value="{{ request.POST.regionid }}">{{ request.POST.regionname }}</option>
                                   </select>
@@ -56,23 +56,24 @@
                                                                 <option value="{{ data.region_id }}">{{ data.regionname }}</option>
                                                     {% endfor %}
                                                 </select>
-                             </div>
-
-                             <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                  <select class="form-control items" name="depoid1" id="depoid1" hidden>
-                                                     <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
-                                  </select>
-                                 <label>Depot</label>
-                                                        <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
-										    	 <select class="form-control items" name="depoid" id="depoid" required>
-                                                     <option value="All">All</option>
-                                                    {% for data in depolist %}
-                                                        {% if data.status == "Active" %}
-                                                                <option value="{{ data.depoid }}">{{ data.deponame }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                             </div>
+                             </div>-->
+                            {% if request.session.role == 'Admin' %}
+                                 <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                      <select class="form-control items" name="depoid1" id="depoid1" hidden>
+                                                         <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
+                                      </select>
+                                     <label>Depot</label>
+                                                            <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
+                                                     <select class="form-control select2" name="depoid" id="depoid" >
+                                                         <option value="All">All</option>
+                                                        {% for data in depolist %}
+                                                            {% if data.status == "Active" %}
+                                                                    <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                 </div>
+                            {% endif %}
                         </form>
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
@@ -155,13 +156,12 @@
 </div>
 </div>
 <script>
-     $(document).ready(function() {
+$(document).ready(function() {
   var form = document.getElementById("myform");
   var daterangeSelect = document.getElementById("daterangeselect");
   var startDateInput = document.getElementById("start-date");
   var endDateInput = document.getElementById("end-date");
-
- $("#depoid,#regionid, #daterangeselect,#start-date,#end-date").change(function() {
+$("#daterangeselect,#start-date,#end-date").change(function() {
   var validOptions = ["1", "2", "3","4","5"];
   if (validOptions.includes(daterangeSelect.value)) {
   form.submit(); // Submit the form
@@ -219,8 +219,6 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
-      var optionValue = $("#depoid1").val();
-      $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
       var optionValue1 = $("#range2").val();
       $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
       var optionValue2 = $("#regionid1").val();
@@ -228,10 +226,6 @@ $(document).ready(function(){
 })
 
 
-$("#depoid").change(function() {
-  var selectedOptionText = $(this).find(":selected").text();
-  $("#deponame").val(selectedOptionText);
-  });
 
   $("#regionid").change(function() {
   var selectedOptionText = $(this).find(":selected").text();
@@ -331,6 +325,21 @@ $(document).ready(function () {
         }
     });
 });
+});
+
+$(document).ready(function () {
+  $("#depoid").select2();
+  var exampleValue = $("#depoid1").val();
+    if (exampleValue) {
+        $("#depoid").val(exampleValue);
+        $("#depoid").trigger("change");
+    }
+  $("#depoid").change(function() {
+   var selectedOptionText = $(this).find(":selected").text();
+   $("#deponame").val(selectedOptionText);
+    var form = document.getElementById("myform");
+    form.submit();
+  });
 });
 </script>
 {% endblock %}

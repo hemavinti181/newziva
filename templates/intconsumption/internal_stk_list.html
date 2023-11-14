@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block htmlbody %}
+
+
+<div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3 style="color:#1372ba">Internal Stocktransfer list</h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 offset-md-8">
+                    <a href="/internal_stktransfer"><button type="submit" data-toggle="modal" data-target="#add_consumption" class="btn btn-primary"  >Internal Stock transfer</button></a>
+                </div>
+              </div>
+            </div>
+                  <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-12 col-sm-12">
+                               			<!-- Search Filter -->
+						<form  method="POST" action=""  id="myForm" enctype="multipart/form-data">
+									{% csrf_token %}
+                            <div class="col-sm-2 col-md-2 form-group has-feedback">
+									<label class="focus-label">From </label>
+									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
+							</div>
+                             <div class="col-sm-2 col-md-3=2 form-group has-feedback">
+									<label class="focus-label">To</label>
+									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
+							</div>
+							{% if request.session.role == 'Admin' %}
+									<!--<div  class="col-md-2  form-group has-feedback">
+															<label> Warehouse</label>
+												 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
+																<option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+												 </select>
+													 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
+														<select class="form-control" name="warehouseid1" id="warehouseid1">
+															<option value="All">All</option>
+															{% for data1 in wh_masterlist %}
+																<option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
+															 {% endfor %}
+														</select>
+										</div>
+													<div  class="col-md-2  form-group has-feedback">
+															<label> Region</label>
+													  <select class="form-control" name="regionid2" id="regionid2" hidden>
+																<option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
+														</select>
+													 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
+														<select class="form-control" name="regionid1" id="regionid1">
+															<option value="All">All</option>
+														</select>
+													</div>-->
+													<div  class="col-md-2  form-group has-feedback">
+														  <select class="form-control" name="depoid2" id="depoid22"  hidden>
+																<option value="{{ request.POST.depoid11 }}">{{ request.POST.deponame11 }}</option>
+														</select>
+															<label> Depot</label>
+													 <input type="hidden" name="deponame11" id="deponame11" value="{{ request.POST.deponame1 }}" />
+														<select class="form-control select2" name="depoid11" id="depoid11">
+															<option value="All">All</option>
+                                                            {% for data1 in depolist %}
+                                                            <option value="{{ data1.depoid }}">{{ data1.deponame }}</option>
+															 {% endfor %}
+														</select>
+														</div>
+							{% endif %}
+                             <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
+                                           <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
+                                       </div>-->
+                        </form>
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                  <div class="x_content">
+                      <div class="row">
+                          <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                    <p class="text-muted font-13 m-b-30">
+                    </p>
+                                <p></p>
+                        <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">
+                                <table id="datatable" class="display table-striped table-bordered" style="width:100%">-->
+                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
+                      <thead>
+                        <tr>
+                                    <th>S No</th>
+                                    <th>Date</th>
+                                    <th>Depot</th>
+                                    <th>Depot stockpoint</th>
+                                    <th>Item</th>
+                                    <th>Qty(cases)</th>
+                                    <th>Qty(bottles)</th>
+                                    <th>Transition id</th>
+                        </tr>
+                      </thead>
+                            <tbody>
+                            {% for data in stocktransferlist %}
+                            <tr>
+                              <td>{{ forloop.counter }}</td>
+                                <td>{{ data.created_on }}</td>
+								<td>{{ data.warehouse_name }}</td>
+                              <td>{{ data.region_name }}</td>
+                              <td>{{ data.item_name }}</td>
+                              <td>{{ data.qty }}</td>
+                              <td>{{ data.noofbottles}}</td>
+                                <td>{{ data.indent_no }}</td>
+
+
+                                </tr>
+                            {% endfor %}
+                      </tbody>
+                      </table>
+                  </div>
+                  </div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+</div>
+<script>
+$(document).ready(function () {
+  $("#depoid11").select2();
+  var exampleValue = $("#depoid22").val();
+    if (exampleValue) {
+        $("#depoid11").val(exampleValue);
+        $("#depoid11").trigger("change");
+    }
+  $("#depoid11").change(function() {
+    var form = document.getElementById("myForm");
+    form.submit();
+
+  });
+});
+
+
+
+
+</script>
+{% endblock %}

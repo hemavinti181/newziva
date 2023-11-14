@@ -7867,12 +7867,17 @@ def proforma_item(request):
         return redirect('/login')
     accesskey = request.session['accesskey']
     itemname = request.POST.get('itemname')
-
-    url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
-
-    payload = json.dumps({
-        "accesskey": accesskey,
-    })
+    role =  request.session['role']
+    if role == 'Admin':
+        url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list-admin.php"
+        payload = json.dumps({
+            "accesskey": accesskey,"warehousename": "All", "regionid": "All", "depoid":request.POST.get('depo')
+        })
+    else:
+        url = "http://13.235.112.1/ziva/mobile-api/itemmaster-list.php"
+        payload = json.dumps({
+            "accesskey": accesskey,
+        })
 
     headers = {
         'Content-Type': 'application/json'
@@ -15536,6 +15541,7 @@ def intconsump_report(request):
             messages.error(request, 'Access denied!')
             return redirect('/login')
         accesskey = request.session['accesskey']
+        role = request.session['displayrole']
         url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
         payload = json.dumps({"accesskey": accesskey})
         headers = {
@@ -15545,6 +15551,7 @@ def intconsump_report(request):
         data = response.json()
         wh_masterlist = data['warehouselist']
 
+
         if request.method == 'POST':
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
@@ -15552,13 +15559,15 @@ def intconsump_report(request):
             tdate = request.POST.get('tdate')
             url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
 
+
             payload = json.dumps({
-                "accesskey": accesskey, "fdate": fdate,
-                "depot_id": request.POST.get('depoid1'),
-                "region_id": request.POST.get('regionid1'),
-                "warehouse_id": request.POST.get('warehouseid1'),
-                "tdate": tdate,
-            })
+                    "accesskey": accesskey, "fdate": fdate,
+                    "depot_id": request.POST.get('depoid1'),
+                    "region_id": request.POST.get('regionid1'),
+                    "warehouse_id": request.POST.get('warehouseid1'),
+                    "tdate": tdate,
+             })
+
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -15583,15 +15592,24 @@ def intconsump_report(request):
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
             url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
-
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "fdate": fdate,
-                "tdate": tdate,
-                "depot_id": "All",
-                "region_id": "All",
-                "warehouse_id": "All",
-            })
+            if role == 'DEPO MANAGER':
+                depoid = request.session['depoid']
+                payload = json.dumps({
+                    "accesskey": accesskey, "fdate": fdate,
+                    "depot_id": depoid,
+                    "region_id": "All",
+                    "warehouse_id": "All",
+                    "tdate": tdate,
+                })
+            else:
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "fdate": fdate,
+                    "tdate": tdate,
+                    "depot_id": "All",
+                    "region_id": "All",
+                    "warehouse_id": "All",
+                })
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -15981,9 +15999,13 @@ def submit_sms(request):
         accesskey = request.session['accesskey']
         role = request.session['role']
         staffno = request.POST.get('auth')
-
+        busatation_id = request.POST.get('busatation_id')
         if role == 'Admin':
-            supervisorname = request.session['supervisorname']
+            if busatation_id:
+                supervisorname = busatation_id
+            else:
+                supervisorname = request.session['supervisorname']
+
             url = "http://13.235.112.1/ziva/mobile-api/driver-authorization-otp-admin.php"
 
             payload = {"accesskey": accesskey,
@@ -16035,6 +16057,7 @@ def submit_sms(request):
         if response.status_code == 400:
             return redirect('/login')
     return redirect('/internal_consumption')
+
 
 def authorize_staffid(request):
     if 'accesskey' not in request.session:
@@ -16291,6 +16314,7 @@ def internal_consump_stock(request):
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")
             return JsonResponse({'data': "Internal Server Error"})
+
 
 def depot_dashboard_data1(request):
     if 'accesskey' not in request.session:
@@ -18094,7 +18118,7 @@ def driverwise_shortage(request):
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
-
+        role = request.session['displayrole']
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
         payload = json.dumps({"accesskey": accesskey})
@@ -18134,22 +18158,30 @@ def driverwise_shortage(request):
                 deponame = 'All'
             range = request.POST.get('from')
             if range:
-                range =range
+                if range == 'Custom Dates':
+                    fdate = request.POST.get('fdate')
+                    tdate = request.POST.get('tdate')
+                else:
+                    fdate = request.POST.get('from')
+                    tdate = request.POST.get('from')
             else:
-                range = "Current Month"
-            if range == 'Custom Dates':
-                fdate = request.POST.get('fdate')
-                tdate = request.POST.get('tdate')
+                fdate = "Current Month"
+                tdate = "Current Month"
+            if role == 'DEPO MANAGER':
+                deponame = request.session['deponame']
+                payload = json.dumps({
+                        "accesskey": accesskey,
+                        "deponame": deponame,
+                        "fromdate":fdate,
+                        "todate":tdate,
+                })
             else:
-                fdate = request.POST.get('from')
-                tdate = request.POST.get('from')
-            payload = json.dumps({
+                payload = json.dumps({
                     "accesskey": accesskey,
                     "deponame": deponame,
-                    "fromdate":fdate,
-                    "todate":tdate,
-
-            })
+                    "fromdate": fdate,
+                    "todate": tdate,
+                })
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -18166,12 +18198,21 @@ def driverwise_shortage(request):
         else:
 
                     url = "http://13.235.112.1/ziva/mobile-api/shortagelist.php"
-                    payload = json.dumps({
-                                          "accesskey": accesskey,
-                                          "deponame": "All",
-                                           "fromdate": "Current Month",
-                                           "todate": "Current Month"
-                                          })
+                    if role == 'DEPO MANAGER':
+                        deponame = request.session['deponame']
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "deponame": deponame,
+                            "fromdate": "Current Month",
+                            "todate": "Current Month",
+                        })
+                    else:
+                        payload = json.dumps({
+                                              "accesskey": accesskey,
+                                              "deponame": "All",
+                                               "fromdate": "Current Month",
+                                               "todate": "Current Month"
+                                              })
                     headers = {
                         'Content-Type': 'text/plain'
                     }
@@ -18200,6 +18241,7 @@ def servicewise_shortage(request):
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
+        role = request.session['displayrole']
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
         payload = json.dumps({"accesskey": accesskey})
@@ -18251,14 +18293,23 @@ def servicewise_shortage(request):
             else:
                 fdate = "Current Month"
                 tdate = "Current Month"
-
-            payload = json.dumps({
+            if role == 'DEPO MANAGER':
+                depoid = request.session['deponame']
+                payload = json.dumps({
                     "accesskey": accesskey,
+                    "deponame": depoid,
                     "service_id": "All",
-                    "deponame": deponame,
                     "fromdate": fdate,
-                    "todate": tdate,
-            })
+                    "todate": tdate
+                })
+            else:
+                payload = json.dumps({
+                        "accesskey": accesskey,
+                        "service_id": "All",
+                        "deponame": deponame,
+                        "fromdate": fdate,
+                        "todate": tdate,
+                })
 
             headers = {
                 'Content-Type': 'text/plain'
@@ -18276,13 +18327,23 @@ def servicewise_shortage(request):
                               {'regionlist':regionlist,'menuname': menuname, 'depolist': depolist, 'fdate': fdate, 'tdate': tdate,'selectrange':selectrange})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/servicewise-shortagelist.php"
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "deponame": "All",
-                "service_id":"All",
-                "fromdate":"Current Month",
-                "todate":"Current Month"
-            })
+            if role == 'DEPO MANAGER':
+                depoid=request.session['deponame']
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "deponame": depoid,
+                    "service_id":"All",
+                    "fromdate":"Current Month",
+                    "todate":"Current Month"
+                })
+            else:
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "deponame": "All",
+                    "service_id": "All",
+                    "fromdate": "Current Month",
+                    "todate": "Current Month"
+                })
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -19619,3 +19680,129 @@ def change_pwd(request):
             return redirect('/login')
         messages.error(request, response.text)
     return render(request, 'login1.html')
+
+def internal_stk_list(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    try:
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        role = request.session['displayrole']
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        depolist = data['depolist']
+
+
+        if request.method == 'POST':
+                        fdate = request.POST.get('fdate')
+                        tdate = request.POST.get('tdate')
+                        url = "http://13.235.112.1/ziva/mobile-api/stock-transfer-list.php"
+                        if role == 'Admin':
+                            payload = json.dumps({"accesskey": accesskey,
+                                                  "fdate":fdate,
+                                                  "tdate":tdate,
+                                                  "depoid": request.POST.get('depoid11'),
+                                                  })
+
+                        headers = {
+                            'Content-Type': 'text/plain'
+                        }
+                        response = requests.request("GET", url, headers=headers, data=payload)
+                        if response.status_code == 200:
+                            data = response.json()
+                            stocktransferlist = data['stocktransferlist']
+                            return render(request,'intconsumption/internal_stk_list.html',{'stocktransferlist':stocktransferlist,"depolist":depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate,'depolist': depolist})
+                        elif response.status_code == 400:
+                            data = response.json()
+                            if data['message'] == 'Sorry! some details are missing':
+                                messages.error(request, data['message'])
+                                return render(request, 'intconsumption/internal_stk_list.html',
+                                              { 'menuname': menuname,
+                                               'fdate': fdate, 'tdate': tdate, 'depolist': depolist})
+                            else:
+                                messages.error(request, data['message'])
+                                return redirect('/login')
+                        elif response.status_code == 503:
+                            data = response.json()
+                            messages.error(request, data['message'])
+                            return render(request, 'intconsumption/internal_stk_list.html',
+                                          { 'menuname': menuname, 'fdate': fdate,
+                                           'tdate': tdate, 'depolist': depolist})
+                        elif response.status_code == 500:
+                            messages.error(request, 'Internal server error')
+                            return render(request, 'intconsumption/internal_stk_list.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate,'depolist': depolist})
+                        else:
+                            try:
+                                data = response.json()
+                                return render(request, 'intconsumption/internal_stk_list.html',{'menuname':menuname,'fdate':fdate,'tdate':tdate,'depolist': depolist})
+                            except:
+                                return render(request, 'intconsumption/internal_stk_list.html',
+                                              {'menuname': menuname, 'fdate': fdate, 'tdate': tdate,
+                                               'depolist': depolist})
+        else:
+                        current_date = datetime.date.today()
+                        fdate = current_date - timedelta(days=current_date.weekday() + 7)
+                        fdate = fdate.strftime("%Y-%m-%d")
+                        tdate = datetime.date.today()
+                        tdate = tdate.strftime("%Y-%m-%d")
+
+                        url = "http://13.235.112.1/ziva/mobile-api/stock-transfer-list.php"
+                        if role == 'DC CONTROLLER':
+                            depo = request.session['depoid']
+                            payload = json.dumps(
+                            {
+                                "accesskey": accesskey,
+                                 "fdate":fdate,
+                                 "tdate":tdate,
+                                  "depoid": depo,
+                             })
+                        if role == 'Admin':
+                                payload = json.dumps(
+                                {
+                                "accesskey": accesskey,
+                                "fdate": fdate,
+                                "tdate": tdate,
+                                "depoid": "All",
+                                })
+
+                        headers = {
+                            'Content-Type': 'text/plain'
+                        }
+                        response = requests.request("GET", url, headers=headers, data=payload)
+                        if response.status_code == 200:
+                            data = response.json()
+                            stocktransferlist = data['stocktransferlist']
+                            return render(request, 'intconsumption/internal_stk_list.html',
+                                          {'stocktransferlist': stocktransferlist,
+                                           'depolist': depolist,'menuname': menuname,'fdate':fdate,'tdate':tdate})
+                        elif response.status_code == 400:
+                            data = response.json()
+                            messages.error(request, data['message'])
+                            return redirect('/login')
+                        elif response.status_code == 500:
+                            messages.error(request, 'Internal server error')
+                            return render(request, 'intconsumption/internal_stk_list.html',
+                                          {'depolist': depolist, 'menuname': menuname,'fdate':fdate,'tdate':tdate})
+                        else:
+                            try:
+                                data = response.json()
+                                return render(request, 'intconsumption/internal_stk_list.html',
+                                              {'depolist': depolist,'menuname':menuname,'fdate':fdate,'tdate':tdate})
+                            except:
+                                return render(request, 'intconsumption/internal_stk_list.html',
+                                              {'depolist': depolist, 'menuname': menuname, 'fdate': fdate,
+                                               'tdate': tdate})
+
+    except:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request,data['message'])
+            return redirect('/login')
+        return render(request, 'intconsumption/internal_stk_list.html',{'menuname':menuname})

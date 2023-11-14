@@ -75,9 +75,9 @@
                    </div>
               </div>
         {% endif %}
-                        <div class="col-md-4 col-sm-4 ">
+                        <div class="col-md-4 col-sm-4">
         <div class="x_panel">
-          <div class="page-title">
+          <div class="page-title1">
             <div class="title_left">
               <h3 style="font-size:17px; font-weight:1500;">Product Supervisor Stock</h3>
             </div>
@@ -180,15 +180,15 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4 col-sm-4 ">
+      <div class="col-md-4 col-sm-4">
             <div class="x_panel">
-          <div class="page-title">
+          <div class="page-title1">
             <div class="title_left">
               <h6 style="color:#14c38e;font-weight:600;font-size:18px;">Stock Issues To Services</h6>
             </div>
           </div>
 
-          <div class="x_content" style="margin-top:-21px">
+          <div class="x_content" style="margin-top:-7px">
         <form  method="POST" action="/intconsump_dashboard_data"  id="myForm" enctype="multipart/form-data">
 									{% csrf_token %}
              <div class="col-md-6 col-sm-6  form-group has-feedback">
@@ -202,38 +202,68 @@
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
                 <div class="count issued_bottles" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
-                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 20px;">Issued(Bottles)</div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 20px;">Issued(bottles)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>stock on hand</p>
               </div>
             </div>
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
               <div class="tile-stats">
-                <div class="count consumed_botteles" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
-                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 18px;">Services</div>
+                <div class="count issued_services" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 18px;">Issued(services)</div>
                 <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>stock on hand</p>
               </div>
             </div>
+             <!--<div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats">
+                <div class="count return_bottles" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 20px;">Returned(bottles)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>stock on hand</p>
+              </div>
+            </div>-->
             <div class="animated flipInY col-lg-4 col-md-4 col-sm-4">
+              <div class="tile-stats">
+                <div class="count return_services" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 18px;">Returned(services)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>stock on hand</p>
+              </div>
+            </div>
+        </div>
+             <!--<div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
+              <div class="tile-stats">
+                <div class="count tobe_bottles" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 20px;">To be return(bottles)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>stock on hand</p>
+              </div>
+            </div>-->
+            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
+              <div class="tile-stats">
+                <div class="count tobe_services" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 18px;">To be return(services)</div>
+                <p class="d-none"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>stock on hand</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
               <div class="tile-stats">
                 <div class="count shortage" style="color: #14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 20px;">Shortage</div>
                 <p class="d-none"><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>Available Up to </p>
               </div>
             </div>
-            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
+
+            <!--<div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
               <div class="tile-stats">
                 <div class="count tobe_return" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
                 <div style="text-align:center;margin-left: auto;margin-right: auto;"></div>
                 <p><span class="fa fa-info" aria-hidden="true" style="margin-bottom:10px;"></span> To Be Returned</p>
               </div>
             </div>
-            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-3">
               <div class="tile-stats">
                 <div class="count passenger" style="color:#14c38e;text-align:center;margin-left: auto;margin-right: auto;font-size:20px;"></div>
-                <div style="text-align:center;margin-left: auto;margin-right: auto"></div>
-                <p><span class="fa fa-info" aria-hidden="true" style="margin-bottom:10px;"></span> Passengers </p>
+                <div style="text-align:center;margin-left: auto;margin-right: auto;margin-bottom: 20px;">Passengers</div>
+                <p class="d-none"><span class="fa fa-info" aria-hidden="true"></span>  </p>
               </div>
-            </div>
+            </div>-->
             <div class="clearfix"></div>
 
             <div class="x_content">
@@ -729,24 +759,24 @@ function updateEchartPieChart(itemslist) {
           var legendData = [];
 
             var item = itemslist;
-              if(item[0].issued != "0" ){
-               seriesData.push({
-                 value: item[0].issued,
-                 name: 'Issued'
-               });
-                 count++;
-               }
-               if(item[0].no_of_services != "0" ){
+              if(item[0].no_of_services != "0" ){
                seriesData.push({
                  value: item[0].no_of_services,
-                 name: 'No of services'
+                 name: 'Issued Services'
                });
                  count++;
                }
-                if(item[0].shortage != "0" ){
+               if(item[0].return_services != "0" ){
                seriesData.push({
-                    value: item[0].shortage,
-                    name: 'Shortage'
+                 value: item[0].return_services,
+                 name: 'Returned services'
+               });
+                 count++;
+               }
+                if(item[0].to_be_return_services != "0" ){
+               seriesData.push({
+                    value: item[0].to_be_return_services,
+                    name: 'To be return'
                 });
                   count++;
                }
@@ -847,9 +877,12 @@ $.ajax({
       }
 
                     $('.issued_bottles').text(itemslist[0].issued);
-                    $('.consumed_botteles').text(itemslist[0].no_of_services);
+                    $('.issued_services').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist[0].shortage);
-                    $('.tobe_return').text(itemslist[0].to_be_returned);
+                    $('.return_bottles').text(itemslist[0].return_bottles);
+                    $('.return_services').text(itemslist[0].return_services);
+                    $('.tobe_bottles').text(itemslist[0].to_be_return_bottles);
+                    $('.tobe_services').text(itemslist[0].to_be_return_services);
                     $('.passenger').text(itemslist[0].no_of_tickets);
 
   },
@@ -883,10 +916,13 @@ $("#fdate, #tdate").change(function() {
        updateEchartPieChart(itemslist);
       }
 
-                    $('.issued_bottles').text(itemslist[0].issued);
-                    $('.consumed_botteles').text(itemslist[0].no_of_services);
+                   $('.issued_bottles').text(itemslist[0].issued);
+                    $('.issued_services').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist[0].shortage);
-                    $('.tobe_return').text(itemslist[0].to_be_returned);
+                    $('.return_bottles').text(itemslist[0].return_bottles);
+                    $('.return_services').text(itemslist[0].return_services);
+                    $('.tobe_bottles').text(itemslist[0].to_be_return_bottles);
+                    $('.tobe_services').text(itemslist[0].to_be_return_services);
                     $('.passenger').text(itemslist[0].no_of_tickets);
 
 
@@ -923,10 +959,13 @@ $("#depoid").change(function() {
        updateEchartPieChart(itemslist);
       }
 
-                     $('.issued_bottles').text(itemslist[0].issued);
-                    $('.consumed_botteles').text(itemslist[0].no_of_services);
+                  $('.issued_bottles').text(itemslist[0].issued);
+                    $('.issued_services').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist[0].shortage);
-                    $('.tobe_return').text(itemslist[0].to_be_returned);
+                    $('.return_bottles').text(itemslist[0].return_bottles);
+                    $('.return_services').text(itemslist[0].return_services);
+                    $('.tobe_bottles').text(itemslist[0].to_be_return_bottles);
+                    $('.tobe_services').text(itemslist[0].to_be_return_services);
                     $('.passenger').text(itemslist[0].no_of_tickets);
 
   },
@@ -960,10 +999,13 @@ $("#warehouseid1").change(function() {
       }else{
        updateEchartPieChart(itemslist);
       }
-                    $('.issued_bottles').text(itemslist[0].issued);
-                    $('.consumed_botteles').text(itemslist[0].no_of_services);
+                     $('.issued_bottles').text(itemslist[0].issued);
+                    $('.issued_services').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist[0].shortage);
-                    $('.tobe_return').text(itemslist[0].to_be_returned);
+                    $('.return_bottles').text(itemslist[0].return_bottles);
+                    $('.return_services').text(itemslist[0].return_services);
+                    $('.tobe_bottles').text(itemslist[0].to_be_return_bottles);
+                    $('.tobe_services').text(itemslist[0].to_be_return_services);
                     $('.passenger').text(itemslist[0].no_of_tickets);
 
   },
@@ -999,10 +1041,13 @@ $("#regionid1").change(function() {
        updateEchartPieChart(itemslist);
       }
 
-                     $('.issued_bottles').text(itemslist[0].issued);
-                    $('.consumed_botteles').text(itemslist[0].no_of_services);
+                    $('.issued_bottles').text(itemslist[0].issued);
+                    $('.issued_services').text(itemslist[0].no_of_services);
                     $('.shortage').text(itemslist[0].shortage);
-                    $('.tobe_return').text(itemslist[0].to_be_returned);
+                    $('.return_bottles').text(itemslist[0].return_bottles);
+                    $('.return_services').text(itemslist[0].return_services);
+                    $('.tobe_bottles').text(itemslist[0].to_be_return_bottles);
+                    $('.tobe_services').text(itemslist[0].to_be_return_services);
                     $('.passenger').text(itemslist[0].no_of_tickets);
 
   },

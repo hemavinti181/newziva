@@ -641,11 +641,12 @@ $(document).ready(function() {
 
     	$("#saleitem").change(function() {
         	var itemname = $('#saleitem').val();
+        	var depo = $('#depoid1').val();
         	$.ajax({
             	type: "POST",
             	url: '{% url "proforma_item" %}',
             	data: {
-                	'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+                	'depo':depo,'itemname':itemname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
 			 		 var obj = data.data
@@ -662,7 +663,6 @@ $(document).ready(function() {
     	});
 
     	$('#quantity').on('input', function()  {
-    	alert('hai')
     	    val  = $("#quantity").val();
             val1 = $("#cases").val();
             mrp = $("#mrp").val( );

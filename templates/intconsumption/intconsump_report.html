@@ -5,7 +5,7 @@
 
 <div class="right_col" role="main">
           <div class="">
-            <div class="page-title">
+            <div class="page-title1">
               <div class="title_left">
                 <h3>Stock Issues to service</h3>
               </div>
@@ -22,16 +22,19 @@
                                			<!-- Search Filter -->
 						<form  method="POST" action="/intconsump_report"  id="myForm" enctype="multipart/form-data">
 									{% csrf_token %}
+
                             <div class="col-sm-2 col-md-2 form-group has-feedback">
 									<label class="focus-label">from </label>
 									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
                                    <input type="hidden" name="fdate_hidden" id="fdate_hidden">
 							</div>
+
                              <div class="col-sm-2 col-md-2 form-group has-feedback">
 									<label class="focus-label">To</label>
 									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
                                    <input type="hidden" name="tdate_hidden" id="tdate_hidden">
 							</div>
+                       {% if request.session.role == 'Admin' %}
                              <div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
@@ -57,17 +60,20 @@
 													<option value="All">All</option>
 												</select>
 										    </div>
-                             <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                  <select class="form-control items" name="depoid" id="depoid" hidden>
-                                                     <option value="{{ request.POST.depoid1}}">{{ request.POST.deponame }}</option>
-                                  </select>
-                                                        <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
-                                 <label> Depot</label>
-										    	 <select class="form-control items" name="depoid1" id="depoid1" required>
-                                                     <option value="All">All</option>
 
-                                                </select>
-                             </div>
+                                 <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                      <select class="form-control items" name="depoid" id="depoid" hidden>
+                                                         <option value="{{ request.POST.depoid1}}">{{ request.POST.deponame }}</option>
+                                      </select>
+                                                            <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
+                                     <label> Depot</label>
+                                                     <select class="form-control items" name="depoid1" id="depoid1" required>
+                                                         <option value="All">All</option>
+                                                     </select>
+                                 </div>
+
+                            {% endif %}
+
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>-->

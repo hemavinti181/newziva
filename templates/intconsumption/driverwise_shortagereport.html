@@ -45,20 +45,20 @@
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
                             </div>
-                             <div class="col-md-2 col-sm-2  form-group has-feedback">
+                             <!--<div class="col-md-2 col-sm-2  form-group has-feedback">
                                   <select class="form-control items" name="regionid1" id="regionid1" hidden>
                                                      <option value="{{ request.POST.regionid }}">{{ request.POST.regionname }}</option>
                                   </select>
                                  <label>Region</label>
                                                         <input type="hidden" name="regionname" id="regionname"  value="{{ request.POST.regionname }}">
-										    	 <select class="form-control items" name="regionid" id="regioid" required>
+										    	 <select class="form-control items" name="regionid" id="regionid" required>
                                                      <option value="All">All</option>
                                                     {% for data in regionlist %}
                                                                 <option value="{{ data.region_id }}">{{ data.regionname }}</option>
                                                     {% endfor %}
                                                 </select>
-                             </div>
-
+                             </div>-->
+                         {% if request.session.role == 'Admin' %}
                              <div class="col-md-2 col-sm-2  form-group has-feedback">
                                   <select class="form-control items" name="depoid1" id="depoid1" hidden>
                                                      <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
@@ -74,6 +74,7 @@
                                                     {% endfor %}
                                                 </select>
                              </div>
+                            {% endif %}
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>
                                        </div>-->
@@ -182,10 +183,11 @@ function pageScroll() {
   var startDateInput = document.getElementById("start-date");
   var endDateInput = document.getElementById("end-date");
 
- $("#depoid,#regionid, #daterangeselect,#start-date,#end-date").change(function() {
+ $("#depoid,#daterangeselect,#start-date,#end-date").change(function() {
   var validOptions = ["1", "2", "3","4","5"];
   if (validOptions.includes(daterangeSelect.value)) {
-  form.submit(); // Submit the form
+  form.submit();
+
   }
   if (daterangeSelect.value === "6") {
     $("#date-range-fields").show();
@@ -254,6 +256,7 @@ $("#depoid").change(function() {
   });
 
   $("#regionid").change(function() {
+  alert('hai')
   var selectedOptionText = $(this).find(":selected").text();
   $("#regionname").val(selectedOptionText);
   });
@@ -354,5 +357,6 @@ $(document).ready(function () {
         });
     });
 });
+
 </script>
 {% endblock %}

@@ -145,7 +145,7 @@
                                                           <i class="fa fa-trash"></i></span></a>
                                           <a href="#" class="depoedit" onclick="editConsumption('{{ data.service_id }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                     {% endif %}
-                                      <span class="badge bg-green" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.service_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
+                                      <span class="badge bg-green" style="background-color:#59BDD1;" data-toggle="modal" onclick="VerifyClick('{{ data.service_id }}','{{ data.busatation_id }}')"  data-target="#bs-example-modal-sm">Authorization</span>
 								{% else %}
 								{% if request.session.role == 'Admin' %}
 
@@ -562,6 +562,7 @@
 													 <label for="sno">Employee id *</label>
 													  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="sno" required>
 													 <input type="hidden" name="serviceid1" id="serviceid1" />
+													  <input type="hidden" name="busatation_id" id="busatation_id" />
 
 												  </div>
 												 <p></p>
@@ -1058,9 +1059,9 @@ $(document).ready(function() {
     });
   });
 
-  function VerifyClick(id1) {
+  function VerifyClick(id1,id2) {
         var serviceid1 = $("#serviceid1").val(id1)
-
+        var serviceid1 = $("#busatation_id").val(id2)
     }
 
  function VerifyClick1(id){
@@ -1299,13 +1300,14 @@ $(document).ready(function () {
     		var auth = $('#sno').val();
             var serviceid1 = $('#serviceid1').val();
             var otp = $('#otp').val();
-             var supervisorname = $('#supervisorname').val();
-
+            var supervisorname = $('#supervisorname').val();
+			var busatation_id = $('#busatation_id').val();
+			alert(busatation_id)
             $.ajax({
                url: "{% url 'submit_sms' %}",
                 type: 'POST',
                 data: {
-                  'supervisorname':supervisorname,'auth':auth,'otp': otp,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
+                 'busatation_id':busatation_id,'supervisorname':supervisorname,'auth':auth,'otp': otp,'serviceid1':serviceid1,'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
               success: function (response) {
               var message = response.response.message;
@@ -1555,11 +1557,11 @@ function editConsumption(id){
              $('#service1').select2().trigger('change');
              $("#staffname2").val(obj[0].staffnumbertwoname);
              $("#product1").val(obj[0].product_type);
-              $("#vehicalname1").val(obj[0].vehicleno);
-              $("#vehicalnumb1").val(obj[0].vehicleno);
-                $("#vehicalnumb1").select2().trigger('change');
-               $("#nob1").val(obj[0].noofbottles_recieve);
-                $("#nobt1").val(obj[0].noofbottles_recieve);
+             $("#vehicalname1").val(obj[0].vehicleno);
+             $("#vehicalnumb1").val(obj[0].vehicleno);
+             $("#vehicalnumb1").select2().trigger('change');
+             $("#nob1").val(obj[0].noofbottles_recieve);
+             $("#nobt1").val(obj[0].noofbottles_recieve);
              $('#depo-edit').modal('show');
         	}
         }
@@ -1772,7 +1774,6 @@ $(document).ready(function() {
 
 
   $(document).ready(function() {
-
     var warehousename = $("#warehouseid2").find(":selected").text();
     var regionname = $("#regionid2").val();
     $.ajax({
