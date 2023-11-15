@@ -37,9 +37,8 @@
 						<form  method="POST" action="/medeliver_challan_pending" id="myform" enctype="multipart/form-data">
 									{% csrf_token %}
                         {% if request.session.role == 'Admin' %}
-                             <div class="col-md-12 col-sm-12 ">
-                            <div class="col-md-2  form-group has-feedback"  id="tdate" style="display:none">
-                                  <label  for="end-date">Select Date</label>
+                             <div class="col-md-3 col-sm-3 form-group has-feedback"  id="tdate" style="display:none;margin-left:-10px;">
+                                  <label>Select Date</label>
                               <input type="date" id="end-date" name="ldate" class="form-control" value="{{ request.POST.ldate }}">
                             </div>
                             </div>
@@ -201,7 +200,7 @@
                                          </td>
                                         {% else %}
                                          <td>
-                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                            <a href="sales_item_list_pending/{{ all_data.sonumber }}/sales/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                              {% if request.session.role == 'Admin' %}
                                                   <a href="#" onclick="VerifyClick1('{{ all_data.id }}','{{ all_data.sonumber }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                   <i class="fa fa-trash"></i></span></a>
@@ -393,8 +392,7 @@ $(document).ready(function(){
 
 	$(document).ready(function() {
     // Get the initial warehouse name
-  var warehousename = $("#warehouseid2").find(":selected").text();
-    console.log(warehousename);
+    var warehousename = $("#warehouseid2").find(":selected").text();
     $.ajax({
         type: "POST",
         url: '{% url "get_storeregion" %}',
@@ -429,6 +427,17 @@ $(document).ready(function(){
 
     $("#warehouseid1").change(function() {
         var warehousename = $(this).find(":selected").text();
+        var depoid1 = $('#depoid1').find(":selected").text();
+        var busstationid1 = $('#busstationid1').find(":selected").text();
+        if (depoid1 === 'not available') {
+            $("#depoid1").empty();
+            $("#depoid1").append("<option value='All'>All</option>");
+        }
+         if (busstationid1 === 'not available') {
+            $("#busstationid1").empty();
+            $("#busstationid1").append("<option value='All'>All</option>");
+        }
+
         $.ajax({
             type: "POST",
             url: '{% url "get_storeregion" %}',
@@ -464,7 +473,6 @@ $(document).ready(function(){
     // Get the initial warehouse name
     var warehousename = $("#warehouseid2").find(":selected").text();
     var regionname = $("#regionid2").val();
-    // Send an AJAX request to get the storeregion dropdown options
     $.ajax({
         type: "POST",
         url: '{% url "get_storedepo" %}',
@@ -498,7 +506,16 @@ $(document).ready(function(){
     	$("#regionid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
-
+        	var depoid1 = $('#depoid1').find(":selected").text();
+            var busstationid1 = $('#busstationid1').find(":selected").text();
+            if (depoid1 === 'not available') {
+                $("#depoid1").empty();
+                $("#depoid1").append("<option value='All'>All</option>");
+            }
+             if (busstationid1 === 'not available') {
+                $("#busstationid1").empty();
+                $("#busstationid1").append("<option value='All'>All</option>");
+            }
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storedepo" %}',
@@ -533,7 +550,6 @@ $(document).ready(function(){
     		var warehousename = $('#warehouseid2').find(":selected").text();
         	var regionname = $('#regionid2').val();
 
-        	var depo = $('#depoid2').val()
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storebus" %}',
@@ -570,6 +586,11 @@ $(document).ready(function(){
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
         	var depo = $(this).val();
+        	var busstationid1 = $('#busstationid1').find(":selected").text();
+        	if (busstationid1 === 'not available') {
+                $("#busstationid1").empty();
+                $("#busstationid1").append("<option value='All'>All</option>");
+            }
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storebus" %}',

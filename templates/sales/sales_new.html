@@ -217,7 +217,7 @@
                             <tbody>
                             {% for all_data in all_data %}
                        <tr>
-                           {{ all_data.item_name }}
+
                            <td>{{ forloop.counter }}</td>
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
@@ -397,7 +397,7 @@
 										</div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
 											<label>Qty(In Cases) *</label>
-										    <input type="text" class="form-control" placeholder="quantity" name="quantity1" id="quantity1" onchange="myFunction(this.value)" required>
+										    <input type="number" class="form-control" placeholder="quantity" name="quantity1" id="quantity1" min="1" onchange="myFunction(this.value)" required>
 										</div>
                                          <div class="col-md-6 col-sm-6 form-group has-feedback">
 											<label>Qty(In bottles) </label>
@@ -930,6 +930,7 @@ function qrResponse(event) {
      $('#qrcode-container').show();
       $('#txnid').val(response.txnId);
      if (response.resultStatus === 'TXN_SUCCESS') {
+          $("input[name='paymenttype']").prop('disabled', true);
           $('#response_label').hide();
           $('#response_label1').show();
           $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');

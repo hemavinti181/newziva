@@ -288,8 +288,8 @@ $("#depoid").change(function() {
 			 		var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#busstationid").empty();
                         $("#busstationid").append("<option  value=''>not available</option>");
                     }
@@ -321,8 +321,8 @@ $("#depoid").change(function() {
 			 		var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#busstationid").empty();
                         $("#busstationid").append("<option  value=''>not available</option>");
                     }
@@ -366,8 +366,8 @@ $(document).ready(function() {
                     var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#regionid1").empty();
                         $("#regionid1").append("<option  value=''>not available</option>");
                     }
@@ -388,6 +388,16 @@ $(document).ready(function() {
 
     $("#warehouseid1").change(function() {
         var warehousename = $(this).find(":selected").text();
+        var depoid1 = $('#depoid1').find(":selected").text();
+        var busstationid1 = $('#busstationid1').find(":selected").text();
+        if (depoid1 === 'not available') {
+            $("#depoid1").empty();
+            $("#depoid1").append("<option value='All'>All</option>");
+        }
+         if (busstationid1 === 'not available') {
+            $("#busstationid1").empty();
+            $("#busstationid1").append("<option value='All'>All</option>");
+        }
         $.ajax({
             type: "POST",
             url: '{% url "get_storeregion" %}',
@@ -400,8 +410,8 @@ $(document).ready(function() {
                 var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#regionid1").empty();
                         $("#regionid1").append("<option  value=''>not available</option>");
                     }
@@ -422,7 +432,6 @@ $(document).ready(function() {
     // Get the initial warehouse name
     var warehousename = $("#warehouseid2").find(":selected").text();
     var regionname = $("#regionid2").val();
-    // Send an AJAX request to get the storeregion dropdown options
     $.ajax({
         type: "POST",
         url: '{% url "get_storedepo" %}',
@@ -434,8 +443,8 @@ $(document).ready(function() {
             var error = data.data.error;
             var message = data.data.message;
             if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#depoid1").empty();
                         $("#depoid1").append("<option  value=''>not available</option>");
             }
@@ -452,9 +461,20 @@ $(document).ready(function() {
             }
         }
     });
+
     	$("#regionid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
+        	var depoid1 = $('#depoid1').find(":selected").text();
+            var busstationid1 = $('#busstationid1').find(":selected").text();
+            if (depoid1 === 'not available') {
+                $("#depoid1").empty();
+                $("#depoid1").append("<option value='All'>All</option>");
+            }
+             if (busstationid1 === 'not available') {
+                $("#busstationid1").empty();
+                $("#busstationid1").append("<option value='All'>All</option>");
+            }
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storedepo" %}',
@@ -467,8 +487,8 @@ $(document).ready(function() {
                     var message = data.data.message;
 
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#depoid1").empty();
                         $("#depoid1").append("<option  value=''>not available</option>");
                     }
@@ -501,8 +521,8 @@ $(document).ready(function() {
 			 		var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#busstationid1").empty();
                         $("#busstationid1").append("<option  value=''>not available</option>");
                     }
@@ -524,6 +544,11 @@ $(document).ready(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
         	var depo = $(this).val();
+        	var busstationid1 = $('#busstationid1').find(":selected").text();
+        	if (busstationid1 === 'not available') {
+                $("#busstationid1").empty();
+                $("#busstationid1").append("<option value='All'>All</option>");
+            }
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storebus" %}',
@@ -535,8 +560,8 @@ $(document).ready(function() {
 			 		var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#busstationid1").empty();
                         $("#busstationid1").append("<option  value=''>not available</option>");
                     }

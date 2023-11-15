@@ -276,8 +276,8 @@ $(document).ready(function(){
 })
 
 $(document).ready(function() {
-  var warehousename = $("#warehouseid2").find(":selected").text();
-    console.log(warehousename);
+    // Get the initial warehouse name
+    var warehousename = $("#warehouseid2").find(":selected").text();
     $.ajax({
         type: "POST",
         url: '{% url "get_storeregion" %}',
@@ -287,30 +287,42 @@ $(document).ready(function() {
         },
         success: function(data) {
             var obj = data.data.dropdownlist
-            var error = data.data.error;
-            var message = data.data.message;
-             if (error === true) {
+             var obj = data.data.dropdownlist
+             var error = data.data.error;
+             var message = data.data.message;
+              if (error === true) {
                     alertify.set('notifier', 'position', 'top-center');
                     alertify.error(message);
                     $("#regionid1").empty();
                     $("#regionid1").append("<option  value=''>not available</option>");
               }
-            else {
-                if (obj) {
-                    $("#regionid1").empty();
-                     //$("#regionid1").append("<option value='All'>All</option>");
-                    $.each(obj, function(index, item) {
-                    $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                    });
-                    var optionValue = $("#regionid2").val();
-                    $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
-                }
-            }
+              else {
+                    if (obj) {
+                        $("#regionid1").empty();
+                        //$("#regionid1").append("<option value='All'>All</option>");
+                        $.each(obj, function(index, item) {
+                            $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                        });
+                        var optionValue = $("#regionid2").val();
+                        $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                    }
+              }
         }
     });
 
     $("#warehouseid1").change(function() {
         var warehousename = $(this).find(":selected").text();
+        var depoid1 = $('#depoid1').find(":selected").text();
+        var busstationid1 = $('#busstationid1').find(":selected").text();
+        if (depoid1 === 'not available') {
+            $("#depoid1").empty();
+            $("#depoid1").append("<option value='All'>All</option>");
+        }
+         if (busstationid1 === 'not available') {
+            $("#busstationid1").empty();
+            $("#busstationid1").append("<option value='All'>All</option>");
+        }
+
         $.ajax({
             type: "POST",
             url: '{% url "get_storeregion" %}',
@@ -323,25 +335,25 @@ $(document).ready(function() {
                 var error = data.data.error;
                 var message = data.data.message;
                 if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                   // alertify.set('notifier', 'position', 'top-center');
+                   // alertify.error(message);
+                    $("#regionid1").empty();
+                    $("#regionid1").append("<option  value=''>not available</option>");
+                }
+                else{
+                    if (obj) {
                         $("#regionid1").empty();
-                        $("#regionid1").append("<option  value=''>not available</option>");
+                        //$("#regionid1").append("<option value='All'>All</option>");
+                        $.each(obj, function(index, item) {
+                        $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                        });
+                    }
                 }
-                else {
-                        if (obj) {
-                            $("#regionid1").empty();
-                            //$("#regionid1").append("<option value='All'>All</option>");
-                            $.each(obj, function(index, item) {
-                            $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                            });
-                        }
-                }
+                $('#myform').submit();
             }
         });
     });
  });
-
 
  $(document).ready(function() {
     // Get the initial warehouse name
@@ -382,6 +394,16 @@ $(document).ready(function() {
     	$("#regionid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
+        	var depoid1 = $('#depoid1').find(":selected").text();
+            var busstationid1 = $('#busstationid1').find(":selected").text();
+            if (depoid1 === 'not available') {
+                $("#depoid1").empty();
+                $("#depoid1").append("<option value='All'>All</option>");
+            }
+             if (busstationid1 === 'not available') {
+                $("#busstationid1").empty();
+                $("#busstationid1").append("<option value='All'>All</option>");
+            }
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storedepo" %}',
@@ -449,7 +471,12 @@ $(document).ready(function() {
     	$("#depoid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
-
+            var depo = $(this).val();
+        	var busstationid1 = $('#busstationid1').find(":selected").text();
+        	if (busstationid1 === 'not available') {
+                $("#busstationid1").empty();
+                $("#busstationid1").append("<option value='All'>All</option>");
+            }
         	var depo = $(this).val();
         	$.ajax({
             	type: "POST",
@@ -511,10 +538,9 @@ $(document).ready(function(){
   document.addEventListener("DOMContentLoaded", function() {
     var form = document.getElementById("myform");
 
-    // Listen for changes in the form elements
     form.addEventListener("change", function() {
       var warehouseValue = document.getElementById("warehouseid1").value;
-      var regionValue = document.getElementById("regionid1").value;
+      //var regionValue = document.getElementById("regionid1").value;
       var depotValue = document.getElementById("depoid1").value;
       var busstationValue = document.getElementById("busstationid1").value;
 
@@ -524,6 +550,7 @@ $(document).ready(function(){
         warehouseValue !== "All" ||
          warehouseValue == "All" ||
         //regionValue !== "All" ||
+        //regionValue == "All" ||
         depotValue !== "All" ||
           depotValue == "All" ||
         busstationValue !== "All" ||
@@ -545,7 +572,6 @@ $(document).ready(function(){
                 if (startDateInput.value && endDateInput.value) {
 
                     const form = document.getElementById('date-form');
-
                     form.submit();
                 }
             }

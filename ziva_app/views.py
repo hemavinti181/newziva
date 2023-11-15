@@ -4755,19 +4755,18 @@ def sale_item_list(request):
                                'deponame': medepoid, 'bustation': bustation, 'stname': stname, 'data2': data2,
                                'data3': data2[0], 'spell': spell, 'menuname': menuname,'response': 'sale200'})
 
-def sales_item_list_pending(request,id):
+def sales_item_list_pending(request,id1,id2):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
     menuname = request.session['mylist']
     accesskey = request.session['accesskey']
 
-
     url = "http://13.235.112.1/ziva/mobile-api/sale-item-list.php"
 
     payload = json.dumps({
         "accesskey": accesskey,
-        "sonumber": id
+        "sonumber": id1
     })
     headers = {
         'Content-Type': 'text/plain'
@@ -4778,15 +4777,23 @@ def sales_item_list_pending(request,id):
     if response.status_code == 200:
         data = response.json()
         sale_item_list = data['saleitemlist']
-        return render(request, 'sales/sale_item_list.html',{'approve':'pending',"all_data": sale_item_list,'menuname':menuname,"id":id})
+        return render(request, 'sales/sale_item_list.html',{'approve':'pending',"all_data": sale_item_list,'menuname':menuname,"id":id1,'status':id2})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        text = data['message']
+        if text in 'some details are missing':
+            messages.error(request, data['message'])
+            return render(request, 'sales/sale_item_list.html', {'menuname': menuname, "id": id1,'status':id2})
+        else:
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
     else:
-        data = response.json()
-        messages.error(request,data['message'])
-        return render(request, 'sales/sale_item_list.html',{'menuname':menuname,"id":id})
+        try:
+            data = response.json()
+            messages.error(request,data['message'])
+        except:
+            messages.error(request,response.text)
+        return render(request, 'sales/sale_item_list.html',{'menuname':menuname,"id":id1,'status':id2})
 
 
 def sale_item_list_approve(request, id):
@@ -5319,11 +5326,12 @@ def delete_salesitem(request):
         return redirect('/login')
     accesskey = request.session['accesskey']
     url = "http://13.235.112.1/ziva/mobile-api/delete-sale-item.php"
-    id=request.POST.get('deletesono')
+    id1=request.POST.get('deletesono')
+    id2=request.POST.get('status')
     payload = json.dumps({
         "accesskey": accesskey,
         "sno": request.POST.get('deleteid'),
-        "sonumber": id,
+        "sonumber": id1,
     })
     headers = {
         'Content-Type': 'application/json'
@@ -5332,20 +5340,25 @@ def delete_salesitem(request):
     if response.status_code == 200:
         data = response.json()
         messages.success(request, data['message'])
-        url = reverse('sales_item_list_pending', args=[id])
+        url = reverse('sales_item_list_pending', args=[id1,id2])
         return redirect(url)
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        url = reverse('sales_item_list_pending', args=[id])
-        return redirect(url)
+        text = data['message']
+        if text in 'some details are missing':
+            messages.error(request, data['message'])
+            url = reverse('sales_item_list_pending', args=[id1,id2])
+            return redirect(url)
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
     else:
         try:
             data = response.json()
             messages.error(request, data['message'])
         except:
             messages.error(request, response.text)
-        url = reverse('sales_item_list_pending', args=[id])
+        url = reverse('sales_item_list_pending', args=[id1,id2])
         return redirect(url)
 
 
@@ -5939,7 +5952,6 @@ def medeliver_challan_pending(request):
 
         if request.method == 'POST':
             date = request.POST.get('date')
-
             accesskey = request.session['accesskey']
             busstation = request.POST.get('busstationname1')
             depo = request.POST.get('deponame1')
@@ -6211,7 +6223,7 @@ def deliver_challan_update(request):
                 "transaction_status": "success",
                 "transaction_id": "",
             })
-        elif paymentmode == 'scanner':
+        elif paymentmode == 'SCANNER':
             url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
             payload = json.dumps({
                 "accesskey": accesskey,
@@ -6303,11 +6315,12 @@ def deliver_challan_item_update(request):
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
-    id=request.POST.get('txtHdnId')
+    id1=request.POST.get('txtHdnId')
+    id2 = request.POST.get('status')
     url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-itemqtyupdate.php"
     payload = json.dumps({
         "accesskey": accesskey,
-        "sonumber":id,
+        "sonumber":id1,
         "qty": request.POST.get('qty'),
         "uom": request.POST.get('cases'),
         "mrp": request.POST.get('mrp'),
@@ -6320,16 +6333,24 @@ def deliver_challan_item_update(request):
     if response.status_code == 200:
         data = response.json()
         messages.success(request, data['message'])
-        url = reverse('sales_item_list_pending', args=[id])
+        url = reverse('sales_item_list_pending', args=[id1,id2])
         return redirect(url)
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        if data['message'] == 'Sorry! some details are missing':
+            messages.error(request, data['message'])
+            url = reverse('sales_item_list_pending', args=[id1,id2])
+            return redirect(url)
+        else:
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
     else:
-        data = response.json()
-        messages.error(request, data['message'])
-        url = reverse('sales_item_list_pending', args=[id])
+        try:
+            data = response.json()
+            messages.error(request, data['message'])
+        except:
+            messages.error(request,"something went wrong")
+        url = reverse('sales_item_list_pending', args=[id1,id2])
         return redirect(url)
 
 
@@ -8985,7 +9006,16 @@ def sales_admin_list(request):
                 data = response.json()
                 data = data['saleslist']
                 return render(request, 'sales/sales_admin_list.html', {'data': data,'status':'Approved', 'date': date, 'menuname': menuname,'wh_masterlist':wh_masterlist})
+            elif response.status_code == 400:
+                    data = response.json()
+                    messages.error(request, data['message'])
+                    return redirect('login')
             else:
+                try:
+                    data = response.json()
+                    messages.error(request,data['message'])
+                except:
+                    messages.error(request, response.text)
                 return render(request, 'sales/sales_admin_list.html', {'date': date,'status':'Approved','menuname': menuname,'wh_masterlist':wh_masterlist})
         else:
             accesskey = request.session['accesskey']
@@ -9208,8 +9238,13 @@ def taxinvoice(request,id):
         return render(request, 'sales/invoice.html',{'data1':data1,'data':data,'menuname':menuname})
     elif response1.status_code == 400:
         data = response1.json()
-        messages.error(request, data['message'])
-        return render(request, 'login1.html')
+        text = data['message']
+        if text in 'some details are missing':
+            messages.error(request, data['message'])
+            return redirect('/taxinvoice_list')
+        else:
+            messages.error(request, data['message'])
+            return render(request, 'login1.html')
     else:
         try:
             data = response1.json()
@@ -12644,7 +12679,7 @@ def depot_indent_report(request):
             elif option == 'Custom Dates':
                 fdate = request.POST.get('fdate')
                 ldate = request.POST.get('ldate')
-                where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
+                where.append("indent_item.createdon >= '%s' OR indent_item.createdon <= '%s'" % (fdate, ldate))
             elif option == '':
                 where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
             if warehouseid1 != '' and warehouseid1 != 'All':
@@ -12722,7 +12757,7 @@ def depot_indent_report(request):
                 elif option == 'Custom Dates':
                     fdate = request.POST.get('fdate')
                     ldate = request.POST.get('ldate')
-                    where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
+                    where.append("indent_item.createdon >= '%s' OR indent_item.createdon <= '%s'" % (fdate, ldate))
                 elif option == '':
                     where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
                 if warehouseid1 != '' and  warehouseid1 != 'All':
@@ -13220,7 +13255,7 @@ def Vendor_itemsply(request):
             elif option == 'Custom Dates':
                 fdate = request.POST.get('fdate')
                 ldate = request.POST.get('ldate')
-                where.append("grn.created_on >= '%s' AND grn.created_on <= '%s'" % (fdate, ldate))
+                where.append("grn.created_on >= '%s' OR grn.created_on <= '%s'" % (fdate, ldate))
             elif option == 'Yesterday':
                 Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
                 formatted_date = Previous_Date.date().strftime('%Y-%m-%d')
@@ -14390,11 +14425,12 @@ def taxinvoice_list_admin(request):
             if ldate:
                 ldate = ldate
             else:
-                ldate = 'All'
+                ldate = fdate
             if warehouseid1:
                 warehouseid1=warehouseid1
             else:
                 warehouseid1='All'
+
             url ="http://13.235.112.1/ziva/mobile-api/tax-invoicelist-new.php"
             payload = json.dumps(
                 {"depoid":request.POST.get('depoid1'),

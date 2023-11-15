@@ -143,7 +143,7 @@
                                 </td>
                            {% else %}
                             <td>
-                                 <a href="sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                 <a href="sales_item_list_pending/{{ all_data.sonumber }}/challan/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                 <a href="#" onclick="VerifyClick2('{{ all_data.sonumber }}')"><span class="badge badge-danger" data-toggle="modal" data-target="#store-status">
                                                   <i class="fa fa-trash"></i></span></a>
                                     {% if all_data.status == 'Approved' %}
@@ -253,18 +253,18 @@
                                                       <label  style="color:white;">₹</label><br>
                                                    </div>
                                                           </div>
-                                                <div>
+                                                <div id="payment_mode">
 
                                                  <label>Payment mode</label><br>
                                                  <label class="btn btn-round btn-warning" id="btn_cash">
-                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" /> CASH
+                                                 <input type="radio" name="paymenttype" id="cash"  value="CASH" class="join-btn" onclick="toggleButtonVisibility()" required/> CASH
                                                 </label>
 
                                                   <!-- <label class="btn btn-round btn-warning" id="btn_upi">
                                                  <input type="radio" name="paymenttype" id="upi" value="UPI" class="join-btn" onclick="toggleButtonVisibility()"  /> UPI
                                                 </label>-->
                                                    <label class="btn btn-round btn-warning" id="btn_scanner">
-                                                 <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" /> SCANNER
+                                                 <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" required/> SCANNER
                                                 </label>
 
                                                 </div>
@@ -273,14 +273,14 @@
 
                                                  </div>
                                                 <div id="response-container">
-                                                 <label id="response_label" style="width:250px;margin-left:130px;color:#EF091E;"></label>
-                                                    <label id="response_label1" style="width:250px;margin-left:180px;color:#06911A;"></label>
+                                                 <label id="response_label" style="width:250px;margin-left:40px;color:#EF091E;"></label>
+                                                    <label id="response_label1" style="width:250px;margin-left:150px;color:#06911A;"></label>
                                                     </div>
                                                 <p></p>
 
 
                                                     <div class="col-md-6 col-sm-6   offset-md-3" >
-											            <button class="btn btn-primary submit-btn" style="margin-top:-30px;" id="completebtn" onclick="submitToPayment()">Complete</button>
+											            <button class="btn btn-primary submit-btn" style="margin-top:10px;" id="completebtn" onclick="submitToPayment()">Complete</button>
                                                         <button class="btn btn-info" id="payment_status"  onclick="qrResponse(event)" style="display:none; width: 250px;margin-left:-27px;" >Check  Payment Status </button>
                                                         <button class="btn  btn-primary submit-btn" id="paytmWithPaytm" onclick="submitFormToPayment()"  style="display:none;">Proceed to pay</button>
                                                     <p></p>
@@ -355,8 +355,8 @@ function VerifyClick2(id1){
             var error = data.data.error;
             var message = data.data.message;
             if (error === true) {
-                alertify.set('notifier', 'position', 'top-center');
-                alertify.error(message);
+                //alertify.set('notifier', 'position', 'top-center');
+                //alertify.error(message);
                 $("#regionid1").empty();
                 $("#regionid1").append("<option  value=''>not available</option>");
             }
@@ -376,6 +376,16 @@ function VerifyClick2(id1){
 
     $("#warehouseid1").change(function() {
         var warehousename = $(this).find(":selected").text();
+        var depoid1 = $('#depoid1').find(":selected").text();
+        var busstationid1 = $('#busstationid1').find(":selected").text();
+        if (depoid1 === 'not available') {
+            $("#depoid1").empty();
+            $("#depoid1").append("<option value='All'>All</option>");
+        }
+         if (busstationid1 === 'not available') {
+            $("#busstationid1").empty();
+            $("#busstationid1").append("<option value='All'>All</option>");
+        }
         $.ajax({
             type: "POST",
             url: '{% url "get_storeregion" %}',
@@ -389,8 +399,8 @@ function VerifyClick2(id1){
                 var error = data.data.error;
                 var message = data.data.message;
                 if (error === true) {
-                    alertify.set('notifier', 'position', 'top-center');
-                    alertify.error(message);
+                    //alertify.set('notifier', 'position', 'top-center');
+                    //alertify.error(message);
                     $("#regionid1").empty();
                     $("#regionid1").append("<option  value=''>not available</option>");
                 }
@@ -424,8 +434,8 @@ function VerifyClick2(id1){
             var error = data.data.error;
             var message = data.data.message;
             if (error === true) {
-                alertify.set('notifier', 'position', 'top-center');
-                alertify.error(message);
+                //alertify.set('notifier', 'position', 'top-center');
+                //alertify.error(message);
                 $("#depoid1").empty();
                 $("#depoid1").append("<option  value=''>not available</option>");
             }
@@ -445,6 +455,17 @@ function VerifyClick2(id1){
     	$("#regionid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
+        	var regionname = $('#regionid1').val();
+        	var depoid1 = $('#depoid1').find(":selected").text();
+            var busstationid1 = $('#busstationid1').find(":selected").text();
+            if (depoid1 === 'not available') {
+                $("#depoid1").empty();
+                $("#depoid1").append("<option value='All'>All</option>");
+            }
+             if (busstationid1 === 'not available') {
+                $("#busstationid1").empty();
+                $("#busstationid1").append("<option value='All'>All</option>");
+            }
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storedepo" %}',
@@ -456,8 +477,8 @@ function VerifyClick2(id1){
                 var error = data.data.error;
                 var message = data.data.message;
                 if (error === true) {
-                    alertify.set('notifier', 'position', 'top-center');
-                    alertify.error(message);
+                    //alertify.set('notifier', 'position', 'top-center');
+                    //alertify.error(message);
                     $("#depoid1").empty();
                     $("#depoid1").append("<option  value=''>not available</option>");
                 }
@@ -490,8 +511,8 @@ function VerifyClick2(id1){
                     var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#busstationid1").empty();
                         $("#busstationid1").append("<option  value=''>not available</option>");
                     }
@@ -512,7 +533,11 @@ function VerifyClick2(id1){
     	$("#depoid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $('#regionid1').val();
-
+            	var busstationid1 = $('#busstationid1').find(":selected").text();
+        	if (busstationid1 === 'not available') {
+                $("#busstationid1").empty();
+                $("#busstationid1").append("<option value='All'>All</option>");
+            }
         	var depo = $(this).val();
         	$.ajax({
             	type: "POST",
@@ -525,8 +550,8 @@ function VerifyClick2(id1){
                     var error = data.data.error;
                     var message = data.data.message;
                     if (error === true) {
-                        alertify.set('notifier', 'position', 'top-center');
-                        alertify.error(message);
+                        //alertify.set('notifier', 'position', 'top-center');
+                        //alertify.error(message);
                         $("#busstationid1").empty();
                         $("#busstationid1").append("<option  value=''>not available</option>");
                     }
@@ -642,13 +667,13 @@ function displayQRCode() {
         document.getElementById("payment_status").style.display = 'block';
         var orderInput = document.getElementById('order_id_input');
         orderInput.value = data.data.id;
-        //var successMessage = document.createElement('p');
+        var successMessage = document.createElement('p');
         //successMessage.textContent = 'Transaction success!';
         //successMessage.style.marginTop = '136px';
         //successMessage.style.marginTop = '10px';
 
 // Append the success message below the QR code
-qrcodeContainer.appendChild(successMessage);
+    qrcodeContainer.appendChild(successMessage);
       },
       error: function (xhr, status, error) {
         // Handle error response
@@ -710,18 +735,21 @@ function qrResponse(event) {
     },
     success: function(response) {
        $('#response_label1').empty();
-       $('#response_label').empty();
+
      $('#qrcode-container').show();
       $('#txnid').val(response.txnId);
      if (response.resultStatus === 'TXN_SUCCESS') {
-           $('#response_label').hide;
-          $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
+        $("input[id='cash']").prop('disabled', true);
+        $('#response_label').hide();
+        $('#response_label1').show();
+        $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
         $('#completebtn').show();
         $('#payment_status').hide();
     }
     else {
-        $('#response_label1').hide;
-       $('#response_label').html('<b>' + response.resultMsg + '</b>');
+        $('#response_label1').hide();
+        $('#response_label').show();
+        $('#response_label').html('<b>' + response.resultMsg + '</b>');
         $('#completebtn').hide();
         $('#payment_status').show();
     }

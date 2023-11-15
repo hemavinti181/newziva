@@ -28,7 +28,11 @@
                                     <div>
                                 </div>
                             </div>
-                         <a href="/medeliver_challan_pending"><button type="button" style="margin-top:10px;"  class="btn btn-primary">Sales List</button></a>
+                        {% if status == 'sales' %}
+                                    <a href="/medeliver_challan_pending"><button type="button" style="margin-top:10px;"  class="btn btn-primary">GO Back</button></a>
+                        {% else %}
+                                 <a href="/sales_admin_list"><button type="button" style="margin-top:10px;"  class="btn btn-primary">GO Back</button></a>
+                        {% endif %}
                   </div>
                             </div>
               </div>
@@ -54,6 +58,7 @@
                                     <th>Invoice Number</th>
                                     <th>Item Name</th>
                                     <th>Qty(In Cases)</th>
+                                      <th>Qty(In Bottles)</th>
                                     <th>Expiry Date</th>
                                     <!--<th>HSN</th>
                                     <th>Batch</th>
@@ -73,6 +78,7 @@
                            <td>{{ all_data.so_number }}</td>
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
+                           <td> {{ all_data.noofbottles }}</td>
                        <td>{{  all_data.expiry_date }}</td>
                         <!--<td>{{ all_data.hsn }}</td>-->
                        <!--<td>{{ all_data.batch_no }}</td>-->
@@ -118,11 +124,12 @@
                                              <form method="post" action="/deliver_challan_item_update">
                                                     {% csrf_token %}
                                             <input type="hidden" id="txtHdnId" name="txtHdnId"  />
+                                                  <input type="hidden" id="status" name="status"  value="{{ status }}"/>
                                                  <input type="hidden" id="mrp" name="mrp"  />
                                                    <input type="hidden" id="sno" name="sno"  />
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                        <label>Quantity (In CaseS)</label>
-										            <input type="text" class="form-control" placeholder="quantity" name="qty" id="qty">
+                                                        <label>Quantity (In Cases)</label>
+										            <input type="number" class="form-control" placeholder="quantity" name="qty" min="1" id="qty" required>
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                          <label>No Of Bottles</label>
