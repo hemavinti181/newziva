@@ -266,7 +266,7 @@
                                                    <label class="btn btn-round btn-warning" id="btn_scanner">
                                                  <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" required/> SCANNER
                                                 </label>
-
+                                                 <input type="hidden" name="paymenttype1" id="scanner-hidden" />
                                                 </div>
                                                  <div id="qrcode-container" style="display:none;">
                                                        <img id="qr-image" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
@@ -739,7 +739,10 @@ function qrResponse(event) {
      $('#qrcode-container').show();
       $('#txnid').val(response.txnId);
      if (response.resultStatus === 'TXN_SUCCESS') {
-        $("input[id='cash']").prop('disabled', true);
+         var payment_mode = $('#scanner').val();
+         $('#scanner-hidden').val(payment_mode)
+         $("input[id='cash']").prop('disabled', true);
+         $("input[id='scanner']").prop('disabled', true);
         $('#response_label').hide();
         $('#response_label1').show();
         $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');

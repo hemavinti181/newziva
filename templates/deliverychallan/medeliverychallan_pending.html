@@ -378,7 +378,8 @@ $("#depoid").change(function() {
         	});
     	});
 });
-    	$(document).ready(function(){
+
+$(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
@@ -386,9 +387,6 @@ $(document).ready(function(){
   var optionValue = $("#depotname1").val();
   $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
-
-
-
 
 	$(document).ready(function() {
     // Get the initial warehouse name
@@ -549,7 +547,7 @@ $(document).ready(function(){
     $(document).ready(function() {
     		var warehousename = $('#warehouseid2').find(":selected").text();
         	var regionname = $('#regionid2').val();
-
+            var depo = $('#depoid2').val();
         	$.ajax({
             	type: "POST",
             	url: '{% url "get_storebus" %}',

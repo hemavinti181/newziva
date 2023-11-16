@@ -104,7 +104,7 @@
                                 </td>
                            {% else %}
                             <td>
-                                 <a href="/sales_item_list_pending/{{ all_data.sonumber }}/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                 <a href="/sales_item_list_pending/{{ all_data.sonumber }}/sales/"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                     {% if all_data.status == 'Approved' %}
                                 <span class="badge badge-danger" data-toggle="modal" onclick="VerifyClick('{{all_data.sonumber}}','{{ all_data.total }}')"  data-target="#bs-example-modal-sm">PAYMENT</span>
                                 {% endif %}
@@ -209,7 +209,7 @@
                                                    <label class="btn btn-round btn-warning" id="btn_scanner">
                                                  <input type="radio" name="paymenttype" id="scanner" value="SCANNER" class="join-btn" onclick="displayQRCode()" /> SCANNER
                                                 </label>
-
+                                                     <input type="hidden" name="paymenttype1" id="scanner-hidden" />
                                                 </div>
                                                  <div id="qrcode-container" style="display:none;">
                                                        <img id="qr-image" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
@@ -392,8 +392,13 @@ function qrResponse(event) {
      $('#qrcode-container').show();
       $('#txnid').val(response.txnId);
      if (response.resultStatus === 'TXN_SUCCESS') {
-           $('#response_label').hide;
-          $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
+         var payment_mode = $('#scanner').val();
+         $('#scanner-hidden').val(payment_mode)
+        $("input[id='cash']").prop('disabled', true);
+        $("input[id='scanner']").prop('disabled', true);
+        $('#response_label').hide();
+         $('#response_label1').
+        $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');
         $('#completebtn').show();
         $('#payment_status').hide();
     } else {
