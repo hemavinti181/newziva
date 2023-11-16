@@ -206,6 +206,7 @@
                                     <th>Item Name</th>
                                     <th>Qty(Cases)</th>
                                     <th>Qty(Bottles)</th>
+                            <th>MRP</th>
                                     <!--<th>HSN</th>
                                     <th>Batch</th>-->
                                     <th>Total </th>
@@ -222,7 +223,7 @@
                       <td>{{ all_data.item_name }}</td>
                        <td> {{ all_data.quantity }} </td>
                            <td> {{ all_data.noofbottles }}</td>
-
+                            <td>{{ all_data.mrp }}</td>
                         <!--<td>{{ all_data.hsn }}</td>
                        <td>{{ all_data.batch_no }}</td>-->
                        <td class="text-success">₹ {{ all_data.total }}</td>
@@ -345,7 +346,7 @@
                                                   <label class="btn btn-round btn-warning" id="btn_due">
                                                  <input type="radio" name="paymenttype" id="due" value="DUE" class="join-btn" onclick="toggleButtonVisibility()" required/> DUE
                                                 </label>
-
+                                                    <input type="hidden" name="paymenttype" id="scanner-hidden" />
                                                 </div>
                                                  <div id="qrcode-container" style="display:none;">
                                                        <img id="qr-image" src="" alt="QR Code" style="max-width:200px; max-height: 200px;">
@@ -355,10 +356,10 @@
                                                 <p></p>
                                                   <div id="response-container">
                                                  <label id="response_label" style="width:250px;margin-left:130px;color:#EF091E;"></label>
-                                                    <label id="response_label1" style="width:250px;margin-left:180px;color:#06911A;"></label>
+                                                    <label id="response_label1" style="width:250px;margin-left:180px;color:#06911A;margin-bottom: 25px;"></label>
                                                     </div>
 
-                                                  <div class="col-md-12 col-sm-12  form-group has-feedback" style="margin-top:-42px;" id="remarksDiv">
+                                                  <div class="col-md-12 col-sm-12  form-group has-feedback" style="margin-top:-35px;" id="remarksDiv">
                                                    <label for="remarks">Remarks</label>
 										       <textarea class="form-control" placeholder="remarks" rows="2"  name="remarks" id="remarks" ></textarea>
 										    </div>
@@ -929,8 +930,13 @@ function qrResponse(event) {
        $('#response_label').empty();
      $('#qrcode-container').show();
       $('#txnid').val(response.txnId);
+
      if (response.resultStatus === 'TXN_SUCCESS') {
-          $("input[name='paymenttype']").prop('disabled', true);
+          var payment_mode = $('#scanner').val();
+          $('#scanner-hidden').val(payment_mode)
+          $("input[id='cash']").prop('disabled', true);
+          $("input[id='scanner']").prop('disabled', true);
+          $("input[id='due']").prop('disabled', true);
           $('#response_label').hide();
           $('#response_label1').show();
           $('#response_label1').text(response.resultMsg).css('font-weight', 'bold');

@@ -162,7 +162,6 @@ $("#busstation").change(function() {
 document.getElementById("role").addEventListener("change", function() {
 	var val=$(this).find(":selected").text();
 	 if (val === "Admin" || val === "Role") {
-	 alert(val)
 		document.getElementById("warehouse1").style.display = "none";
 		document.getElementById("region1").style.display = "none";
 		document.getElementById("depo1").style.display = "none";
@@ -294,18 +293,41 @@ $(document).ready(function(){
              	}
         	});
     	});
+
     	$("#depo").change(function() {
         	var depo = $(this).val();
         	var region = $('#region').val();
         	var warehouse = $('#warehouse').find(":selected").text();
         	var role =  $("#role").find(":selected").text();
+
+        	var url = role === 'DC CONTROLLER' ? '{% url "get_ps" %}' : '{% url "get_dependent_bus" %}';
         	$.ajax({
             	type: "POST",
-            	url: '{% url "get_dependent_bus" %}',
+            	url: url,
             	data: {
                 	'depo':depo,'region':region,'warehouse':warehouse,'role':role,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
+			 	if ( role === 'DC CONTROLLER'){
+			 		var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#busstation").empty();
+						$("#busstation").append("<option  value=''>not available</option>");
+					}
+					else {
+                        var obj = data.data.productsuperviserlist
+						$("#busstation").empty();
+						$.each(obj, function (index, item) {
+						$("#busstation").append("<option value='" + item.busstationid+ "'>" + item.busstationname+ "</option>");
+						});
+
+					}
+
+			 	}
+			 	else {
 			 		var obj = data.data.dropdownlist
 			 		var error = data.data.error;
 					var message = data.data.message;
@@ -324,6 +346,7 @@ $(document).ready(function(){
 							});
 						}
                 	}
+                }
              	}
         	});
     	});

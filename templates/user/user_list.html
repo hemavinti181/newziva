@@ -294,7 +294,7 @@ function editDepo(id){
              $("#rolename").val(obj.role2);
              $('#depo-edit').modal('show');
         	}
-       var  val= obj.role2;
+      var  val= obj.role2;
 	  if (val === "Admin") {
 		document.getElementById("warehouseid1").style.display = "none";
 		document.getElementById("regionid1").style.display = "none";
@@ -349,15 +349,65 @@ function editDepo(id){
             document.getElementById("depoid1").style.display = "block";
             document.getElementById("busstationid1").style.display = "block";
             }
+        }
+      });
+      var depo =  $("#depoid").val();
+      var role = $("#rolename").val();
+      var url = role === 'DC CONTROLLER' ? '{% url "get_ps" %}' : '{% url "get_dependent_bus" %}';
+      $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+               'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(data) {
+                if ( role === 'DC CONTROLLER'){
+			 		var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#busstationid").empty();
+						$("#busstationid").append("<option  value=''>not available</option>");
+					}
+					else {
+                        var obj = data.data.productsuperviserlist
+						$("#busstationid").empty();
+						$.each(obj, function (index, item) {
+						$("#busstationid").append("<option value='" + item.busstationid+ "'>" + item.busstationname+ "</option>");
+						});
 
+					}
+
+			 	}
+			 	else {
+			 	alert('hai')
+			 		var obj = data.data.dropdownlist
+			 		var error = data.data.error;
+					var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#busstationid").empty();
+						$("#busstationid").append("<option  value=''>not available</option>");
+					}
+					else {
+						if(obj) {
+							$("#busstationid").empty();
+							$("#busstationid").append("<option  value=''>Choose bus station</option>");
+							$.each(obj, function (index, item) {
+							alert(item.name)
+							$("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
+							});
+						}
+                	}
+                }
             }
-		});
-  }
-
+      });
+ }
 
 document.getElementById("role").addEventListener("change", function() {
-	var val=$(this).find(":selected").text();
-
+	  var val=$(this).find(":selected").text();
 	  if (val === "Admin") {
 		document.getElementById("warehouseid1").style.display = "none";
 		document.getElementById("regionid1").style.display = "none";
@@ -434,6 +484,8 @@ document.getElementById("role").addEventListener("change", function() {
         });
     });
 
+
+
     $(document).ready(function() {
         var response = $('#response').val();
         $.ajax({
@@ -443,61 +495,28 @@ document.getElementById("role").addEventListener("change", function() {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
             },
             success: function(data) {
-                var obj = data.data.depolist
-                var error = data.data.error;
-                var message = data.data.message;
-                if (error === true) {
-                    alertify.set('notifier', 'position', 'top-center');
-                    alertify.error(message);
-                    $("#depoid").empty();
-                    $("#depoid").append("<option  value=''>not available</option>");
-                }
-                else {
-
-                    if (obj) {
-
-                        $.each(obj, function(index, item) {
-                             if (item.status === "Active") {
-                                $("#depoid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
-                             }
-                        });
+                 var obj = data.data.depolist
+                    var error = data.data.error;
+                    var message = data.data.message;
+                    if (error === true) {
+                        alertify.set('notifier', 'position', 'top-center');
+                        alertify.error(message);
+                        $("#depoid").empty();
+                        $("#depoid").append("<option  value=''>not available</option>");
                     }
+                    else {
 
-                }
-            }
-        });
-    });
+                        if (obj) {
 
-    $(document).ready(function() {
-        $.ajax({
-            type: "POST",
-            url: '{% url "stk_busstation_list" %}',
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-            },
-            success: function(data) {
-                var obj = data.data.buslist
-                var error = data.data.error;
-                var message = data.data.message;
-                if (error === true) {
-                    alertify.set('notifier', 'position', 'top-center');
-                    alertify.error(message);
-                    $("#busstationid").empty();
-                    $("#busstationid").append("<option  value=''>not available</option>");
-                }
-                else {
-                    if (obj) {
+                            $.each(obj, function(index, item) {
+                                 if (item.status === "Active") {
+                                    $("#depoid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
+                                 }
+                            });
+                        }
 
-                        $.each(obj, function(index, item) {
-                             if (item.status === "Active") {
-                                $("#busstationid").append("<option value='" + item.busatationid + "'>" + item.busstationname + "</option>");
-                                //$("#depotid").append("<option value='" + item.depoid + "'>" + item.deponame + "</option>");
-                             }
-                        });
                     }
-
                 }
-            }
         });
     });
 
@@ -602,13 +621,36 @@ $(document).ready(function(){
         	var region = $('#regionid').val();
         	var warehouse = $('#warehouseid').find(":selected").text();
         	var role =  $("#role").find(":selected").text();
+            var url = role === 'DC CONTROLLER' ? '{% url "get_ps" %}' : '{% url "get_dependent_bus" %}';
+
         	$.ajax({
             	type: "POST",
-            	url: '{% url "get_dependent_bus" %}',
+            	url: url,
             	data: {
                 	'depo':depo,'region':region,'warehouse':warehouse,'role':role,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
+			 	if ( role === 'DC CONTROLLER'){
+			 		var error = data.data.error;
+                    var message = data.data.message;
+					if (error === true) {
+						alertify.set('notifier', 'position', 'top-center');
+						alertify.error(message);
+						$("#busstationid").empty();
+						$("#busstationid").append("<option  value=''>not available</option>");
+					}
+					else {
+                        var obj = data.data.productsuperviserlist
+						$("#busstationid").empty();
+						$.each(obj, function (index, item) {
+						$("#busstationid").append("<option value='" + item.busstationid+ "'>" + item.busstationname+ "</option>");
+						});
+
+					}
+
+			 	}
+			 	else {
+			 	alert('hai')
 			 		var obj = data.data.dropdownlist
 			 		var error = data.data.error;
 					var message = data.data.message;
@@ -623,15 +665,19 @@ $(document).ready(function(){
 							$("#busstationid").empty();
 							$("#busstationid").append("<option  value=''>Choose bus station</option>");
 							$.each(obj, function (index, item) {
+							alert(item.name)
 							$("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 							});
 						}
                 	}
+                }
              	}
         	});
     	});
-
 });
+
+
+
 </script>
 {% endblock %}
 
