@@ -12771,7 +12771,7 @@ def depot_indent_report(request):
                 elif option == 'Custom Dates':
                     fdate = request.POST.get('fdate')
                     ldate = request.POST.get('ldate')
-                    where.append("indent_item.createdon >= '%s' OR indent_item.createdon <= '%s'" % (fdate, ldate))
+                    where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
                 elif option == '':
                     where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
                 if warehouseid1 != '' and  warehouseid1 != 'All':
@@ -13269,7 +13269,7 @@ def Vendor_itemsply(request):
             elif option == 'Custom Dates':
                 fdate = request.POST.get('fdate')
                 ldate = request.POST.get('ldate')
-                where.append("grn.created_on >= '%s' OR grn.created_on <= '%s'" % (fdate, ldate))
+                where.append("grn.created_on >= '%s' AND grn.created_on <= '%s'" % (fdate, ldate))
             elif option == 'Yesterday':
                 Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
                 formatted_date = Previous_Date.date().strftime('%Y-%m-%d')
@@ -15704,12 +15704,23 @@ def vehicallist(request):
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
         data = response.json()
-        staffnumberlist = data['depotvechilemaster']
-        return JsonResponse({'data': staffnumberlist})
+        return JsonResponse({'data': data})
     elif response.status_code == 400:
         data = response.json()
-        messages.error(request,data['message'])
-        return redirect('/login')
+        if data['message'] == 'Sorry! some details are missing':
+            return JsonResponse({'data': data})
+        else:
+            messages.error(request, data['message'])
+            return redirect('/login')
+    elif response.status_code == 503:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        data = {'error': 'true', 'message': 'Internal server error'}
+        return JsonResponse({'data': data})
+    else:
+        data = {'error': 'true', 'message': 'something went wrong'}
+        return JsonResponse({'data': data})
 
 def producttype(request):
     if 'accesskey' not in request.session:
@@ -16323,14 +16334,12 @@ def internal_consump_stock(request):
         elif response.status_code == 400:
             data = response.json()
             if data['message'] == 'Sorry! some details are missing':
-                messages.error(request, data['message'])
                 return JsonResponse({'data': data})
             else:
                 messages.error(request, data['message'])
                 return redirect('\login')
         elif response.status_code == 503:
             data = response.json()
-            messages.error(request, data['message'])
             return JsonResponse({'data': data})
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")

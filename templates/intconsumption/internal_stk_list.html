@@ -134,11 +134,18 @@ $(document).ready(function () {
   $("#depoid11").change(function() {
     var form = document.getElementById("myForm");
     form.submit();
-
   });
 });
 
 
+  $("#fdate,#tdate").change(function() {
+        var form = document.getElementById("myForm");
+        var startDateInput = document.getElementById("fdate");
+        var endDateInput = document.getElementById("tdate");
+        if (startDateInput.value && endDateInput.value) {
+          form.submit();
+        }
+  });
 
 
 </script>

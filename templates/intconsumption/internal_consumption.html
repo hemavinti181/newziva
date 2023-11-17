@@ -560,7 +560,7 @@
                                     <h3  id="myModalLabel4" style="text-align:center;">Verification</h3>
 												  <div class="col-md-12 col-sm-12 form-group has-feedback" id="staffdisplay" style="display:none;">
 													 <label for="sno">Employee id *</label>
-													  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="sno" required>
+													  <input type="text"  class="form-control" name="auth"  placeholder="enter employee id" id="sno">
 													 <input type="hidden" name="serviceid1" id="serviceid1" />
 													  <input type="hidden" name="busatation_id" id="busatation_id" />
 
@@ -572,7 +572,7 @@
 												  </div>
 												 <div class="col-md-12 col-sm-12 form-group has-feedback" id="otpdisplay" style="display:none;">
 												   <label for="sno">Enter  OTP *</label>
-													 <input type="text" class="form-control" placeholder="otp" name="otp" id="otp" required>
+													 <input type="text" class="form-control" placeholder="otp" name="otp" id="otp">
 												 </div>
                                             <p></p>
                                             <div class="col-md-6 col-sm-6  offset-md-4" style="margin-top:10px;">
@@ -842,14 +842,24 @@ $("#depoid1").change(function() {
                 	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data
 
-					if(obj) {
-			 		$("#vehicalnumb").empty();
-			 		$("#vehicalnumb").append("<option  value=''> choose vehical </option>");
-                	$.each(obj, function (index, item) {
-                    $("#vehicalnumb").append("<option value='" + item.vehicleno+ "'>" + item.vehicleno+ "</option>");
-                    });
+			 		var error = data.data.error;
+					var message = data.data.message;
+					if (error === true) {
+						//alertify.set('notifier', 'position', 'top-center');
+						//alertify.error(message);
+						$("#vehicalnumb").empty();
+						$("#vehicalnumb").append("<option  value=''>not available</option>");
+					}
+					else{
+						var obj = data.data.depotvechilemaster
+						if(obj) {
+							$("#vehicalnumb").empty();
+							$("#vehicalnumb").append("<option  value=''> choose vehical </option>");
+							$.each(obj, function (index, item) {
+							$("#vehicalnumb").append("<option value='" + item.vehicleno+ "'>" + item.vehicleno+ "</option>");
+						});
+					}
                      $serviceSelect.select2();
                 	}
              	}
@@ -1216,6 +1226,7 @@ $('#tickets').on('input', function() {
 
 $(document).ready(function () {
     $("#authorize1").click(function() {
+			$('#mobile').prop('required', true);
     		var auth = $('#sno').val();
             var serviceid1 = $('#serviceid1').val();
             var mobile = $('#mobile').val();

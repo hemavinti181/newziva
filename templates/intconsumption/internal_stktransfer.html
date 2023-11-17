@@ -115,12 +115,12 @@ $('#quantity').on('input', function()  {
     		var depotid = $('#depotid').val();
         	$.ajax({
             	type: "POST",
-            	url: '{% url "get_stocklist" %}',
+            	url: '{% url "get_ps" %}',
             	data: {
-                	'depotid':depotid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+                	'depo':depotid,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
 			 	success: function(data){
-			 		var obj = data.data.stockpointlist
+			 		var obj = data.data.productsuperviserlist
 			 		var error = data.data.error;
                     var message = data.data.message;
 					if (error === true) {
