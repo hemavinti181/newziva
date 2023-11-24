@@ -7,7 +7,7 @@
 	position: absolute !important;
 	width: 130% !important;
 	}
-		.style1{
+	.style1{
 	position: absolute !important;
 	width: 100% !important;
 
@@ -54,7 +54,7 @@
 									<label class="focus-label">To</label>
 									<input class="form-control" type="date" name="tdate"  id="tdate"  value="{{ tdate }}" required>
 							</div>
-							{% if request.session.role == 'Admin' %}
+							{% if request.session.role == 'Admin'  %}
 									<div  class="col-md-2  form-group has-feedback">
 															<label> Warehouse</label>
 												 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
@@ -153,7 +153,7 @@
                                                           <i class="fa fa-trash"></i></span></a>
                                           <a href="#" class="depoedit" onclick="editConsumption('{{ data.service_id }}')" data-id="{{ all_data.depoid }}"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                 {% endif %}
-								<span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}','{{ data.deponame }}','{{ data.staffnumber }}','{{  data.staffname }}','{{ data.staffnumbertwo }}','{{ data.staffnumbertwoname  }}')"  data-target="#return">RETURN</span>
+								<span class="badge badge-info" style="background-color:#DF6455;" data-toggle="modal" onclick="VerifyClick1('{{ data.service_id }}','{{ data.noofbottles_recieve }}','{{ data.countexcces }}','{{ data.deponame }}','{{ data.staffnumber }}','{{  data.staffname }}','{{ data.staffnumbertwo }}','{{ data.staffnumbertwoname  }}','{{ data.busatation_id }}')"  data-target="#return">RETURN</span>
 								{% endif %}
                             </td>
                                 </tr>
@@ -187,20 +187,21 @@
 										<div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Select Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
+											 <input type="hidden" name="depo_name1" id="depo_name1" value="{{ request.session.deponame }}" />
 												<select class="form-control depot" name="depoid1" id="depoid1" required>
-                                                    <option value=""> depot</option>
-                                                    {% for data in depolist %}
-                                                            <!--{% if data.depoid == 'DEPO0094' %}
-													            <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
-                                                            {% else %}
-                                                                <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
-                                                            {% endif %}-->
-													 <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
-                                                    {% endfor %}
+
+												 	{% if request.session.role == 'Admin' %}
+													 <option value=""> depot</option>
+														{% for data in depolist %}
+														 <option value="{{ data.depoid  }}">{{  data.deponame  }}</option>
+														{% endfor %}
+													{% else %}
+														 <option value="{{  request.session.depoid }}">{{ request.session.deponame  }}</option>
+													{% endif %}
 												</select>
 										</div>
 
-                             {% if request.session.role == 'Admin' %}
+                             {% if request.session.role == 'Admin' or request.session.displayrole == 'DEPO MANAGER' %}
                                          <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Product Supervisor</label>
 											 <input type="hidden" name="supervisor" id="supervisor" />
@@ -342,6 +343,7 @@
                                     <h3  id="myModalLabel3" style="text-align:center;">Return</h3>
                                                  <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                      <input type="hidden" id="bott" name="bott" />
+													  <input type="hidden" id="busatation_id1" name="busatation_id1" />
 											<label>No Of Tickets *</label>
 										    <input type="text" class="form-control" placeholder="tickets" name="tickets" id="tickets" required>
 										</div>
@@ -683,42 +685,51 @@ $("#deleteid").val(id);
 $("#deletesono").val(id1);
 }
 
+function loadServiceData(depo) {
+    var $serviceSelect = $("#service");
+    $serviceSelect.trigger('select2:destroy');
 
+    $.ajax({
+        type: "POST",
+        url: '{% url "depo_servicenum" %}',
+        data: {
+            'depo': depo,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function (data) {
+            var error = data.data.error;
+            var message = data.data.message;
 
-$("#depoid1").change(function() {
-    		var depo = $('#depoid1').find(":selected").text();
-    		 var $serviceSelect = $("#service");
-    	     $serviceSelect.trigger('select2:destroy');
-        	$.ajax({
-            	type: "POST",
-            	url: '{% url "depo_servicenum" %}',
-            	data: {
-                	'depo':depo,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
-            	},
-			 	success: function(data){
-			 		var error = data.data.error;
-                    var message = data.data.message;
-					if (error === true) {
-						alertify.set('notifier', 'position', 'top-center');
-						alertify.error(message);
-						$("#service").empty();
-						$("#service").append("<option  value=''>not available</option>");
-					}
-					else {
-                        var obj = data.data.servicemasterlist
-						$("#service").empty();
-						$("#service").append("<option  value=''>Choose  service</option>");
-						$("#service").append("<option  value='Extra service'>Extra service</option>");
-						$.each(obj, function (index, item) {
-						$("#service").append("<option value='" + item.ser_no+ "'>" + item.ser_no+ "</option>");
-						});
-				 $serviceSelect.select2();
-					}
-				}
-			});
+            if (error === true) {
+                //alertify.set('notifier', 'position', 'top-center');
+                //alertify.error(message);
+                $("#service").empty();
+                $("#service").append("<option  value=''>not available</option>");
+            } else {
+                var obj = data.data.servicemasterlist;
+                $("#service").empty();
+                $("#service").append("<option  value=''>Choose  service</option>");
+                $("#service").append("<option  value='Extra service'>Extra service</option>");
+                $.each(obj, function (index, item) {
+                    $("#service").append("<option value='" + item.ser_no + "'>" + item.ser_no + "</option>");
+                });
+                $serviceSelect.select2();
+            }
+        }
+    });
+}
+
+// Execute on page load
+$(document).ready(function () {
+    var depo1 = $('#depoid1').find(":selected").text();
+    loadServiceData(depo1);
 });
 
-
+// Execute on depoid change
+$("#depoid1").change(function () {
+    var depo = $('#depoid1').find(":selected").text();
+        loadServiceData(depo);
+});
 
 
 $("#depoid1").change(function() {
@@ -749,6 +760,7 @@ $("#depoid1").change(function() {
 				}
 			});
 });
+
 
 
 $(document).ready(function() {
@@ -793,8 +805,18 @@ $(document).ready(function() {
     });
 });
 
+// Execute on page load
+$(document).ready(function () {
+    var depo1 = $('#depoid1').find(":selected").text();
+    loadDriverData1(depo1);
+});
 
-$("#depoid1").change(function() {
+// Execute on depoid change
+$("#depoid1").change(function () {
+    var depo = $('#depoid1').find(":selected").text();
+        loadDriverData1(depo);
+});
+function loadDriverData1(depo) {
     		var depo = $('#depoid1').find(":selected").text();
     		 var $driverdata = $("#staffnumb");
     	     $driverdata.trigger('select2:destroy');
@@ -826,12 +848,23 @@ $("#depoid1").change(function() {
                 	}
              	}
         	});
+}
+
+
+
+// Execute on page load
+$(document).ready(function () {
+    var depo1 = $('#depoid1').find(":selected").text();
+    loadVehicalData(depo1);
 });
 
+// Execute on depoid change
+$("#depoid1").change(function () {
+    var depo = $('#depoid1').find(":selected").text();
+        loadVehicalData(depo);
+});
 
-
-
-$("#depoid1").change(function() {
+function loadVehicalData(depo) {
     		var depo = $('#depoid1').find(":selected").text();
     		 var $serviceSelect = $("#vehicalnumb");
     	     $serviceSelect.trigger('select2:destroy');
@@ -864,11 +897,21 @@ $("#depoid1").change(function() {
                 	}
              	}
         	});
+}
+
+// Execute on page load
+$(document).ready(function () {
+    var depo1 = $('#depoid1').find(":selected").text();
+    loadProductData(depo1);
 });
 
+// Execute on depoid change
+$("#depoid1").change(function () {
+    var depo = $('#depoid1').find(":selected").text();
+        loadProductData(depo);
+});
 
-
-$("#depoid1").change(function() {
+function loadProductData(depo) {
     $("#vehicalnumb").select2();
     $("#vehicalnumb").change(function() {
     		var depo = $('#depoid1').find(":selected").text();
@@ -881,14 +924,13 @@ $("#depoid1").change(function() {
             	},
 			 	success: function(data){
 			 		var obj = data.data
-
 					if(obj) {
 			 		$("#product").val(obj[0].product_type);
                 	}
              	}
         	});
 });
-});
+}
 
 
 $(document).ready(function() {
@@ -1074,9 +1116,6 @@ $(document).ready(function() {
         var serviceid1 = $("#busatation_id").val(id2)
     }
 
- function VerifyClick1(id){
-$("#id1").val(id);
-}
 
 
     $("#checked").click(function() {
@@ -1102,7 +1141,7 @@ $("#depoid1").change(function() {
   $("#supervisor").val(selectedOptionText);
 });
 
-function VerifyClick1(id,id1,id2,id3,id4,id5,id6,id7){
+function VerifyClick1(id,id1,id2,id3,id4,id5,id6,id7,id8){
 $("#tickets").val(" ");
 $("#bottlesreturn").val(" ");
 $("#actbottlesreturn").val(" ");
@@ -1117,6 +1156,7 @@ $("#staffnumret1").val(id4);
 $("#staffname3").val(id5);
 $("#staffnumret2").val(id6);
  $("#staffname4").val(id7);
+ $("#busatation_id1").val(id8)
 
 		$.ajax({
             	type: "POST",
@@ -1146,6 +1186,7 @@ $("#staffnumret2").val(id6);
 }
 
 $('#tickets').on('input', function() {
+alert('hai')
     var val = parseInt($("#tickets").val());
     var val1 = parseInt($("#bott").val());
     var val2 = parseInt($("#count").val());
@@ -1313,7 +1354,6 @@ $(document).ready(function () {
             var otp = $('#otp').val();
             var supervisorname = $('#supervisorname').val();
 			var busatation_id = $('#busatation_id').val();
-			alert(busatation_id)
             $.ajax({
                url: "{% url 'submit_sms' %}",
                 type: 'POST',
@@ -1418,7 +1458,6 @@ $(document).ready(function () {
                     $("#return").modal("hide");
                     $("#bs-example-modal-sm1").modal("show");
                 } else {
-                    console.log("Error: " + message);
                     alertify.set('notifier', 'position', 'top-center');
                     alertify.error(message);
                     window.location.reload();
@@ -1679,7 +1718,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     $("#staffnumb2").select2();
-	$("#staffnumb2").ge(function() {
+	$("#staffnumb2").change(function() {
     		var depo = $('#depoid2').find(":selected").text();
             var staffnumb = $('#staffnumb2').find(":selected").text();
         	$.ajax({

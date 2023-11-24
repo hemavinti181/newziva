@@ -396,7 +396,6 @@ function editDepo(id){
 							$("#busstationid").empty();
 							$("#busstationid").append("<option  value=''>Choose bus station</option>");
 							$.each(obj, function (index, item) {
-							alert(item.name)
 							$("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 							});
 						}
@@ -650,7 +649,6 @@ $(document).ready(function(){
 
 			 	}
 			 	else {
-			 	alert('hai')
 			 		var obj = data.data.dropdownlist
 			 		var error = data.data.error;
 					var message = data.data.message;

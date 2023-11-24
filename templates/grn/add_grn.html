@@ -41,6 +41,7 @@
 									   {% if request.session.role == 'Admin' %}
 											<div class="col-md-3 col-sm-6  form-group has-feedback">
 												<label>Select Warehouse *</label>
+												<input type="hidden" class="form-control" id="wh_id1" name="wh_id1" readonly>
 												<select class="form-control items" name="whid" id="whid" >
 												{% for data in all_data1 %}
 													<option  value="{{ data.warehouseid}}">{{ data.warehousename }}</option>
@@ -50,13 +51,14 @@
 									   {% else %}
 											<div class="col-md-3 col-sm-6  form-group has-feedback">
 											<label>Warehouse Name  *</label>
+												<input type="hidden" class="form-control" value="{{ request.session.warehouseid}}" name="wh_id" readonly>
 										    <input type="text" class="form-control" value="{{ whname }}" name="whname" readonly>
 										</div>
 									   {% endif %}
 
 							<div class="col-md-3 col-sm-6  form-group has-feedback">
 											<label>Invoice No *</label>
-										    <input type="text" class="form-control" placeholder="invoice no" name="invno" required>
+										    <input type="number" class="form-control" placeholder="invoice no" name="invno" min="1" required>
 										</div>
 
 										<div class="col-md-3 col-sm-6  form-group has-feedback">
@@ -65,7 +67,7 @@
 										</div>
 									   <div class="col-md-3 col-sm-6  form-group has-feedback">
 											<label>Invoice Amount(Including GST)</label>
-										    <input type="text" class="form-control" placeholder="invoice amount" name="invoiceamount" required>
+										    <input type="number" class="form-control" placeholder="invoice amount" name="invoiceamount" min="1" required>
 										</div>
 										 <div class="col-md-3 col-sm-6  form-group has-feedback">
 										   		<label>Invoice Image Attach </label>
@@ -125,7 +127,14 @@ $(document).ready(function() {
     $("#vname").val(selectedOptionText);
 });
 
-
+$("#whid").change(function() {
+  var selectedOptionText = $(this).find(":selected").text();
+  $("#wh_id1").val(selectedOptionText);
+});
+$(document).ready(function() {
+	var selectedOptionText = $('#whid').find(":selected").text();
+    $("#wh_id1").val(selectedOptionText);
+});
 
 var today = new Date().toISOString().split('T')[0];
 document.getElementById('tdate').setAttribute('max', today);

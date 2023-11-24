@@ -41,7 +41,7 @@
 
                                                         <input type="hidden" name="deponame1" id="deponame1"  value="{{ request.POST.deponame1 }}">
 
-                                 <select class="form-control items" name="depotid" id="depotid" required>
+                                 <select class="form-control select2" name="depotid" id="depotid" required>
                                                     {% for data in depolist %}
                                                         {% if data.status == "Active" %}
                                                             {% if data.depoid == 'DEPO0103' %}
@@ -281,16 +281,7 @@
       var selectedOptionText = $(this).find(":selected").text();
       $("#deponame").val(selectedOptionText);
 });
- $("#depotid").change(function() {
-      var form = document.getElementById("myform");
-      var selectedOptionText = $(this).find(":selected").text();
-      $("#deponame1").val(selectedOptionText);
-      form.submit();
-});
-$(document).ready(function(){
- var optionValue = $("#depoid1").val();
-  $("#depotid").find("option[value='" + optionValue + "']").prop("selected", true);
-});
+
  function VerifyClick(id){
 $("#id").val(id);
 }
@@ -320,6 +311,22 @@ $("#id1").val(id);
         }
       });
   }
+
+  $(document).ready(function () {
+  $("#depotid").select2();
+  var exampleValue = $("#depoid1").val();
+    if (exampleValue) {
+        $("#depotid").val(exampleValue);
+        $("#depotid").trigger("change");
+    }
+  $("#depotid").change(function() {
+   var selectedOptionText = $(this).find(":selected").text();
+   $("#deponame1").val(selectedOptionText);
+    var form = document.getElementById("myform");
+    form.submit();
+  });
+});
+
 </script>
 {% endblock %}
 

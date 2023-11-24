@@ -8,7 +8,7 @@
 </style>
 <div class="right_col" role="main">
           <div class="">
-            <div class="page-title">
+            <div class="page-title1" style="margin-top:50px;">
               <div class="title_left">
                 <h3 style="color:#1372ba">Zonal Storewise Stock Issued To AC & Super Luxury Services</h3>
               </div>
@@ -86,9 +86,8 @@
             <div class="card-box table-responsive" style="overflow:hidden;">
                     <p class="text-muted font-13 m-b-30">
                     </p>
-<p></p>
-
-                                   <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%">
+ <button id="export-btn" type="button" class="btn btn-primary" style="margin-left:500px;margin-top:-15px;">Excel</button>
+                                   <table id="example" class="display table-striped table-bordered" style="width:100%;size:10px;">
                       <thead>
                       <tr>
                            <th colspan="16" style="text-align:center;">STATUS OF 500ML ZIVA WATER BOTTLES IN DEPOTS ISSUED TO AC & SUPER-LUXURY SERVICES</th>
@@ -214,39 +213,65 @@
           var optionValue = $("#depoid2").val();
         $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
     });
-
- $(document).ready(function() {
-    var table = $('#example').DataTable({
-      dom: 'Bfrtip',
-      buttons: [
-        {
-          extend: 'excelHtml5',
-          customize: function(xlsx) {
-            var sheet = xlsx.xl.worksheets['sheet1.xml'];
-
-            // Add missing headers manually
-            var header1 = '<row r="1" spans="1:16" x14ac:dyDescent="0.25">' +
-                          '<c t="inlineStr" r="A1" s="51">' +
-                          '<is>' +
-                          '<t>Status of 500ml ZIVA Water Bottles in Depots Issued to AC & Super-Luxury Services</t>' +
-                          '</is>' +
-                          '</c>' +
-                          '</row>';
-
-            var header2 = '<row r="2" spans="1:16" x14ac:dyDescent="0.25">' +
-                          '<c t="inlineStr" r="A2" s="51">' +
-                          '<is>' +
-                          '<t>SNo</t>' +
-                          '</is>' +
-                          // Include other headers manually...
-                          '</c>' +
-                          '</row>';
-
-            sheet.childNodes[0].childNodes[1].innerHTML = header1 + header2 + sheet.childNodes[0].childNodes[1].innerHTML;
-          }
-        }
-      ]
+$(document).ready(function () {
+    // DataTable initialization
+  $('#example').DataTable({
+        "responsive": true
     });
-  });
+
+    // Button click event to trigger export
+    $('#export-btn').on('click', function () {
+        // Add header
+
+
+	 var header = [
+            ['STATUS OF 500ML ZIVA WATER BOTTLES IN DEPOTS ISSUED TO AC & SUPER-LUXURY SERVICES'],
+            ['SNo', 'Zone', 'Region', 'Depot', { t: 's', v: 'No Of Services', s: { s: { border: { bottom: { style: 'thin' } } } } },'', '', 'Consumption', '', '',  '', '',  ''],
+            ['', '', '', '', 'AC', 'S/L', 'TOTAL', 'AC','', 'S/L','', 'TOTAL', '','Present day stock available(Cases)', 'Stock(cases) Available Days', 'Average Consumption'],
+	    ['', '', '', '','','','', 'CASES','BOTTLES','CASES','BOTTLES','CASES','BOTTLES','','','']
+	 ];
+
+
+        // Get table headers
+        var tableHeaders = $('#example').DataTable().columns().header().toArray().map(function (th) {
+            return th.innerText.trim();
+        });
+
+        // Get table data
+        var tableData = $('#example').DataTable().rows().data().toArray();
+
+        // Combine headers and data
+        var combinedData = [header[0], header[1], header[2]].concat([tableHeaders]).concat(tableData);
+
+        // Create worksheet
+        var ws = XLSX.utils.aoa_to_sheet(combinedData);
+
+        // Add styles for merged and centered cells
+         ws['!merges'] = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 15 },},
+            { s: { r: 1, c: 4 }, e: { r: 1, c: 6 } },
+            { s: { r: 1, c: 7 }, e: { r: 1, c: 12} },
+            { s: { r: 2, c: 7 }, e: { r: 2, c: 8} },
+            { s: { r: 2, c: 9 }, e: { r: 2, c: 10} },
+            { s: { r: 2, c: 11 }, e: { r: 2, c: 12} },
+            { s: { r: 1, c: 0}, e: { r: 3, c: 0} },
+	    { s: { r: 1, c: 1}, e: { r: 3, c: 1} },
+            { s: { r: 1, c: 2}, e: { r: 3, c: 2} },
+            { s: { r: 1, c: 3}, e: { r: 3, c: 3} },
+	    { s: { r: 2, c: 4}, e: { r: 3, c: 4} },
+	    { s: { r: 2, c: 5}, e: { r: 3, c: 5} },
+            { s: { r: 2, c: 6}, e: { r: 3, c: 6} },
+            { s: { r: 2, c: 13}, e: { r: 3, c: 13} },
+	    { s: { r: 2, c: 14}, e: { r: 3, c: 14} },
+	    { s: { r: 2, c: 15}, e: { r: 3, c: 15} }
+        ];
+        // Create workbook
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+        // Save workbook to Excel file
+        XLSX.writeFile(wb, 'exported_table.xlsx');
+    });
+});
 </script>
 {% endblock %}

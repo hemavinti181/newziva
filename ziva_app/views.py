@@ -3526,7 +3526,7 @@ def add_grn(request):
                             "vendorid": request.POST.get('vid'),
                             "invoicephoto": invoiceattach_data,
                             "invoiceattachfilename": invoiceattach_name,
-                            "whcode": request.POST.get('whid'),
+                            "whcode": request.POST.get('wh_id'),
                         }
                         payload = json.dumps(payload, cls=BytesEncoder)
                         headers = {
@@ -3975,6 +3975,7 @@ def add_grnitem(request,id):
 
 
         else:
+            if request.method == 'POST':
                 url = "http://13.235.112.1/ziva/mobile-api/grn-item.php"
                 payload = {
                         "accesskey": accesskey,
@@ -4027,7 +4028,7 @@ def add_grnitem(request,id):
                             return render(request, 'grn/add_grnitem.html',
                                           { 'data': item_masterlist, 'menuname': menuname,
                                            'id': id,  'response': 200})
-                elif response.status_code == '400':
+                elif r.status_code == 400:
                         r1 = r.json()
                         if r1['message'] == 'Sorry! some details are missing':
                             messages.error(request, r1['message'])
@@ -4059,7 +4060,7 @@ def add_grnitem(request,id):
                                 return render(request, 'grn/add_grnitem.html',
                                               {'data': item_masterlist, 'menuname': menuname,'id': id,'response': 200})
                         else:
-                            messages.error(request, data['message'])
+                            messages.error(request, r1['message'])
                             return redirect('/login')
 
                 else:
@@ -4102,7 +4103,40 @@ def add_grnitem(request,id):
                         messages.error(request,"something went wrong")
                         return render(request, 'grn/add_grnitem.html',
                                       {'data': item_masterlist, 'menuname': menuname, 'id': id, 'response': 400})
+            else:
+                url = "http://13.235.112.1/ziva/mobile-api/grn-item-list.php"
 
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "grnno": id
+                })
+                headers = {
+                    'Content-Type': 'text/plain'
+                }
+
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    grn_item_list = data['grnitemlist']
+                    return render(request, 'grn/add_grnitem.html',
+                                  {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname, 'id': id,
+                                   'response': 400})
+                elif response.status_code == 503:
+                    try:
+                        data = response.json()
+                        grn_item_list = data['grnitemlist']
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'all_data': grn_item_list, 'data': item_masterlist, 'menuname': menuname,
+                                       'id': id,
+                                       'response': 400})
+                    except:
+                        return render(request, 'grn/add_grnitem.html',
+                                      {'data': item_masterlist, 'menuname': menuname,
+                                       'id': id, 'response': 400})
+                else:
+                    return render(request, 'grn/add_grnitem.html',
+                                  {'data': item_masterlist, 'menuname': menuname,
+                                   'id': id, 'response': 400})
     except:
         if response.status_code == 400:
             data = response.json()
@@ -6217,89 +6251,43 @@ def deliver_challan_update(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
+
     accesskey = request.session['accesskey']
     paymentmode = request.POST.get('paymenttype')
     if paymentmode:
-        paymentmode = request.POST.get('paymenttype')
+            paymentmode = request.POST.get('paymenttype')
     else:
-        paymentmode = request.POST.get('paymenttype1')
+            paymentmode = request.POST.get('paymenttype1')
     role = request.session['role']
-    medepoid =  request.session['medepoid']
+    medepoid = request.session['medepoid']
     if role == 'Admin':
-        if paymentmode == 'CASH':
-            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "depoid":medepoid,
-                "sonumber": request.POST.get('txtHdnId'),
-                "paymentmode": paymentmode,
-                "transaction_status": "success",
-                "transaction_id": "",
-            })
-        elif paymentmode == 'SCANNER':
-            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "depoid": medepoid,
-                "sonumber": request.POST.get('txtHdnId'),
-                "paymentmode":paymentmode,
-                "transaction_status": "success",
-                "transaction_id": request.POST.get("txnid"),
-            })
-        else:
-            url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
-            payload = json.dumps({
-                "accesskey": accesskey,
-                "depoid": medepoid,
-                "sonumber": request.POST.get('txtHdnId2'),
-                "paymentmode": paymentmode,
-                "transaction_status": "success"
-            })
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        response = requests.request("GET", url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            messages.success(request, data['message'])
-            return redirect('sales_admin_list')
-        elif response.status_code == 400:
-            data = response.json()
-            if data['message'] == 'Sorry! some details are missing':
-                messages.error(request, data['message'])
-                return render(request, 'create_indent/indent-list-admin.html')
-            else:
-                messages.error(request, data['message'])
-                return redirect('/login')
-        else:
-            data = response.json()
-            messages.error(request, data['message'])
-            return redirect('sales_admin_list')
-    else:
             if paymentmode == 'CASH':
-                    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
-                    payload = json.dumps({
-                        "accesskey": accesskey,
-                        "sonumber": request.POST.get('txtHdnId'),
-                        "paymentmode": request.POST.get('paymenttype'),
-                        "transaction_status": "success",
-                        "transaction_id": "",
-                    })
-            elif paymentmode == 'scanner':
-                    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
-                    payload = json.dumps({
-                        "accesskey": accesskey,
-                        "sonumber": request.POST.get('txtHdnId'),
-                        "paymentmode": request.POST.get('paymenttype'),
-                        "transaction_status": "success",
-                        "transaction_id": request.POST.get("txnid"),
-                    })
-            else:
-                url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-qtyupdate.php"
+                url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
                 payload = json.dumps({
-                    "accesskey":accesskey,
-                    "sonumber":request.POST.get('txtHdnId2'),
-                    "paymentmode":request.POST.get('paymentmode'),
+                    "accesskey": accesskey,
+                    "depoid":medepoid,
+                    "sonumber": request.POST.get('txtHdnId'),
+                    "paymentmode": paymentmode,
+                    "transaction_status": "success",
+                    "transaction_id": "",
+                })
+            elif paymentmode == 'SCANNER':
+                url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "depoid": medepoid,
+                    "sonumber": request.POST.get('txtHdnId'),
+                    "paymentmode":paymentmode,
+                    "transaction_status": "success",
+                    "transaction_id": request.POST.get("txnid"),
+                })
+            else:
+                url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate-admin.php"
+                payload = json.dumps({
+                    "accesskey": accesskey,
+                    "depoid": medepoid,
+                    "sonumber": request.POST.get('txtHdnId2'),
+                    "paymentmode": paymentmode,
                     "transaction_status": "success"
                 })
             headers = {
@@ -6309,19 +6297,69 @@ def deliver_challan_update(request):
             if response.status_code == 200:
                 data = response.json()
                 messages.success(request, data['message'])
-                return redirect('sales_list')
+                return redirect('sales_admin_list')
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
                     messages.error(request, data['message'])
-                    return redirect('sales_list')
+                    return render(request, 'create_indent/indent-list-admin.html')
                 else:
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
                 data = response.json()
                 messages.error(request, data['message'])
-                return redirect('sales_list')
+                return redirect('sales_admin_list')
+    else:
+                if paymentmode == 'CASH':
+                        url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "sonumber": request.POST.get('txtHdnId'),
+                            "paymentmode": request.POST.get('paymenttype'),
+                            "transaction_status": "success",
+                            "transaction_id": "",
+                        })
+                elif paymentmode == 'scanner':
+                        url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-paymentupdate.php"
+                        payload = json.dumps({
+                            "accesskey": accesskey,
+                            "sonumber": request.POST.get('txtHdnId'),
+                            "paymentmode": request.POST.get('paymenttype'),
+                            "transaction_status": "success",
+                            "transaction_id": request.POST.get("txnid"),
+                        })
+                else:
+                    url = "http://13.235.112.1/ziva/mobile-api/tax-invoice-qtyupdate.php"
+                    payload = json.dumps({
+                        "accesskey":accesskey,
+                        "sonumber":request.POST.get('txtHdnId2'),
+                        "paymentmode":request.POST.get('paymentmode'),
+                        "transaction_status": "success"
+                    })
+                headers = {
+                    'Content-Type': 'application/json'
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                if response.status_code == 200:
+                    data = response.json()
+                    messages.success(request, data['message'])
+                    return redirect('sales_list')
+                elif response.status_code == 400:
+                    data = response.json()
+                    if data['message'] == 'Sorry! some details are missing':
+                        messages.error(request, data['message'])
+                        return redirect('sales_list')
+                    else:
+                        messages.error(request, data['message'])
+                        return redirect('/login')
+                else:
+                    data = response.json()
+                    messages.error(request, data['message'])
+                    return redirect('sales_list')
+
+
+
 
 def deliver_challan_item_update(request):
     if 'accesskey' not in request.session:
@@ -9522,7 +9560,7 @@ def get_user(request):
             if str(i['userid']) == userid:
                 data1 = {"userid": i["userid"], "username": i["username"], "mobile": i["mobile"], "emailid": i['emailid'],
                         "region": i['region'], "regionid": i['regionid'], "warehouseid": i['warehouseid'], "warehousename": i['warehousename'], "depoid": i['depoid'],
-                        "deponame": i['deponame'], "busstationid": i['busstationid'], "busstationname": i['busstationname'], "role": i['role'], "levelid": i['level'],"role2": i['role2'],"levelname": i['level']
+                        "deponame": i['deponame'], "busstationid": i['busstationid'], "busstationname": i['busstationname'], "role": i['role'], "level": i['level'],"role2": i['role2'],
                         }
         return JsonResponse({'data': data1})
     elif response.status_code == 400:
@@ -15168,6 +15206,7 @@ def add_bussupply(request):
         return redirect('/login')
     try:
         role = request.session['role']
+        displayrole = request.session['displayrole']
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
@@ -15194,14 +15233,20 @@ def add_bussupply(request):
             service = request.POST.get('exservice')
         else:
             service = request.POST.get('service')
-        if role == 'Admin':
+        deponame = request.POST.get('deponame1')
+        if deponame:
+            deponame = request.POST.get('deponame1')
+        else:
+            deponame = request.POST.get('depo_name1')
+
+        if role == 'Admin' or displayrole == 'DEPO MANAGER':
                 if request.method == 'POST':
                     supervisorname = request.POST.get('supervisorid')
                     request.session['supervisorname'] = supervisorname
 
                     url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-submit-admin.php"
                     payload = json.dumps({"accesskey": accesskey,
-                            "deponame":request.POST.get('deponame1'),
+                            "deponame":deponame,
                             "busstationid":request.POST.get('supervisorid'),
                             "bus_service_no":service,
                             "oprs":request.POST.get('oprs'),
@@ -15238,7 +15283,7 @@ def add_bussupply(request):
             if request.method == 'POST':
                 url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-submit.php"
                 payload = json.dumps({"accesskey": accesskey,
-                                      "deponame": request.POST.get('deponame1'),
+                                      "deponame": request.POST.get('depo_name1'),
                                       "bus_service_no": service,
                                       "oprs": request.POST.get('oprs'),
                                       "departure_time": request.POST.get('departure'),
@@ -15290,9 +15335,13 @@ def return_bussupply(request):
             ticketattach_data = None
             ticketattach_name = None
         role = request.session['role']
-
-        if role == 'Admin':
-            supervisorname = request.session['supervisorname']
+        displayrole = request.session['displayrole']
+        if role == 'Admin' or displayrole == 'DEPO MANAGER':
+            busatation_id = request.POST.get('busatation_id1')
+            if busatation_id:
+                supervisorname = busatation_id
+            else:
+                supervisorname = request.session['supervisorname']
             url = "http://13.235.112.1/ziva/mobile-api/busservice-supply-logs-return-admin.php"
             payload = {
                 "accesskey": accesskey,
@@ -15320,7 +15369,6 @@ def return_bussupply(request):
                 "service_id":request.POST.get('service_id'),
                 "ticketattach":ticketattach_data,
                 "ticketattachfilename":ticketattach_name,
-
             }
         payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
@@ -15339,14 +15387,16 @@ def return_bussupply(request):
                 data['status'] = response
                 return JsonResponse({'response': data})
             else:
-
                 messages.error(request, data['message'])
                 return redirect('/login')
         else:
-            return redirect('internal_consumption')
+            data = {'error':'true','message': 'something went wrong'}
+            messages.error(request,data['message'])
+            return JsonResponse({'response': data})
     except Exception as e:
-        messages.error(request, str(e))
-        return redirect('internal_consumption')
+        data = {'error': 'true', 'message': str(e)}
+        messages.error(request, data['message'])
+        return JsonResponse({'response': data})
 
 
 def depo_servicenum(request):
@@ -16061,7 +16111,8 @@ def submit_sms(request):
         role = request.session['role']
         staffno = request.POST.get('auth')
         busatation_id = request.POST.get('busatation_id')
-        if role == 'Admin':
+        displayrole = request.session['displayrole']
+        if role == 'Admin' or displayrole == 'DEPO MANAGER':
             if busatation_id:
                 supervisorname = busatation_id
             else:
@@ -18948,6 +18999,7 @@ def vehical_master(request):
 
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
+
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
         payload = json.dumps({"accesskey": accesskey})
@@ -18957,6 +19009,7 @@ def vehical_master(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         depolist = data['depolist']
+
         if request.method == 'POST':
             url = "http://13.235.112.1/ziva/mobile-api/vehicle-masterslist.php"
 
@@ -19164,6 +19217,116 @@ def driver_master(request):
         else:
             messages.error(request, str(e))
             return render(request, 'masters/driver_master.html', {"menuname": menuname})
+def dgt_master(request):
+    try:
+        if 'accesskey' not in request.session:
+            messages.error(request, 'Access denied!')
+            return redirect('/login')
+
+        accesskey = request.session['accesskey']
+        menuname = request.session['mylist']
+        url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
+
+        payload = json.dumps({"accesskey": accesskey})
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = response.json()
+        depolist = data['depolist']
+        if request.method == 'POST':
+            url = "http://13.235.112.1/ziva/mobile-api/staff-masterlist.php"
+
+            payload = json.dumps({"accesskey": accesskey, "deponame": request.POST.get('deponame1')})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                stafflist = data['staffmasterlist']
+                return render(request, 'masters/dgt_master.html',
+                              {"menuname": menuname, 'depolist': depolist, "stafflist": stafflist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'masters/dgt_master.html', {"menuname": menuname, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'masters/dgt_master.html', {"menuname": menuname, 'depolist': depolist})
+        else:
+            url = "http://13.235.112.1/ziva/mobile-api/staff-masterlist.php"
+
+            payload = json.dumps({"accesskey": accesskey, "deponame": "HAKEEMPET"})
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                stafflist = data['staffmasterlist']
+                return render(request, 'masters/driver_master.html',
+                              {"menuname": menuname, 'depolist': depolist, "stafflist": stafflist})
+            elif response.status_code == 400:
+                data = response.json()
+                if data['message'] == 'Sorry! some details are missing':
+                    messages.error(request, data['message'])
+                    return render(request, 'masters/dgt_master.html', {"menuname": menuname, 'depolist': depolist})
+                else:
+                    messages.error(request, data['message'])
+                    return redirect('/login')
+            else:
+                return render(request, 'masters/dgt_master.html', {"menuname": menuname, 'depolist': depolist})
+
+    except Exception as e:
+        if response.status_code == 400:
+            data = response.json()
+            messages.error(request, data['message'])
+            return redirect('/login')
+        else:
+            messages.error(request, str(e))
+            return render(request, 'masters/dgt_master.html', {"menuname": menuname})
+
+def add_dgt_master(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/staff_master_submit.php"
+
+        payload = json.dumps({"accesskey": accesskey, "deponame": request.POST.get('deponame'),
+                              "st_no": request.POST.get('driverid'),
+                              "name": request.POST.get('drivername'),
+                              "phone_no": request.POST.get('mobile'),
+                              "designation": request.POST.get('designation'),
+                              })
+        headers = {
+            'Content-Type': 'text/plain',
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/dgt_master')
+        elif response.status_code == 400:
+            data = response.json()
+            text = data['message']
+            if 'some details are missing' in text:
+                messages.error(request, data['message'])
+                return redirect('/dgt_master')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            return redirect('/dgt_master')
+
+    else:
+        return redirect('/dgt_master')
+
 
 def add_driver_master(request):
         if 'accesskey' not in request.session:
@@ -19757,7 +19920,6 @@ def internal_stk_list(request):
         response = requests.request("GET", url, headers=headers, data=payload)
         data = response.json()
         depolist = data['depolist']
-
 
         if request.method == 'POST':
                         fdate = request.POST.get('fdate')

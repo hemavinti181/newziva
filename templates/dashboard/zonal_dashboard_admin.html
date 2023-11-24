@@ -354,13 +354,13 @@
          <div class="col-md-12 col-sm-12">
             <div class="clearfix"></div>
 
-                      <table class="table table-striped" style="display:block;width=100%";  id="pendingtabel">
+                      <table class="table table-striped" style="display:block;width=100%;"  id="pendingtabel">
                         <thead>
                           <tr>
                             <th class="design1" rowspan="2">#</th>
                             <th class="design1" rowspan="2">Received Date</th>
-                            <th  class="design1" rowspan="2">Manufacture</th>
-                               <!--<th  class="design1" rowspan="2">Warehouse</th>-->
+                            <!--<th  class="design1" rowspan="2">Manufacture</th>
+                           -<th  class="design1" rowspan="2">Warehouse</th>-->
                             <th class="design1" rowspan="2">Product</th>
                             <th class="design1" colspan="2">Current day</th>
                             <th  class="design1" colspan="2">Current month</th>
@@ -1732,7 +1732,7 @@ $.ajax({
                 var row = $('<tr>');
                 row.append($('<td>').text(i + 1));
                 row.append($('<td>').text(item.received_date));
-                row.append($('<td>').text(item.manufacture));
+                //row.append($('<td>').text(item.manufacture));
                 row.append($('<td>').text(item.itemname));
                 row.append($('<td>').text(item.FTD_cases));
                 row.append($('<td>').text(item.FTD_botteles));
@@ -1749,7 +1749,7 @@ $.ajax({
                 $('.acceptedqty').text(item.ftd_cases);
                 $('.acceptdbott').text(item.ftd_botteles);
                 var row = $('<tr>');
-                row.append($('<th>').text('Grand Total').attr('colspan', 4).addClass('design1'));
+                row.append($('<th>').text('Grand Total').attr('colspan', 3).addClass('design1'));
                 row.append($('<td>').text(item.ftd_cases).addClass('design1'));
                 row.append($('<td>').text(item.ftd_botteles).addClass('design1'));
                 row.append($('<td>').text(item.mtd_cases).addClass('design1'));
@@ -1792,7 +1792,7 @@ $('#grndate').change(function() {
                     var row = $('<tr>');
                     row.append($('<td>').text(i + 1));
                     row.append($('<td>').text(item.received_date));
-                    row.append($('<td>').text(item.manufacture));
+                    //row.append($('<td>').text(item.manufacture));
                     row.append($('<td>').text(item.itemname));
                     row.append($('<td>').text(item.FTD_cases));
                     row.append($('<td>').text(item.FTD_botteles));
@@ -1809,7 +1809,7 @@ $('#grndate').change(function() {
                     $('.acceptedqty').text(item.ftd_cases);
                     $('.acceptdbott').text(item.ftd_botteles);
                     var row = $('<tr>');
-                    row.append($('<th>').text('Grand Total').attr('colspan', 4).addClass('design1'));
+                    row.append($('<th>').text('Grand Total').attr('colspan', 3).addClass('design1'));
                     row.append($('<td>').text(item.ftd_cases).addClass('design1'));
                     row.append($('<td>').text(item.ftd_botteles).addClass('design1'));
                     row.append($('<td>').text(item.mtd_cases).addClass('design1'));
@@ -1851,7 +1851,7 @@ $('#warehouseid_grn').change(function() {
                     var row = $('<tr>');
                     row.append($('<td>').text(i + 1));
                     row.append($('<td>').text(item.received_date));
-                    row.append($('<td>').text(item.manufacture));
+                    //row.append($('<td>').text(item.manufacture));
                     row.append($('<td>').text(item.itemname));
                     row.append($('<td>').text(item.FTD_cases));
                     row.append($('<td>').text(item.FTD_botteles));

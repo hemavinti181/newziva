@@ -92,7 +92,7 @@
 												</select>
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" />
-												<select class="form-control" name="depoid1" id="depoid1">
+												<select class="form-control select2" name="depoid1" id="depoid1">
 													<option value="All">All</option>
 												</select>
 
@@ -104,7 +104,7 @@
 												</select>
 													<label> Bus Station</label>
 											 <input type="hidden" name="busstationname1" id="busstationname1" />
-												<select class="form-control" name="busstationid1" id="busstationid1">
+												<select class="form-control select2" name="busstationid1" id="busstationid1">
 													<option value="All">All</option>
 												</select>
 										</div>
@@ -304,6 +304,7 @@ $("#agentno").val("");
 $("#vehicaldetails").val("");
 $("#remarks").val("");
 }
+
 $(document).ready(function() {
     $('#example1').DataTable( {
         columnDefs: [ {
@@ -318,6 +319,7 @@ $(document).ready(function() {
         order: [[ 1, 'asc' ]]
     } );
 } );
+
 function VerifyClick1(id,id1){
 $("#deleteid").val(id);
 $("#deletesono").val(id1);
@@ -494,8 +496,13 @@ $(document).ready(function(){
                     $.each(obj, function(index, item) {
                         $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                     });
-                     var optionValue = $("#depoid2").val();
-                     $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                     //var optionValue = $("#depoid2").val();
+                     //$("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                       var exampleValue = $("#depoid2").val();
+                       if (exampleValue) {
+                            $("#depoid1").val(exampleValue);
+                            $("#depoid1").trigger("change");
+                       }
                 }
             }
         }

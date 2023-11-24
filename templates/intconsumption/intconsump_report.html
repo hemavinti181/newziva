@@ -5,7 +5,7 @@
 
 <div class="right_col" role="main">
           <div class="">
-            <div class="page-title1">
+            <div class="page-title1" style="margin-top:60px;">
               <div class="title_left">
                 <h3>Stock Issues to service</h3>
               </div>
@@ -65,9 +65,9 @@
                                       <select class="form-control items" name="depoid" id="depoid" hidden>
                                                          <option value="{{ request.POST.depoid1}}">{{ request.POST.deponame }}</option>
                                       </select>
-                                                            <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
-                                     <label> Depot</label>
-                                                     <select class="form-control items" name="depoid1" id="depoid1" required>
+                                     <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
+                                                    <label> Depot</label>
+                                                     <select class="form-control select2" name="depoid1" id="depoid1" required>
                                                          <option value="All">All</option>
                                                      </select>
                                  </div>
@@ -154,19 +154,24 @@
             form.submit();
       });
 
-     document.getElementById('depoid1').addEventListener('change', function() {
-        var form = document.getElementById('myForm');
-        var selectedValue = this.value; // Get the selected value of depoid
-        document.getElementById('depoid').value = selectedValue; // Update depoid field
-        var selectedOption = this.options[this.selectedIndex];
-        var selectedText = selectedOption.textContent;
-        document.getElementById('deponame').value = selectedText;
-        form.submit();
-     });
-$(document).ready(function(){
-  var optionValue = $("#depoid1").val();
-  $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
-})
+$(document).ready(function () {
+
+  $("#depoid1").select2();
+  var formSubmitted = false;
+
+  $("#depoid1").change(function() {
+
+    if (!formSubmitted) {
+      var selectedOptionText = $(this).find(":selected").text();
+      $("#deponame").val(selectedOptionText);
+      formSubmitted = true;
+      var form = document.getElementById("myForm");
+      form.submit();
+    }
+  });
+});
+
+
 
  $("#warehouseid1").change(function() {
         	var warehousename = $(this).find(":selected").text();
@@ -187,6 +192,7 @@ $(document).ready(function(){
              	}
         	});
     	});
+
     	$("#regionid1").change(function() {
     		var warehousename = $('#warehouseid1').find(":selected").text();
         	var regionname = $(this).val();
@@ -245,20 +251,26 @@ $(document).ready(function(){
         success: function(data) {
             var obj = data.data.dropdownlist
             if (obj) {
-                $("#depoid1").empty();
 
+                $("#depoid1").empty();
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
-                 var optionValue = $("#depoid").val();
-                 $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                 var exampleValue = $("#depoid").val();
+                      if (exampleValue) {
+                        $("#depoid1").val(exampleValue);
+                        //$("#depoid1").trigger("change");
+                      }
             }
-        }
-      });
+
+      }
     });
-    $(document).ready(function() {
+  });
+
+  $(document).ready(function() {
 	 var optionValue = $("#warehouseid2").val();
      $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
 });
+
 </script>
 {% endblock %}

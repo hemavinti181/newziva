@@ -361,6 +361,8 @@ urlpatterns = [
     path('change_pwd',views.change_pwd,name='change_pwd'),
     path('proforma_item',views.proforma_item,name='proforma_item'),
     path('internal_stk_list',views.internal_stk_list,name='internal_stk_list'),
+    path('add_dgt_master', views.add_dgt_master, name='add_dgt_master'),
+    path('dgt_master', views.dgt_master, name='dgt_master')
 ]
 
 

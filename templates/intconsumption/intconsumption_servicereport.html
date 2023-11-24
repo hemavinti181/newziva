@@ -81,9 +81,8 @@
                     <p class="text-muted font-13 m-b-30">
                     </p>
                                 <p></p>
-                        <!--<table id="datatable-buttons" class="display table-bordered" style="width:100%">
-                                <table id="datatable" class="display table-striped table-bordered" style="width:100%">-->
-                                    <table id="datatable-buttons" class="display table-striped table-bordered" style="width:100%;overflow:hidden;">
+<button id="export-btn" type="button" class="btn btn-primary" style="margin-left:500px;margin-top:-15px;">Excel</button>
+                                    <table id="example" class="display table-striped table-bordered" style="width:100%;overflow:hidden;">
                       <thead>
                       <tr>
                            <th colspan="10" style="text-align:center;">STATUS OF 500ML ZIVA WATER BOTTLES IN DEPOTS ISSUED TO AC & SUPER-LUXURY SERVICES</th>
@@ -271,5 +270,62 @@
         }
       });
     });
+$(document).ready(function () {
+    // DataTable initialization
+    var table = $('#example').DataTable();
+
+    // Button click event to trigger export
+    $('#export-btn').on('click', function () {
+        // Add header
+
+
+	 var header = [
+            ['STATUS OF 500ML ZIVA WATER BOTTLES IN DEPOTS ISSUED TO AC & SUPER-LUXURY SERVICES'],
+            ['SNo', 'Zone', 'Region', 'Depot', { t: 's', v: 'No Of Services', s: { s: { border: { bottom: { style: 'thin' } } } } },'', '', 'Issued to no of services', '', ''],
+            ['', '', '', '', 'AC', 'S/L', 'TOTAL', 'AC', 'S/L','TOTAL',],
+
+	 ];
+
+
+        // Get table headers
+        var tableHeaders = table.columns().header().toArray().map(function (th) {
+            return th.innerText.trim();
+        });
+
+        // Get table data
+        var tableData = table.rows().data().toArray();
+
+        // Combine headers and data
+        var combinedData = [header[0], header[1], header[2]].concat([tableHeaders]).concat(tableData);
+
+        // Create worksheet
+        var ws = XLSX.utils.aoa_to_sheet(combinedData);
+
+        // Add styles for merged and centered cells
+         ws['!merges'] = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 9 },},
+            { s: { r: 1, c: 4 }, e: { r: 1, c: 6 } },//no of services
+            { s: { r: 1, c: 7 }, e: { r: 1, c: 9} },//issued
+            { s: { r: 1, c: 0}, e: { r: 3, c: 0} },//sno
+	    { s: { r: 1, c: 1}, e: { r: 3, c: 1} },//zone
+            { s: { r: 1, c: 2}, e: { r: 3, c: 2} },//region
+            { s: { r: 1, c: 3}, e: { r: 3, c: 3} },//depot
+            { s: { r: 2, c: 4}, e: { r: 3, c: 4} },//service ac
+	    { s: { r: 2, c: 5}, e: { r: 3, c: 5} },//service sl
+            { s: { r: 2, c: 6}, e: { r: 3, c: 6} },//service total
+            { s: { r: 2, c: 8}, e: { r: 3, c: 8} },//service ac
+	    { s: { r: 2, c: 9}, e: { r: 3, c: 9} },//service sl
+            { s: { r: 2, c: 7}, e: { r: 3, c: 7} },//service total
+
+        ];
+        // Create workbook
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+        // Save workbook to Excel file
+        XLSX.writeFile(wb, 'exported_table.xlsx');
+    });
+});
+
 </script>
 {% endblock %}
