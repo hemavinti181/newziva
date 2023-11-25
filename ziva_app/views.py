@@ -19184,6 +19184,11 @@ def driver_master(request):
                     messages.error(request, data['message'])
                     return redirect('/login')
             else:
+                try:
+                    data = response.json()
+                    messages.error(request, data['message'])
+                except:
+                    messages.error(request,response.text)
                 return render(request, 'masters/driver_master.html', {"menuname": menuname, 'depolist': depolist})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/staff-masterlist.php"
@@ -19235,18 +19240,18 @@ def dgt_master(request):
         data = response.json()
         depolist = data['depolist']
         if request.method == 'POST':
-            url = "http://13.235.112.1/ziva/mobile-api/staff-masterlist.php"
+            url = "http://13.235.112.1/ziva/mobile-api/dgtvehicle-masterslist.php"
 
-            payload = json.dumps({"accesskey": accesskey, "deponame": request.POST.get('deponame1')})
+            payload = json.dumps({"accesskey": accesskey, "depotname": request.POST.get('deponame1')})
             headers = {
                 'Content-Type': 'text/plain'
             }
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                stafflist = data['staffmasterlist']
+                dgtmasterlist = data['dgtmasterlist']
                 return render(request, 'masters/dgt_master.html',
-                              {"menuname": menuname, 'depolist': depolist, "stafflist": stafflist})
+                              {"menuname": menuname, 'depolist': depolist, "dgtmasterlist": dgtmasterlist})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
@@ -19258,18 +19263,18 @@ def dgt_master(request):
             else:
                 return render(request, 'masters/dgt_master.html', {"menuname": menuname, 'depolist': depolist})
         else:
-            url = "http://13.235.112.1/ziva/mobile-api/staff-masterlist.php"
+            url = "http://13.235.112.1/ziva/mobile-api/dgtvehicle-masterslist.php"
 
-            payload = json.dumps({"accesskey": accesskey, "deponame": "HAKEEMPET"})
+            payload = json.dumps({"accesskey": accesskey, "depotname": "HAKEEMPET"})
             headers = {
                 'Content-Type': 'text/plain'
             }
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
                 data = response.json()
-                stafflist = data['staffmasterlist']
-                return render(request, 'masters/driver_master.html',
-                              {"menuname": menuname, 'depolist': depolist, "stafflist": stafflist})
+                dgtmasterlist = data['dgtmasterlist']
+                return render(request, 'masters/dgt_master.html',
+                              {"menuname": menuname, 'depolist': depolist, "dgtmasterlist": dgtmasterlist})
             elif response.status_code == 400:
                 data = response.json()
                 if data['message'] == 'Sorry! some details are missing':
@@ -19296,13 +19301,12 @@ def add_dgt_master(request):
         return redirect('/login')
     accesskey = request.session['accesskey']
     if request.method == 'POST':
-        url = "http://13.235.112.1/ziva/mobile-api/staff_master_submit.php"
+        url = "http://13.235.112.1/ziva/mobile-api/create-dgtmaster.php"
 
-        payload = json.dumps({"accesskey": accesskey, "deponame": request.POST.get('deponame'),
-                              "st_no": request.POST.get('driverid'),
-                              "name": request.POST.get('drivername'),
-                              "phone_no": request.POST.get('mobile'),
-                              "designation": request.POST.get('designation'),
+        payload = json.dumps({"accesskey": accesskey,
+                              "depotname": request.POST.get('deponame'),
+                              "vehicleno": request.POST.get('vehicle'),
+                              "department": request.POST.get('department')
                               })
         headers = {
             'Content-Type': 'text/plain',
@@ -19322,7 +19326,13 @@ def add_dgt_master(request):
                 messages.error(request, data['message'])
                 return redirect('/login')
         else:
-            return redirect('/dgt_master')
+            try:
+                data = response.json()
+                messages.error(request, data['message'])
+                return redirect('/dgt_master')
+            except:
+                messages.error(request,response.text)
+                return redirect('/dgt_master')
 
     else:
         return redirect('/dgt_master')

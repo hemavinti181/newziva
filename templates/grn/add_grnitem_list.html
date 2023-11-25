@@ -109,7 +109,7 @@
                <form  method="POST" action="/edit_grn_item"   enctype="multipart/form-data">
 											{% csrf_token %}
 										<div class="col-md-6 col-sm-6  form-group has-feedback">
-                                                 <input type="hidden" id="itemname" name="itemname" />
+                                                 <input type="hidden" id="itemname" name="itemname1" />
                                                        <label>Select Items *</label>
                                                 <select class="form-control items" name="itemcode" id="itemcode" required>
                                                     <option value="">item name</option>
@@ -121,11 +121,11 @@
                                             </div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
                                              <label>Batch Number *</label>
-										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno">
+										    <input type="text" class="form-control" placeholder="batch no" name="batchno" id="batchno" required>
 										</div>
                                         <div class="col-md-6 col-sm-6  form-group has-feedback">
                                              <label>Qty(Cases)*</label>
-										    <input type="text" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity">
+										    <input type="number" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" min="1" required>
 										</div>
                                          <div class="col-md-6 col-sm-6  form-group has-feedback">
                                               <label>Qty(Bottles)*</label>

@@ -17,12 +17,12 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Driver List</h3>
+                <h3>DGT List</h3>
               </div>
 
               <div class="title_right">
                 <div class="col-md-6 col-sm-7 offset-md-9">
-                   <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#add-driver">Add New Driver</button></a>
+                   <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#add-driver">Add New DGT</button></a>
                 </div>
             </div>
               </div>
@@ -30,7 +30,7 @@
              <div class="row">
               <div class="col-md-12 col-sm-12">
                                			<!-- Search Filter -->
-						<form  method="POST" action="/driver_master"  id="myform" enctype="multipart/form-data">
+						<form  method="POST" action="/dgt_master"  id="myform" enctype="multipart/form-data">
 									{% csrf_token %}
 
                              <div class="col-md-2 col-sm-2  form-group has-feedback">
@@ -68,28 +68,28 @@
                         <tr>
                                      <th>S NO</th>
                                     <th>Depot</th>
-                                    <th>Driver Id</th>
-                                    <th>Driver Name</th>
-                                    <th>Mobile</th>
-                                    <th>Designation</th>
-                                    <th>Action</th>
+                                    <th>Vehicle no</th>
+                                    <th>Department</th>
+                                    <th>Created on</th>
+                                   <th>Created By</th>
+                                 <!--<th>Status</th>-->
                         </tr>
                       </thead>
                                <tbody>
-                            {% for data in stafflist %}
+                            {% for data in dgtmasterlist %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td> {{ data.depot_name }} </td>
-                                    <td>{{ data.st_no }}</td>
-                                    <td>{{ data.name }}</td>
-                                    <td>{{ data.phone_no }}</td>
-                                    <td>{{ data.designation }}</td>
-                               <td>
+                                    <td> {{ data.deponame }} </td>
+                                    <td>{{ data.vehicleno }}</td>
+                                    <td>{{ data.department }}</td>
+                                    <td>{{ data.created_on }}</td>
+                                    <td>{{ data.created_by }}</td>
+                              <!-- <td>
 
                                          <a href="#" onclick="editStoretype('{{  data.st_no }}','{{ data.depot_name }}')"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
                                         <a href="#" onclick="VerifyClick1('{{ data.sno }}')" ><span class="badge badge-danger" data-toggle="modal" data-target="#des-status">
                                           <i class="fa fa-trash"></i></span></a>
-
+</td>-->
                                 </tr>
                             {% endfor %}
 
@@ -175,15 +175,16 @@
                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								  <form method="post" action="/add_driver_master">
+								  <form method="post" action="/add_dgt_master">
                                                     {% csrf_token %}
 								<div class="form-header">
-									<h3>Add Driver</h3>
+									<h3>Add DGT</h3>
 								</div>
 								   <div  class="col-md-6 col-sm-6 form-group has-feedback">
-													<label>Select Depot *</label>
+
 											<input type="hidden" name="deponame" id="deponame" />
-												<select class="form-control" name="depoid" id="depoid" required>
+                                       	<label>Select Depot *</label>
+												<select class="form-control select2" name="depoid" id="depoid" required style="width:100%">
                                                     <option value="">select depot</option>
 													{% for data1 in depolist %}
                                                        {% if data1.status == 'Active' %}
@@ -192,21 +193,13 @@
                                                     {% endfor %}
 												</select>
                                    </div>
-                                   <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                      <label>Driver id *</label>
-                                      <input type="text" class="form-control" placeholder="driver id" name="driverid" required>
-                                   </div>
                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                      <label>Driver name *</label>
-                                      <input type="text" class="form-control" placeholder="driver name" name="drivername" required>
+                                      <label>Vehicle no *</label>
+                                      <input type="text" class="form-control" placeholder="enter vehicle no" name="vehicle" required>
                                    </div>
                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                      <label>Mobile *</label>
-                                          <input type="text" class="form-control" placeholder="mobile number" name="mobile" pattern= "[6789][0-9]{9}" required>
-                                    </div>
-                                     <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                        <label>Designation</label>
-                                        <input type="text" class="form-control" placeholder="designation" name="designation">
+                                      <label>Department+ *</label>
+                                          <input type="text" class="form-control" placeholder="department" name="department"  required>
                                     </div>
 
 
@@ -305,10 +298,12 @@ $("#id1").val(id);
         }
       });
   }
- $("#depoid").change(function() {
-      var form = document.getElementById("myform");
-      var selectedOptionText = $(this).find(":selected").text();
-      $("#deponame").val(selectedOptionText);
+  $(document).ready(function () {
+  $("#depoid").select2();
+     $("#depoid").change(function() {
+          var selectedOptionText = $(this).find(":selected").text();
+          $("#deponame").val(selectedOptionText);
+    });
 });
 
  $("#depotid1").change(function() {
