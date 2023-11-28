@@ -64,7 +64,7 @@
 
                                         <div class="col-md-3 col-sm-3  form-group has-feedback">
 											<label>Quantity(In Cases) *</label>
-										    <input type="number" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" min="0" required>
+										    <input type="number" class="form-control" placeholder="quantity in cases" name="quantity" id="quantity" min="1" required>
 										</div>
                                          <div class="col-md-2 col-sm-2  form-group has-feedback">
 											<label>Quantity(In Bottles) *</label>
@@ -173,7 +173,7 @@
                                 </div>
                                         <div class="modal-body">
                                              <form method="post" action="/indent_item_update">
-                                                    <input type="hidden" name="csrfmiddlewaretoken" value="HJ23sN14SJaVTiBcaTb0vm0D1qYzu5vNXILBgqRhsvdTyGPn0Ews3J7Yct14IzWw">
+                                                    {% csrf_token %}
                                                	<div class="col-md-6 col-sm-6  form-group has-feedback">
                                                       <label> Item*</label>
                                                  <input type="text"  class="form-control" id="itemname1" name="itemname" readonly />
@@ -190,7 +190,7 @@
 
                                             <div class="col-md-6 col-sm-6  form-group has-feedback">
                                                         <label>Quantity(Cases)</label>
-										         <input type="number" class="form-control" placeholder="quantity" name="qty" id="qty"  min="0" required>
+										         <input type="number" class="form-control" placeholder="quantity" name="qty" id="qty"  min="1" required>
 
                                             </div>
                                                    <div class="col-md-6 col-sm-6  form-group has-feedback">

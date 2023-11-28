@@ -15239,7 +15239,7 @@ def add_bussupply(request):
         else:
             deponame = request.POST.get('depo_name1')
 
-        if role == 'Admin' or displayrole == 'DEPO MANAGER':
+        if role == 'Admin' or role == "depo":
                 if request.method == 'POST':
                     supervisorname = request.POST.get('supervisorid')
                     request.session['supervisorname'] = supervisorname
@@ -15335,8 +15335,8 @@ def return_bussupply(request):
             ticketattach_data = None
             ticketattach_name = None
         role = request.session['role']
-        displayrole = request.session['displayrole']
-        if role == 'Admin' or displayrole == 'DEPO MANAGER':
+        #displayrole = request.session['displayrole']
+        if role == 'Admin' or role == 'Depo':
             busatation_id = request.POST.get('busatation_id1')
             if busatation_id:
                 supervisorname = busatation_id
@@ -19561,6 +19561,7 @@ def intconsumption_report(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
+
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
