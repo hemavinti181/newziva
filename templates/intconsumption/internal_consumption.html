@@ -201,7 +201,7 @@
 												</select>
 										</div>
 
-                             {% if request.session.role == 'Admin' or request.session.displayrole == 'DEPO MANAGER' %}
+                             {% if request.session.role == 'Admin' or request.session.role == 'Depo' %}
                                          <div class="col-md-4 col-sm-4  form-group has-feedback">
 											<label>Product Supervisor</label>
 											 <input type="hidden" name="supervisor" id="supervisor" />
@@ -435,7 +435,7 @@
                               </div>
                                <div class="fab bg-orange round" id="fab1"><i class="fa fa-filter" id="fabIcon"></i></div>
 <div id="depo-edit" class="modal custom-modal fade"  role="dialog" >
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px%; !important"  role="document">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1250px !important;"  role="document">
         <div class="modal-content style">
             <div class="modal-header">
                 <h3 class="modal-title">Edit Consumption</h3>
@@ -594,6 +594,7 @@
                                 </div>
 </div>
 </div>
+
 
 <div class="modal custom-modal fade"  id="bs-example-modal-sm1" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">

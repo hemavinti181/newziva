@@ -327,5 +327,20 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function () {
+  $("#depoid1").select2();
+  var exampleValue = $("#depoid2").val();
+    if (exampleValue) {
+        $("#depoid1").val(exampleValue);
+        $("#depoid1").trigger("change");
+    }
+  $("#depoid1").change(function() {
+   var selectedOptionText = $(this).find(":selected").text();
+   $("#deponame1").val(selectedOptionText);
+    var form = document.getElementById("myform");
+    form.submit();
+  });
+});
+
 </script>
 {% endblock %}

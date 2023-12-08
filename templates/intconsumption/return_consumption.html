@@ -28,7 +28,7 @@
 						<form  method="POST" action="/returnsconsumption"  id="myForm" enctype="multipart/form-data">
 									{% csrf_token %}
                             <div class="col-sm-2 col-md-2 form-group has-feedback">
-									<label class="focus-label">from </label>
+									<label class="focus-label">From </label>
 									<input class="form-control" type="date" name="fdate"  id="fdate"  value="{{ fdate }}" required>
                                    <input type="hidden" name="fdate_hidden" id="fdate_hidden">
 							</div>

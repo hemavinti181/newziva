@@ -552,7 +552,6 @@ def store_status_inactive(request, id):
         messages.error(request, data['message'])
         return redirect('store_master')
 
-
 def item_add(request):
     if 'accesskey' not in request.session:
         return redirect('/login')
@@ -15239,7 +15238,7 @@ def add_bussupply(request):
         else:
             deponame = request.POST.get('depo_name1')
 
-        if role == 'Admin' or role == "depo":
+        if role == 'Admin' or role == "Depo":
                 if request.method == 'POST':
                     supervisorname = request.POST.get('supervisorid')
                     request.session['supervisorname'] = supervisorname
@@ -15641,7 +15640,7 @@ def intconsump_report(request):
             messages.error(request, 'Access denied!')
             return redirect('/login')
         accesskey = request.session['accesskey']
-        role = request.session['displayrole']
+        role = request.session['role']
         url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
         payload = json.dumps({"accesskey": accesskey})
         headers = {
@@ -15692,7 +15691,7 @@ def intconsump_report(request):
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
             url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
-            if role == 'DEPO MANAGER':
+            if role == 'Depo':
                 depoid = request.session['depoid']
                 payload = json.dumps({
                     "accesskey": accesskey, "fdate": fdate,
@@ -16003,6 +16002,8 @@ def get_sms(request):
             return redirect('/login')
     return redirect('/internal_consumption')
 
+
+
 def return_otp(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -16051,6 +16052,9 @@ def return_otp(request):
         if response.status_code == 400:
             return redirect('/login')
     return redirect('/internal_consumption')
+
+
+
 def submitreturn_sms(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -18228,7 +18232,7 @@ def driverwise_shortage(request):
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
-        role = request.session['displayrole']
+        role = request.session['role']
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
         payload = json.dumps({"accesskey": accesskey})
@@ -18277,7 +18281,7 @@ def driverwise_shortage(request):
             else:
                 fdate = "Current Month"
                 tdate = "Current Month"
-            if role == 'DEPO MANAGER':
+            if role == 'Depo':
                 deponame = request.session['deponame']
                 payload = json.dumps({
                         "accesskey": accesskey,
@@ -18308,7 +18312,7 @@ def driverwise_shortage(request):
         else:
 
                     url = "http://13.235.112.1/ziva/mobile-api/shortagelist.php"
-                    if role == 'DEPO MANAGER':
+                    if role == 'Depo':
                         deponame = request.session['deponame']
                         payload = json.dumps({
                             "accesskey": accesskey,
@@ -18351,7 +18355,7 @@ def servicewise_shortage(request):
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
-        role = request.session['displayrole']
+        role = request.session['role']
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
         payload = json.dumps({"accesskey": accesskey})
@@ -18403,7 +18407,7 @@ def servicewise_shortage(request):
             else:
                 fdate = "Current Month"
                 tdate = "Current Month"
-            if role == 'DEPO MANAGER':
+            if role == 'Depo':
                 depoid = request.session['deponame']
                 payload = json.dumps({
                     "accesskey": accesskey,
@@ -18437,7 +18441,7 @@ def servicewise_shortage(request):
                               {'regionlist':regionlist,'menuname': menuname, 'depolist': depolist, 'fdate': fdate, 'tdate': tdate,'selectrange':selectrange})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/servicewise-shortagelist.php"
-            if role == 'DEPO MANAGER':
+            if role == 'Depo':
                 depoid=request.session['deponame']
                 payload = json.dumps({
                     "accesskey": accesskey,
@@ -18473,6 +18477,7 @@ def servicewise_shortage(request):
             return redirect('/login')
     return render(request, 'intconsumption/servicewise_shortage.html',
                   {'menuname': menuname})
+
 
 
 def internal_stktransfer(request):
@@ -19491,6 +19496,7 @@ def delete_driver(request):
             return redirect('/driver_master')
     else:
         return redirect('/driver_master')
+
 
 def delete_vehicle(request):
     if 'accesskey' not in request.session:
