@@ -88,7 +88,7 @@ DATABASES = {
         },
         'USER': 'testing_user',
         'PASSWORD': 'testuser34@',
-        'HOST': 'krkdbmed.c7i4sc0w6dwr.ap-south-1.rds.amazonaws.com',
+        'HOST': 'krkdbmed.c9g5xuzwcfdr.ap-south-1.rds.amazonaws.com',
         'PORT': '3306',
     },
     'auth': {
@@ -100,7 +100,7 @@ DATABASES = {
         },
         'USER': 'ziva_django',
         'PASSWORD': '0212@GRTcover',
-        'HOST': 'krkdbmed.c7i4sc0w6dwr.ap-south-1.rds.amazonaws.com',
+        'HOST': 'krkdbmed.c9g5xuzwcfdr.ap-south-1.rds.amazonaws.com',
         'PORT': '3306',
     },
 }
