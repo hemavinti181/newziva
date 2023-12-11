@@ -65,7 +65,7 @@
 												</select>
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" value="{{ request.POST.deponame1 }}" />
-												<select class="form-control select2" name="depoid1" id="depoid1">
+												<select class="form-control" name="depoid1" id="depoid1">
 													<option value="">All</option>
 												</select>
 
@@ -140,17 +140,12 @@
 
 <script>
 
-  $("#warehouseid1, #regionid1").change(function() {
+  $("#warehouseid1, #regionid1,#depoid1").change(function() {
     var form = document.getElementById("myform");
     form.submit();
   });
 
-  $(document).ready(function () {
-    $('#depoid1').select2();
-    $('#depoid1').on('change', function () {
-        $('#myform').submit(); // Submit the form when an option is changed
-    });
-  });
+
 
   $("#start-date,#end-date").change(function() {
         var form = document.getElementById("myform");
@@ -169,10 +164,12 @@
           selectedOptionText2 = $('#regionid1').find(":selected").text();
           $("#regionname1").val(selectedOptionText);
       });
-       $("#depoid1").change(function() {
-          selectedOptionText3 = $('#depoid1').find(":selected").text();
+        $("#depoid1").change(function() {
+          selectedOptionText2 = $('#regionid1').find(":selected").text();
           $("#deponame1").val(selectedOptionText);
-       });
+      });
+
+
     $(document).ready(function() {
        var optionValue = $("#warehouseid2").val();
        $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
@@ -180,7 +177,7 @@
        $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
        var optionValue = $("#depoid2").val();
        $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
-     });
+             });
      $("#warehouseid1").change(function() {
         	var warehousename = $(this).find(":selected").text();
         	$.ajax({
@@ -214,7 +211,7 @@
 			 		var obj = data.data.dropdownlist
 					if(obj) {
 			 		$("#depoid1").empty();
-			 		$("#depoid1").append("<option  value=''>Choose Depo</option>");
+			 		//$("#depoid1").append("<option  value='All'>All</option>");
                 	$.each(obj, function (index, item) {
                     $("#depoid1").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
@@ -261,15 +258,18 @@
             var obj = data.data.dropdownlist
             if (obj) {
                 $("#depoid1").empty();
+
                 $.each(obj, function(index, item) {
                     $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
-                 var optionValue = $("#depoid2").val();
-                 $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                    var optionValue = $("#depoid2").val();
+                    $("#depoid1").find("option[value='" + optionValue + "']").prop("selected", true);
+
             }
         }
       });
     });
+
 $(document).ready(function () {
     // DataTable initialization
     var table = $('#example').DataTable();
@@ -327,20 +327,7 @@ $(document).ready(function () {
     });
 });
 
-$(document).ready(function () {
-  $("#depoid1").select2();
-  var exampleValue = $("#depoid2").val();
-    if (exampleValue) {
-        $("#depoid1").val(exampleValue);
-        $("#depoid1").trigger("change");
-    }
-  $("#depoid1").change(function() {
-   var selectedOptionText = $(this).find(":selected").text();
-   $("#deponame1").val(selectedOptionText);
-    var form = document.getElementById("myform");
-    form.submit();
-  });
-});
+
 
 </script>
 {% endblock %}

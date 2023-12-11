@@ -83,8 +83,8 @@
 																<option value="{{ request.POST.depoid11 }}">{{ request.POST.deponame11 }}</option>
 														</select>
 															<label> Depot</label>
-													 <input type="hidden" name="deponame11" id="deponame11" value="{{ request.POST.deponame1 }}" />
-														<select class="form-control select2" name="depoid11" id="depoid11">
+													 <input type="hidden" name="deponame11" id="deponame11" value="{{ request.POST.deponame11 }}"/>
+														<select class="form-control" name="depoid11" id="depoid11">
 															<option value="All">All</option>
 														</select>
 														</div>
@@ -732,7 +732,10 @@ $("#depoid1").change(function () {
         loadServiceData(depo);
 });
 
-
+ $("#depoid11").change(function() {
+      var selectedOptionText = $('#depoid11').find(":selected").text();
+      $("#deponame11").val(selectedOptionText);
+    });
 $("#depoid1").change(function() {
     		var depo = $('#depoid1').val();
         	$.ajax({
@@ -1230,7 +1233,7 @@ $('#tickets').on('input', function() {
     form.submit();
   });
   $(document).ready(function () {
-  $("#depoid11").select2();
+  // $("#depoid11").select2();
   $("#depoid11").change(function() {
     var form = document.getElementById("myForm");
     form.submit();
@@ -1794,6 +1797,8 @@ $(document).ready(function() {
                     $("#depoid11").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 					});
                 	}
+                	  var optionValue = $("#depoid22").val();
+                    $("#depoid11").find("option[value='" + optionValue + "']").prop("selected", true);
              	}
         	});
     	});
@@ -1839,7 +1844,8 @@ $(document).ready(function() {
                 $.each(obj, function(index, item) {
                     $("#depoid11").append("<option value='" + item.id + "'>" + item.name + "</option>");
                 });
-
+                  var optionValue = $("#depoid22").val();
+                 $("#depoid11").find("option[value='" + optionValue + "']").prop("selected", true);
             }
         }
       });
