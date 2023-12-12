@@ -128,7 +128,6 @@ def login(request):
     return render(request, 'login1.html')
 
 
-
 @never_cache
 def signout(request):
     del request.session['accesskey']
@@ -265,6 +264,8 @@ def store_master(request):
     except:
 
         return render(request,'login1.html')
+
+
 
 def get_store(request):
     if 'accesskey' not in request.session:
@@ -7485,7 +7486,6 @@ def out_passlist1(request):
         headers = {
             'Content-Type': 'application/json'
         }
-
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
             data = response.json()
@@ -12896,14 +12896,17 @@ def depot_indent_report(request):
                             'indent_item_item_name': 'indent_item.item_name',
                             'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
                             'outpass_item_qty': 'outpass_item.qty',
-                            'indent_item_indent_no':'indent_item.indent_no'
+                            'indent_item_indent_no':'indent_item.indent_no',
+                            'depo_master_deponame': 'depo_master.deponame',
 
                         }
-                    ).values('outpass_item_qty','indent_item_indent_no','indent_item_item_name', 'indent_item_createdon')
-                    outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
+                    ).values('outpass_item_qty','indent_item_indent_no','indent_item_item_name', 'indent_item_createdon','depo_master_deponame')
+
+                    outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name','depo_master_deponame').annotate(
                         outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
                     )
-                    queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
+
+                    queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name','depo_master_deponame').annotate(
                                        indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
                                    )
                     merged_data = []
@@ -14756,6 +14759,7 @@ def outpass_list_admin(request):
             messages.error(request, data['message'])
             return render(request, 'login1.html')
     return render(request, 'create_indent/ready_toship_admin.html')
+
 def approve_list_admin(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -15429,6 +15433,7 @@ def depo_servicenum(request):
     else:
         return redirect('/internal_consumption')
 
+
 def service_details(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -15514,6 +15519,7 @@ def staffnumber(request):
         return redirect('/login')
     else:
         return redirect('/internal_consumption')
+
 def returnsconsumption(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
