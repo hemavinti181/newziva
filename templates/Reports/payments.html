@@ -548,10 +548,14 @@ $("#depoid").change(function() {
         	});
     	});
 });
-    	$(document).ready(function(){
+
+
+$(document).ready(function(){
   var optionValue = $("#busstation1").val();
   $("#busstationid").find("option[value='" + optionValue + "']").prop("selected", true);
 })
+
+
 $(document).ready(function(){
   var optionValue = $("#depotname1").val();
   $("#depoid").find("option[value='" + optionValue + "']").prop("selected", true);
@@ -625,7 +629,7 @@ $(document).ready(function() {
  });
 
 
-   $(document).ready(function() {
+ $(document).ready(function() {
     // Get the initial warehouse name
     var warehousename = $("#warehouseid1").find(":selected").text();
     var regionname = $("#regionid2").val();
@@ -660,6 +664,7 @@ $(document).ready(function() {
         }
     });
  });
+
 
  $(document).ready(function() {
     $("#regionid1").select2();
@@ -888,7 +893,7 @@ $(document).ready(function() {
                         row.append($('<td>').text(item.qty));
                         row.append($('<td>').text(item.total));
                         row.append(code);
-                        var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_regionlist" data-id="' + item.region_id + '" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
+                        var code = '<td class="text-center"><a href="#" onclick="pageScroll()" class="items_regionlist" data-id="'+item.region_id+'" data-fdate="{{ fdate }}" data-tdate="{{ tdate }}"><i class="fa fa-file-text-o" style="font-size:20px;color:blue"></i></a></td>';
                         row.append(code);
                         tableBody.append(row);
                     }

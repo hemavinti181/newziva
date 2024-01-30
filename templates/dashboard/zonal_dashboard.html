@@ -10,6 +10,48 @@
      color: white;
         background-color:#0876A2 !important;
     }
+    @media only screen and (max-width: 1280px) {
+  #echart-depot2{
+    margin-left:-177px !important;
+  }
+   #echart-depot1{
+    margin-left:-197px !important;
+  }
+   #echart-pies2{
+    margin-left:-187px !important;
+  }
+  #echart-zonal1{
+    margin-left:-200px !important;
+  }
+  #echart_donut2{
+
+    margin-left:-200px !important;
+  }
+  #echart_donut2{
+    margin-left:-177px !important;
+  }
+  #lblindent{
+    margin-left:30px !important;
+  }
+  .count{
+    font-size: 13px !important;
+  }
+  .title_left>h3{
+    font-size: 13px !important;
+  }
+  .text-info{
+    font-size: 13px !important;
+  }
+  .animated{
+    padding: 1px;
+  }
+  #graph_bar{
+    overflow:hidden;
+  }
+  .form-control{
+    font-size: 13px !important;
+  }
+}
 </style>
 
 <!-- page content -->
@@ -129,6 +171,7 @@
               </div>
     <div class="col-md-5 col-sm-5">
 <div class="x_panel stktabel">
+    <div class="responsive">
             <table class="table table-striped" style="display:block;width=200%"; id="stktabel">
                         <thead>
                          <tr>
@@ -157,7 +200,7 @@
                       </tfoot>
 
                       </table>
-
+    </div>
             </div>
             </div>
 </div>
@@ -1310,6 +1353,7 @@ var theme = {
         });
 
     }
+
     var echartPie = echarts.init(document.getElementById('echart-zonal1'),theme);
 
           var count = 0;

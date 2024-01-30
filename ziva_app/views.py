@@ -112,6 +112,8 @@ def login(request):
                 return redirect('/zonal_dashboard')
             elif role == 'Bus Station' and displayrole == 'DC CONTROLLER':
                 return redirect('/internal_consumption')
+            elif displayrole == 'REGIONAL MANAGER':
+                return redirect('/internal_consumption')
             elif role == 'Bus Station':
                 return redirect('/bust_dashboard')
             elif role ==  "Depo":
@@ -12578,6 +12580,7 @@ def depot_stock(request,id):
                 return render(request, 'login1.html')
         return render(request, 'Reports/depo_stockreport.html',{'menuname':menuname})
 
+
 def depot_stock_new(request, id):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -12695,256 +12698,69 @@ def depot_indent_report(request):
         data = response.json()
         selectrange = data['timingslist']
         if request.method == 'POST':
-            warehouseid1 = request.POST.get('warehousename1')
-            regionname1 = request.POST.get('regionname1')
-            deponame1 = request.POST.get('deponame1')
+            menuname = request.session['mylist']
+            accesskey = request.session['accesskey']
+            url = "http://13.235.112.1/ziva/mobile-api/depowise-qty-accepted-report.php"
 
-            option = request.POST.get('from')
-            where = [
-                'indent_item.indent_no = outpass_item.indent_no',
-                'indent_item.indent_no = generate_indent.indent_no',
-                'depo_master.warehouseid = generate_indent.to_id',
-                'depo_master.depoid = generate_indent.from_id',
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "fromdate": request.POST.get('from'),
+                "todate":request.POST.get('from'),
+                "depot_id": request.POST.get('depoid1'),
+                "region_id": request.POST.get('regionid1'),
+                "warehouse_id": request.POST.get('warehouseid1')
+            })
 
-            ]
 
-            if option == 'Today':
-                tdate = datetime.date.today()
-                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
-            elif option == 'Yesterday':
-                Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-                Previous_Date = Previous_Date.date()
-                where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
-            elif option == 'Current Month':
-                current_month = datetime.date.today().month
-                where.append(f"MONTH(indent_item.createdon) = '{current_month}'")
-            elif option == 'Current Week':
-                today = datetime.date.today()
-                current_week = today.isocalendar().week
-                where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
-            elif option == 'Last 7 days':
-                current_date = datetime.date.today()
-                start_date = current_date - timedelta(days=current_date.weekday() + 7)
-                end_date = current_date - timedelta(days=current_date.weekday() + 1)
-                where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
-            elif option == 'Custom Dates':
-                fdate = request.POST.get('fdate')
-                ldate = request.POST.get('ldate')
-                where.append("indent_item.createdon >= '%s' OR indent_item.createdon <= '%s'" % (fdate, ldate))
-            elif option == '':
-                where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
-            if warehouseid1 != '' and warehouseid1 != 'All':
-                where.append(f"depo_master.warehouse = '{warehouseid1}'")
-            if deponame1 != '' and deponame1 != 'All':
-                where.append(f"depo_master.deponame = '{deponame1}'")
-            if regionname1 != '' and regionname1 != 'All' :
-                where.append(f"depo_master.regionname = '{regionname1}'")
-            queryset = IndentItem.objects.using('auth').extra(
-                tables=['outpass_item', 'indent_item', 'generate_indent', 'depo_master'],
-                where=where,
-                select={
-                    'generate_indent_from_name': 'generate_indent.from_name',
-                    'indent_item_indent_no': 'indent_item.indent_no',
-                    'indent_item_item_name': 'indent_item.item_name',
-                    'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                    'indent_item_qty': 'indent_item.qty',
-                    'depo_master_deponame': 'depo_master.deponame',
-                    'depo_master_regionname': 'depo_master.regionname',
-                    'outpass_item_qty': 'outpass_item.qty',
-                    'depo_master_warehouse': 'depo_master.warehouse',
-                }
-            ).values(
-                'indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
-                'generate_indent_from_name', 'depo_master_deponame', 'depo_master_regionname',
-                'indent_item_qty', 'outpass_item_qty', 'depo_master_warehouse'
-            )
-            if queryset:
-                queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                        indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-                )
-                merged_data = []
-                for data2 in queryset1:
-                    for data1 in queryset:
-                        if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                                and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                            merged_data.append({
-                                'indent_item_createdon': data1['indent_item_createdon'],
-                                'indent_item_item_name': data1['indent_item_item_name'],
-                                'indent_sum_item': data2['indent_sum_item'],
-                                'depo_master_deponame': data1['depo_master_deponame'],
-                                'depo_master_regionname': data1['depo_master_regionname'],
-                                'indent_item_indent_no': data1['indent_item_indent_no'],
-                                'depo_master_warehouse': data1['depo_master_warehouse']
-                            })
-                            break
-
-                where = [
-                    'indent_item.indent_no = outpass_item.indent_no',
-                    'indent_item.indent_no = generate_indent.indent_no',
-                    'depo_master.depoid =generate_indent.from_id',
-                    "outpass_item.status = 'Accepted'"
-                ]
-
-                if option == 'Today':
-                    tdate = datetime.date.today()
-                    where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d') = '{tdate}'")
-                elif option == 'Yesterday':
-                    Previous_Date = datetime.datetime.today() - datetime.timedelta(days=1)
-                    Previous_Date = Previous_Date.date()
-                    where.append(f"DATE(indent_item.createdon) = '{Previous_Date}'")
-                elif option == 'Current Month':
-                    current_month = datetime.date.today().month
-                    where.append(f"Month(indent_item.createdon) = '{current_month}'")
-                elif option == 'Current Week':
-                    today = datetime.date.today()
-                    current_week = today.isocalendar().week
-                    where.append(f"WEEK(indent_item.createdon) = '{current_week}'")
-                elif option == 'Last 7 days':
-                    current_date = datetime.date.today()
-                    start_date = current_date - timedelta(days=current_date.weekday() + 7)
-                    end_date = current_date - timedelta(days=current_date.weekday() + 1)
-                    where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (start_date, end_date))
-
-                elif option == 'Custom Dates':
-                    fdate = request.POST.get('fdate')
-                    ldate = request.POST.get('ldate')
-                    where.append("indent_item.createdon >= '%s' AND indent_item.createdon <= '%s'" % (fdate, ldate))
-                elif option == '':
-                    where.append(f"DATE_FORMAT(indent_item.createdon, '%%Y-%%m-%%d')")
-                if warehouseid1 != '' and  warehouseid1 != 'All':
-                    where.append(f"depo_master.warehouse = '{warehouseid1}'")
-                if deponame1 != '' and deponame1 != 'All':
-                    where.append(f"depo_master.deponame = '{deponame1}'")
-                if regionname1 != '' and regionname1 != 'All':
-                    where.append(f"depo_master.regionname = '{regionname1}'")
-                queryset2 = OutpassItem.objects.using('auth').extra(
-                    tables=['indent_item','depo_master','generate_indent'],
-                     where=where,
-                    select={
-                        'indent_item_item_name': 'indent_item.item_name',
-                        'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                        'outpass_item_qty': 'outpass_item.qty',
-                    }
-                ).values('outpass_item_qty','indent_item_item_name', 'indent_item_createdon')
-
-                outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name').annotate(
-                    outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-                )
-                result = []
-                for data1 in merged_data:
-                    for data2 in outpass_sum:
-                        if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                                and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                            result.append({
-                                'indent_item_createdon': data1['indent_item_createdon'],
-                                'indent_item_item_name': data1['indent_item_item_name'],
-                                'outpass_sum_item': data2['outpass_sum_item'],
-                                'indent_sum_item': data1['indent_sum_item'],
-                                'depo_master_deponame':data1['depo_master_deponame'],
-                                'depo_master_regionname': data1['depo_master_regionname'],
-                                'indent_item_indent_no':data1['indent_item_indent_no'],
-                                'depo_master_warehouse':data1['depo_master_warehouse']
-                            })
-                            break
-                result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'],
-                                                                                 '%d-%b-%Y'), reverse=True)
-
+            headers = {
+                'Content-Type': 'text/plain'
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            if response.status_code == 200:
+                data = response.json()
+                depowiseqty_list = data['depowiseqty_list']
                 return render(request, 'Reports/depotwise_indent.html',
-                              {'entry': result, 'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
+                              {'menuname': menuname, 'entry': depowiseqty_list, 'wh_masterlist': wh_masterlist,
+                               'selectrange': selectrange})
+            elif response.status_code == 503:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'Reports/depotwise_indent.html',
+                              {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,'menuname':menuname})
             else:
                 return render(request, 'Reports/depotwise_indent.html',
-                              {'wh_masterlist': wh_masterlist, 'selectrange': selectrange,
-                               'menuname': menuname})
+                              {'wh_masterlist': wh_masterlist, 'selectrange': selectrange, 'menuname': menuname})
         else:
+            url = "http://13.235.112.1/ziva/mobile-api/depowise-qty-accepted-report.php"
 
 
-            queryset = IndentItem.objects.using('auth').extra(
-                tables=['outpass_item', 'indent_item','generate_indent', 'depo_master'],
-                where=[
-                    'indent_item.indent_no = outpass_item.indent_no',
-                    'depo_master.warehouseid = generate_indent.to_id',
-                    'indent_item.indent_no = generate_indent.indent_no',
-                    'depo_master.depoid = generate_indent.from_id',
-                    'depo_master.warehouseid = generate_indent.to_id',
+            headers = {
+                'Content-Type': 'text/plain'
+            }
 
-                ],
-                select={
+            payload = json.dumps({
+                "accesskey": accesskey,
+                "fromdate": "Current Month",
+                "todate": "Current Month",
+                "depot_id": "All",
+                "region_id": "All",
+                "warehouse_id": "All"
+            })
 
-                    'indent_item_indent_no': 'indent_item.indent_no',
-                    'indent_item_item_name': 'indent_item.item_name',
-                    'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",  # Extract the date portion only
-                    'indent_item_qty':'indent_item.qty',
-                    'depo_master_deponame': 'depo_master.deponame',
-                    'depo_master_warehouse': 'depo_master.warehouse',
-                    'depo_master_regionname': 'depo_master.regionname',
-                }
-            ).values('indent_item_indent_no', 'indent_item_item_name', 'indent_item_createdon',
-                     'depo_master_deponame', 'depo_master_regionname','indent_item_qty', 'depo_master_warehouse')
-            if queryset:
-                    queryset2 = OutpassItem.objects.using('auth').extra(
-                        tables=['indent_item', 'generate_indent', 'depo_master'],
-                        where=[
-                            'indent_item.indent_no = outpass_item.indent_no',
-                            'indent_item.indent_no = generate_indent.indent_no',
-                            'depo_master.depoid =generate_indent.from_id',
-                            'depo_master.warehouseid = generate_indent.to_id',
+            response = requests.request("GET", url, headers=headers, data=payload)
 
-                            "outpass_item.status = 'Accepted'"
-                        ],
-                        select={
-
-                            'indent_item_item_name': 'indent_item.item_name',
-                            'indent_item_createdon': "DATE_FORMAT(indent_item.createdon, '%%d-%%b-%%Y')",
-                            'outpass_item_qty': 'outpass_item.qty',
-                            'indent_item_indent_no':'indent_item.indent_no',
-                            'depo_master_deponame': 'depo_master.deponame',
-
-                        }
-                    ).values('outpass_item_qty','indent_item_indent_no','indent_item_item_name', 'indent_item_createdon','depo_master_deponame')
-
-                    outpass_sum = queryset2.values('indent_item_createdon', 'indent_item_item_name','depo_master_deponame').annotate(
-                        outpass_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-                    )
-
-                    queryset1 = queryset.values('indent_item_createdon', 'indent_item_item_name','depo_master_deponame').annotate(
-                                       indent_sum_item=Sum(Case(When(qty__isnull=False, then=F('qty')))),
-                                   )
-                    merged_data = []
-                    for data2 in queryset1:
-                        for data1 in queryset:
-                            if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                                    and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                                merged_data.append({
-                                    'indent_item_createdon': data1['indent_item_createdon'],
-                                    'indent_item_item_name': data1['indent_item_item_name'],
-                                    'indent_sum_item': data2['indent_sum_item'],
-                                    'depo_master_deponame': data1['depo_master_deponame'],
-                                    'depo_master_regionname': data1['depo_master_regionname'],
-                                    'indent_item_indent_no': data1['indent_item_indent_no'],
-                                    'depo_master_warehouse': data1['depo_master_warehouse']
-                                })
-                                break
-
-                    result = []
-                    for data1 in merged_data:
-                        for data2 in outpass_sum:
-                            if data1['indent_item_createdon'] == data2['indent_item_createdon'] \
-                                    and data1['indent_item_item_name'] == data2['indent_item_item_name']:
-                                result.append({
-                                    'indent_item_createdon': data1['indent_item_createdon'],
-                                    'indent_item_item_name': data1['indent_item_item_name'],
-                                    'outpass_sum_item': data2['outpass_sum_item'],
-                                    'indent_sum_item': data1['indent_sum_item'],
-                                    'depo_master_deponame': data1['depo_master_deponame'],
-                                    'depo_master_regionname': data1['depo_master_regionname'],
-                                    'indent_item_indent_no': data1['indent_item_indent_no'],
-                                    'depo_master_warehouse':data1['depo_master_warehouse']
-                                })
-                                break
-                    result = sorted(result, key=lambda x: datetime.datetime.strptime(x['indent_item_createdon'],
-                                                                                              '%d-%b-%Y'), reverse=True)
-                    #result = sorted(result, key=lambda x: x['indent_item_createdon'], reverse=True)
-                    return render(request,'Reports/depotwise_indent.html',{'menuname':menuname,'entry':result,'wh_masterlist':wh_masterlist,'selectrange':selectrange})
+            if response.status_code == 200:
+                data = response.json()
+                depowiseqty_list = data['depowiseqty_list']
+                return render(request, 'Reports/depotwise_indent.html',
+                              {'menuname': menuname, 'entry': depowiseqty_list, 'wh_masterlist': wh_masterlist,
+                               'selectrange': selectrange})
+            elif response.status_code == 503:
+                data = response.json()
+                messages.error(request, data['message'])
+                return render(request, 'Reports/depotwise_indent.html',
+                              {'menuname': menuname,  'wh_masterlist': wh_masterlist,
+                               'selectrange': selectrange})
             else:
                 return render(request, 'Reports/depotwise_indent.html',
                               {'menuname': menuname,'wh_masterlist': wh_masterlist,
@@ -15520,6 +15336,7 @@ def staffnumber(request):
     else:
         return redirect('/internal_consumption')
 
+
 def returnsconsumption(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -16364,10 +16181,9 @@ def internal_consump_stock(request):
     depot_id = request.POST.get('depoid')
     wh_id = request.POST.get('warehouseid1')
     region_id = request.POST.get('regionid1')
-    if role == 'Admin' or 'DEPO MANAGER':
-
+    if role == 'Admin'  or 'Depo ' or 'Bus Station':
         url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
-        if role == 'DEPO MANAGER':
+        if role == 'Depo ' or 'Bus Station':
             url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
             payload = { "accesskey": accesskey, 'depoid':depoid  }
         else:
@@ -16502,6 +16318,7 @@ def depot_dashboard_data1(request):
             elif response.status_code == 500:
                 messages.error(request, "Internal Server Error")
                 return JsonResponse({'data':"Internal Server Error"})
+
 def depot_pendin_sales(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -16930,6 +16747,7 @@ def bust_pendin_sales(request):
                 return JsonResponse({'data': "Internal Server Error"})
 
 
+
 def bust_complete_sale_report(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -17006,6 +16824,8 @@ def bust_complete_sale_report(request):
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")
             return JsonResponse({'data': "Internal Server Error"})
+
+
 
 def zonal_dashboard(request):
     try:
@@ -17124,6 +16944,8 @@ def zonal_dashboard_data1(request):
             elif response.status_code == 500:
                 messages.error(request, "Internal Server Error")
                 return JsonResponse({'data': "Internal Server Error"})
+
+
 def depots_less_stock(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
@@ -17163,7 +16985,6 @@ def depots_less_stock(request):
     else:
         url = "http://13.235.112.1/ziva/mobile-api/depo-lesss-stock.php"
         payload = {"accesskey": accesskey,
-
                    }
         payload = json.dumps(payload, cls=BytesEncoder)
 
@@ -17190,6 +17011,8 @@ def depots_less_stock(request):
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")
             return JsonResponse({'data': "Internal Server Error"})
+
+
 
 def zonal_dashboard_data(request):
     if 'accesskey' not in request.session:
@@ -17461,6 +17284,7 @@ def zonal_depotindent_data(request):
             return JsonResponse({'data': data})
         elif response.status_code == 500:
             return JsonResponse({'data': "Internal Server Error"})
+
 
 
 def admin_dashboard(request):
@@ -18068,6 +17892,7 @@ def intconsump_dashboard(request):
     return render(request, 'intconsumption/intconsump_dashboard.html',{"menuname": menuname})
 
 
+
 def intconsump_dashboard_data(request):
     if 'mylist' not in request.session:
         messages.error(request, 'Access denied!')
@@ -18127,7 +17952,7 @@ def intconsump_dashboard_data(request):
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")
             return JsonResponse({'data': "Internal Server Error"})
-    if role == 'Depo':
+    if role == 'Depo' or 'Bus Station':
         deponame = request.session['deponame']
         url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
         payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "deponame":deponame,

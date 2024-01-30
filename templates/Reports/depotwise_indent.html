@@ -66,6 +66,7 @@
       </div>
     </div>
   </div>-->
+
 </div><div class="clearfix"></div>
                  <div class="col-md-12 col-sm-12 ">
                                			<!-- Search Filter -->
@@ -78,7 +79,6 @@
 												</select>
                                 <input type="hidden" name="from" id="from" value="{{ request.POST.from }}">
                               <select id="daterangeselect" class="form-control" name="range">
-                                        <option value="All">All</option>
                                   {% for selectrange in selectrange %}
                                        <option value="{{ forloop.counter }}">{{ selectrange.type }}</option>
                                   {% endfor %}
@@ -99,7 +99,7 @@
                                          </select>
 											 <input type="hidden" name="warehousename1" id="warehousename1" value="{{  request.POST.warehousename1 }}"/>
 												<select class="form-control" name="warehouseid1" id="warehouseid1">
-													<option value="">All</option>
+													<option value="All">All</option>
 													{% for data1 in wh_masterlist %}
 															{% if data1.status == 'Active' %}
                             		                    <option value="{{ data1.warehouseid }}">{{ data1.warehousename }}</option>
@@ -114,7 +114,7 @@
 												</select>
 											 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
 												<select class="form-control" name="regionid1" id="regionid1">
-													<option value="">All</option>
+													<option value="All">All</option>
 												</select>
 										    </div>
 											<div  class="col-md-2  form-group has-feedback">
@@ -124,7 +124,7 @@
 													<label> Depot</label>
 											 <input type="hidden" name="deponame1" id="deponame1" value="{{ request.POST.deponame1 }}" />
 												<select class="form-control" name="depoid1" id="depoid1">
-													<option value="">All</option>
+													<option value="All">All</option>
 												</select>
 
                             </div>
@@ -159,7 +159,6 @@
                                       <th>Warehouse </th>
                                       <th>Depot </th>
                                       <th>Item</th>
-                                     <!-- <th>Indent Number</th>-->
                                         <th>Qty Indented(Cases)</th>
                                       <th>Qty Supplied( Cases)</th>
                                     </tr>
@@ -168,13 +167,12 @@
                                             {% for data in entry %}
                                     <tr>
                                       <td>{{ forloop.counter }}</td>
-                                      <td>{{ data.indent_item_createdon }}</td>
-                                        <td>{{ data.depo_master_warehouse }}</td>
-                                      <td>{{ data.depo_master_deponame }}</td>
-                                        <td>{{ data.indent_item_item_name }}</td>
-                                      <!--<td>{{ data.indent_item_indent_no }}</td>-->
-                                      <td>{{ data.indent_sum_item }}</td>
-                                        <td>{{ data.outpass_sum_item }}</td>
+                                      <td>{{ data.date }}</td>
+                                        <td>{{ data.warehouse }}</td>
+                                      <td>{{ data.depot }}</td>
+                                        <td>{{ data.item_name }}</td>
+                                      <td>{{ data.qty }}</td>
+                                        <td>{{ data.accepted_qty }}</td>
                                     </tr>
 {% endfor %}
                                   </tbody>
@@ -244,6 +242,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
+
 $("#daterangeselect").change(function() {
      var selectedOptionText = $(this).find(":selected").text();
     $("#from").val(selectedOptionText);
@@ -327,9 +326,6 @@ $(document).ready(function(){
   var optionValue1 = $("#range2").val();
   $("#daterangeselect").find("option[value='" + optionValue1 + "']").prop("selected", true);
 })
-
-
-
 
 	$(document).ready(function() {
     // Get the initial warehouse name
@@ -531,6 +527,8 @@ $(document).ready(function(){
       $('#tdate').hide();// hide the date fields if another option is selected
 
     }
+     var selectedOptionText = $('#daterangeselect').find(":selected").text();
+     $("#from").val(selectedOptionText);
 });
 
 $(document).ready(function() {

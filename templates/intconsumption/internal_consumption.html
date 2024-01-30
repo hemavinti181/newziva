@@ -854,8 +854,6 @@ function loadDriverData1(depo) {
         	});
 }
 
-
-
 // Execute on page load
 $(document).ready(function () {
     var depo1 = $('#depoid1').find(":selected").text();
@@ -1309,6 +1307,7 @@ $(document).ready(function () {
   });
 
 
+
 $(document).ready(function () {
     $("#authorize2").click(function() {
     		var auth = $('#sno').val();
@@ -1384,7 +1383,6 @@ $(document).ready(function () {
 				    setTimeout(function () {
                     window.location.reload();
 				  }, 1000);
-
                }
               },
               error: function (xhr, status, error) {

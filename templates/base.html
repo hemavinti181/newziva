@@ -9,10 +9,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-
 <!--<link rel="icon" href="images/favicon.ico" type="image/ico" />-->
     <title>ZIVA</title>
-
 <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
@@ -459,7 +457,7 @@ display:none !important;
 }
 @media only screen and (max-width: 1280px) {
 .nav_menu {
-    margin-left: 18% !important;
+    margin-left: 20% !important;
 }
 
 </style>
@@ -498,7 +496,6 @@ display:none !important;
 <div class="profile_info" style="background: #14c38e;">
 </div>
     </div>
-
 <br/>
 
 <!--<div class="sidebar-footer hidden-small">
@@ -530,8 +527,8 @@ display:none !important;
 <a href="javascript:;" class="user-profile" aria-haspopup="true" aria-expanded="false">
 <img src="{% static 'build/images/user.png' %}" alt=""> Hello  {{ request.session.username }}
 </a>
-    <a class="user-profile" href="/signout"><i class="fa fa-sign-out pull-right" style="font-size: 2em;margin-right:-90px"></i></a>
-     <a class="user-profile" href="/change_pwd" data-toggle="modal" data-target="#myModal"><i class="fa fa-lock pull-right" style="font-size: 2em;margin-right:-50px"></i></a>
+    <a class="user-profile" href="/signout"><i class="fa fa-sign-out pull-right" style="font-size: 2em;"></i></a>
+     <a class="user-profile" href="/change_pwd" data-toggle="modal" data-target="#myModal"><i class="fa fa-lock pull-right" style="font-size: 2em;"></i></a>
     <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
 <a class="dropdown-item" href="javascript:;"> Profile</a>
 
