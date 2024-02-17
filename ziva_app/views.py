@@ -15464,6 +15464,8 @@ def intconsump_report(request):
             return redirect('/login')
         accesskey = request.session['accesskey']
         role = request.session['role']
+        regionid = request.session['regionid']
+        displayrole = request.session['displayrole']
         url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
         payload = json.dumps({"accesskey": accesskey})
         headers = {
@@ -15481,15 +15483,22 @@ def intconsump_report(request):
             tdate = request.POST.get('tdate')
             url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
 
-
-            payload = json.dumps({
+            if role == 'Admin':
+                payload = json.dumps({
+                        "accesskey": accesskey, "fdate": fdate,
+                        "depot_id": request.POST.get('depoid1'),
+                        "region_id": request.POST.get('regionid1'),
+                        "warehouse_id": request.POST.get('warehouseid1'),
+                        "tdate": tdate,
+                 })
+            if displayrole == 'REGIONAL MANAGER':
+                payload = json.dumps({
                     "accesskey": accesskey, "fdate": fdate,
                     "depot_id": request.POST.get('depoid1'),
-                    "region_id": request.POST.get('regionid1'),
-                    "warehouse_id": request.POST.get('warehouseid1'),
+                    "region_id": regionid,
+                    "warehouse_id": "All",
                     "tdate": tdate,
-             })
-
+                })
             headers = {
                 'Content-Type': 'text/plain'
             }
@@ -15514,12 +15523,21 @@ def intconsump_report(request):
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
             url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
-            if role == 'Depo':
+            if role == 'depo':
                 depoid = request.session['depoid']
                 payload = json.dumps({
                     "accesskey": accesskey, "fdate": fdate,
                     "depot_id": depoid,
                     "region_id": "All",
+                    "warehouse_id": "All",
+                    "tdate": tdate,
+                })
+            elif displayrole == 'REGIONAL MANAGER':
+
+                payload = json.dumps({
+                    "accesskey": accesskey, "fdate": fdate,
+                    "depot_id": "All",
+                    "region_id":regionid ,
                     "warehouse_id": "All",
                     "tdate": tdate,
                 })
@@ -16171,21 +16189,23 @@ def depot_dashboard_data(request):
             messages.error(request, "Internal Server Error")
             return JsonResponse({'data': "Internal Server Error"})
 
+
 def internal_consump_stock(request):
     if 'accesskey' not in request.session:
         messages.error(request, 'Access denied!')
         return redirect('/login')
     accesskey = request.session['accesskey']
     depoid = request.session['depoid']
-    role = request.session['displayrole']
+    role = request.session['role']
+    diplayrole = request.session['displayrole']
     depot_id = request.POST.get('depoid')
     wh_id = request.POST.get('warehouseid1')
     region_id = request.POST.get('regionid1')
-    if role == 'Admin'  or 'Depo ' or 'Bus Station':
+    if role == 'Admin'  or role == 'Depo ' or role == 'Bus Station' or  diplayrole == 'REGIONAL MANAGER':
         url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
-        if role == 'Depo ' or 'Bus Station':
+        if role == 'Depo ' or role == 'Bus Station':
             url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
-            payload = { "accesskey": accesskey, 'depoid':depoid  }
+            payload = { "accesskey": accesskey, 'depoid':depoid }
         else:
             if depot_id:
                 url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
@@ -17899,6 +17919,7 @@ def intconsump_dashboard_data(request):
         return redirect('/login')
     accesskey = request.session['accesskey']
     role = request.session['role']
+    displayrole = request.session['displayrole']
     fdate = request.POST.get('fdate')
     cdate = request.POST.get('cdate')
     tdate = datetime.date.today()
@@ -17911,7 +17932,7 @@ def intconsump_dashboard_data(request):
         todate = cdate
     else:
         todate = tdate
-    if role == 'Admin':
+    if role == 'Admin' or displayrole == 'REGIONAL MANAGER' :
         depoid = request.POST.get('depoid')
         warehouseid = request.POST.get('warehousename')
         regionid = request.POST.get('regionname')
@@ -17952,7 +17973,7 @@ def intconsump_dashboard_data(request):
         elif response.status_code == 500:
             messages.error(request, "Internal Server Error")
             return JsonResponse({'data': "Internal Server Error"})
-    if role == 'Depo' or 'Bus Station':
+    if role == 'Depo' or  role == 'Bus Station':
         deponame = request.session['deponame']
         url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
         payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "deponame":deponame,
@@ -19539,6 +19560,9 @@ def intconsumption_servicereport(request):
     try:
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
+        regionid=request.session['regionid']
+        displayrole = request.session['displayrole']
+        role = request.session['role']
 
         url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
 
@@ -19555,15 +19579,23 @@ def intconsumption_servicereport(request):
             fdate =  request.POST.get('fdate')
             tdate = request.POST.get('ldate')
             url = "http://13.235.112.1/ziva/mobile-api/internal-consumption-report.php"
-
-            payload = json.dumps({"accesskey": accesskey,
-                                  "depot_id": request.POST.get('depoid1'),
-                                  "region_id": request.POST.get('regionid1'),
-                                  "warehouse_id":request.POST.get('warehouseid1'),
-                                  "fdate": request.POST.get('fdate'),
-                                  "tdate": request.POST.get('ldate'),
-                                  })
-            headers = {
+            if role == 'Admin':
+                payload = json.dumps({"accesskey": accesskey,
+                                      "depot_id": request.POST.get('depoid1'),
+                                      "region_id": request.POST.get('regionid1'),
+                                      "warehouse_id":request.POST.get('warehouseid1'),
+                                      "fdate": request.POST.get('fdate'),
+                                      "tdate": request.POST.get('ldate'),
+                              })
+            if displayrole == 'REGIONAL MANAGER':
+                payload = json.dumps({"accesskey": accesskey,
+                                      "depot_id": request.POST.get('depoid1'),
+                                      "region_id":regionid ,
+                                      "warehouse_id":"All",
+                                      "fdate": request.POST.get('fdate'),
+                                      "tdate": request.POST.get('ldate'),
+                                      })
+                headers = {
                 'Content-Type': 'text/plain'
             }
             response = requests.request("GET", url, headers=headers, data=payload)

@@ -58,10 +58,11 @@
               <h3 style="font-size:20px; font-weight:600;">Internal Consumption  Dashboard</h3>
             </div>
           </div>
- {% if request.session.role == 'Admin' %}
+ {% if request.session.role == 'Admin'  or request.session.displayrole == 'REGIONAL MANAGER' %}
                    <div class="x_panel">
 				      	<form  method="POST" action=""   enctype="multipart/form-data">
 											{% csrf_token %}
+                            {% if request.session.role == 'Admin' %}
                                         <div  class="col-md-3  form-group has-feedback">
 															<label> Warehouse</label>
 												 <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
@@ -75,6 +76,7 @@
 															 {% endfor %}
 														</select>
 										</div>
+                            {% endif %}
                                         <div  class="col-md-3  form-group has-feedback">
 															<label> Region</label>
 													  <select class="form-control" name="regionid2" id="regionid2" hidden>

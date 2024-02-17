@@ -34,6 +34,7 @@
                                   <label  for="end-date">To Date</label>
                               <input type="date" id="end-date" name="ldate" class="form-control" value="{{  tdate }}">
                             </div>
+                            {% if request.session.role == 'Admin' %}
                             	<div  class="col-md-2  form-group has-feedback">
 													<label> Warehouse</label>
                                          <select class="form-control" name="warehouseid2" id="warehouseid2" hidden>
@@ -59,6 +60,8 @@
 													<option value="">select region</option>
 												</select>
 										    </div>
+                            {% endif %}
+                            {% if request.session.role == 'Admin' or request.session.displayrole == 'REGIONAL MANAGER' %}
 											<div  class="col-md-2  form-group has-feedback">
                                                   <select class="form-control" name="depoid2" id="depoid2"  hidden>
                             		                    <option value="{{ request.POST.depoid1 }}">{{ request.POST.deponame1 }}</option>
@@ -70,6 +73,7 @@
 												</select>
 
                             </div>
+                              {% endif %}
                         </form>
 
               <div class="col-md-12 col-sm-12 ">

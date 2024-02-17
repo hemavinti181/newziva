@@ -59,20 +59,25 @@
 												<select class="form-control" name="regionid1" id="regionid1">
 													<option value="All">All</option>
 												</select>
-										    </div>
-
-                                 <div class="col-md-2 col-sm-2  form-group has-feedback">
-                                      <select class="form-control items" name="depoid" id="depoid" hidden>
-                                                         <option value="{{ request.POST.depoid1}}">{{ request.POST.deponame }}</option>
-                                      </select>
-                                     <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
-                                                    <label> Depot</label>
-                                                     <select class="form-control select2" name="depoid1" id="depoid1" required>
-                                                         <option value="All">All</option>
-                                                     </select>
-                                 </div>
+                                            </div>
 
                             {% endif %}
+                            {% if request.session.role == 'Admin' or request.session.displayrole == 'REGIONAL MANAGER' %}
+                                      <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                          <select class="form-control items" name="depoid" id="depoid" hidden>
+                                                             <option value="{{ request.POST.depoid1}}">{{ request.POST.deponame }}</option>
+                                          </select>
+                                         <input type="hidden" name="deponame" id="deponame"  value="{{ request.POST.deponame }}">
+                                            <label> Depot</label>
+                                             <select class="form-control select2" name="depoid1" id="depoid1" required>
+                                                 <option value="All">All</option>
+
+                                             </select>
+                                     </div>
+                            {% endif %}
+
+
+
 
                              <!--<div class="col-md-3 col-sm-3  form-group has-feedback">
                                            <button type="submit" id="button1" name="add" style="margin-top: 25px;" class="btn btn-primary">Search</button>

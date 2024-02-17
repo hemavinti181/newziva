@@ -55,7 +55,7 @@
                                                     {% endfor %}
                                                 </select>
                              </div>-->
-                            {% if request.session.role == 'Admin' %}
+                            {% if request.session.role == 'Admin' or request.session.displayrole == 'REGIONAL MANAGER'  %}
                                  <div class="col-md-2 col-sm-2  form-group has-feedback">
                                       <select class="form-control items" name="depoid1" id="depoid1" hidden>
                                                          <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
