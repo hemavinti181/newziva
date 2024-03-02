@@ -63,7 +63,6 @@ function init_sidebar() {
 
         // normalize content
         contentHeight -= $NAV_MENU.height() + footerHeight;
-
         $RIGHT_COL.css('min-height', contentHeight);
     };
 

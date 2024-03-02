@@ -51,6 +51,7 @@
                                                 </select>
                                     </div>
 											<div  class="col-md-2  form-group has-feedback">
+
 													<label> Region</label>
                                               <select class="form-control" name="regionid2" id="regionid2" hidden>
                             		                    <option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
@@ -64,6 +65,9 @@
                             {% endif %}
                             {% if request.session.role == 'Admin' or request.session.displayrole == 'REGIONAL MANAGER' %}
                                       <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                          <input type="hidden" id="sessionRegionId" value="{{ request.session.regionid }}">
+                                            <input type="hidden" id="sessionRegionName" value="{{ request.session.region }}">
+                                            <input type="hidden" id="displayrole" value="{{ request.session.displayrole }}">
                                           <select class="form-control items" name="depoid" id="depoid" hidden>
                                                              <option value="{{ request.POST.depoid1}}">{{ request.POST.deponame }}</option>
                                           </select>
@@ -276,6 +280,28 @@ $(document).ready(function () {
 	 var optionValue = $("#warehouseid2").val();
      $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
 });
+
+ $(document).ready(function() {
+              var regionname = $("#sessionRegionId").val();
+              var displayrole = $("#displayrole").val();
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "get_storedepo" %}',
+                    data: {
+                       'region':regionname, 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function(data) {
+                        var obj = data.data.dropdownlist
+                        if(displayrole == 'REGIONAL MANAGER') {
+                            $("#depoid1").empty();
+                                $.each(obj, function(index, item) {
+                                $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                        }
+
+                    }
+                });
+        });
 
 </script>
 {% endblock %}

@@ -57,6 +57,9 @@
                              </div>-->
                             {% if request.session.role == 'Admin' or request.session.displayrole == 'REGIONAL MANAGER'  %}
                                  <div class="col-md-2 col-sm-2  form-group has-feedback">
+                                       <input type="hidden" id="sessionRegionId" value="{{ request.session.regionid }}">
+                                            <input type="hidden" id="sessionRegionName" value="{{ request.session.region }}">
+                                            <input type="hidden" id="displayrole" value="{{ request.session.displayrole }}">
                                       <select class="form-control items" name="depoid1" id="depoid1" hidden>
                                                          <option value="{{ request.POST.depoid }}">{{ request.POST.deponame }}</option>
                                       </select>
@@ -339,5 +342,29 @@ $(document).ready(function () {
     form.submit();
   });
 });
+
+ $(document).ready(function() {
+              var regionname = $("#sessionRegionId").val();
+              // var regionname = $("#sessionRegionName").val();
+              var displayrole = $("#displayrole").val();
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "get_storedepo" %}',
+                    data: {
+                       'region':regionname, 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function(data) {
+                        var obj = data.data.dropdownlist
+                        if(displayrole == 'REGIONAL MANAGER') {
+                            $("#depoid").empty();
+                                $.each(obj, function(index, item) {
+                                $("#depoid").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                        }
+
+                    }
+                });
+        });
+
 </script>
 {% endblock %}

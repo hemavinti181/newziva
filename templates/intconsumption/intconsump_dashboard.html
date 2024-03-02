@@ -79,25 +79,28 @@
                             {% endif %}
                                         <div  class="col-md-3  form-group has-feedback">
 															<label> Region</label>
+                                            <input type="hidden" id="sessionRegionId" value="{{ request.session.regionid }}">
+                                            <input type="hidden" id="sessionRegionName" value="{{ request.session.region }}">
+                                            <input type="hidden" id="displayrole" value="{{ request.session.displayrole }}">
 													  <select class="form-control" name="regionid2" id="regionid2" hidden>
 																<option value="{{ request.POST.regionid1 }}">{{ request.POST.regionname1 }}</option>
 														</select>
 													 <input type="hidden" name="regionname1" id="regionname1" value="{{ request.POST.regionname1 }}"/>
 														<select class="form-control" name="regionid1" id="regionid1">
-															<option value="">select region</option>
+                                                                <option value="">select region</option>
 														</select>
                                         </div>
-                            	            <div  class="col-md-3 col-sm-3  form-group has-feedback">
-													<label> Depot</label>
-												 <select class="form-control select2" name="depoid" id="depoid" required>
-                                                     <option value="All">All</option>
-                                                    {% for data in depolist %}
-                                                        {% if data.status == "Active" %}
-                                                                <option value="{{ data.depoid }}">{{ data.deponame }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
+                                        <div  class="col-md-3 col-sm-3  form-group has-feedback">
+                                                <label> Depot</label>
+                                             <select class="form-control select2" name="depoid" id="depoid" required>
+                                                 <option value="All">All</option>
+                                                {% for data in depolist %}
+                                                    {% if data.status == "Active" %}
+                                                            <option value="{{ data.depoid }}">{{ data.deponame }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
 
 
                         </form>
@@ -782,12 +785,10 @@ function updateEchartPieChart_depot(total) {
 function updateEchartPieChart(itemslist) {
 
         var echartPie = echarts.init(document.getElementById('echart-depot1'),theme);
-          var count=0;
-
-          var seriesData = [];
-          var legendData = [];
-
-            var item = itemslist;
+        var count=0;
+        var seriesData = [];
+        var legendData = [];
+        var item = itemslist;
               if(item[0].no_of_services != "0" ){
                seriesData.push({
                  value: item[0].no_of_services,
@@ -884,7 +885,6 @@ function updateEchartPieChart(itemslist) {
               }
           };
  }
-
 
 $(document).ready(function() {
 depoid = $('#depoid').find(":selected").text();
@@ -1162,6 +1162,9 @@ $("#warehouseid1").change(function() {
 
 $(document).ready(function() {
               var warehousename = $("#warehouseid2").find(":selected").text();
+              var sessionRegionId = $("#sessionRegionId").val();
+              var sessionRegionName = $("#sessionRegionName").val();
+              var displayrole = $("#displayrole").val();
                 $.ajax({
                     type: "POST",
                     url: '{% url "get_storeregion" %}',
@@ -1171,18 +1174,48 @@ $(document).ready(function() {
                     },
                     success: function(data) {
                         var obj = data.data.dropdownlist
-                        if (obj) {
+                        if(displayrole == 'REGIONAL MANAGER') {
                             $("#regionid1").empty();
-                            $.each(obj, function(index, item) {
-                            $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                            });
-                            var optionValue = $("#regionid2").val();
-                            $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
-
+                           $("#regionid1").append("<option value='" + sessionRegionId + "'>" + sessionRegionName + "</option>");
                         }
+                        else {
+                           if (obj) {
+                                $("#regionid1").empty();
+                                $.each(obj, function(index, item) {
+                                $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                                });
+                                var optionValue = $("#regionid2").val();
+                                $("#regionid1").find("option[value='" + optionValue + "']").prop("selected", true);
+                            }
+                        }
+
                     }
                 });
         });
+
+        $(document).ready(function() {
+              var regionname = $("#sessionRegionId").val();
+              // var regionname = $("#sessionRegionName").val();
+              var displayrole = $("#displayrole").val();
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "get_storedepo" %}',
+                    data: {
+                       'region':regionname, 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function(data) {
+                        var obj = data.data.dropdownlist
+                        if(displayrole == 'REGIONAL MANAGER') {
+                            $("#depoid").empty();
+                                $.each(obj, function(index, item) {
+                                $("#depoid").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                        }
+
+                    }
+                });
+        });
+
 
 $(document).ready(function() {
 $('#depoid').select2();

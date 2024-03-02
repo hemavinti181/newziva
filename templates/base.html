@@ -50,7 +50,8 @@
 
 <style>
 body {
-    color:black  !important;
+    color:#111111  !important;
+    font-weight:bold;
     font-family: 'Nunito' !important;
     background:#f7f7f7 !important;
 
@@ -65,8 +66,9 @@ body {
 table.display{
 font-size:11px;
 }
-
-
+.nav-md ul.nav.child_menu li:before {
+    background: white !important;
+}
 .dataTables_length{
 margin-bottom:-50px;
 }
@@ -75,7 +77,7 @@ margin-left: 415px;
     margin-bottom: -60px;
 }
 .buttons-html5,.buttons-print{
-border: 1px solid #14c38e;
+border: 1px solid #14c38e   ;
 background-color:#14c38e;
 }
 .dataTables_wrapper
@@ -88,7 +90,7 @@ margin-top: -18px;
 }
 
 li.paginate_button.active a {
-    background-color: #1C8D98 !important;
+    background-color: #14c38e !important;
     color:white !important;
 }
 
@@ -110,14 +112,14 @@ th{
 }
 
 .btn-primary {
-    background-color :#14c38e   !important;
+    background-color :#14c38e  !important;
     border: 1px solid #14c38e !important;
     }
 
 }
 
 .modal {
-	-webkit-overflow-scrolling: touch;
+	   -webkit-overflow-scrolling: touch;
 }
 .modal-footer.text-center {
     justify-content: center;
@@ -169,7 +171,7 @@ th{
 }
 .modal-backdrop.show {
     opacity: 0.4;
-	-webkit-transition-duration: 400ms;
+	   -webkit-transition-duration: 400ms;
 	transition-duration: 400ms;
 }
 .modal .card {
@@ -225,9 +227,9 @@ body{
   position: absolute;
   right: 30px;
   bottom: 15px;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
+     -webkit-user-select: none;
+        -moz-user-select: none;
+         -ms-user-select: none;
           user-select: none;
   cursor: pointer;
   color: white;
@@ -245,9 +247,9 @@ body{
   position: absolute;
   right: 30px;
   bottom: 15px;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
+     -webkit-user-select: none;
+        -moz-user-select: none;
+         -ms-user-select: none;
           user-select: none;
   cursor: pointer;
   color: white;
@@ -361,40 +363,38 @@ background:#14c38e !important;
 color:#fff !important;
 }
 
-.left_col {
-    background: #ffffff !important;
-}
+/*.left_col {*/
+    /*background:#34444c !important;*/
+    /*color:#fff !important;*/
+/*}*/
 .current-page>a{
-color:#14c38e !important;
+color:white !important;
 }
 .profile_info {
     padding: 10px 13px 0px !important;
     }
-    .nav.side-menu>li>a, .nav.child_menu>li>a {
-    color: #6c757d !important;
-    font-weight: 550;
-}
-.nav.side-menu>li.active>a {
-         background: white !important;
-         color: #14c38e !important;
-    }
-    .nav.side-menu>li>a:hover {
-    color: #14c38e !important;
-}
+/*.nav.side-menu>li>a, .nav.child_menu>li>a {*/
+/*color: white !important;*/
+/*}*/
+/*.nav.side-menu>li.active>a {*/
+         /*background: #14c38e !important;*/
+         /*color: #14c38e !important;*/
+    /*}*/
+/*.nav.side-menu>li>a:hover {*/
+/*color: #14c38e !important;*/
+/*}*/
 .nav.child_menu>li>a {
          font-size: 14px  !important;
 }
-.nav.child_menu>li>a:hover {
-    color: #14c38e !important;
-}
+
 .nav.side-menu>li.active>a {
    font-weight: 500;
 }
-.sidebar-footer,.sidebar-footer a {
-    background: #14c38e !important;
-}
+/*.sidebar-footer,.sidebar-footer a {*/
+    /*background: #14c38e !important;*/
+/*}*/
 .nav li.current-page>a {
-    color: #14c38e !important;
+    /*color: #14c38e !important;*/
     font-size:15px !important;
 
    }
@@ -402,7 +402,6 @@ color:#14c38e !important;
     font-size:13px !important;
 
    }
-
 
 #loadercontainer {
     position: fixed;
@@ -423,7 +422,7 @@ color:#14c38e !important;
   border-top: 16px solid #14c38e;
   width: 120px;
   height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
+     -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 2s linear infinite;
 }
 
@@ -438,122 +437,108 @@ color:#14c38e !important;
   100% { transform: rotate(360deg); }
 }
 
-.page-title{
-margin-top:41px;
+.page-title1{
+margin-top:4px;
 }
-
-.top_nav .navbar-right {
-    width: 80% !important;
+.site_title{
+    font-size:18px;
 }
-.nav_menu{
-    position: fixed;
-    z-index: 1;
-    margin-left: 12%;
-}
-.nav_menu>.toggle{
-display:none !important;
-}
-@media only screen and (max-width: 1280px) {
-.nav_menu {
-    margin-left: 20% !important;
-}
-
+/*.nav_menu{*/
+    /*position: fixed;*/
+    /*z-index: 1;*/
+    /*margin-left: 12%;*/
+/*}*/
+/*@media only screen and (max-width: 1280px) {*/
+/*.nav_menu {*/
+    /*margin-left: 20% !important;*/
+/*}*/
 </style>
 <meta name="robots" content="noindex, nofollow">
 
 <script nonce="ce9d2011-6d9c-428f-ac26-1d16587b53aa">(function(w,d){!function(cM,cN,cO,cP){cM.zarazData=cM.zarazData||{};cM.zarazData.executed=[];cM.zaraz={deferred:[],listeners:[]};cM.zaraz.q=[];cM.zaraz._f=function(cQ){return function(){var cR=Array.prototype.slice.call(arguments);cM.zaraz.q.push({m:cQ,a:cR})}};for(const cS of["track","set","debug"])cM.zaraz[cS]=cM.zaraz._f(cS);cM.zaraz.init=()=>{var cT=cN.getElementsByTagName(cP)[0],cU=cN.createElement(cP),cV=cN.getElementsByTagName("title")[0];cV&&(cM.zarazData.t=cN.getElementsByTagName("title")[0].text);cM.zarazData.x=Math.random();cM.zarazData.w=cM.screen.width;cM.zarazData.h=cM.screen.height;cM.zarazData.j=cM.innerHeight;cM.zarazData.e=cM.innerWidth;cM.zarazData.l=cM.location.href;cM.zarazData.r=cN.referrer;cM.zarazData.k=cM.screen.colorDepth;cM.zarazData.n=cN.characterSet;cM.zarazData.o=(new Date).getTimezoneOffset();if(cM.dataLayer)for(const cZ of Object.entries(Object.entries(dataLayer).reduce(((c_,da)=>({...c_[1],...da[1]})))))zaraz.set(cZ[0],cZ[1],{scope:"page"});cM.zarazData.q=[];for(;cM.zaraz.q.length;){const db=cM.zaraz.q.shift();cM.zarazData.q.push(db)}cU.defer=!0;for(const dc of[localStorage,sessionStorage])Object.keys(dc||{}).filter((de=>de.startsWith("_zaraz_"))).forEach((dd=>{try{cM.zarazData["z_"+dd.slice(7)]=JSON.parse(dc.getItem(dd))}catch{cM.zarazData["z_"+dd.slice(7)]=dc.getItem(dd)}}));cU.referrerPolicy="origin";cU.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(cM.zarazData)));cT.parentNode.insertBefore(cU,cT)};["complete","interactive"].includes(cN.readyState)?zaraz.init():cM.addEventListener("DOMContentLoaded",zaraz.init)}(w,d,0,"script");})(window,document);</script></head>
-<body class="nav-md" onload="getLocation()" id="body">
 
+<body class="nav-md" onload="getLocation()" id="body">
 <div class="container body">
 	  <div id="loadercontainer">
         <div id="loader"></div>
 
     </div>
 
+
 <div class="main_container">
+    <div class="col-md-3 left_col menu_fixed">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+                 <span class="site_title">TSRTC ZIVA BOTTLE!</span>
+            </div>
+            <div class="clearfix"></div>
+            <!-- menu profile quick info -->
+            <div class="profile clearfix">
+              <div class="profile_pic">
+                <!--<img src="{% static  'build/images/logo.png' %}" alt="..." class="img-circle profile_img" style=margin-top:5px;>-->
+              </div>
+              <div class="profile_info">
+                  <h2 style="font-size:12px;">{{ request.session.name }}</h2>
+                  <span style="font-size:9px;">{{ request.session.displayrole }}</span>
+              </div>
+            </div>
+            <!-- /menu profile quick info -->
 
-<div class="col-md-3 left_col menu_fixed">
-<div class="left_col scroll-view">
-<div class="clearfix"></div>
-{% if request.session.displayrole == "MARKETING EXECUTIVE" %}
-<div class="profile clearfix" style="background: #14c38e;margin-right:-110px;">
-  {% else %}
-    <div class="profile clearfix" style="background: #14c38e;">
- {%  endif %}
-        <div class="profile_pic" style="background: #14c38e; margin-top:55px;">
-{% if request.session.role != "Admin" %}
-        <h6 style="font-size: 15px;margin-top:-47px;color:white;margin-right:-100px;margin-left:9px"><b></b>{{ request.session.name }}</h6>
- {% endif %}
-        {% if request.session.role == "Admin" %}
-            <h6 style="font-size: 15px;margin-top:-47px;color:white;margin-right:-100px;margin-left:9px"><b></b>{{ request.session.role }}</h6>
-              <h5 style="font-size: 12px;margin-top:-3px;color:white;margin-right:-100px;margin-left:9px;">Head Office(TSRTC ZIVA)</h5>
-        {% else %}
-             <h5 style="font-size: 12px;margin-top:-3px;color:white;margin-right:-100px;margin-left:9px;">{{ request.session.displayrole }}</h5>
-        {% endif %}
-    </div>
-<div class="profile_info" style="background: #14c38e;">
+            <br />
+<div class="sidebar-footer hidden-small">
+<!--<a data-toggle="tooltip" data-placement="top" title="Settings">-->
+<!--<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>-->
+<!--</a>-->
+<!--<a data-toggle="tooltip" data-placement="top" title="FullScreen">-->
+<!--<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>-->
+<!--</a>-->
+<!--<a data-toggle="tooltip" data-placement="top" title="Lock">-->
+<!--<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>-->
+<!--</a>-->
+<!--<a data-toggle="tooltip" data-placement="top" title="Logout" href="/signout">-->
+<!--<span class="glyphicon glyphicon-off" aria-hidden="true"></span>-->
+<!--</a>-->
 </div>
-    </div>
-<br/>
 
-<!--<div class="sidebar-footer hidden-small">
-<a data-toggle="tooltip" data-placement="top" title="Settings">
-<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-</a>
-<a data-toggle="tooltip" data-placement="top" title="FullScreen">
-<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-</a>
-<a data-toggle="tooltip" data-placement="top" title="Lock">
-<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-</a>
-<a data-toggle="tooltip" data-placement="top" title="Logout" href="/signout">
-<span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-</a>
-</div>-->
 {% include 'sidebar.html' %}
-</div>
-</div>
-    <div class="top_nav">
-<div class="nav_menu">
-<div class="nav toggle">
-<a id="menu_toggle"><i class="fa fa-bars"></i></a>
-</div>
-<nav class="nav navbar-nav">
-<ul class=" navbar-right">
-<li class="nav-item dropdown open" >
-
-<a href="javascript:;" class="user-profile" aria-haspopup="true" aria-expanded="false">
-<img src="{% static 'build/images/user.png' %}" alt=""> Hello  {{ request.session.username }}
-</a>
-    <a class="user-profile" href="/signout"><i class="fa fa-sign-out pull-right" style="font-size: 2em;"></i></a>
-     <a class="user-profile" href="/change_pwd" data-toggle="modal" data-target="#myModal"><i class="fa fa-lock pull-right" style="font-size: 2em;"></i></a>
-    <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-<a class="dropdown-item" href="javascript:;"> Profile</a>
-
-<a class="dropdown-item" href="/signout"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
-</div>
-</li>
-<ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1">
-</ul>
-</li>
-</ul>
-</nav>
 
 </div>
+</div>
+<!-- top navigation -->
+<div class="top_nav">
+  <div class="nav_menu">
+      <div class="nav toggle">
+        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+      </div>
+      <nav class="nav navbar-nav">
+      <ul class=" navbar-right">
+        <li class="nav-item dropdown open" style="padding-left: 15px;">
+         <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+            <img src="{% static 'build/images/user.png' %}" alt=""> Hello  {{ request.session.username }}
+          </a>
+          <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+              <a class="user-profile" href="/change_pwd" data-toggle="modal" data-target="#myModal"><i class="fa fa-lock pull-right" style="font-size: 2em;"></i></a>
+            <a class="dropdown-item"  href="/change_pwd" data-toggle="modal" data-target="#myModal"><i class="fa fa-lock pull-right"></i> Change Password</a>
+            <a class="dropdown-item"  href="/signout"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+<!-- /top navigation -->
+
 
  {% block htmlbody %} {% endblock htmlbody %}
           {% block modal %} {% endblock %}
-  <!--<footer>
-<div class="pull-right">
-ZIVA <a href="#"></a>
-</div>-->
-<div class="clearfix"></div>
-</footer>
+<footer>
+    <div class="pull-right">
+        ZIVA <a href="#"></a>
     </div>
-</div>
-</div>
-</div>
+    <div class="clearfix"></div>
+</footer>
 
+<!--</div>-->
 
 <div class="modal custom-modal fade" id="myModal" role="dialog">
 					<div class="modal-dialog modal-dialog-centered">
@@ -608,7 +593,7 @@ ZIVA <a href="#"></a>
 
 						</div>
 					</div>
-</div>
+<!--</div>-->
 
 
 <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
@@ -927,12 +912,6 @@ function hideshow(){
 			}
 
 		}
-
-
-
-
-
-
 </script>
 
 

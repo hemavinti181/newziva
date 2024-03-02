@@ -31,32 +31,29 @@
 </style>
 
 
-<div id="sidebar-menu" class="main_menu_side hidden-print main_menu custom-scrollbar" style="margin-top: -3px;">
+<div id="sidebar-menu" class="main_menu_side hidden-print main_menu custom-scrollbar">
 <div class="menu_section">
-<ul class="nav side-menu" id="sidebar-nav" >
-
+    <ul class="nav side-menu" id="sidebar-nav" >
         {% for  item in menuname %}
             {% if item.weblinks != "#" and  item.weblinks != '' %}
-                <li><a href=" {{ item.weblinks }}"  onclick="pageScroll()"><i class="{{ item.icon }}"></i>{{ item.name }}</a></li>
-    {% else %}
-        <li><a><i class="{{ item.icon }}"></i>{{ item.name }}<span class="fa fa-chevron-down"></span></a>
+                    <li><a href=" {{ item.weblinks }}"  onclick="pageScroll()"><i class="{{ item.icon }}"></i>{{ item.name }}</a></li>
+            {% else %}
+                <li><a><i class="{{ item.icon }}"></i>{{ item.name }}<span class="fa fa-chevron-down"></span></a>
             {% endif %}
-    <ul class="nav child_menu">
-        {% for  list in item.list %}
-          <li><a  href="{{ list.weblinks }}">{{ list.name }}<span class="{{ list.subicon }}"></span></a>
-                <ul class="nav child_menu">
-                      {% for  sublist in list.sublist %}
-                        <li><a href="{{ sublist.weblinks }}">{{ sublist.displayname }}</a></li>
-                     {% endfor %}
-                </ul>
-          </li>
+            <ul class="nav child_menu">
+                {% for  list in item.list %}
+                  <li><a  href="{{ list.weblinks }}">{{ list.name }}<span class="{{ list.subicon }}"></span></a>
+                        <ul class="nav child_menu">
+                              {% for  sublist in list.sublist %}
+                                <li><a href="{{ sublist.weblinks }}">{{ sublist.displayname }}</a></li>
+                             {% endfor %}
+                        </ul>
+                  </li>
+                {% endfor %}
+            </ul>
+            </li>
         {% endfor %}
     </ul>
-</li>
-    {% endfor %}
-    </ul>
-
-</div>
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

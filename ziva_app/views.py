@@ -113,7 +113,7 @@ def login(request):
             elif role == 'Bus Station' and displayrole == 'DC CONTROLLER':
                 return redirect('/internal_consumption')
             elif displayrole == 'REGIONAL MANAGER':
-                return redirect('/internal_consumption')
+                return redirect('/intconsump_dashboard')
             elif role == 'Bus Station':
                 return redirect('/bust_dashboard')
             elif role ==  "Depo":
@@ -3026,6 +3026,8 @@ def get_storedepo(request):
      else:
          data = {'error': 'true', 'message': 'something went wrong'}
          return JsonResponse({'data': data})
+
+
 
 def get_depregion(request):
     if 'accesskey' not in request.session:
@@ -15464,6 +15466,7 @@ def intconsump_report(request):
             return redirect('/login')
         accesskey = request.session['accesskey']
         role = request.session['role']
+        depoid = request.session['depoid']
         regionid = request.session['regionid']
         displayrole = request.session['displayrole']
         url = "http://13.235.112.1/ziva/mobile-api/warehousemaster-list.php"
@@ -15489,6 +15492,14 @@ def intconsump_report(request):
                         "depot_id": request.POST.get('depoid1'),
                         "region_id": request.POST.get('regionid1'),
                         "warehouse_id": request.POST.get('warehouseid1'),
+                        "tdate": tdate,
+                 })
+            if displayrole == 'DC CONTROLLER':
+                payload = json.dumps({
+                        "accesskey": accesskey, "fdate": fdate,
+                        "depot_id":depoid,
+                        "region_id": 'All',
+                        "warehouse_id":'All',
                         "tdate": tdate,
                  })
             if displayrole == 'REGIONAL MANAGER':
@@ -15523,8 +15534,8 @@ def intconsump_report(request):
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
             url = "http://13.235.112.1/ziva/mobile-api/busservices-returnlist-report.php"
-            if role == 'depo':
-                depoid = request.session['depoid']
+            if role == 'depo' or displayrole == 'DC CONTROLLER':
+
                 payload = json.dumps({
                     "accesskey": accesskey, "fdate": fdate,
                     "depot_id": depoid,
@@ -17932,10 +17943,10 @@ def intconsump_dashboard_data(request):
         todate = cdate
     else:
         todate = tdate
-    if role == 'Admin' or displayrole == 'REGIONAL MANAGER' :
-        depoid = request.POST.get('depoid')
-        warehouseid = request.POST.get('warehousename')
-        regionid = request.POST.get('regionname')
+    depoid = request.POST.get('depoid')
+    warehouseid = request.POST.get('warehousename')
+    regionid = request.POST.get('regionname')
+    if role == 'Admin':
         if warehouseid:
             url = "http://13.235.112.1/ziva/mobile-api/consum-whdashboard.php"
             payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "warehouse": warehouseid,
@@ -17948,31 +17959,40 @@ def intconsump_dashboard_data(request):
             url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
             payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame":depoid
                        }
-
-        payload = json.dumps(payload, cls=BytesEncoder)
-        headers = {
-            'Content-Type': 'application/json'
+    if displayrole == 'REGIONAL MANAGER':
+        regionname = request.session['region']
+        url = "http://13.235.112.1/ziva/mobile-api/regionconsumption-dashboard.php"
+        payload = {
+                "accesskey":accesskey,
+                "regionname":regionname,
+                "deponame":depoid,
+                "fdate":date,
+                "tdate":todate
         }
-        response = requests.request("GET", url, headers=headers, data=payload)
+    payload = json.dumps(payload, cls=BytesEncoder)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
 
-        if response.status_code == 200:
-            data = response.json()
-            return JsonResponse({'data': data})
-        elif response.status_code == 400:
-            data = response.json()
-            if data['message'] == 'Sorry! some details are missing':
-                messages.error(request, data['message'])
-                return JsonResponse({'data': data})
-            else:
-                messages.error(request, data['message'])
-                return redirect('\login')
-        elif response.status_code == 503:
-            data = response.json()
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse({'data': data})
+    elif response.status_code == 400:
+        data = response.json()
+        if data['message'] == 'Sorry! some details are missing':
             messages.error(request, data['message'])
             return JsonResponse({'data': data})
-        elif response.status_code == 500:
-            messages.error(request, "Internal Server Error")
-            return JsonResponse({'data': "Internal Server Error"})
+        else:
+            messages.error(request, data['message'])
+            return redirect('\login')
+    elif response.status_code == 503:
+        data = response.json()
+        messages.error(request, data['message'])
+        return JsonResponse({'data': data})
+    elif response.status_code == 500:
+        messages.error(request, "Internal Server Error")
+        return JsonResponse({'data': "Internal Server Error"})
     if role == 'Depo' or  role == 'Bus Station':
         deponame = request.session['deponame']
         url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
@@ -18085,6 +18105,7 @@ def driverwise_shortage(request):
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
         role = request.session['role']
+        displayrole = request.session['displayrole']
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
         payload = json.dumps({"accesskey": accesskey})
@@ -18133,7 +18154,7 @@ def driverwise_shortage(request):
             else:
                 fdate = "Current Month"
                 tdate = "Current Month"
-            if role == 'Depo':
+            if role == 'Depo' or displayrole == 'DC CONTROLLER':
                 deponame = request.session['deponame']
                 payload = json.dumps({
                         "accesskey": accesskey,
@@ -18164,7 +18185,7 @@ def driverwise_shortage(request):
         else:
 
                     url = "http://13.235.112.1/ziva/mobile-api/shortagelist.php"
-                    if role == 'Depo':
+                    if role == 'Depo' or  displayrole == 'DC CONTROLLER':
                         deponame = request.session['deponame']
                         payload = json.dumps({
                             "accesskey": accesskey,
@@ -18208,6 +18229,7 @@ def servicewise_shortage(request):
         accesskey = request.session['accesskey']
         menuname = request.session['mylist']
         role = request.session['role']
+        displayrole = request.session['displayrole']
         url = "http://13.235.112.1/ziva/mobile-api/depo-list.php"
 
         payload = json.dumps({"accesskey": accesskey})
@@ -18259,7 +18281,7 @@ def servicewise_shortage(request):
             else:
                 fdate = "Current Month"
                 tdate = "Current Month"
-            if role == 'Depo':
+            if role == 'Depo' or displayrole == 'DC CONTROLLER':
                 depoid = request.session['deponame']
                 payload = json.dumps({
                     "accesskey": accesskey,
@@ -18293,7 +18315,7 @@ def servicewise_shortage(request):
                               {'regionlist':regionlist,'menuname': menuname, 'depolist': depolist, 'fdate': fdate, 'tdate': tdate,'selectrange':selectrange})
         else:
             url = "http://13.235.112.1/ziva/mobile-api/servicewise-shortagelist.php"
-            if role == 'Depo':
+            if role == 'Depo' or displayrole == 'DC CONTROLLER':
                 depoid=request.session['deponame']
                 payload = json.dumps({
                     "accesskey": accesskey,
