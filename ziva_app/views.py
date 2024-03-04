@@ -16217,8 +16217,19 @@ def internal_consump_stock(request):
         if role == 'Depo ' or role == 'Bus Station':
             url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
             payload = { "accesskey": accesskey, 'depoid':depoid }
+
+        elif diplayrole == 'REGIONAL MANAGER':
+            regionid = request.session['regionid']
+            if depot_id and depot_id !='All':
+                url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
+                payload = {"accesskey": accesskey, 'depoid': request.POST.get('depoid')
+                           }
+            else:
+                url = "http://13.235.112.1/ziva/mobile-api/regionwise-deporeport.php"
+                payload = {"accesskey": accesskey, 'regionid': regionid
+                           }
         else:
-            if depot_id:
+            if depot_id :
                 url = "http://13.235.112.1/ziva/mobile-api/dc-stock-report.php"
                 payload = {"accesskey": accesskey, 'depoid': request.POST.get('depoid')
                    }
@@ -17959,40 +17970,64 @@ def intconsump_dashboard_data(request):
             url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
             payload = {"accesskey": accesskey, "fdate": date, "tdate":todate,"deponame":depoid
                        }
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
+            messages.error(request, data['message'])
+            return JsonResponse({'data': data})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
     if displayrole == 'REGIONAL MANAGER':
         regionname = request.session['region']
         url = "http://13.235.112.1/ziva/mobile-api/regionconsumption-dashboard.php"
         payload = {
-                "accesskey":accesskey,
-                "regionname":regionname,
-                "deponame":depoid,
-                "fdate":date,
-                "tdate":todate
+            "accesskey": accesskey,
+            "regionname": regionname,
+            "deponame": depoid,
+            "fdate": date,
+            "tdate": todate
         }
-    payload = json.dumps(payload, cls=BytesEncoder)
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
+        payload = json.dumps(payload, cls=BytesEncoder)
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
 
-    if response.status_code == 200:
-        data = response.json()
-        return JsonResponse({'data': data})
-    elif response.status_code == 400:
-        data = response.json()
-        if data['message'] == 'Sorry! some details are missing':
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse({'data': data})
+        elif response.status_code == 400:
+            data = response.json()
+            if data['message'] == 'Sorry! some details are missing':
+                messages.error(request, data['message'])
+                return JsonResponse({'data': data})
+            else:
+                messages.error(request, data['message'])
+                return redirect('\login')
+        elif response.status_code == 503:
+            data = response.json()
             messages.error(request, data['message'])
             return JsonResponse({'data': data})
-        else:
-            messages.error(request, data['message'])
-            return redirect('\login')
-    elif response.status_code == 503:
-        data = response.json()
-        messages.error(request, data['message'])
-        return JsonResponse({'data': data})
-    elif response.status_code == 500:
-        messages.error(request, "Internal Server Error")
-        return JsonResponse({'data': "Internal Server Error"})
+        elif response.status_code == 500:
+            messages.error(request, "Internal Server Error")
+            return JsonResponse({'data': "Internal Server Error"})
     if role == 'Depo' or  role == 'Bus Station':
         deponame = request.session['deponame']
         url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
