@@ -237,7 +237,6 @@ $(document).ready(function () {
                         var obj = data.data.dropdownlist
                         if (obj) {
                             $("#regionid1").empty();
-
                             $.each(obj, function(index, item) {
                             $("#regionid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
                             });
@@ -250,27 +249,40 @@ $(document).ready(function () {
 
   $(document).ready(function() {
     var warehousename = $("#warehouseid2").find(":selected").text();
-    var regionname = $("#regionid2").val();
+     var displayrole = $("#displayrole").val();
+    if(displayrole == 'REGIONAL MANAGER') {
+          var region = $("#sessionRegionId").val();
+    }
+    else{
+          var region = $("#regionid2").val();
+    }
     $.ajax({
         type: "POST",
         url: '{% url "get_storedepo" %}',
       data: {
-                	'warehouse':warehousename,'region':regionname,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
+                	'warehouse':warehousename,'region':region,'csrfmiddlewaretoken': '{{ csrf_token }}',       // add the country id to the POST parameters
             	},
         success: function(data) {
             var obj = data.data.dropdownlist
             if (obj) {
-
-                $("#depoid1").empty();
-                $.each(obj, function(index, item) {
-                    $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                });
-                 var exampleValue = $("#depoid").val();
-                      if (exampleValue) {
-                        $("#depoid1").val(exampleValue);
-                        //$("#depoid1").trigger("change");
+                 if(displayrole == 'REGIONAL MANAGER') {
+                            $("#depoid1").empty();
+                                $.each(obj, function(index, item) {
+                                $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                        }
+                else{
+                      $("#depoid1").empty();
+                        $.each(obj, function(index, item) {
+                            $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+                        });
+                         var exampleValue = $("#depoid").val();
+                              if (exampleValue) {
+                                $("#depoid1").val(exampleValue);
+                                //$("#depoid1").trigger("change");
+                              }
+                         }
                       }
-            }
 
       }
     });
@@ -281,27 +293,27 @@ $(document).ready(function () {
      $("#warehouseid1").find("option[value='" + optionValue + "']").prop("selected", true);
 });
 
- $(document).ready(function() {
-              var regionname = $("#sessionRegionId").val();
-              var displayrole = $("#displayrole").val();
-                $.ajax({
-                    type: "POST",
-                    url: '{% url "get_storedepo" %}',
-                    data: {
-                       'region':regionname, 'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    },
-                    success: function(data) {
-                        var obj = data.data.dropdownlist
-                        if(displayrole == 'REGIONAL MANAGER') {
-                            $("#depoid1").empty();
-                                $.each(obj, function(index, item) {
-                                $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
-                            });
-                        }
-
-                    }
-                });
-        });
+ // $(document).ready(function() {
+ //              var regionname = $("#sessionRegionId").val();
+ //              var displayrole = $("#displayrole").val();
+ //                $.ajax({
+ //                    type: "POST",
+ //                    url: '{% url "get_storedepo" %}',
+ //                    data: {
+ //                       'region':regionname, 'csrfmiddlewaretoken': '{{ csrf_token }}',
+ //                    },
+ //                    success: function(data) {
+ //                        var obj = data.data.dropdownlist
+ //                        if(displayrole == 'REGIONAL MANAGER') {
+ //                            $("#depoid1").empty();
+ //                                $.each(obj, function(index, item) {
+ //                                $("#depoid1").append("<option value='" + item.id + "'>" + item.name + "</option>");
+ //                            });
+ //                        }
+ //
+ //                    }
+ //                });
+ //        });
 
 </script>
 {% endblock %}

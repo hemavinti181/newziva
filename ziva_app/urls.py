@@ -170,7 +170,7 @@ urlpatterns = [
     path('medeliver_challan',views.medeliver_challan,name='medeliver_challan'),
     path('get_salebus',views.get_salebus,name='get_salebus'),
     path('medeliver_challan_pending',views.medeliver_challan_pending,name='medeliver_challan_pending'),
-    path('live_inventory',views.live_inventory,name='live_inventory'),
+    path('live_inventory/',views.live_inventory,name='live_inventory'),
     path('batch_codeexpry/<str:id>/',views.batch_codeexpry,name='batch_codeexpry'),
     path('batch_codeexpry1/<str:id>/',views.batch_codeexpry1,name='batch_codeexpry1'),
     path('add_apending_grn_inventory1',views.add_apending_grn_inventory1,name='add_apending_grn_inventory1'),
@@ -362,7 +362,8 @@ urlpatterns = [
     path('proforma_item',views.proforma_item,name='proforma_item'),
     path('internal_stk_list',views.internal_stk_list,name='internal_stk_list'),
     path('add_dgt_master', views.add_dgt_master, name='add_dgt_master'),
-    path('dgt_master', views.dgt_master, name='dgt_master')
+    path('dgt_master', views.dgt_master, name='dgt_master'),
+    path('edit_services', views.edit_bus_services, name='edit_services'),
 ]
 
 

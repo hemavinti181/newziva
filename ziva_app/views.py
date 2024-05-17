@@ -44,9 +44,6 @@ class BytesEncoder(json.JSONEncoder):
 def index(request):
     return render(request,'base.html')
 
-
-
-
 @csrf_exempt
 def login(request):
 
@@ -12702,12 +12699,25 @@ def depot_indent_report(request):
         if request.method == 'POST':
             menuname = request.session['mylist']
             accesskey = request.session['accesskey']
+
+            range = request.POST.get('from')
+            if range:
+                if range == 'Custom Dates':
+                    fdate = request.POST.get('fdate')
+                    tdate = request.POST.get('ldate')
+                else:
+                    fdate = request.POST.get('from')
+                    tdate = request.POST.get('from')
+            else:
+                fdate = "Current Month"
+                tdate = "Current Month"
+
             url = "http://13.235.112.1/ziva/mobile-api/depowise-qty-accepted-report.php"
 
             payload = json.dumps({
                 "accesskey": accesskey,
-                "fromdate": request.POST.get('from'),
-                "todate":request.POST.get('from'),
+                "fromdate": fdate,
+                "todate":tdate,
                 "depot_id": request.POST.get('depoid1'),
                 "region_id": request.POST.get('regionid1'),
                 "warehouse_id": request.POST.get('warehouseid1')
@@ -18031,7 +18041,7 @@ def intconsump_dashboard_data(request):
     if role == 'Depo' or  role == 'Bus Station':
         deponame = request.session['deponame']
         url = "http://13.235.112.1/ziva/mobile-api/consumption-dashboard.php"
-        payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "deponame":deponame,
+        payload = {"accesskey": accesskey, "fdate": date, "tdate": todate, "deponame":deponame
                    }
         payload = json.dumps(payload, cls=BytesEncoder)
         headers = {
@@ -19964,3 +19974,45 @@ def internal_stk_list(request):
             messages.error(request,data['message'])
             return redirect('/login')
         return render(request, 'intconsumption/internal_stk_list.html',{'menuname':menuname})
+
+
+def edit_bus_services(request):
+    if 'accesskey' not in request.session:
+        messages.error(request, 'Access denied!')
+        return redirect('/login')
+    accesskey = request.session['accesskey']
+    if request.method == 'POST':
+        url = "http://13.235.112.1/ziva/mobile-api/update-sleeperacbusescount.php"
+
+        payload = json.dumps({"accesskey": accesskey,
+                              "depoid": request.POST.get('depot'),
+                              "noof_services_ac": request.POST.get('ac'),
+                              "noof_services_sl": request.POST.get('sl'),
+                              })
+        headers = {
+            'Content-Type': 'text/plain',
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            messages.success(request, data['message'])
+            return redirect('/intconsumption_servicereport')
+        elif response.status_code == 400:
+            data = response.json()
+            text = data['message']
+            if  'some details are missing' in text:
+                messages.error(request, data['message'])
+                return redirect('/intconsumption_servicereport')
+            else:
+                messages.error(request, data['message'])
+                return redirect('/login')
+        else:
+            try:
+                r = response.json()
+                messages.error(request, r['message'])
+            except:
+                messages.error(request, response.text)
+            return redirect('/intconsumption_servicereport')
+
+    else:
+        return redirect('/intconsumption_servicereport')

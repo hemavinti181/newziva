@@ -92,7 +92,7 @@
                                     <table id="example" class="display table-striped table-bordered" style="width:100%;overflow:hidden;">
                       <thead>
                       <tr>
-                           <th colspan="10" style="text-align:center;">STATUS OF 500ML ZIVA WATER BOTTLES IN DEPOTS ISSUED TO AC & SUPER-LUXURY SERVICES</th>
+                           <th colspan="11" style="text-align:center;">STATUS OF 500ML ZIVA WATER BOTTLES IN DEPOTS ISSUED TO AC & SUPER-LUXURY SERVICES</th>
                         <tr>
 
                                     <th rowspan="2">S No</th>
@@ -100,7 +100,8 @@
                                     <th rowspan="2">Region</th>
                                     <th rowspan="2">Depot</th>
                                     <th  colspan="3" style="text-align:center;">No Of Services</th>
-                                    <th  colspan="3"style="text-align:center;">Issued to no of services</th>
+                                    <th  colspan="3" style="text-align:center;">Issued to no of services</th>
+                                    <th  rowspan="2">Action</th>
 
 
                         </tr>
@@ -129,6 +130,9 @@
                                 <td>{{ data.issuedto_noof_services_ac }}</td>
                                 <td>{{ data.issuedto_noof_services_sl }}</td>
                                 <td>{{ data.issuedto_noof_services_total }}</td>
+                                <td>
+                                    <a href="#" onclick="editServicetype('{{  data.depot_id }}','{{ data.noof_services_ac }}','{{ data.noof_services_sl}}','{{ data.noof_services_total }}','{{ data.depot_name }}')"><span class="badge badge-info"><i class="fa fa-edit"></i></span></a>
+                                </td>
                                 </tr>
                             {% endfor %}
                       </tbody>
@@ -145,6 +149,45 @@
           </div>
 </div>
 
+<div class="modal custom-modal fade" id="services_edit" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                  <form method="post" action="/edit_services">
+                                    {% csrf_token %}
+                <div class="form-header">
+                    <h3>Edit Service Details</h3>
+                </div>
+                        <input type="hidden" name="depot" id="depot" />
+                   <div class="col-md-6 col-sm-6  form-group has-feedback">
+                      <label>Depot *</label>
+                      <input type="text" class="form-control" name="depotname" id="depotname" readonly>
+                   </div>
+                       <div class="col-md-6 col-sm-6  form-group has-feedback">
+                      <label>AC services *</label>
+                      <input type="text" class="form-control"  name="ac" id="ac">
+                   </div>
+                    <div class="col-md-6 col-sm-6  form-group has-feedback">
+                      <label>Super luxury *</label>
+                          <input type="text" class="form-control"  name="sl" id="sl" >
+                    </div>
+                     <!--<div class="col-md-6 col-sm-6  form-group has-feedback">-->
+                        <!--<label>Total Services</label>-->
+                        <!--<input type="text" class="form-control"  name="total_services" id="total_services">-->
+                    <!--</div>-->
+                  </div>
+                          <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                          </div>
+                  </form>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 
   $("#warehouseid1, #regionid1,#depoid1").change(function() {
@@ -357,6 +400,15 @@ $(document).ready(function () {
                 });
         });
 
+
+ function editServicetype(id,id1,id2,id3,id4){
+     $("#depot").val(id);
+     $("#depotname").val(id4);
+     $("#ac").val(id1);
+     $("#sl").val(id2);
+     $("#total_services").val(id3);
+     $('#services_edit').modal('show');
+ }
 
 </script>
 {% endblock %}

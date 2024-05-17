@@ -31,7 +31,7 @@ color: #14c38e !important;
         <div class="top_tiles" style="width: 900px">
 {% if data %}
     {% for item in data %}
-        <a href="batch_codeexpry/{{ item.itemcode }}/">
+        <a href="/batch_codeexpry/{{ item.itemcode }}/">
             <div class="animated flipInY col-md-4 col-sm-4" style="display: inline-block;">
                 <div class="tile-stats">
                     <div class="icon1"><i class="fa fa-bottle-water"></i></div>
@@ -47,7 +47,7 @@ color: #14c38e !important;
             </div>
         </a>
     {% endfor %}
-            {% else %}
+    {% else %}
         <div class="animated flipInY col-md-4 col-sm-4" style="width:400px;">
             <div class="tile-stats">
                 <div class="icon1"><i class="fa fa-bottle-water"></i></div>
@@ -122,7 +122,7 @@ color: #14c38e !important;
            </div>
         </div>
           </a>
-          <a class="itemcode500ml" href="#">
+          <a class="itemcode500ml">
                            <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">
             <div class="icon1"><i class="fa fa-bottle-water"></i></div>
@@ -132,7 +132,7 @@ color: #14c38e !important;
         </div>
           </a>
           <!--<a class="itemcode250ml" href="batch_codeexpry/{{ item.itemcode }}/">-->
-        <a class="itemcode250ml" href="#">
+        <a class="itemcode250ml">
                 <div class="animated flipInY  col-md-4 col-sm-4">
                 <div class="tile-stats">
                     <div class="icon1"><i class="fa fa-bottle-water"></i></div>
@@ -148,13 +148,13 @@ color: #14c38e !important;
       <div class="">
 
             <div class="clearfix"></div>
-     <h3>  {{ request.session.name }} Stock point Inventory </h3>
+     <h3>  {{ request.session.name }} Stock point Inventory</h3>
 
 <div class="col-md-3 col-sm-3" style="margin-bttom:120px;">
 
-                                         <select class="form-control" name="warehouseid2" id="warehouseid3" hidden>
-                            		                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
-												</select>
+     <select class="form-control" name="warehouseid2" id="warehouseid3" hidden>
+                    <option value="{{ request.POST.warehouseid1 }}">{{ request.POST.warehousename1 }}</option>
+            </select>
 
 </div>
 
@@ -168,7 +168,7 @@ color: #14c38e !important;
                        <div class="row" style="display: inline-block;margin-top:20px;">
     <div class="top_tiles" style="width: 900px;">
 
-          <a class="itemcode500ml1" href="#">
+          <a class="itemcode500ml1">
                            <div class="animated flipInY  col-md-4 col-sm-4">
         <div class="tile-stats">
             <div class="icon1"><i class="fa fa-bottle-water"></i></div>
@@ -192,7 +192,6 @@ color: #14c38e !important;
               </div>
           </div>
 </div>
-
 <script>
 $("#warehouseid1").change(function() {
         	var warehouseid = $(this).val();
@@ -216,27 +215,28 @@ $("#warehouseid1").change(function() {
                            alertify.error(message);
                       }
                       else{
-                               $('.1000mlqty').text("0");
-                                    $('.500mlqty').text("0");
-                                    $('.250mlqty').text("0");
+                                $('.1000mlqty').text("0");
+                                $('.500mlqty').text("0");
+                                $('.250mlqty').text("0");
                              for (var i = 0; i < obj.length; i++) {
                                 var item = obj[i];
                                  if (item.itemname === '1000ml') {
                                       $('.1000mlqty').empty();
-                                    $('.1000mlqty').text(item.Qty);
+                                      $('.1000mlqty').text(item.Qty);
 
                                     //$('.itemcode1000ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
                                 }
 
                                 if (item.itemname === '500ml') {
-                                      $('.500mlqty').empty();
+                                    $('.500mlqty').empty();
                                     $('.500mlqty').text(item.Qty);
 
                                    // $('.itemcode500ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
                                 }
 
                                 if (item.itemname === '250ml') {
-                                       $('.250mlqty').empty();
+
+                                    $('.250mlqty').empty();
                                     $('.250mlqty').text(item.Qty);
 
                                     //$('.itemcode250ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
@@ -296,6 +296,7 @@ $(document).ready(function() {
 			 		var obj = data.data.inventorylist
 			 		var error = data.data.error;
 			 		var message = data.data.message;
+
                       if ( error === true) {
 
                             $('.1000mlqty').text("0");
@@ -305,24 +306,28 @@ $(document).ready(function() {
                             //alertify.set('notifier', 'position', 'top-center');
                             //alertify.error(message);
                       }
-					for (var i = 0; i < obj.length; i++) {
-                        var item = obj[i];
+                       else{
+                                $('.1000mlqty').text("0");
+                                $('.500mlqty').text("0");
+                                $('.250mlqty').text("0");
+                                for (var i = 0; i < obj.length; i++) {
+                                    var item = obj[i];
 
-                         if (item.itemname === '1000ml') {
-                              $('.1000mlqty').text(item.Qty);
-                            //$('.itemcode1000ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                                    if (item.itemname === '1000ml') {
+                                        $('.1000mlqty').text(item.Qty);
+                                        //$('.itemcode1000ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                                    }
+                                    if (item.itemname === '500ml') {
+                                        $('.500mlqty').text(item.Qty);
+                                        //$('.itemcode500ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                                    }
+
+                                    if (item.itemname === '250ml') {
+                                        $('.250mlqty').text(item.Qty);
+                                        //$('.itemcode250ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
+                                    }
+
                         }
-                        if (item.itemname === '500ml') {
-                              $('.500mlqty').text(item.Qty);
-                            //$('.itemcode500ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
-                        }
-
-                        if (item.itemname === '250ml') {
-                              $('.250mlqty').text(item.Qty);
-                            //$('.itemcode250ml').attr('href', 'batch_codeexpry/' + item.itemcode + '/');
-                        }
-
-
                     }
 
              	}
