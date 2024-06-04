@@ -231,7 +231,7 @@
         </div>
     </div>
 
-
+</div>
 
 <script>
      function VerifyClick(id){
@@ -295,6 +295,7 @@ function editDepo(id){
              $('#depo-edit').modal('show');
         	}
       var  val= obj.role2;
+
 	  if (val === "Admin") {
 		document.getElementById("warehouseid1").style.display = "none";
 		document.getElementById("regionid1").style.display = "none";
@@ -333,6 +334,8 @@ function editDepo(id){
 		document.getElementById("warehouseid").setAttribute("required", "required");
 		document.getElementById("regionid").setAttribute("required", "required");
 		document.getElementById("depoid").setAttribute("required", "required");
+
+
 	   }
        else if(val === "ZONAL STORES" ) {
 			document.getElementById("warehouseid1").style.display = "block";
@@ -381,7 +384,6 @@ function editDepo(id){
 
 			 	}
 			 	else {
-			 	alert('hai')
 			 		var obj = data.data.dropdownlist
 			 		var error = data.data.error;
 					var message = data.data.message;
@@ -419,11 +421,12 @@ document.getElementById("role").addEventListener("change", function() {
 		document.getElementById("depoid1").style.display = "block";
 		document.getElementById("busstationid1").style.display = "block";
 
-	   document.getElementById("warehouseid").setAttribute("required", "required");
+	    document.getElementById("warehouseid").setAttribute("required", "required");
 		document.getElementById("regionid").setAttribute("required", "required");
 		document.getElementById("depoid").setAttribute("required", "required");
 		document.getElementById("busstationid").setAttribute("required", "required");
 	  }
+
 
 	  else if (val === "MARKETING EXECUTIVE" ){
 			document.getElementById("warehouseid1").style.display = "block";
@@ -433,6 +436,10 @@ document.getElementById("role").addEventListener("change", function() {
 
 			document.getElementById("warehouseid").setAttribute("required", "required");
 			document.getElementById("regionid").setAttribute("required", "required");
+
+			document.getElementById("depoid").removeAttribute("required", "required");
+		   document.getElementById("busstationid").removeAttribute("required", "required");
+
 	  }
 
 	  else if(val === "DEPOT STORE EXECUTIVE" || val === "DEPO MANAGER") {
@@ -444,6 +451,8 @@ document.getElementById("role").addEventListener("change", function() {
 		document.getElementById("warehouseid").setAttribute("required", "required");
 		document.getElementById("regionid").setAttribute("required", "required");
 		document.getElementById("depoid").setAttribute("required", "required");
+
+		document.getElementById("busstationid").removeAttribute("required");
 	   }
        else if(val === "ZONAL STORES" ) {
 			document.getElementById("warehouseid1").style.display = "block";
@@ -451,7 +460,11 @@ document.getElementById("role").addEventListener("change", function() {
 			document.getElementById("depoid1").style.display = "none";
 			document.getElementById("busstationid1").style.display = "none";
 
-             document.getElementById("warehouseid").setAttribute("required", "required");
+            document.getElementById("warehouseid").setAttribute("required", "required");
+
+            document.getElementById("depoid").removeAttribute("required");
+            document.getElementById("regionid").removeAttribute("required");
+		    document.getElementById("busstationid").removeAttribute("required");
 
 	   }
 		else{
@@ -663,7 +676,6 @@ $(document).ready(function(){
 							$("#busstationid").empty();
 							$("#busstationid").append("<option  value=''>Choose bus station</option>");
 							$.each(obj, function (index, item) {
-							alert(item.name)
 							$("#busstationid").append("<option value='" + item.id+ "'>" + item.name+ "</option>");
 							});
 						}

@@ -19929,7 +19929,7 @@ def internal_stk_list(request):
                                 "accesskey": accesskey,
                                  "fdate":fdate,
                                  "tdate":tdate,
-                                  "depoid": depo,
+                                 "depoid": depo,
                              })
                         if role == 'Admin':
                                 payload = json.dumps(
